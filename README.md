@@ -58,7 +58,7 @@ The fenced frame enforces a boundary between the embedding page and the cross-si
 
 The privacy threat addressed is:
 
-**The ability to correlate the user’s identity/information on the embedding site with that on the embedded site. **
+**The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
 
 ## Design
 
@@ -322,7 +322,7 @@ The fenced frame’s main goal is to improve privacy by disallowing communicatio
 *   **Src:** Since the URL passed in the src attribute from the embedding site to the fenced frame is a channel as well, it needs to have similar or stricter link decoration mitigations than actual navigations. 
 *   **Initial size and position attributes:** these could be restricted to a certain set of values e.g. multiples of 100 or popular values like full viewport width for mobile ads. This would not completely eliminate the channel but will restrict it. 
 *   **Referrer:** This will be restricted to the site of the top-level page.
-*   **IntersectionObserver: **It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api) or/and by limiting the number of bits exposed by the IntersectionObserver API. This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame.
+*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api) or/and by limiting the number of bits exposed by the IntersectionObserver API. This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame.
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. 
 *   **Document policy/feature policy headers:** The mitigations here need to be determined.
 
