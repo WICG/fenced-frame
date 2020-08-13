@@ -95,12 +95,12 @@ The state transitions of a fenced frame are thus:
 
 1. Start
     *   Full network access, no storage access
-2. On requesting read-only storage access without user activation or access to opaque URL
+2. Access to opaque URL or on requesting read-only storage access without user activation 
     *   No network access, read-only unpartitioned storage (if requested)
 3. On user activation
     *   Full network access, read/write unpartitioned storage (if requested)
 
-Some fenced frames might start in state (2) if they need to start with access to storage and no network. Such fenced frames will require a web bundle to load.
+Some fenced frames might start in state (2) if they need to start with access to user data and no network e.g. Turtledove. Such fenced frames will require a web bundle to load.
 
 ### Fenced frame API 
 
@@ -230,7 +230,7 @@ Following are potential use cases for fenced frames. This is not an exhaustive l
 
 If the embedded content is cross-site, the privacy threat of joining user identities on the two sites exists before the user ever engages with the portal. The privacy threat for portals is further detailed [here](https://github.com/WICG/portals#privacy-threat-model-and-restrictions).
 
-Portal is a separate element type than fenced frames, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
+Portal is a separate element type than a fenced frame, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
 
 
 ### Interest Group ads based on user activity (TURTLEDOVE)
@@ -296,13 +296,13 @@ As a reminder, the states of a fenced frame are:
 
 
 1. Start
-    1. Full network access, no storage access
+    *   Full network access, no storage access
 2. On requesting read-only storage access without user activation
-    2. No network access, read-only unpartitioned state (if requested)
+    *   No network access, read-only unpartitioned state (if requested)
 3. On user activation
-    3. Full network access, read/write unpartitioned state (if requested)
+    *   Full network access, read/write unpartitioned state (if requested)
 
-[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) is used to provide access to unpartitioned storage. When invoked within fenced frames, there isn’t a need to show a permission prompt, thanks to the communication isolation of a fenced frame. 
+[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) is used to provide access to unpartitioned storage. When invoked within fenced frames, the goal is to not show a permission prompt, thanks to the communication isolation of a fenced frame. However, that is dependent on mitigating challenges like link decoration, network timing etc. as discussed in the thread [here](https://github.com/privacycg/storage-access/issues/41#issuecomment-673057755).
 
 There are a number of use cases for unpartitioned storage access. These include embedded media playing and enqueueing, document viewing and editing, social widgets, and article comments. requestStorageAccess within the fenced frame can be used to fulfill these use cases.
 
