@@ -79,19 +79,20 @@ The idea is that the fenced frame should not have access to both of the followin
 *   User information on the fenced frame site
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
-Once the restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
+
 
 A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves a new concept of an opaque URL which is opaque to any context other than the fenced frame, something like an [opaque fetch response](https://fetch.spec.whatwg.org/#concept-filtered-response-opaque), or a new on-device opaque computation result — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
+Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
 The state transitions of a fenced frame are thus:
 
-For cases that start with access to the opaque URL which in turn implies read-only access to user data e.g. turtledove interest group, the fenced frame starts with no network and will require a [web bundle](https://web.dev/web-bundles/) downloaded earlier to load. The reason that network is restricted when cross-site information is known is because of timing attacks, which are discussed below in [privacy considerations](#privacy-considerations).
+For cases that start with access to the opaque URL which in turn implies read-only access to sensitive user data e.g. turtledove interest group, the fenced frame starts with no network and will require a [web bundle](https://web.dev/web-bundles/) downloaded earlier to load. The reason that network is restricted when cross-site information is known is because of timing attacks, which are discussed below in [privacy considerations](#privacy-considerations).
 1. Start
-    *   No network access 
+    *   No network access, access to user data
 2. On user activation
     *   Allowed network access
 
-Or, for cases like portals that start with no user data access, 
+Or, for cases like portals that start with no unpartitioned storage access, 
 1. Start
     *   Full network access, no storage access
 2. On portal activation (gated on user gesture)
