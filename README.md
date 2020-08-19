@@ -16,7 +16,6 @@
         - [Downsides](#downsides-1)
     - [Fenced frame tree](#fenced-frame-tree)
     - [Information channel between fenced frame and other frames](#information-channel-between-fenced-frame-and-other-frames)
-    - [Network access or Web bundles](#network-access-or-web-bundles)
   - [Use-cases/Key scenarios](#use-caseskey-scenarios)
     - [Cross-site portals](#cross-site-portals)
     - [Interest Group ads based on user activity (TURTLEDOVE)](#interest-group-ads-based-on-user-activity-turtledove)
