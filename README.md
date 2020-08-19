@@ -68,11 +68,7 @@ Fenced frames are embedded contexts that have the following characteristics to p
 
 *   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information, the embedder’s top-level site, and the frame’s document url.
 *   They do not have storage access (e.g., cookies, localStorage, etc.) by default. 
-*   They can provide access to unpartitioned data
-    *   Before user activation, read-only unpartitioned storage can be obtained by calling requestStorageAccess with a new read-only parameter.
-        *   But once the read-only data is provided, network access is disabled until user activation.
-    *   Upon user activation, read-write storage access can be requested via requestStorageAccess and network access is allowed.
-        *   Any previously returned read-only bucket is now read-write.
+*   They may have access to some unpartitioned user data, for example, turtledove interest group.
 
 The idea is that the fenced frame should not have access to both of the following pieces of information:
 
@@ -83,24 +79,25 @@ The idea is that the fenced frame should not have access to both of the followin
 *   User information on the fenced frame site
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
-Before user activation, unpartitioned storage (if accessible) is only available in a read-only mode. This is to make sure that any bits of information that may have been passed along to the fenced frame e.g. using frame size, is not persisted.
-
 Once the restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
 A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves a new concept of an opaque URL which is opaque to any context other than the fenced frame, something like an [opaque fetch response](https://fetch.spec.whatwg.org/#concept-filtered-response-opaque), or a new on-device opaque computation result — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
 
 The state transitions of a fenced frame are thus:
 
+For cases that start with access to the opaque URL which in turn implies read-only access to user data e.g. turtledove interest group, the fenced frame starts with no network and will require a [web bundle](https://web.dev/web-bundles/) downloaded earlier to load. The reason that network is restricted when cross-site information is known is because of timing attacks, which are discussed below in [privacy considerations](#privacy-considerations).
+1. Start
+    *   No network access 
+2. On user activation
+    *   Allowed network access
 
-
+Or, for cases like portals that start with no user data access, 
 1. Start
     *   Full network access, no storage access
-2. Access to opaque URL or on requesting read-only storage access without user activation 
-    *   No network access, read-only unpartitioned storage (if requested)
-3. On user activation
+2. On portal activation (gated on user gesture)
     *   Full network access, read/write unpartitioned storage (if requested)
 
-Some fenced frames might start in state (2) if they need to start with access to user data and no network e.g. Turtledove. Such fenced frames will require a web bundle to load.
+
 
 ### Fenced frame API 
 
@@ -214,11 +211,6 @@ This discussion assumes that third-party cookies, like all other third party sto
 
 Some of the channels cannot be completely removed as they are required for the fenced frame’s creation and are discussed in the [privacy considerations](#privacy-considerations) section.
 
-
-### Network access or Web bundles
-
-Fenced frames may have network access until they obtain cross-site information. That information could come from read-only unpartitioned storage access, or it may come from the fenced frame’s URL. If it comes from the URL, then the URL must point to a [web bundle](https://web.dev/web-bundles/) downloaded earlier and the frame will not have network access. The reason that network is restricted once cross-site information is known is because of timing attacks, which are discussed below in [privacy considerations](#privacy-considerations).
-
 ## Use-cases/Key scenarios
 
 Following are potential use cases for fenced frames. This is not an exhaustive list and we expect the use cases to grow further.
@@ -289,24 +281,7 @@ A high level flow of the design using fenced frames is given below:
 
 ### Unpartitioned storage access
 
-The fenced frame does not have storage access by default. We want the fenced frame to have access to unpartitioned storage, if needed. 
-
-As a reminder, the states of a fenced frame are:
-
-
-
-1. Start
-    *   Full network access, no storage access
-2. On requesting read-only storage access without user activation
-    *   No network access, read-only unpartitioned state (if requested)
-3. On user activation
-    *   Full network access, read/write unpartitioned state (if requested)
-
-[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) is used to provide access to unpartitioned storage. When invoked within fenced frames, the goal is to not show a permission prompt, thanks to the communication isolation of a fenced frame. However, that is dependent on mitigating challenges like link decoration, network timing etc. as discussed in the thread [here](https://github.com/privacycg/storage-access/issues/41#issuecomment-673057755).
-
-There are a number of use cases for unpartitioned storage access. These include embedded media playing and enqueueing, document viewing and editing, social widgets, and article comments. requestStorageAccess within the fenced frame can be used to fulfill these use cases.
-
-Although many of these use cases could be handled with a combination of user identification and server-side storage, the common way to identify users today is from their storage (cookies). Also, any offline use cases (such as offline docs) would require client-side storage.
+This use case is detailed in the document [here](https://github.com/shivanigithub/fenced-frame/blob/master/PrompltessUnpartitionedStorageAccess.md).
 
 ## Security considerations
 
