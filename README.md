@@ -91,10 +91,10 @@ For cases that start with access to the opaque URL which in turn implies read-on
 2. On user activation
     *   Allowed network access
 
-Or, for cases like portals that start with no unpartitioned storage access, 
+Or, for cases that start with no unpartitioned storage access, 
 1. Start
     *   Full network access, no storage access
-2. On portal activation (gated on user gesture)
+2. On user activation
     *   Full network access, read/write unpartitioned storage (if requested)
 
 
