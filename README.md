@@ -97,6 +97,7 @@ Or, for cases that start with no unpartitioned storage access,
     *   Full network access, no storage access
 2. On user activation
     *   Full network access, read/write unpartitioned storage (if requested)
+
 Note that access to read/write unpartitioned storage might be gated on other user visible behavior in addition to user activation e.g. becoming the main frame in case of portal activation
 
 
