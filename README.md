@@ -81,6 +81,7 @@ The idea is that the fenced frame should not have access to both of the followin
 
 
 A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves a new concept of an opaque URL which is opaque to any context other than the fenced frame, something like an [opaque fetch response](https://fetch.spec.whatwg.org/#concept-filtered-response-opaque), or a new on-device opaque computation result — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
+
 Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
 The state transitions of a fenced frame are thus:
@@ -96,6 +97,7 @@ Or, for cases that start with no unpartitioned storage access,
     *   Full network access, no storage access
 2. On user activation
     *   Full network access, read/write unpartitioned storage (if requested)
+Note that access to read/write unpartitioned storage might be gated on other user visible behavior in addition to user activation e.g. becoming the main frame in case of portal activation
 
 
 
