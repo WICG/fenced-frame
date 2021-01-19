@@ -12,14 +12,15 @@ The fenced frame’s src can be a [urn:uuid](https://tools.ietf.org/html/rfc4122
 
 
 
-1. Creating the map of a urn::uuid to an actual ad url and  
-2. Returning the urn::uuid to the calling JS which can then use it to create a fenced frame.
-3. The browser is responsible for mapping the fenced frame src to an actual ad and rendering it.
+1. Mapping of a urn::uuid to an actual ad url 
+2. Making sure that the urn::uuid is not deterministic or known to the JS environment executing ad-tech provided JS. This is to make sure that the bits in the URN are not used to convey information back to the embedding page.
+3. Returning the urn::uuid to the calling JS which can then use it to create a fenced frame.
+4. The browser is responsible for mapping the fenced frame src to an actual ad and rendering it.
 
 
 ## Turtledove Example
 
-When the SSP JS invokes the Turtledove API to run the ad auction, it gets back the URN as the result, which is then used for rendering the fenced frame. This URN maps to an actual ad url which is part of the interest group.
+When the SSP JS invokes the Turtledove API to run the ad auction, it gets back the URN as the result, which is then used for rendering the fenced frame. This URN maps to an actual ad url which is part of the interest group. Note that the URN value is not part of the interest groups and not available to the bidding/auction worklets but is created in an undetermisnistic manner by the Turtledove API when returning the winning ad back to the invoking JS.
 
 
 ```
