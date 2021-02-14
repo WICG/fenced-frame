@@ -17,7 +17,6 @@
     - [Fenced frame tree](#fenced-frame-tree)
     - [Information channel between fenced frame and other frames](#information-channel-between-fenced-frame-and-other-frames)
   - [Use-cases/Key scenarios](#use-caseskey-scenarios)
-    - [Cross-site portals](#cross-site-portals)
     - [Interest Group ads based on user activity (TURTLEDOVE)](#interest-group-ads-based-on-user-activity-turtledove)
       - [Design](#design-1)
     - [Conversion Lift Measurement](#conversion-lift-measurement)
@@ -27,6 +26,7 @@
   - [Privacy considerations](#privacy-considerations)
     - [Network side channel attack](#network-side-channel-attack)
   - [Challenges](#challenges)
+  - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
   - [Considered alternatives](#considered-alternatives)
       - [Using a new iframe attribute](#using-a-new-iframe-attribute)
       - [Using Feature policy/Permission policy](#using-feature-policypermission-policy)
@@ -41,7 +41,7 @@
 
 ## Introduction
 
-Third party iframes can communicate with their embedding page using mechanisms like postMessage. This communication is allowed so long as it doesn’t permit [cross-site recognition](https://w3cping.github.io/privacy-threat-model/#model-cross-site-recognition), a threat that browsers are trying to address by [partitioning storage](https://github.com/privacycg/storage-partitioning) by the top-level site. However, there are a number of recently proposed APIs (such as [Interest group based advertising](https://github.com/michaelkleber/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement), [Portals](https://github.com/WICG/portals), and [requestStorageAccess](https://github.com/privacycg/storage-access)) that must provide some degree of unpartitioned storage to embedded documents. Such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
+Third party iframes can communicate with their embedding page using mechanisms like postMessage. This communication is allowed so long as it doesn’t permit [cross-site recognition](https://w3cping.github.io/privacy-threat-model/#model-cross-site-recognition), a threat that browsers are trying to address by [partitioning storage](https://github.com/privacycg/storage-partitioning) by the top-level site. However, there are a number of recently proposed APIs (such as [Interest group based advertising](https://github.com/michaelkleber/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement), and [requestStorageAccess](https://github.com/privacycg/storage-access)) that must provide some degree of unpartitioned storage to embedded documents. Such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
 
 
 ## Goals
@@ -53,7 +53,6 @@ The fenced frame enforces a boundary between the embedding page and the cross-si
 *   Interest group based advertising
 *   Conversion Lift measurement studies
 *   Granting unpartitioned storage access without a permission prompt ([discussion](https://github.com/privacycg/storage-access/issues/41))
-*   Cross site portals 
 
 The privacy threat addressed is:
 
@@ -80,7 +79,7 @@ The idea is that the fenced frame should not have access to both of the followin
 
 
 
-A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves a new concept of an opaque URL which is opaque to any context other than the fenced frame, something like an [opaque fetch response](https://fetch.spec.whatwg.org/#concept-filtered-response-opaque), or a new on-device opaque computation result — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
+A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md)) — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
 
 Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
@@ -98,7 +97,7 @@ Or, for cases that start with no unpartitioned storage access,
 2. On user activation
     *   Full network access, read/write unpartitioned storage (if requested)
 
-Note that access to read/write unpartitioned storage might be gated on other user visible behavior in addition to user activation e.g. becoming the main frame in case of portal activation
+Note that access to read/write unpartitioned storage might be gated on other user visible behavior in addition to user activation and the privacy challenges there are detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/PrompltessUnpartitionedStorageAccess.md).
 
 
 
@@ -219,15 +218,6 @@ Some of the channels cannot be completely removed as they are required for the f
 Following are potential use cases for fenced frames. This is not an exhaustive list and we expect the use cases to grow further.
 
 
-### Cross-site portals
-
-[Portals](https://wicg.github.io/portals/) allow for rendering of, and seamless navigation to, embedded content.
-
-If the embedded content is cross-site, the privacy threat of joining user identities on the two sites exists before the user ever engages with the portal. The privacy threat for portals is further detailed [here](https://github.com/WICG/portals#privacy-threat-model-and-restrictions).
-
-Portal is a separate element type than a fenced frame, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
-
-
 ### Interest Group ads based on user activity (TURTLEDOVE)
 
 [TURTLEDOVE](https://github.com/michaelkleber/turtledove) allows for showing ads based on an advertiser-identified interest, in a privacy-preserving manner.
@@ -334,6 +324,13 @@ The following challenges are currently work in progress and would need to be res
 
 These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [willful IP blindness](https://github.com/bslassey/ip-blindness), or could have additional specific mitigations for fenced frames. These are currently being brainstormed.
 
+## Parallels with Cross-site portals
+
+[Portals](https://wicg.github.io/portals/) allow for rendering of, and seamless navigation to, embedded content.
+
+If the embedded content is cross-site, the privacy threat of joining user identities on the two sites exists before the user ever engages with the portal. The privacy threat for portals is further detailed [here](https://github.com/WICG/portals#privacy-threat-model-and-restrictions).
+
+Portal is a separate element type than a fenced frame, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
 
 ## Considered alternatives
 
