@@ -268,7 +268,7 @@ A high level flow of the design using fenced frames is given below:
 
 
 *   Outside of the fenced frame, the ad auction returns two ad creatives using web bundles, one for the control arm and one for the experiment arm.
-*   A restricted JS environment invokes the lift studies JS API. This JS environment, similar to the TURTLEDOVE case has no network, cannot communicate with the embedding page, and has an opaque output which is not available to query via javascript. This opaque output points to one of the ads from the control or experiment arms.
+*   The browser API for A/B is then invoked which returns the ad as an opaque output based on user's experiment group.
 *   The fenced frame is then created with the ad creative web bundle information which was the opaque output from the restricted JS environment. The only way information can be extracted from the fenced frame is by using [aggregate measurement APIs](https://github.com/WICG/conversion-measurement-api/blob/master/AGGREGATE.md), via network access on user activation, or outbound navigation from the fenced frame.
 
 
