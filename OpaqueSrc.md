@@ -24,11 +24,12 @@ When the SSP JS invokes the Turtledove API to run the ad auction, it gets back t
 
 
 ```
-const auctionWinnerUrl = navigator.runAdAuction(myAuctionConfig);
-// auctionWinnerUrl value e.g.
-// urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-var adFrame = document.createElement('fencedframe');
-adFrame.setAttribute(src,auctionWinnerUrl); 
+navigator.runAdAuction(myAuctionConfig).then((auctionWinnerUrl) => {
+  // auctionWinnerUrl value e.g.
+  // urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+  var adFrame = document.createElement('fencedframe');
+  adFrame.setAttribute(src,auctionWinnerUrl);
+});
 ```
 
 
