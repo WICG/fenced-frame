@@ -105,6 +105,6 @@ As discussed in [FLEDGE](https://github.com/WICG/turtledove/blob/master/FLEDGE.m
 
 ## Privacy and Security considerations
 
-Privacy and Security considerations have been detailed in the sections on “Design” and “Isolation characteristics”. 
+Privacy and Security considerations have been detailed in the sections on [“Design”](#design) and [“Isolation characteristics”](#isolation-characteristics). 
 
 In addition to those, since TURTLEDOVE is sensitive in nature and requires protections against MitM-type attacks like modifying the bidding script/values on the network, these can only be fetched via HTTPS. This is in line with the guidance [here](https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features).
