@@ -5,15 +5,12 @@
   - [Introduction](#introduction)
   - [Goals](#goals)
   - [Design](#design)
+    - [Incremental adoption](#incremental-adoption) 
     - [Fenced frame API](#fenced-frame-api)
       - [New element type - a top-level browsing context](#new-element-type---a-top-level-browsing-context)
         - [Example usage](#example-usage)
         - [Benefits over nested browsing context](#benefits-over-nested-browsing-context)
         - [Downsides](#downsides)
-      - [Alternative approach considered - a nested browsing context](#alternative-approach-considered---a-nested-browsing-context)
-        - [Example usage](#example-usage-1)
-        - [Benefits](#benefits)
-        - [Downsides](#downsides-1)
     - [Fenced frame tree](#fenced-frame-tree)
     - [Information channel between fenced frame and other frames](#information-channel-between-fenced-frame-and-other-frames)
   - [Use-cases/Key scenarios](#use-caseskey-scenarios)
@@ -28,6 +25,10 @@
   - [Challenges](#challenges)
   - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
   - [Considered alternatives](#considered-alternatives)
+      - [Using iframe with document policy](#using-iframe-with-document-policy)
+        - [Example usage](#example-usage-1)
+        - [Benefits](#benefits)
+        - [Downsides](#downsides-1)
       - [Using a new iframe attribute](#using-a-new-iframe-attribute)
       - [Using Feature policy/Permission policy](#using-feature-policypermission-policy)
 
@@ -78,28 +79,12 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-
-A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md)) — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation.  
+A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md)) — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation. The network restriction rationale until user-activation is discussed below in [privacy considerations](#privacy-considerations).  
 
 Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
-The state transitions of a fenced frame are thus:
-
-For cases that start with access to the opaque URL which in turn implies read-only access to sensitive user data e.g. turtledove interest group, the fenced frame starts with no network and will require a [web bundle](https://web.dev/web-bundles/) downloaded earlier to load. The reason that network is restricted when cross-site information is known is because of timing attacks, which are discussed below in [privacy considerations](#privacy-considerations).
-1. Start
-    *   No network access, access to user data
-2. On user activation
-    *   Allowed network access
-
-Or, for cases that start with no unpartitioned storage access, 
-1. Start
-    *   Full network access, no storage access
-2. On user activation
-    *   Full network access, read/write unpartitioned storage (if requested)
-
-Note that access to read/write unpartitioned storage might be gated on other user visible behavior in addition to user activation and the privacy challenges there are detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/PrompltessUnpartitionedStorageAccess.md).
-
-
+### Incremental adoption
+Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access.
 
 ### Fenced frame API 
 
@@ -126,7 +111,7 @@ Details would need to be worked out for the following:
 
 
 *   Headers to communicate with the frame site to let it know that a request is for a fenced frame environment.
-*   Note that the fenced frame may be either created at the time of request or in the future using the web bundle fetched in the request. This header exchange will be done in advance of creating the fenced frame for cases where there is no network in the fenced frame since it starts with having access to unpartitioned storage.
+*   Note that the fenced frame may be either created at the time of request or in the future using the web bundle fetched in the request. This header exchange will be done in advance of creating the fenced frame for cases where there is no network in the fenced frame.
 *   How [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) and [sandbox](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/sandbox) policies might be applied to the fenced-frame element.
 
 ##### Benefits over nested browsing context
@@ -142,53 +127,6 @@ Details would need to be worked out for the following:
 
 
 *   Existing sites need to change to embed a new element. In order to not have all existing embedding sites replace iframe with a new type of element, third parties may create a fenced frame inside the iframe. This might have a performance cost though.
-
-
-#### Alternative approach considered - a nested browsing context
-
-In this alternative approach the fenced frame is a nested browsing context with the communications restrictions placed on an iframe via a [document policy](https://github.com/w3c/webappsec-feature-policy/blob/master/document-policy-explainer.md).
-
-
-##### Example usage
-
-```
-<iframe src="demo_iframe_fenced.html"
-policy="fenced-frame-tree;root=true"></iframe>
-```
-
-
-The embedding site sends the following header in the request when creating the fenced frame root frame:
-
-
-```
-Sec-Required-Document-Policy: fenced-frame-tree;root=true
-```
-
-
-The server then responds back using the following header if it complies with the restrictions (otherwise the document will fail to load with an error). 
-
-
-```
-Document-Policy: fenced-frame-tree;root=true
-```
-
-The fenced frame tree’s root frame is created using the root parameter’s value as true while any frames nested within it is set by the browser as having the root param set to false, unless a nested fenced frame tree is created where the root parameter is again set to true. Both true and false values of the root parameter are considered of equal strictness and thus it is possible to continue a fenced frame tree or start a new one.
-
-
-##### Benefits
-
-
-
-*   Able to work with the existing “iframe” element
-
-
-##### Downsides
-
-
-
-*   Much more complex spec and browser implementation since many iframe features will need to be special-cased for fenced frames.
-
-There were other alternatives considered for the iframe approach like using feature policy or a new attribute, detailed later in this document.
 
 
 ### Fenced frame tree
@@ -335,6 +273,52 @@ Portal is a separate element type than a fenced frame, but requires very similar
 ## Considered alternatives
 
 Both of the alternatives given in this section are applicable only if fenced frames were a type of iframe. As already described in the document above, they have the downside of spec and browser implementation complexity as many iframe capabilities will need to be special-cased for fenced frames. 
+
+#### Using iframe with document policy
+
+In this alternative approach the fenced frame is a nested browsing context with the communications restrictions placed on an iframe via a [document policy](https://github.com/w3c/webappsec-feature-policy/blob/master/document-policy-explainer.md).
+
+
+##### Example usage
+
+```
+<iframe src="demo_iframe_fenced.html"
+policy="fenced-frame-tree;root=true"></iframe>
+```
+
+
+The embedding site sends the following header in the request when creating the fenced frame root frame:
+
+
+```
+Sec-Required-Document-Policy: fenced-frame-tree;root=true
+```
+
+
+The server then responds back using the following header if it complies with the restrictions (otherwise the document will fail to load with an error). 
+
+
+```
+Document-Policy: fenced-frame-tree;root=true
+```
+
+The fenced frame tree’s root frame is created using the root parameter’s value as true while any frames nested within it is set by the browser as having the root param set to false, unless a nested fenced frame tree is created where the root parameter is again set to true. Both true and false values of the root parameter are considered of equal strictness and thus it is possible to continue a fenced frame tree or start a new one.
+
+
+##### Benefits
+
+
+
+*   Able to work with the existing “iframe” element
+
+
+##### Downsides
+
+
+
+*   Much more complex spec and browser implementation since many iframe features will need to be special-cased for fenced frames.
+
+There were other alternatives considered for the iframe approach like using feature policy or a new attribute, detailed later in this document.
 
 
 #### Using a new iframe attribute
