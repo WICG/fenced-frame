@@ -26,9 +26,6 @@
   - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
   - [Considered alternatives](#considered-alternatives)
       - [Using iframe with document policy](#using-iframe-with-document-policy)
-        - [Example usage](#example-usage-1)
-        - [Benefits](#benefits)
-        - [Downsides](#downsides-1)
       - [Using a new iframe attribute](#using-a-new-iframe-attribute)
       - [Using Feature policy/Permission policy](#using-feature-policypermission-policy)
 
@@ -279,7 +276,7 @@ Both of the alternatives given in this section are applicable only if fenced fra
 In this alternative approach the fenced frame is a nested browsing context with the communications restrictions placed on an iframe via a [document policy](https://github.com/w3c/webappsec-feature-policy/blob/master/document-policy-explainer.md).
 
 
-##### Example usage
+Example usage
 
 ```
 <iframe src="demo_iframe_fenced.html"
@@ -305,14 +302,14 @@ Document-Policy: fenced-frame-tree;root=true
 The fenced frame tree’s root frame is created using the root parameter’s value as true while any frames nested within it is set by the browser as having the root param set to false, unless a nested fenced frame tree is created where the root parameter is again set to true. Both true and false values of the root parameter are considered of equal strictness and thus it is possible to continue a fenced frame tree or start a new one.
 
 
-##### Benefits
+Benefits
 
 
 
 *   Able to work with the existing “iframe” element
 
 
-##### Downsides
+Downsides
 
 
 
