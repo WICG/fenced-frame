@@ -100,7 +100,7 @@ In this approach, a fenced frame behaves as a top-level browsing context that is
 ##### Example usage
 
 
-```
+```html
 <fencedframe src="demo_fenced_frame.html"></fencedframe>
 ```
 
@@ -282,7 +282,7 @@ In this alternative approach the fenced frame is a nested browsing context with 
 
 Example usage
 
-```
+```html
 <iframe src="demo_iframe_fenced.html"
 policy="fenced-frame-tree;root=true"></iframe>
 ```
@@ -327,7 +327,7 @@ There were other alternatives considered for the iframe approach like using feat
 Another way that was considered for this primitive was to have a new iframe attribute, say “fenced frame”. 
 
 
-```
+```html
 <iframe fenced-frame src="demo_iframe_fenced.html"></iframe>
 ```
 

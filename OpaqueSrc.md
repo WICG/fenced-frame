@@ -23,7 +23,7 @@ The fenced frame’s src can be a [urn:uuid](https://tools.ietf.org/html/rfc4122
 When the SSP JS invokes the Turtledove API to run the ad auction, it gets back the URN as the result, which is then used for rendering the fenced frame. This URN maps to an actual ad url which is part of the interest group. Note that the URN value is not part of the interest groups and not available to the bidding/auction worklets but is created in an undetermisnistic manner by the Turtledove API when returning the winning ad back to the invoking JS.
 
 
-```
+```js
 navigator.runAdAuction(myAuctionConfig).then((auctionWinnerUrl) => {
   // auctionWinnerUrl value e.g.
   // urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
