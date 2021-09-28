@@ -291,7 +291,7 @@ policy="fenced-frame-tree;root=true"></iframe>
 The embedding site sends the following header in the request when creating the fenced frame root frame:
 
 
-```
+```http
 Sec-Required-Document-Policy: fenced-frame-tree;root=true
 ```
 
@@ -299,7 +299,7 @@ Sec-Required-Document-Policy: fenced-frame-tree;root=true
 The server then responds back using the following header if it complies with the restrictions (otherwise the document will fail to load with an error). 
 
 
-```
+```http
 Document-Policy: fenced-frame-tree;root=true
 ```
 
