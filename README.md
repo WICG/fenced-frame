@@ -66,7 +66,7 @@ Fenced frames are embedded contexts that have the following characteristics to p
 
 
 
-*   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information, the embedder’s top-level site, and the frame’s document url.
+*   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information.
 *   They do not have storage access (e.g., cookies, localStorage, etc.) by default. 
 *   They may have access to some unpartitioned user data, for example, turtledove interest group.
 
