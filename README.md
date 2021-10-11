@@ -217,7 +217,8 @@ This use case is detailed in the document [here](https://github.com/shivanigithu
 
 ## Security considerations
 
-The fenced frame will comply with the security specific headers e.g. [CSP frame-ancestors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors), similar to how an iframe does. If the frame-ancestor header has the value 'none' (cannot be iframed), then the fenced frame will also not get created.  
+Any document rendered in a fenced frames needs to opt-in via a response header. More details about that and other security mechanisms are detailed here:
+https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing
 
 
 ## Privacy considerations
