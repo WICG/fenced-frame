@@ -54,7 +54,6 @@ The fenced frame enforces a boundary between the embedding page and the cross-si
 
 *   Interest group based advertising
 *   Conversion Lift measurement studies
-*   Granting unpartitioned storage access without a permission prompt ([discussion](https://github.com/privacycg/storage-access/issues/41))
 
 The privacy threat addressed is:
 
@@ -67,8 +66,8 @@ Fenced frames are embedded contexts that have the following characteristics to p
 
 
 *   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information.
-*   They do not have storage access (e.g., cookies, localStorage, etc.) by default. 
-*   They may have access to some unpartitioned user data, for example, turtledove interest group.
+*   They access storage and network via unique partitions so there is no other frame that can share information via these channels. For more details on this, see https://docs.google.com/document/d/1APHYxQD5inFv0gpMCIF7ukkEWqAOwFSA3JZp3J8Do88/edit?usp=sharing 
+*   They may have access to browser-managed, limited unpartitioned user data, for example, turtledove interest group.
 
 The idea is that the fenced frame should not have access to both of the following pieces of information:
 
@@ -80,12 +79,12 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the user information. This thus involves an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md)) — which can be used for rendering and reporting, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be revoked, until user activation. The network restriction rationale until user-activation is discussed below in [privacy considerations](#privacy-considerations).  
+A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL of the ad is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md)) — which can be used for rendering, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be disallowed, until user activation. The network restriction rationale until user-activation is discussed below in [privacy considerations](#privacy-considerations). Note that the network restriction is not part of the first Fenced Frames version (see [Incremental adoption](#incremental-adoption)).  
 
 Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
 ### Incremental adoption
-Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access.
+Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access. The timeline to disallow network acces until user activation, is unclear at the moment.
 
 ### Fenced frame API 
 
