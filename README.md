@@ -84,7 +84,7 @@ A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame 
 Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
 
 ### Incremental adoption
-Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access. The timeline to disallow network acces until user activation, is unclear at the moment.
+Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access. The timeline to disallow network access, is unclear at the moment.
 
 ### Fenced frame API 
 
