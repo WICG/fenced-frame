@@ -139,7 +139,7 @@ There are many channels between the fenced frame tree and the other frames that 
 
 
 *   PostMessage
-*   Name and id attributes
+*   Name, allow, cspee and other attributes
 *   Resize 
 *   Positioning 
 *   Access to window.parent/ window.top etc.
