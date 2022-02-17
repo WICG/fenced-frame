@@ -7,7 +7,7 @@ This document goes into how fenced frames interact with the various states assoc
 
 ## Non goals for this document
 
-Note that this document does not go into how storage and cookie access for modes like "read-only" and "unpartitioned-storage" will be supported.
+Note that this document does not go into how unpartitioned storage/cookie access for modes like "read-only" and "unpartitioned-storage" will be supported.
 
 
 ## Fenced frame is not a nested browsing context
