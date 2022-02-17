@@ -70,7 +70,7 @@ This mode is the fenced frames with no special restrictions on the src and no cr
 
 ## **Read-only**
 
-This mode is for rendering personalized information in a fenced frame at the same time ensuring that the unpartitioned data accessed by the fenced frame cannot be exfiltrated, by disallowing network and any write access to storage . The two consumers of this mode are [payment handlers](https://github.com/shivanigithub/fenced-frame/issues/15) and possibly a version of [FedCM](https://github.com/fedidcg/FedCM) (the latter is under discussion). 
+This mode is for rendering personalized information in a fenced frame at the same time ensuring that the unpartitioned data accessed by the fenced frame cannot be exfiltrated, by disallowing network and any write access to storage . The two consumers of this mode are [3rd party payment service provider(PSP)'s customized payment buttons](https://github.com/shivanigithub/fenced-frame/issues/15) and possibly a version of [FedCM](https://github.com/fedidcg/FedCM) (the latter is under discussion). 
 
 
 
@@ -79,8 +79,8 @@ This mode is for rendering personalized information in a fenced frame at the sam
 *   **Information flow and privacy model:**
     *   The ‘src’ attribute can carry user id in the embedding page. Up until the fenced frame has completed navigation, there is an unrestricted network. That is fine because there isn’t any unpartitioned data available to the fenced frame till that point.
     *   The fenced frame is able to request access to read-only cookies after navigation is complete. At that point the network will be disallowed so that there is no exfiltration of joined data across sites via either the network or persistent storage.
-*   **Top-level site’s etld+1**: This is required in the initial navigation request so that the payment handler/FedCM servers can determine if this is a trusted top-level site that they are allowed to work with.
-    *   This is fine because it does not exfiltrate any new information that the embedder itself could not have sent to the payment handling server.
+*   **Top-level site’s etld+1**: This is required in the initial navigation request so that the PSP/FedCM servers can determine if this is a trusted top-level site that they are allowed to work with.
+    *   This is fine because it does not exfiltrate any new information that the embedder itself could not have sent to the payment service provider's server.
 *   **Cross-site data**: Read only access to unpartitioned cookies after navigation is complete (document and subresources have loaded) and network is then restricted.
 
 
