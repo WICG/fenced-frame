@@ -40,6 +40,7 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
 
       var adFrame = document.createElement('fencedframe');
 
+      adFrame.mode = "opaque-ads";
 
       adFrame.src = auctionWinnerUrl;
 
