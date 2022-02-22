@@ -212,7 +212,7 @@ A high level flow of the design using fenced frames is given below:
 
 ### Unpartitioned storage access
 
-The challenges of this use case is detailed in the document [here](https://github.com/shivanigithub/fenced-frame/blob/master/PrompltessUnpartitionedStorageAccess.md).
+The challenges of this use case is detailed in [Fenced frames and promptless unpartitioned storage access](https://github.com/shivanigithub/fenced-frame/blob/master/alternate_usecases_analysis/PrompltessUnpartitionedStorageAccess.md).
 
 ## Security considerations
 
