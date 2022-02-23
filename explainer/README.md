@@ -3,7 +3,6 @@
 - [Explainer - Fenced Frames](#explainer---fenced-frames)
   - [Authors](#authors)
   - [Introduction](#introduction)
-  - [Related documents](#related-documents)
   - [Goals](#goals)
   - [Design](#design)
     - [Incremental adoption](#incremental-adoption) 
@@ -14,16 +13,8 @@
         - [Downsides of a new element](#downsides-of-a-new-element)
     - [Fenced frame tree](#fenced-frame-tree)
     - [Information channel between fenced frame and other frames](#information-channel-between-fenced-frame-and-other-frames)
-  - [Use-cases/Key scenarios](#use-caseskey-scenarios)
-    - [Interest Group ads based on user activity (TURTLEDOVE)](#interest-group-ads-based-on-user-activity-turtledove)
-      - [Design](#design-1)
-    - [Conversion Lift Measurement](#conversion-lift-measurement)
-      - [Design](#design-2)
-    - [Unpartitioned storage access](#unpartitioned-storage-access)
   - [Security considerations](#security-considerations)
   - [Privacy considerations](#privacy-considerations)
-    - [Network side channel attack](#network-side-channel-attack)
-  - [Challenges](#challenges)
   - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
   - [Considered alternatives](#considered-alternatives)
       - [Using iframe with document policy](#using-iframe-with-document-policy)
@@ -43,10 +34,6 @@
 ## Introduction
 
 Third party iframes can communicate with their embedding page using mechanisms such as postMessage, attributes (e.g., size and name), and permissions. A number of recently proposed APIs (such as [Interest group based advertising](https://github.com/michaelkleber/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) provide some degree of unpartitioned storage to embedded documents. Once third-party cookies have been removed, such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers with the embedder’s, which would allow for user tracking. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
-
-## Related documents
-For design details of fenced frames for ads use cases, please see [Fenced Frames for Ads Design](https://docs.google.com/document/d/17rtX55WkxMcfh6ipuhP4mNULIVxUApvYt4ZYXfX2x-s/edit?usp=sharing).
-
 
 ## Goals
 
@@ -152,70 +139,6 @@ This discussion assumes that third-party cookies, like all other third party sto
 
 Some of the channels cannot be completely removed as they are required for the fenced frame’s creation and are discussed in the [privacy considerations](#privacy-considerations) section.
 
-## Use-cases/Key scenarios
-
-Following are potential use cases for fenced frames. This is not an exhaustive list and we expect the use cases to grow further.
-
-
-### Interest Group ads based on user activity (TURTLEDOVE)
-
-[TURTLEDOVE](https://github.com/michaelkleber/turtledove) allows for showing ads based on an advertiser-identified interest, in a privacy-preserving manner.
-
-The following privacy aspects are required for turtledove:
-
-
-
-*   Advertisers can serve ads based on an interest, but cannot combine that interest with other information about the person — in particular, with who they are (user’s identity on the embedding site) or what page they are visiting.
-*   Web sites the person visits, and the ad networks those sites use, cannot learn about their visitors' ad interests.
-
-These privacy requirements can be met using the fenced frame for rendering the ad. 
-
-#### Design
-
-Since the fenced frame has access to the user’s interest group information, as per the [Network access or Web bundles](#network-access-or-web-bundles) section, this use case aligns with restricting the network access. The interest group based ad should thus be fetched in advance as a web bundle.
-
-The high level design for turtledove consists of two restricted environments, worklets and fenced frames:
-
-
-
-*   The first one, worklets, is responsible for doing the on-device auction and the output of that is the input to the fenced frame. This is a restricted javascript execution environment that does the on-device auction. This has the following characteristics:
-    *   It is invoked by JS running in the regular publisher page environment, and use of the turtledove API creates this environment to run various pieces of ad-tech-written code in.
-    *   It requires signals from the context that act as inputs to the on-device auction e.g. the publisher page’s topic.
-    *   Since it is getting information from the embedding page, we need to make sure it is not exfiltrating that information to a backend server, and thus it is not allowed network access.
-    *   Since the result of the turtledove API needs to be restricted from the embedding page, communication to the embedding page is not allowed.
-    *   The output of this environment is opaque and not available to query via javascript. This makes the interest group of the user invisible to the embedding page. It points to an existing web bundle that is then passed to construct the fenced frame which is used to render the ad represented by this bundle.
-    *   For more details, refer the [FLEDGE explainer](https://github.com/WICG/turtledove/blob/main/FLEDGE.md#design-elements). 
-*   The second environment is the fenced frame that renders the ad given the bundle from the above algorithm. However, how to use a fenced frame to support all the video creative use cases where streaming video is normally required remains a challenge.
-*   Note that if the contextual ad wins the auction, it need not be rendered in the fenced frame. This will leak one bit conveying whether an interest group based ad won the auction or not but the upside is that the contextual ads do not need to change their ecosystem to be part of a fenced frame e.g. they do not need to use web bundles. 
-
-
-### Conversion Lift Measurement
-
-[Conversion Lift measurement](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement) studies are A/B experiments that ad providers perform to learn how many conversions were caused by their ad campaign vs how many happen organically. To be able to infer the causality of a conversion with the ad campaign, it requires deciding which experimental group the user should consistently be placed for a study (across sites) and show the ad creative corresponding to that group. (Related work: [Private lift measurement API by Facebook](https://github.com/w3c/web-advertising/blob/master/private-lift-measurement-third-party.md))
-
-The following privacy aspects are required for lift measurement:
-*   The embedding site should not know which experiment group the user belongs to or which ad got rendered as a result of an A/B experimentation API.
-
-This is a privacy threat because if a publisher knows which experiment group a user is in for, say, n experiments, it gives the publisher an ‘n’ bits user identifier which can also be read on another site, forming a persistent cross-site identifier for the user.
-
-These privacy requirements can be met using the fenced frame for rendering the ad. Since the fenced frame has the user’s experiment group information, as per the [Network access or Web bundles](#network-access-or-web-bundles) section, this use case aligns with restricting the network access.
-
-
-#### Design
-
-A high level flow of the design using fenced frames is given below:
-
-
-
-*   Outside of the fenced frame, the ad auction returns two ad creatives using web bundles, one for the control arm and one for the experiment arm.
-*   The browser API for A/B is then invoked which returns the ad as an opaque output based on user's experiment group.
-*   The fenced frame is then created with the ad creative web bundle information which was the opaque output from the restricted JS environment. The only way information can be extracted from the fenced frame is by using [aggregate measurement APIs](https://github.com/WICG/conversion-measurement-api/blob/master/AGGREGATE.md), via network access on user activation, or outbound navigation from the fenced frame.
-
-
-### Unpartitioned storage access
-
-The challenges of this use case is detailed in [Fenced frames and promptless unpartitioned storage access](https://github.com/shivanigithub/fenced-frame/blob/master/alternate_usecases_analysis/PrompltessUnpartitionedStorageAccess.md).
-
 ## Security considerations
 
 Any document rendered in a fenced frames needs to opt-in via a response header. More details about that and other security mechanisms are detailed in [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
@@ -231,32 +154,6 @@ The fenced frame’s main goal is to improve privacy by disallowing communicatio
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further in [Fenced Frames and Policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing).
 
 More of these channels exist and the [design document](https://docs.google.com/document/d/17rtX55WkxMcfh6ipuhP4mNULIVxUApvYt4ZYXfX2x-s/edit?usp=sharing) details them further.
-
-### Network side channel attack
-
-The reason that fenced frames are restricted from writing to storage and in some cases also to the network before user gesture is to help mitigate against the following timing attack:
-
-
-
-
-*   Embedding site A sends a message to a tracking site, say tracker.example saying it is about to create a fenced frame and that the user id on A is 123.
-*   The fenced frame is created and has access to user specific information X (e.g. user’s interest group for TURTLEDOVE). When the fenced frame document’s resources are requested from site B, X is also sent along. B can also let tracker.example know. The tracking site tracker.example can then correlate using the time/IP address bits of both requests.
-*   A can then know X via tracker.com
-
-The above is an example of a scenario where user id on A and user’s information on B can be joined without the user ever interacting with the fenced frame and such cases will benefit from not having network access but using a pre-existing web bundle to render the frame.
-
-On the other hand, if there is no user specific information that the fenced frame has, restricting the network is not necessary until it gets access to such information. It’s not ideal that this attack can occur after user gesture, and we consider this as one of the remaining [Challenges](#challenges) of Fenced Frames.
-
-## Challenges
-
-The following challenges are currently work in progress and would need to be resolved for fenced frames to be completely immune to cross-site identity joining:
-
-
-
-*   Network timing attacks
-*   IP address correlation between frames
-
-These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [willful IP blindness](https://github.com/bslassey/ip-blindness), or could have additional specific mitigations for fenced frames. These are currently being brainstormed.
 
 ## Parallels with Cross-site portals
 
