@@ -79,7 +79,7 @@ This mode is for rendering personalized information in a fenced frame at the sam
 *   **Source URL:** Normal url with no restrictions. Is able to carry 1p data from the embedding context to the fenced frame. This is not however an issue as described in the next section. 
 *   **Information flow and privacy model:**
     *   The ‘src’ attribute can carry user id in the embedding page. Up until the fenced frame has completed navigation, there is an unrestricted network. That is fine because there isn’t any unpartitioned data available to the fenced frame till that point.
-    *   The fenced frame is able to request access to read-only cookies after navigation is complete. At that point the network will be disallowed so that there is no exfiltration of joined data across sites via either the network or persistent storage.
+    *   The fenced frame is able to request access to read-only cookies after navigation is complete. At that point the network will be disallowed so that there is no exfiltration of joined data across sites via either the network or persistent storage. Othe partitioned state like storage, service workers, network and http cache will continue to stay partitioned.
 *   **Top-level site’s etld+1**: This is required in the initial navigation request so that the PSP/FedCM servers can determine if this is a trusted top-level site that they are allowed to work with.
     *   This is fine because it does not exfiltrate any new information that the embedder itself could not have sent to the payment service provider's server.
 *   **Cross-site data**: Read only access to unpartitioned cookies after navigation is complete (document and subresources have loaded) and network is then restricted.
