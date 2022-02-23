@@ -1,6 +1,6 @@
-# Network side channel attack
+# Network side channel
 
-Consider the following network side channel attack:
+Consider the following network side channel leak:
 
 *   Embedding site A sends a message to a tracking site, say tracker.example saying it is about to create a fenced frame and that the user id on A is 123.
 *   The fenced frame is created and has access to user specific information X (e.g. user’s interest group for TURTLEDOVE). When the fenced frame document’s resources are requested from site B, X is also sent along. B can also let tracker.example know. The tracking site tracker.example can then correlate using the time/IP address bits of both requests.
