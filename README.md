@@ -34,6 +34,8 @@
 
 # Explainer - Fenced Frames
 
+(Update 2/23/2022: The repository is being updated actively at the moment. This file contains some obsolete parts that will be updated soon. The files in the [explainer directory](https://github.com/shivanigithub/fenced-frame/tree/master/explainer) are up-to-date)
+
 ## Authors
 *   Shivani Sharma
 *   Josh Karlin
