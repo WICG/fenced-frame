@@ -125,18 +125,17 @@ There are many channels between the fenced frame tree and the other frames that 
 *   PostMessage
 *   Name, allow, cspee and other attributes
 *   Resize 
-*   Positioning 
 *   Access to window.parent/ window.top etc.
-*   Events fired simultaneously in the embedding context and the fenced frame such as page lifecycle events
+*   Events fired simultaneously in the embedding context and the fenced frame such as page lifecycle events like onload
 *   …
 
 This discussion assumes that third-party cookies, like all other third party storage,  are also [disallowed](https://blog.chromium.org/2020/01/building-more-private-web-path-towards.html) or else those would be a communication channel between the fenced frame and the embedding site.
 
-Some of the channels cannot be completely removed as they are required for the fenced frame’s creation and are discussed in the [privacy considerations](#privacy-considerations) section.
-
 ## Security considerations
 
-Any document rendered in a fenced frames needs to opt-in via a response header. More details about that and other security mechanisms are detailed in [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
+Any document rendered in a fenced frames needs to opt-in via a response header. More details about that and other security mechanisms are detailed in:
+* [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
+* [Fenced frames and CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
 
 
 ## Privacy considerations
@@ -144,8 +143,8 @@ Any document rendered in a fenced frames needs to opt-in via a response header. 
 The fenced frame’s main goal is to improve privacy by disallowing communication with the embedder. There are however some attributes that might need to be shared between the two and their privacy impact needs to be carefully considered and mitigated, if possible. Some of these attributes are:
 
 
-*   **Initial size and position attributes:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. The script running inside a fenced frame will not be able to inquire about the positioning attributes. Since position is important for ad selection, it will be available to the scripts part of the ad auctioning step but not to the scripts running inside the creative itself.
-*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame.
+*   **Initial size and resize:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. 
+*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and the full intersection observer capability will be supported until the alternative is provided.
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further in [Fenced Frames and Policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing).
 
 More of these channels exist and the [design document](https://docs.google.com/document/d/17rtX55WkxMcfh6ipuhP4mNULIVxUApvYt4ZYXfX2x-s/edit?usp=sharing) details them further.
@@ -158,7 +157,7 @@ If the embedded content is cross-site, the privacy threat of joining user identi
 
 Portal is a separate element type than a fenced frame, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
 
-## Considered alternatives
+## Alternatives considered
 
 Both of the alternatives given in this section are applicable only if fenced frames were a type of iframe. As already described in the document above, they have the downside of spec and browser implementation complexity as many iframe capabilities will need to be special-cased for fenced frames. 
 
