@@ -14,8 +14,7 @@ The explainer is organized as follows:
    * [Opaque ads use cases](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_ads_use_cases.md)
    * [Opaque src](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)
    
-* How fenced frames interact with the web platform. This is a growing list of things and will be added to the documentation
-   *  [Storage, cookies and network state](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/storage_cookies_network_state.md)
-   *  [interaction with CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
-   *  ... more to be added  
+* How fenced frames integrates with the web platform. This is a growing list of things and will be added to the documentation
+   *  [Integration with the web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md)
+   
    
