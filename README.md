@@ -2,8 +2,20 @@
 
 This is the repository for Fenced Frames.
 
-**Explainer:** [explainer/README.md](https://github.com/shivanigithub/fenced-frame/tree/master/explainer) 
+The explainer is organized as follows:
 
+* What is a fenced frame? 
+   * [explainer/README](https://github.com/shivanigithub/fenced-frame/tree/master/explainer)
+   
+* What are the problems being solved/ different modes of fenced frames?
+   * [explainer/modes](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md)
 
-Third party iframes can communicate with their embedding page using mechanisms such as postMessage, attributes (e.g., size and name), and permissions. A number of recently proposed APIs (such as [Interest group based advertising](https://github.com/michaelkleber/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) provide some degree of unpartitioned storage to embedded documents. Once third-party cookies have been removed, such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers with the embedder’s, which would allow for user tracking. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
-
+* Deep dive in the "opaque-ads" use case which will be the first launch of fenced frames
+   * [Opaque ads use cases](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_ads_use_cases.md)
+   * [Opaque src](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)
+   
+* How fenced frames interact with the web platform. This is a growing list of things and will be added to the documentation
+   *  [Storage, cookies and network state](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/storage_cookies_network_state.md)
+   *  [interaction with CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
+   *  ... more to be added  
+   
