@@ -25,24 +25,23 @@
 
 # Explainer - Fenced Frames
 
-(Update 2/23/2022: The repository is being updated actively at the moment. This file contains some obsolete parts that will be updated soon. The other files in  [this directory](https://github.com/shivanigithub/fenced-frame/tree/master/explainer) are up-to-date)
-
 ## Authors
 *   Shivani Sharma
 *   Josh Karlin
 
 ## Introduction
 
-Third party iframes can communicate with their embedding page using mechanisms such as postMessage, attributes (e.g., size and name), and permissions. A number of recently proposed APIs (such as [Interest group based advertising](https://github.com/michaelkleber/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) provide some degree of unpartitioned storage to embedded documents. Once third-party cookies have been removed, such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers with the embedder’s, which would allow for user tracking. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
+Third party iframes can communicate with their embedding page using mechanisms such as postMessage, attributes (e.g., size and name), and permissions. A number of recently proposed APIs (such as [Interest group based advertising](https://github.com/WICG/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) provide some degree of unpartitioned storage/cross-site data to embedded documents. Once third-party cookies have been removed, such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers with the embedder’s, which would allow for user tracking. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
 
 ## Goals
 
-The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together. This can be helpful in preventing user tracking or other privacy threats. Some of the use cases that are discussed in this document include:
+The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together. This can be helpful in preventing user tracking or other privacy threats. Some of the use cases that are discussed in the explainer include:
 
 
 
 *   Interest group based advertising
 *   Conversion Lift measurement studies
+These and more are summarized in the [modes document](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md)
 
 The privacy threat addressed is:
 
@@ -55,10 +54,10 @@ Fenced frames are embedded contexts that have the following characteristics to p
 
 
 *   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information.
-*   They access storage and network via unique partitions so no other frame outside a given fenced frame document can share information via these channels. For more details on this, please see [Fenced frames and document/network state](https://docs.google.com/document/d/1APHYxQD5inFv0gpMCIF7ukkEWqAOwFSA3JZp3J8Do88/edit?usp=sharing). 
+*   They access storage and network via unique partitions so no other frame outside a given fenced frame document can share information via these channels. This is described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/storage_cookies_network_state.md). 
 *   They may have access to browser-managed, limited unpartitioned user data, for example, turtledove interest group.
 
-The idea is that the fenced frame should not have access to both of the following pieces of information:
+The idea is that the fenced frame should not have access to both of the following pieces of information and be able to exfiltrate a join on those:
 
 
 
@@ -68,16 +67,13 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. Since that URL might be leaked by timing attacks if the fenced frame had network access, the fenced frame’s network access must be disallowed, until user activation. The network restriction rationale until user-activation is discussed below in [privacy considerations](#privacy-considerations). Note that the network restriction is not part of the first Fenced Frames version (see [Incremental adoption](#incremental-adoption)).  
+A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
 
-Once the network restrictions are lifted, we expect some leakage of information to be possible via network timing attacks. The user activation helps to rate-limit that leakage to situations where the user has shown engagement, where ideally the rate will be low enough that broad user tracking via fenced frames isn’t feasible or cost effective. This can also be further mitigated by making the embedding context unaware of the user activation on the fenced frame, which should be possible for cases where the user activation is not navigating the embedding frame.
-
-### Incremental adoption
-Note that since rendering without a network e.g. by requiring a [web bundle](https://web.dev/web-bundles/), would require a significant change in the ads/developer ecosystem, fenced frames MVP will allow network access. The timeline to disallow network access, is unclear at the moment.
+We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
 
 ### Fenced frame API 
 
-The proposed fenced frame API is to have a new element type and treat it as a [top-level browsing context](https://html.spec.whatwg.org/#top-level-browsing-context). Given in this section are the details of this approach and also the alternative approach that was considered.
+The proposed fenced frame API is to have a new element type and treat it as a [top-level browsing context](https://html.spec.whatwg.org/#top-level-browsing-context). This section details this approach and also the alternative approach that was considered.
 
 
 #### New element type - a top-level browsing context
@@ -98,9 +94,8 @@ In this approach, a fenced frame behaves as a top-level browsing context that is
 
 
 
-*   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is for a fenced frame.
-*   Note that the fenced frame may be either created at the time of request or in the future using the web bundle fetched in the request. This header exchange will be done in advance of creating the fenced frame for cases where there is no network in the fenced frame.
-*   The server needs to opt-in to be loaded in a fenced frame. Without an opt-in, the document cannot be loaded. For opt-in, we are planning to use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
+*   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is from a fenced frame tree.
+*   The server needs to opt-in to be loaded in a fenced frame or in an iframe embedded in a fenced frame tree. Without an opt-in, the document cannot be loaded. For opt-in, we are planning to use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
 
 ##### Benefits over nested browsing context
 
