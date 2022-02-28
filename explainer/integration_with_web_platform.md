@@ -57,11 +57,11 @@ There are many chrome browser features e.g. autofill, translate etc., that will 
 * Treat the feature as if fenced frame was a separate top-level page.
 * Do not support the feature at all.
 
-## Extensions
+### Extensions
 It is important for fenced frames to be visible to extensions especially content blockers since many of them block advertisements. 
 In terms of non-content blocker extensions, they should also be able to interact with fenced frames as they would with another page. Note that malicious extensions might be able to override the privacy protections here by creating cross-site identifiers but that threat is larger than just fenced frames and would need to be handled as a separate effort.
 
-## Developer tools
+### Developer tools
 Fenced frames should have developer tools access as an iframe would.
 
 
