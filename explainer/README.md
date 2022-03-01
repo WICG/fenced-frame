@@ -15,7 +15,7 @@
   - [Security considerations](#security-considerations)
   - [Privacy considerations](#privacy-considerations)
   - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
-  - [Alternatives considered](#alternatives-considered)
+  - [API alternatives considered](#api-alternatives-considered)
       - [Using iframe with document policy](#using-iframe-with-document-policy)
       - [Using a new iframe attribute](#using-a-new-iframe-attribute)
       - [Using Feature policy/Permission policy](#using-feature-policypermission-policy)
@@ -73,7 +73,7 @@ The proposed fenced frame API is to have a new element type and treat it as a [t
 
 #### New element type - a top-level browsing context
 
-In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the mental model that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
+In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the model that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
 
 
 ##### Example usage
@@ -109,11 +109,11 @@ In this approach, a fenced frame behaves as a top-level browsing context that is
 
 ### Fenced frame tree
 
-A fenced frame is the root of the fenced frame tree and frames in this tree are not allowed to use communication channels to talk to frames outside the tree or vice-versa. The frames within the tree can communicate with each other normally. 
+A fenced frame is the root of the fenced frame tree. The root fenced frame and any child iframes in this tree are not allowed to use communication channels to talk to frames outside the tree or vice-versa. The frames within the tree can communicate with each other normally. 
 
 ### Information channel between fenced frame and other frames
 
-There are many channels between the fenced frame tree and the other frames that will need to be restricted and some of them are listed below:
+There are many channels between the fenced frame tree and the other frames that will need to be restricted and a few of them are listed below:
 
 
 
@@ -128,9 +128,19 @@ This discussion assumes that third-party cookies, like all other third party sto
 
 ## Security considerations
 
-Any document rendered in a fenced frames needs to opt-in via a response header. More details about that and other security mechanisms are detailed in:
-* [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
+Even though a fenced frame is isolated from its embedding context, it cannot be used as a workaround to the security restrictions that the top-level site wants to enforce on the embedding frames, without the knowledge of the top-level site. The design decisions of fenced frames related to security mechanisms like sandbox, csp, permission policy etc. are based on the folowing two principles:
+* Attributes like cspee, sandbox etc. and headers like frame-ancestors etc. cannot be used as a communication channel with the embedding context.
+* privelege escalation by fenced frame should not happen without the knowledge of the top-level site e.g. all permission policy delegation based features in a fenced frame are therefore disallowed.
+* There are headers from the fenced frame site that are not honored as they would in an iframe, e.g. frame-ancestors, due to being a privacy leak. This is the reason fenced frames need to be opted in by the site using the opt-in response header.
+
+More about security mechanisms are detailed in:
 * [Fenced frames and CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
+* [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
+* [Fenced frames and sandbox](https://docs.google.com/document/d/1RO4NkQk_XaEE7vuysM9LJilZYsoOhydfh93sOvrPQxU/edit?usp=sharing)
+
+**xsleaks** In terms of cross site leak attacks, fenced frames is at least as secure as iframes are and better in some cases by default e.g. always having noopener, no joint history etc. For more details, the fenced frames xsleaks audit can be found [here](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing).
+
+**Secure contexts:** Fenced Frames are only allowed if all ancestor frames are [secure contexts](https://w3c.github.io/webappsec-secure-contexts/), the FF's html document is a [potentially trustworthy URL](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) and all subresources inside the FF will follow [mixed mode restrictions](https://web.dev/fixing-mixed-content/). 
 
 
 ## Privacy considerations
@@ -138,11 +148,12 @@ Any document rendered in a fenced frames needs to opt-in via a response header. 
 The fenced frame’s main goal is to improve privacy by disallowing communication with the embedder. There are however some attributes that might need to be shared between the two and their privacy impact needs to be carefully considered and mitigated, if possible. Some of these attributes are:
 
 
-*   **Initial size and resize:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. 
-*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and the full intersection observer capability will be supported until the alternative is provided.
+*   **Initial size and resize:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads for the "opaque-ads" mode. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. 
+*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in a limited way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). This is to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and intersection observer capability will be supported until the alternative is provided.
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further in [Fenced Frames and Policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing).
+*   **Network side channel:** This is detailed more here: [network side channel](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md)
 
-More of these channels exist and the [design document](https://docs.google.com/document/d/17rtX55WkxMcfh6ipuhP4mNULIVxUApvYt4ZYXfX2x-s/edit?usp=sharing) details them further.
+More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
 
 ## Parallels with Cross-site portals
 
@@ -152,7 +163,7 @@ If the embedded content is cross-site, the privacy threat of joining user identi
 
 Portal is a separate element type than a fenced frame, but requires very similar restrictions in its communication with the embedding context as a fenced frame. It is thus likely that portals and fenced frames will converge on their cross-site tracking mitigations to a large extent.
 
-## Alternatives considered
+## API alternatives considered
 
 Both of the alternatives given in this section are applicable only if fenced frames were a type of iframe. As already described in the document above, they have the downside of spec and browser implementation complexity as many iframe capabilities will need to be special-cased for fenced frames. 
 
@@ -240,7 +251,7 @@ Downsides
 
 
 *   Feature policy’s objective is the delegation of powerful feature permissions to trusted origins while a fenced frame requires general features like inter-frame communication to be restricted on documents.
-*   Since there is no HTTP header exchange there are more chances of site breakage due to restricting common features like network or inter-frame communications. 
+*   Since there is no HTTP header exchange there are more chances of site breakage due to restricting common features like inter-frame communications. 
 
 
 
