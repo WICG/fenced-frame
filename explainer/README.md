@@ -34,17 +34,13 @@ Third party iframes can communicate with their embedding page using mechanisms s
 
 ## Goals
 
-The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together. This can be helpful in preventing user tracking or other privacy threats. Some of the use cases that are discussed in the explainer include:
-
-
-
-*   Interest group based advertising
-*   Conversion Lift measurement studies
-These and more are summarized in the [modes document](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md)
+The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together. This can be helpful in preventing user tracking or other privacy threats. 
 
 The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
+
+The different use cases and their privacy model are discussed as the different fenced frame modes [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md).
 
 ## Design
 
@@ -72,12 +68,12 @@ We expect some leakage of information to be possible via network timing attacks.
 
 ### Fenced frame API 
 
-The proposed fenced frame API is to have a new element type and treat it as a [top-level browsing context](https://html.spec.whatwg.org/#top-level-browsing-context). This section details this approach and also the alternative approach that was considered.
+The proposed fenced frame API is to have a new element type and treat it as a [top-level browsing context](https://html.spec.whatwg.org/#top-level-browsing-context). This section details this approach and later we also describe the alternative API approaches that were considered.
 
 
 #### New element type - a top-level browsing context
 
-In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the fact that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
+In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the mental model that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
 
 
 ##### Example usage
@@ -94,7 +90,7 @@ In this approach, a fenced frame behaves as a top-level browsing context that is
 
 
 *   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is from a fenced frame tree.
-*   The server needs to opt-in to be loaded in a fenced frame or in an iframe embedded in a fenced frame tree. Without an opt-in, the document cannot be loaded. For opt-in, we are planning to use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
+*   The server needs to opt-in to be loaded in a fenced frame or in an iframe embedded in a fenced frame tree. Without an opt-in, the document cannot be loaded. For opt-in, we use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
 
 ##### Benefits over nested browsing context
 
