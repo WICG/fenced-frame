@@ -4,7 +4,7 @@ This is the repository for Fenced Frames.
 
 The explainer is organized as follows:
 
-* What is a fenced frame: the concept and the HTML element 
+* What is a fenced frame: the concept, HTML element, security and privacy considerations 
    * [explainer/README](https://github.com/shivanigithub/fenced-frame/tree/master/explainer)
    
 * What are the problems being solved/ different modes of fenced frames?
