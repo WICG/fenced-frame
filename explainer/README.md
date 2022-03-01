@@ -142,6 +142,8 @@ More about security mechanisms are detailed in:
 
 **Secure contexts:** Fenced Frames are only allowed if all ancestor frames are [secure contexts](https://w3c.github.io/webappsec-secure-contexts/), the FF's html document is a [potentially trustworthy URL](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) and all subresources inside the FF will follow [mixed mode restrictions](https://web.dev/fixing-mixed-content/). 
 
+**Process isolation:** Process isolation for fenced frames is detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/process_isolation.md).
+
 
 ## Privacy considerations
 
