@@ -28,13 +28,13 @@ The high level design for turtledove consists of two restricted environments, wo
     *   Since the result of the turtledove API needs to be restricted from the embedding page, communication to the embedding page is not allowed.
     *   The output of this environment is opaque and not available to query via javascript. This makes the interest group of the user invisible to the embedding page. It is then passed to construct the fenced frame which is used to render the ad represented by the actual url mapped to this opaque url.
     *   For more details, refer the [FLEDGE explainer](https://github.com/WICG/turtledove/blob/main/FLEDGE.md#design-elements). 
-*   The second environment is the fenced frame that renders the ad given the bundle from the above algorithm. 
-*   Note that if the contextual ad wins the auction, it need not be rendered in the fenced frame. This will leak one bit conveying whether an interest group based ad won the auction or not but the upside is that the contextual ads do not need to change to be part of a fenced frame. 
+*   The second environment is the fenced frame that renders the ad from the above algorithm. 
+*   Note that if the contextual ad wins the auction, it need not be rendered in the fenced frame. This will leak one bit conveying whether an interest group based ad won the auction or not but the upside is that the contextual ads do not need to be changed to be rendered inside a fenced frame. 
 
 
 ### Conversion Lift Measurement
 
-[Conversion Lift measurement](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement) studies are A/B experiments that ad providers perform to learn how many conversions were caused by their ad campaign vs how many happen organically. To be able to infer the causality of a conversion with the ad campaign, it requires deciding which experimental group the user should consistently be placed for a study (across sites) and show the ad creative corresponding to that group. (Related work: [Private lift measurement API by Facebook](https://github.com/w3c/web-advertising/blob/master/private-lift-measurement-third-party.md))
+[Conversion Lift measurement](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement) studies are A/B experiments that ad providers perform to learn how many conversions were caused by their ad campaign vs how many happen organically. To be able to infer the causality of a conversion with the ad campaign, it requires deciding which experimental group the user should consistently be placed for a study (across sites) and show the ad creative corresponding to that group. (Related work: [Private lift measurement API by Facebook](https://github.com/w3c/web-advertising/blob/master/private-lift-measurement-third-party.md)). Shared Storage's [runURLSelectionOperation](https://github.com/pythagoraskitty/shared-storage#simple-example-consistent-ab-experiments-across-sites) can be used for achieving this and rendering the resulting url in a fenced frame using an opaque urn:uuid. 
 
 The following privacy aspects are required for lift measurement:
 *   The embedding site should not know which experiment group the user belongs to or which ad got rendered as a result of an A/B experimentation API.
@@ -50,7 +50,7 @@ A high level flow of the design using fenced frames is given below:
 
 
 
-*   Outside of the fenced frame, the ad auction returns two ad creative URLs, one for the control arm and one for the experiment arm.
-*   The browser API for A/B is then invoked which returns the ad as an opaque output based on user's experiment group.
-*   The fenced frame is then created with the ad creative which mapped to the opaque output from the restricted JS environment. The only way information can be extracted from the fenced frame is by using [aggregate measurement APIs](https://github.com/WICG/conversion-measurement-api/blob/master/AGGREGATE.md), via network access, or outbound navigation from the fenced frame.
+*   Outside of the fenced frame, the contextual ad auction returns two ad creative URLs, one for the control arm and one for the experiment arm.
+*   Shared Storage's [runURLSelectionOperation](https://github.com/pythagoraskitty/shared-storage#simple-example-consistent-ab-experiments-across-sites) is then invoked which returns the ad as an opaque output based on user's experiment group.
+*   The fenced frame is then created with the ad creative which mapped to the opaque output from the restricted JS environment. 
 
