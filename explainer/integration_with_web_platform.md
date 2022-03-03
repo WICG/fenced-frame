@@ -32,7 +32,7 @@ Since fenced frames require interactivity, they would need to get system focus. 
   * Only allow programmatic focus()/blur() to be successful if the fenced frame already has system focus.
   * Only allow system focus to move to a FF on a user gesture including hitting the tab key and not because of calling focus().
 
-## Communication via PostMessage
+## PostMessage
 A fenced frame does not allow communication via PostMessage between the embedding and embedded contexts. A fenced frame will be in a separate browsing context group then its embedding page. 
 
 ## Session History
@@ -42,7 +42,7 @@ Fenced frames can navigate but their history is not part of the browser back/for
 Fenced frames ineractions with CSP are detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md).
 
 ## Permissions and policies
-This is discussed in more detail [here](https://docs.google.com/document/u/1/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit).
+This is discussed in more detail [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
 
 ## COOP and COEP
 Fenced frames will by design be in a separate browsing context group from its embedding page, so this implicitly implies they have strict [COOP value](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit) of "same-origin". In fact even if both the embedding page and fenced frame are same-origin, fenced frames are placed in separate browsing context groups for consistency. Note that even though fenced frames are nested documents, they are treated as top-level browsing contexts and it is therefore important to understand their interaction with these headers.
@@ -50,6 +50,21 @@ If the fenced frame’s embedding page enables COEP then the fenced frame docume
 
 ## Opt-in header
 Since fenced frames allow a document to have many constraints in place, an opt-in mechanism is a good way for the document to accept those restrictions. The opt-in will make use of the Supports-Loading-Mode proposed [here](https://github.com/WICG/nav-speculation/blob/main/opt-in.md).
+
+It is also important for sites to opt-in due to security reasons. Due to privacy reasons, a fenced frame does not honor headers like frame-ancestors and x-frame-options all the way up to the primary top-level frame but only till the fenced frame root.
+
+## Fetch metadata integration
+To let a server know that a document is being requested for rendering in a fenced frame, a new Sec-Fetch-Dest HTTP Request Header value of `fencedframe` will be sent in the request.
+
+## Chromium implementation: Top-level browsing context using MPArch
+Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
+
+A page in MPArch behaves as the top-level frame for their frame tree and as a top-level browsing context from a spec perspective. Any calls to window.parent, window.top or window.frames[x] work for the inner and outer pages independently i.e. a frame in the inner page cannot access the outer page using window.parent/top etc. A fenced frame does not allow script access to the embedding context and thus aligns well with being implemented using MPArch. The implementation design is detailed here: 
+[fenced frames implementation design](https://docs.google.com/document/d/1HAU9IiHZU4KBPC_rEk3BQYrWTK50PdNGg8CcHhVLXig/edit?usp=sharing)
+
+### Initial version: using shadowDOM based iframes
+While MPArch is being developed in parallel with fenced frames, the initial implementation that will be available for origin trial will be based on the shadowDOM architecture. The implementation design is detailed here:
+[Fenced Frames Origin Trial Design: ShadowDOM + IDL](https://docs.google.com/document/d/1ijTZJT3DHQ1ljp4QQe4E4XCCRaYAxmInNzN1SzeJM8s/edit?usp=sharing)
 
 ## Browser features
 There are many chrome browser features e.g. autofill, translate etc., that will need to be considered on a case-by-case basis as to how they would interact with a fenced frame with possible approaches being:
