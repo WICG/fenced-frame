@@ -128,14 +128,14 @@ This discussion assumes that third-party cookies, like all other third party sto
 
 ## Security considerations
 
-Even though a fenced frame is isolated from its embedding context, it cannot be used as a workaround to the security restrictions that the top-level site wants to enforce on the embedding frames, without the knowledge of the top-level site. The design decisions of fenced frames related to security mechanisms like sandbox, csp, permission policy etc. are based on the folowing two principles:
+Even though a fenced frame is isolated from its embedding context, it cannot be used as a workaround to the security restrictions that the top-level site wants to enforce on the embedding frames, without the knowledge of the top-level site. The design decisions of fenced frames related to security mechanisms like sandbox, csp, permission policy etc. are based on the following two principles:
 * Attributes like cspee, sandbox etc. and headers like frame-ancestors etc. cannot be used as a communication channel with the embedding context.
-* Fenced frame should not be able to escalate priveleges without the knowledge of the top-level site e.g. all permission policy delegation based features in a fenced frame are therefore disallowed.
+* Fenced frame should not be able to escalate privileges without the knowledge of the top-level site e.g. all permission policy delegation based features in a fenced frame are therefore disallowed.
 * There are headers from the fenced frame site that are not honored as they would in an iframe, e.g. frame-ancestors, due to being a privacy leak. This is the reason fenced frames need to be opted in by the site using the opt-in response header.
 
 More about security mechanisms are detailed in:
 * [Fenced frames and CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
-* [Fenced frames and policies](https://docs.google.com/document/d/16PNR2hvO2oo93Mh5pGoHuXbvcwicNE3ieJVoejrjW_w/edit?usp=sharing)
+* [Fenced frames and policies](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md)
 * [Fenced frames and sandbox](https://docs.google.com/document/d/1RO4NkQk_XaEE7vuysM9LJilZYsoOhydfh93sOvrPQxU/edit?usp=sharing)
 
 **xsleaks:** In terms of cross site leak attacks, fenced frames is at least as secure as iframes are and better in some cases by default e.g. always having noopener, no joint history etc. For more details, the fenced frames xsleaks audit can be found [here](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing).
