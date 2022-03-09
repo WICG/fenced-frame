@@ -29,8 +29,7 @@
 *   Josh Karlin
 
 ## Introduction
-
-Third party iframes can communicate with their embedding page using mechanisms such as postMessage, attributes (e.g., size and name), and permissions. A number of recently proposed APIs (such as [Interest group based advertising](https://github.com/WICG/turtledove), [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) provide some degree of unpartitioned storage/cross-site data to embedded documents. Once third-party cookies have been removed, such documents should not be allowed to communicate with their embedders, else they will be able to join their cross-site user identifiers with the embedder’s, which would allow for user tracking. This explainer proposes a new form of embedded document, called a fenced frame, that these new APIs can use to isolate themselves from their embedders, preventing cross-site recognition.
+In a web that has its cookies and storage partitioned by top-frame site, there are occasions (such as [Interest group based advertising](https://github.com/WICG/turtledove) or [Conversion Lift Measurements](https://github.com/w3c/web-advertising/blob/master/support_for_advertising_use_cases.md#conversion-lift-measurement)) when it would be useful to display content from different partitions in the same page. This can only be allowed if the documents that contain data from different partitions are isolated from each other such that they're visually composed on the page, but unable to communicate with each other. Iframes do not suit this purpose since they have several communication channels with their embedding frame (e.g., postMessage, URLs, size attribute, name attribute, etc.). We propose fenced frames, a new element to embed documents on a page, that explicitly prevents communication between the embedder and the frame.
 
 ## Goals
 
@@ -58,11 +57,11 @@ The idea is that the fenced frame should not have access to both of the followin
 
 *   User information on the embedding site
     *   Accessible via communication channels
-*   User information on the fenced frame site
+*   Information from other top-site partitions
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case (Turtledove, Conversion Lift Measurement) for a fenced frame is to have read-only access to some unpartitioned storage, for example, in Turtledove, it is the interest-based ad to be loaded. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
+A primary use case for a fenced frame is to have read-only access to some other partition’s storage, for example, in Turtledove, it is the interest-based ad to be loaded which was added while visiting another site. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
 
 We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
 
@@ -74,6 +73,9 @@ The proposed fenced frame API is to have a new element type and treat it as a [t
 #### New element type - a top-level browsing context
 
 In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the model that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
+Since fenced frames are embedded frames, they also behave like iframes in many ways. For example:
+* Browser extensions will access a fenced frame as a normal iframe, e.g., for ad blocking.
+* Browser features like safe browsing, user settings, using tab to focus on various elements of the page etc. will apply to a fenced frame like a normal iframe.
 
 
 ##### Example usage
