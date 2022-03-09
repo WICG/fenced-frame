@@ -63,7 +63,7 @@ This mode is the fenced frames with no special restrictions on the src and no cr
 
 
 *   **Mode: “default”**
-*   **Source URL:** Normal url with no restrictions 
+*   **Source URL:** [Potentially trustworthy](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) url with no restrictions on it's contents
 *   **Information flow and privacy model:**
     *   Since there is no unpartitioned/cross-site data available to the fenced frame, it is not able to do any cross-site data joining.
     *   Like all modes, the fenced frame is isolated from the embedded context via any JS window references, script access, storage access, messaging APIs etc. The fenced frame does not know the embedding site’s origin or etld+1.
