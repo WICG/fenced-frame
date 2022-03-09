@@ -74,8 +74,8 @@ The proposed fenced frame API is to have a new element type and treat it as a [t
 
 In this approach, a fenced frame behaves as a top-level browsing context that is embedded in another page. This is aligned with the model that a fenced frame is similar to a “tab” since it has minimal communication with the embedding context and is the root of its frame tree and all the frames within the tree can communicate normally with each other. 
 Since fenced frames are embedded frames, they also behave like iframes in many ways. For example:
-* Browser extensions will access a fenced frame as a normal iframe, e.g., for ad blocking.
-* Browser features like safe browsing, user settings, using tab to focus on various elements of the page etc. will apply to a fenced frame like a normal iframe.
+* Browser extensions will access a fenced frame as an iframe, e.g., for ad blocking.
+* Browser features like accessibility, developer tools etc. will access a fenced frame like an iframe.
 
 
 ##### Example usage
