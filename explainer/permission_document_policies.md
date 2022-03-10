@@ -26,7 +26,7 @@ Permission policy can neither be delegated to a fenced frame nor can a fenced fr
 
 
 
-*   Client hints is one of the features that rely on [using permissions policy delegation](https://github.com/WICG/ua-client-hints#for-example) by the top-level page for allowing certain client hints to be used by an embedding frame. Since delegation won’t be allowed, should the fenced frames be allowed to behave like top-level contexts to figure out which client hints should be sent, via the Accept-CH headers? That could lead to an escalation of privilege but may be for utility this will need to be supported? Client hints might contain high-entropy and sensitive data but might be needed for normal functioning of a site. Additionally, fenced frames like iframes, will not read/write from the origin’s client hints opt-in cache. (I think the decision should be based on whether delegation was used for CH for security reasons or not.)
+*   Client hints is one of the features that rely on [using permissions policy delegation](https://github.com/WICG/ua-client-hints#for-example) by the top-level page for allowing certain client hints to be used by an embedding frame. Since delegation won’t be allowed, should the fenced frames be allowed to behave like top-level contexts to figure out which client hints should be sent, via the Accept-CH headers? That could lead to an escalation of privilege but may be for utility this will need to be supported? Client hints might contain high-entropy and sensitive data but might be needed for normal functioning of a site. Additionally, fenced frames like iframes, will not read/write from the origin’s client hints opt-in cache. 
 
 
 ## Document Policy
