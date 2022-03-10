@@ -54,6 +54,7 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
     *   Like all modes, the fenced frame is isolated from the embedded context via any JS window references, script access, storage access, messaging APIs etc. The fenced frame does not know the embedding site’s origin or etld+1.
     *   The fenced frame is allowed to create a popup (with noopener) or navigate the top-level page on user activation. (This is an ads requirement)
 *   **Cross-site data**: Interest groups in Fledge, the cross-site data used to choose the one-of-N URLs for shared storage. 
+*   **Reporting**: Reporting for ads would eventually be done using aggregate reporting but for easier adoption there is event-level reporting that will be allowed. Events happening inside the fenced frames will be joined with the data from the FLEDGE/SharedStorage worklet and sent as a beacon. This is detailed [here](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md)
 
 
 ## **Default mode**
