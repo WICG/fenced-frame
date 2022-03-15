@@ -48,6 +48,8 @@ This is discussed in more detail [here](https://github.com/shivanigithub/fenced-
 Fenced frames will by design be in a separate browsing context group from its embedding page, so this implicitly implies they have strict [COOP value](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit) of "same-origin". In fact even if both the embedding page and fenced frame are same-origin, fenced frames are placed in separate browsing context groups for consistency. Note that even though fenced frames are nested documents, they are treated as top-level browsing contexts and it is therefore important to understand their interaction with these headers.
 If the fenced frame’s embedding page enables COEP then the fenced frame document should allow itself to be embedded as described [here](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit#bookmark=id.kaco6v4zwnx2).
 
+Also any pop-ups opened from a fenced frame will be created without an opener and will be placed in a separate browsing context group.
+
 ## Opt-in header
 Since fenced frames allow a document to have many constraints in place, an opt-in mechanism is a good way for the document to accept those restrictions. The opt-in will make use of the Supports-Loading-Mode proposed [here](https://github.com/WICG/nav-speculation/blob/main/opt-in.md).
 
