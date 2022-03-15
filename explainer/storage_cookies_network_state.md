@@ -44,7 +44,7 @@ In conjunction with the partitioned cookies effort ([CHIPS](https://github.com/W
 
 ### Alternative design for cookies
 
-Alternatively, cookies can be blocked but that would require special logic for fenced frames as given below. Using unique and transient cookie partition as given above would align well with existing cookies infrastructure.
+Alternatively, cookies can be blocked but that would require special logic for fenced frames. Using unique and transient cookie partition as given above would align well with existing cookies infrastructure.
 
 
 ### Developer perspective
