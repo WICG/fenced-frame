@@ -140,11 +140,11 @@ More about security mechanisms are detailed in:
 * [Fenced frames and policies](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md)
 * [Fenced frames and sandbox](https://docs.google.com/document/d/1RO4NkQk_XaEE7vuysM9LJilZYsoOhydfh93sOvrPQxU/edit?usp=sharing)
 
+**Secure contexts:** Fenced Frames are only allowed if all ancestor frames are [secure contexts](https://w3c.github.io/webappsec-secure-contexts/), the fenced frame's document is from a [potentially trustworthy URL](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) and all subresources inside the FF will follow [mixed mode restrictions](https://web.dev/fixing-mixed-content/). 
+
 **Inheritance for local resources:** Documents hosting [local](https://fetch.spec.whatwg.org/#is-local) resources inherit their [policy containers](https://html.spec.whatwg.org/multipage/origin.html#policy-container) from their initiator or parent document, however for fenced frames, no such inheritance will take place. Fenced frames hosting local Documents will have a fresh policy container as they were created with no initiator document, just like the first Document in a top-level browsing context created with no initiator document.
 
 **xsleaks:** In terms of cross site leak attacks, fenced frames is at least as secure as iframes are and better in some cases by default e.g. always having noopener, no joint history etc. For more details, the fenced frames xsleaks audit can be found [here](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing).
-
-**Secure contexts:** Fenced Frames are only allowed if all ancestor frames are [secure contexts](https://w3c.github.io/webappsec-secure-contexts/), the FF's html document is from a [potentially trustworthy URL](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) and all subresources inside the FF will follow [mixed mode restrictions](https://web.dev/fixing-mixed-content/). 
 
 **Process isolation:** Process isolation for fenced frames is detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/process_isolation.md).
 
