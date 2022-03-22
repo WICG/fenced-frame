@@ -10,7 +10,7 @@ Fenced frames carry information that should not be shared with any other context
 
 
 *   Any special process isolation logic for fenced frames will not be part of the initial launch but will be added eventually.
-*   Fenced frames are always in a separate browsing instance (browsing context group).
+*   Fenced frames are always in a separate browsing instance (browsing context group) in the eventual MPArch architecture (and not in the interim shadowDOM architecture, since fenced frames will be based off on iframes).
 *   Being in the same process as another frame implies it is possible for either frame to look into the data held by the other (see [spectre](https://spectreattack.com/)).
 *   Presence of arbitrary code execution in the renderer process of either the fenced frame or the embedding page can lead to information sharing between the 2 contexts and guarding against these attacks helps enforce the privacy guarantees of fenced frames, which is that the embedding context and fenced frames should not be able to look into each others’ data
 *   The severity given in each of the sections below is roughly based on the [guidelines](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/severity-guidelines.md) here.
@@ -18,14 +18,14 @@ Fenced frames carry information that should not be shared with any other context
 
 ## Embedding frame
 
-Even in the presence of an attacker with arbitrary code execution in the renderer process,  fenced frame’s privacy threat model of not having access to the embedding page’s info and vice-versa should still apply. To get this, we will need to make sure that fenced frames are in distinct processes than the embedding site.
+Even in the presence of an attacker with arbitrary code execution in the renderer process,  fenced frame’s privacy threat model of not having access to the embedding page’s info and vice-versa should still apply. To get this, we will need to make sure that fenced frames are in distinct processes than the embedding frame.
 
 **Severity:** **high** 
 
 
-### Expected process isolation in Chrome
+### Current and expected process isolation in Chrome
 
-**Desktop:** Different site frames are assigned to different processes and on reaching process limit, same-site frames may be consolidated in a single process. So it looks like cross-site frames will always be in separate processes. That would be extended to make sure that fenced frames follow the process isolation of cross-site frames as well, since fenced frames essentially are treated as cross-site to all other frames.
+**Desktop:** Currently, different site frames are assigned to different processes and on reaching process limit, same-site frames may be consolidated in a single process. So it looks like cross-site frames will always be in separate processes. That would be extended to make sure that fenced frames follow the process isolation of cross-site frames as well, since fenced frames essentially are treated as cross-site to all other frames.
 
 **Android:** On Android current behavior will not treat fenced frames in any special way but for post-OT launch, the idea is for them to be treated as special frames that are isolated even on Android. Given the low severity of fenced frames being together in the same process (see below), we can create a single process for all fenced frames to keep the number of processes low.
 
