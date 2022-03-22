@@ -58,6 +58,12 @@ It is also important for sites to opt-in due to security reasons. Due to privacy
 ## Fetch metadata integration
 To let a server know that a document is being requested for rendering in a fenced frame, a new Sec-Fetch-Dest HTTP Request Header value of `fencedframe` will be sent in the request.
 
+## Unload and beforeunload handlers
+Fenced frames will not be supporting unload or before unload handlers. This is because of the following reasons:
+* Both of these have the existing issue of unreliability, so hopefully not supporting them should not lead to breaking critical workflows that depend on them.
+* There have been issues with both the handlers because running code when the user is trying to navigate away is not very respectful of the user.
+* It's a communication channel (the page deletion timestamp). It's not a major one since it's similar to the creation timestamp which is already present but disabling them will eliminate one communication channel between the embedding page and the fenced frame.
+
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
 
