@@ -26,7 +26,7 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
 
 
 *   **Mode: “opaque-ads”**
-*   **Source URL:** src should be a urn::uuid that should be mapped by the browser to an actual url.
+*   **Source URL:** src should be a urn::uuid that should be mapped by the browser to an actual url. 
 *   **Example** usage from FLEDGE:
 
     navigator.runAdAuction(myAuctionConfig).then((auctionWinnerUrl) => {
@@ -55,6 +55,7 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
     *   The fenced frame is allowed to create a popup (with noopener) or navigate the top-level page on user activation. (This is an ads requirement)
 *   **Cross-site data**: Interest groups in Fledge, the cross-site data used to choose the one-of-N URLs for shared storage. 
 *   **Reporting**: Reporting for ads would eventually be done using aggregate reporting but for easier adoption there is event-level reporting that will be allowed. Events happening inside the fenced frames will be joined with the data from the FLEDGE/SharedStorage worklet and sent as a beacon. This is detailed [here](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md)
+*   **Additional notes**: Note that for this mode, the interesting part is that the source is opaque to the publisher and that is what is discussed  in the information flow section above. Having said that, if the fenced frame was navigated by the embedding frame to a non-opaque url, it is still accepted because in that case there isn't any cross-site data being accessed inside the fenced frame and its information flow then defaults to the **Default** mode described below. We could have restricted this mode to opaque urls only but that made local testing of this mode a bit cumbersome. As a side-effect, allowing non-opaque urls means this mode can be used for contextual ads to be displayed in a more private environment and still have access to some of the APIs like "Navigating the top-level page".  
 
 
 ## **Default mode**
