@@ -84,6 +84,8 @@ A few more details:
 
 For more details, the implementation design doc can be found [here](https://docs.google.com/document/d/1vuwG31hCwZROIR1NaYjTrthmDrlXza0mZui7zzF93TM/edit?usp=sharing).
 
+For privacy implications of this API and others, see [the privacy considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#privacy-considerations) section.
+
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
 
