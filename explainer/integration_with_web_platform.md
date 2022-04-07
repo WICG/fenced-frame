@@ -76,6 +76,12 @@ window.open('url', '_unfencedTop');
 <a href='url' target='_unfencedTop'>Click me!</a>
 ```
 
+Note that the user activation is checked only in the frame initiating the navigation and not in an ancestor outside the frame tree because user activation inside the fenced frame tree is not propagated outside the tree.
+
+The urls that are allowed for the top-level page to be navigated has the same restrictions as other content-initiated top-level navigations e.g. data urls would not be allowed.
+
+The opener/openee relationship would not be present for this navigation, which means the window.open example above will always return null.
+
 For more details, the implementation design doc can be found [here](https://docs.google.com/document/d/1vuwG31hCwZROIR1NaYjTrthmDrlXza0mZui7zzF93TM/edit?usp=sharing).
 
 ## Chromium implementation: Top-level browsing context using MPArch
