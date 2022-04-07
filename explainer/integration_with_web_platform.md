@@ -64,6 +64,20 @@ Fenced frames will not be supporting unload or before unload handlers. This is b
 * There have been issues with both the handlers because running code when the user is trying to navigate away is not very respectful of the user.
 * It's a communication channel (the page deletion timestamp). It's not a major one since it's similar to the creation timestamp which is already present but disabling them will eliminate one communication channel between the embedding page and the fenced frame.
 
+## Top-level navigation
+Some modes of fenced frames allow navigating the top-level frame.  The appproach adds a new target name (in the same category as `_self`, `_parent`, `_top`) that works with existing HTML elements/JS APIs (`<a>`, `<area>`, `<form>`, `window.open`) called unfencedTop. Example usage:
+
+```
+// Navigates the top-level frame to 'url'. Subject to the same restrictions as sandboxed
+// iframes where top-level navigation is allowed upon user activation.
+window.open('url', '_unfencedTop');
+
+<!-- Defines an HTML hyperlink to 'url' that will open the document in the top-level frame (when clicked). -->
+<a href='url' target='_unfencedTop'>Click me!</a>
+```
+
+For more details, the implementation design doc can be found [here](https://docs.google.com/document/d/1vuwG31hCwZROIR1NaYjTrthmDrlXza0mZui7zzF93TM/edit?usp=sharing).
+
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
 
