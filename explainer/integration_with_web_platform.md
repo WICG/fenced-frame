@@ -65,7 +65,7 @@ Fenced frames will not be supporting unload or before unload handlers. This is b
 * It's a communication channel (the page deletion timestamp). It's not a major one since it's similar to the creation timestamp which is already present but disabling them will eliminate one communication channel between the embedding page and the fenced frame.
 
 ## Top-level navigation
-Some modes of fenced frames allow navigating the top-level frame.  The appproach adds a new target name (in the same category as `_self`, `_parent`, `_top`) that works with existing HTML elements/JS APIs (`<a>`, `<area>`, `<form>`, `window.open`) called unfencedTop. Example usage:
+Some modes of fenced frames allow navigating the top-level frame.  The approach adds a new target name called `_unfencedTop` (in the same category as `_self`, `_parent`, `_top`) that works with existing HTML elements/JS APIs (`<a>`, `<area>`, `<form>`, `window.open`). Example usage:
 
 ```
 // Navigates the top-level frame to 'url'. Subject to the same restrictions as sandboxed
@@ -76,11 +76,11 @@ window.open('url', '_unfencedTop');
 <a href='url' target='_unfencedTop'>Click me!</a>
 ```
 
-Note that the user activation is checked only in the frame initiating the navigation and not in an ancestor outside the frame tree because user activation inside the fenced frame tree is not propagated outside the tree.
-
-The urls that are allowed for the top-level page to be navigated has the same restrictions as other content-initiated top-level navigations e.g. data urls would not be allowed.
-
-The opener/openee relationship would not be present for this navigation, which means the window.open example above will always return null.
+A few more details:
+* The user activation is checked only in the frame initiating the navigation and not in an ancestor outside the frame tree because user activation inside the fenced frame tree is not propagated outside the tree.
+* The url is subject to the same restrictions as other content-initiated top-level navigations, e.g. data urls are not allowed.
+* The opener/openee relationship would not be present for this navigation, which means the window.open example above will always return null. 
+* Referer would be the frame that initiated the navigation which could be the fenced frame root frame or a nested iframe in the fenced frame tree (similar to a popup navigation).
 
 For more details, the implementation design doc can be found [here](https://docs.google.com/document/d/1vuwG31hCwZROIR1NaYjTrthmDrlXza0mZui7zzF93TM/edit?usp=sharing).
 
