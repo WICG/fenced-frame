@@ -45,8 +45,11 @@ Fenced frames ineractions with CSP are detailed [here](https://github.com/shivan
 This is discussed in more detail [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
 
 ## COOP and COEP
-Fenced frames will by design be in a separate browsing context group from its embedding page, so this implicitly implies they have strict [COOP value](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit) of "same-origin". In fact even if both the embedding page and fenced frame are same-origin, fenced frames are placed in separate browsing context groups for consistency. Note that even though fenced frames are nested documents, they are treated as top-level browsing contexts and it is therefore important to understand their interaction with these headers.
-If the fenced frame’s embedding page enables COEP then the fenced frame document should allow itself to be embedded as described [here](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit#bookmark=id.kaco6v4zwnx2).
+Although COOP is only defined for top-level documents, it has impacts on popups opened by subframes in the page. Because COOP is crucial to the web exposed mitigation against Spectre, Fenced Frames must support COOP in one way or another. Because COOP contains a reporting endpoint, we cannot actually pass the COOP value to the Fenced Frame. So to support COOP, we have two options:
+* Forbid Fenced Frames from opening popups entirely.
+* Mandate that popups opened from Fenced Frames always have rel no-opener and place them in another BCG (ie the behavior of the strictest form of COOP). We propose fenced frames to take this approach as opening popups is an important functionality that needs to be supported e.g. when a user clicks on an ad in a fenced frame.
+
+For COEP, If the fenced frame’s embedding page enables COEP then the fenced frame document should allow itself to be embedded as described [here](https://docs.google.com/document/d/1zDlfvfTJ_9e8Jdc8ehuV4zMEu9ySMCiTGMS9y0GU92k/edit#bookmark=id.kaco6v4zwnx2). COEP provides two bits of information to a fenced frame: whether the embedder has COEP enabled, and whether the fenced frame is same-origin with its embedder (through the additional CORP check). We could remove the second one by having COEP always be checked regardless of whether the document in the fenced frame is same origin with its embedder or not. In the initial origin trial, fenced frames behavior will match that of iframes and eventually we will make fenced frames always behave as if it was cross-origin to the embedder.
 
 ## Opt-in header
 Since fenced frames allow a document to have many constraints in place, an opt-in mechanism is a good way for the document to accept those restrictions. The opt-in will make use of the Supports-Loading-Mode proposed [here](https://github.com/WICG/nav-speculation/blob/main/opt-in.md).
@@ -55,6 +58,34 @@ It is also important for sites to opt-in due to security reasons. Due to privacy
 
 ## Fetch metadata integration
 To let a server know that a document is being requested for rendering in a fenced frame, a new Sec-Fetch-Dest HTTP Request Header value of `fencedframe` will be sent in the request.
+
+## Unload and beforeunload handlers
+Fenced frames will not be supporting unload or before unload handlers. This is because of the following reasons:
+* Both of these have the existing issue of unreliability, so hopefully not supporting them should not lead to breaking critical workflows that depend on them.
+* There have been issues with both the handlers because running code when the user is trying to navigate away is not very respectful of the user.
+* It's a communication channel (the page deletion timestamp). It's not a major one since it's similar to the creation timestamp which is already present but disabling them will eliminate one communication channel between the embedding page and the fenced frame.
+
+## Top-level navigation
+Some modes of fenced frames allow navigating the top-level frame.  The approach adds a new target name called `_unfencedTop` (in the same category as `_self`, `_parent`, `_top`) that works with existing HTML elements/JS APIs (`<a>`, `<area>`, `<form>`, `window.open`). Example usage:
+
+```
+// Navigates the top-level frame to 'url'. Subject to the same restrictions as sandboxed
+// iframes where top-level navigation is allowed upon user activation.
+window.open('url', '_unfencedTop');
+
+<!-- Defines an HTML hyperlink to 'url' that will open the document in the top-level frame (when clicked). -->
+<a href='url' target='_unfencedTop'>Click me!</a>
+```
+
+A few more details:
+* The user activation is checked only in the frame initiating the navigation and not in an ancestor outside the frame tree because user activation inside the fenced frame tree is not propagated outside the tree.
+* The url is subject to the same restrictions as other content-initiated top-level navigations, e.g. data urls are not allowed.
+* The opener/openee relationship would not be present for this navigation, which means the window.open example above will always return null. 
+* Referer would be the frame that initiated the navigation which could be the fenced frame root frame or a nested iframe in the fenced frame tree (similar to a popup navigation).
+
+For more details, the implementation design doc can be found [here](https://docs.google.com/document/d/1vuwG31hCwZROIR1NaYjTrthmDrlXza0mZui7zzF93TM/edit?usp=sharing).
+
+For privacy implications of this API and others, see [the privacy considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#privacy-considerations) section.
 
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 

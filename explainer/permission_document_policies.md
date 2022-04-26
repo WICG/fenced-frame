@@ -22,11 +22,12 @@ As mentioned in the list [here](https://developer.mozilla.org/en-US/docs/Web/HTT
 Permission policy can neither be delegated to a fenced frame nor can a fenced frame enable permissions based on its header exchange like a top-level page. A fenced frame is therefore restricted to use cases that do not depend on these powerful features. Since permission policy is used for powerful features, restricting these should still leave use cases where fenced frames can be utilized e.g. ads. Having said that, there may be API-specific caveats as discussed in the open questions below.
 
 
-### Client hints: open question
+### UA Client hints: open question
 
 
 
-*   Client hints is one of the features that rely on [using permissions policy delegation](https://github.com/WICG/ua-client-hints#for-example) by the top-level page for allowing certain client hints to be used by an embedding frame. Since delegation won’t be allowed, should the fenced frames be allowed to behave like top-level contexts to figure out which client hints should be sent, via the Accept-CH headers? That could lead to an escalation of privilege but may be for utility this will need to be supported? Client hints might contain high-entropy and sensitive data but might be needed for normal functioning of a site. Additionally, fenced frames like iframes, will not read/write from the origin’s client hints opt-in cache. 
+*   UA Client hints is one of the features that rely on [using permissions policy delegation](https://github.com/WICG/ua-client-hints#for-example) by the top-level page for allowing certain client hints to be used by an embedding frame. Since delegation won’t be allowed, should the fenced frames be allowed to behave like top-level contexts to figure out which client hints should be sent, via the Accept-CH headers but like iframes, not read/write from the origin’s client hints opt-in cache? That could lead to an escalation of privilege but may be better for utility. Client hints contain high-entropy and sensitive data but might be needed for normal functioning of a site.
+   * Initially user agent client hints will be disallowed similar to all other permission policy based features.  
 
 
 ## Document Policy
@@ -49,6 +50,6 @@ Document policy cannot be delegated to a fenced frame, but it can be set as a to
 
 
 
-*   One of the newer features to be added to the document policy is getViewportMedia as is being discussed in this [issue](https://github.com/w3c/mediacapture-screen-share/issues/155). This feature will only be able to work for a tab if all embedded frames opt-in. What should be the fenced frames behavior in such cases? 
+*   One of the newer features to be added to the document policy is getViewportMedia as is being discussed in this [issue](https://github.com/w3c/mediacapture-screen-share/issues/155). This feature will only be able to work for a tab if all embedded frames opt-in via document policy. What should be the fenced frames behavior in such cases? 
     *   **Proposed:** A fenced frame is fine to be part of a screen capture if the frame is opted in and the user agrees to the permission as well. This is acceptable from a threat model perspective because screen capture of another tab is also possible today (gated on permission and user acceptance).
-    *   **Open question:** The above proposal implies that there will need to be a list of features that the fenced frame should know to opt-in and that is is hard to maintain as the list grows.
+    *   **Open question:** The above proposal implies that there will need to be a list of features that the fenced frame should know to opt-in and that is is hard to maintain as the list grows. This question is not yet resolved for the upcoming initial trial of fenced frames but since required document policy isn't yet launched, the lack of a solution is not currently breaking a workflow.

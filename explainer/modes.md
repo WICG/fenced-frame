@@ -12,8 +12,8 @@
 
 
 *   All modes are similar such that they are isolated from the embedded context via any JS window references, script access, storage access, resizing of the fenced frame, messaging APIs etc.
-*   Every mode of fenced frame is different in how its privacy guarantees are preserved and would need a separate launch/review process. The first phase and the associated review process of fenced frames will focus only on the **“opaque-ads”** mode. The **“default”** mode will also be available in the first version of fenced frames.
-*   Each mode’s src attribute’s privacy characteristics are different E.g. the “opaque-ads” mode is for frames that can only be provided a urn:uuid src by the embedder, “read-only” mode has src that is known to the embedder and does not need to be mitigated against link decoration. A future “unpartitioned-storage” mode will need the src to be mitigated against link decoration.
+*   Every mode of fenced frame is different in how its privacy guarantees are preserved and would need a separate launch/review process. The first phase and the associated review process of fenced frames will focus only on the **“opaque-ads”** and **“default”** modes.
+*   Each mode’s src attribute’s privacy characteristics are different E.g. the “opaque-ads” mode allows providing a urn:uuid src by the embedder which contains cross-site data e.g. interest groups, “read-only” mode has src that is known to the embedder and does not need to be mitigated against link decoration. A future “unpartitioned-storage” mode will need the src to be mitigated against link decoration.
 *   It is important that the mode doesn’t change when there is a cross-document navigation. E.g. An “opaque-ads” mode fenced frame which has the interest group of the user, if navigated to the read-only mode from within the fenced frame can add the interest group to the target url and still get access to cookies thus creating a hybrid of two modes that we do not want to support.
 *   Similar to the above point, a fenced frame tree of one mode cannot contain a child fenced frame of another mode.
 *   One of the questions we are trying to answer from an API perspective is how to represent these different modes of fenced frames. Should they be separate elements all inheriting the base Fenced Frame element or whether there should be an attribute which can only be set once in the lifetime of the frame even across navigations. In phase 1, for simplicity, we are going with it as an attribute and then if need be and based on TAG/standards discussions, we can pivot to create separate elements.
@@ -26,7 +26,10 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
 
 
 *   **Mode: “opaque-ads”**
-*   **Source URL:** src should be a urn::uuid that should be mapped by the browser to an actual url.
+*   **Source URL:** 
+     *   src should be a urn::uuid that should be mapped by the browser to an actual url. 
+     *   Note that for this mode, the interesting part is that the source is opaque to the publisher and that is what is discussed in the information flow section below. Having said that, if the fenced frame was navigated by the embedding frame to a non-opaque url, it is still accepted because in that case there isn't any cross-site data being accessed inside the fenced frame and its information flow then defaults to the **Default** mode described below. We could have restricted this mode to opaque urls only but that made local testing of this mode a bit cumbersome. As a side-effect, allowing non-opaque urls means this mode can be used for contextual ads to be displayed in a more private environment and still have access to some of the APIs like "Navigating the top-level page".
+     
 *   **Example** usage from FLEDGE:
 
     navigator.runAdAuction(myAuctionConfig).then((auctionWinnerUrl) => {
@@ -52,9 +55,9 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
     *   The URL must be k-anonymous
     *   Size of the fenced frame is limited to a set of popular ad sizes.
     *   Like all modes, the fenced frame is isolated from the embedded context via any JS window references, script access, storage access, messaging APIs etc. The fenced frame does not know the embedding site’s origin or etld+1.
-    *   The fenced frame is allowed to create a popup (with noopener) or navigate the top-level page on user activation. (This is an ads requirement)
+    *   The fenced frame is allowed to create a popup (with noopener) or navigate the top-level page on user activation as described [here](https://github.com/WICG/fenced-frame/blob/master/explainer/integration_with_web_platform.md#top-level-navigation). (This is an ads requirement)
 *   **Cross-site data**: Interest groups in Fledge, the cross-site data used to choose the one-of-N URLs for shared storage. 
-*   **Reporting**: Reporting for ads would eventually be done using aggregate reporting but for easier adoption there is event-level reporting that will be allowed. Events happening inside the fenced frames will be joined with the data from the FLEDGE/SharedStorage worklet and sent as a beacon. This is detailed [here](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md)
+*   **Reporting**: Reporting for ads would eventually be done using aggregate reporting but for easier adoption there is event-level reporting that will be allowed. Events happening inside the fenced frames will be joined with the data from the FLEDGE/SharedStorage worklet and sent as a beacon. This is detailed [here](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md)   
 
 
 ## **Default mode**
