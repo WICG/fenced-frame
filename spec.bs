@@ -138,8 +138,8 @@ dl, dd {
  <dt>[=Content attributes=]:</dt>
  <dd>[=Global attributes=]</dd>
  <dd><{fencedframe/src}> — Address of the resource</dd>
- <dd>[=width=] — Horizontal dimension</dd>
- <dd>[=height=] — Vertical dimension</dd>
+ <dd><code>[=width=]</code> — Horizontal dimension</dd>
+ <dd><code>[=height=]</code> — Vertical dimension</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
