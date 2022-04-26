@@ -1,0 +1,167 @@
+<pre class="metadata">
+Title: Fenced frame
+Shortname: fenced-frame
+Repository: WICG/fenced-frame
+Inline Github Issues: true
+Group: WICG
+Status: CG-DRAFT
+Level: 1
+URL: https://wicg.github.io/fenced-frame/
+Boilerplate: omit conformance, omit feedback-header
+Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com, https://domfarolino.com
+Abstract: The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together.
+!Participate: <a href="https://github.com/WICG/fenced-frame">GitHub WICG/fenced-frame</a> (<a href="https://github.com/WICG/fenced-frame/issues/new">new issue</a>, <a href="https://github.com/WICG/fenced-frame/issues?state=open">open issues</a>)
+!Commits: <a href="https://github.com/WICG/fenced-frame/commits/main/spec.bs">GitHub spec.bs commits</a>
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Default Biblio Status: current
+Markup Shorthands: markdown yes
+Assume Explicit For: yes
+</pre>
+
+<pre class="link-defaults">
+</pre>
+<pre class="anchors">
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+  type: dfn
+    text: categories; url: dom.html#concept-element-categories
+    text: contexts in which this element can be used; url: dom.html#concept-element-contexts
+    text: embedded content; url: dom.html#embedded-content-category
+    text: content model; url: dom.html#concept-element-content-model
+    text: nothing; url: dom.html#concept-content-nothing
+    text: content attributes; url: dom.html#concept-element-attributes
+    text: global attributes; url: dom.html#global-attributes
+    text: dom interface; url: dom.html#concept-element-dom
+    text: accessibility considerations; url: dom.html#concept-element-accessibility-considerations
+    text: reflect; url: common-dom-interfaces.html#reflect
+    text: width; url: embedded-content-other.html#attr-dim-width
+    text: height; url: embedded-content-other.html#attr-dim-height
+</pre>
+
+<style>
+.selected-text-file-an-issue {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: smaller;
+  padding: 4px 10px;
+  z-index: 4;
+}
+
+dfn var {
+  font-style: italic;
+}
+
+table {
+  margin: 1em 0;
+}
+
+/* WHATWG-style <hr>s, instead of WICG-style. Specific selector is necessary to override WICG styles. */
+:not(.head) > :not(.head) + hr {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 3em 0;
+  height: auto;
+}
+:not(.head) > :not(.head) + hr::before {
+  content: none;
+}
+
+/* WHATWG-style element definition class */
+.element {
+  background: #EEFFEE;
+}
+dt {
+  margin-top: 12px;
+  color: black;
+}
+dl, dd {
+  padding-left: .5em;
+}
+
+/* domintro from https://resources.whatwg.org/standard.css */
+.domintro {
+  position: relative;
+  color: green;
+  background: #DDFFDD;
+  margin: 2.5em 0 2em 0;
+  padding: 1.5em 1em 0.5em 2em;
+}
+
+.domintro dt, .domintro dt * {
+  color: black;
+  font-size: inherit;
+}
+.domintro dd {
+  margin: 0.5em 0 1em 2em; padding: 0;
+}
+.domintro dd p {
+  margin: 0.5em 0;
+}
+.domintro::before {
+  content: 'For web developers (non-normative)';
+  background: green;
+  color: white;
+  padding: 0.15em 0.25em;
+  font-style: normal;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
+}
+
+/* .XXX from https://resources.whatwg.org/standard.css */
+.XXX {
+  color: #D50606;
+  background: white;
+  border: solid #D50606;
+}
+</style>
+
+<script src="https://resources.whatwg.org/file-issue.js" async></script>
+
+<h2 id=the-fencedframe-element>The <dfn element>fencedframe</dfn> element</h2>
+
+<dl class="element">
+ <dt>[=Categories=]:</dt>
+ <dd>[=Flow content=].</dd>
+ <dd>[=Phrasing content=].</dd>
+ <dd>[=Embedded content=].</dd>
+ <dd>[=Interactive content=].</dd>
+ <dd>[=Palpable content=].</dd>
+ <dt>[=Contexts in which this element can be used=]:</dt>
+ <dd>Where [=embedded content=] is expected.</dd>
+ <dt>[=Content model=]:</dt>
+ <dd>[=Nothing=].</dd>
+ <dt>[=Content attributes=]:</dt>
+ <dd>[=Global attributes=]</dd>
+ <dd><{fencedframe/src}> — Address of the resource</dd>
+ <dd>[=width=] — Horizontal dimension</dd>
+ <dd>[=height=] — Vertical dimension</dd>
+ <dt>[=Accessibility considerations=]:</dt>
+ <dd><p class=XXX>TODO</p></dd>
+ <dt>[=DOM interface=]:</dt>
+<xmp class=idl>
+[Exposed=Window]
+interface HTMLFencedFrameElement : HTMLElement {
+  [HTMLConstructor] constructor();
+
+  [CEReactions] attribute USVString src;
+  [CEReactions] attribute DOMString width;
+  [CEReactions] attribute DOMString height;
+};
+</xmp>
+<br>
+</dl>
+
+The <{fencedframe}> element represents a <span class=XXX>TODO: Wire up the browsing context "mode" that is being worked on in <a href=https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection>WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span>
+
+The <dfn element-attr for=fencedframe>src</dfn> attribute <span class=XXX>TODO</span>.
+
+The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective content attribute of the same name.
+
+<h3 id=dimension-attributes>Dimension attributes</h3>
+
+This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
