@@ -2,6 +2,8 @@
 
 This is the repository for Fenced Frames.
 
+See the [draft specification](https://wicg.github.io/fenced-frame).
+
 The explainer is organized as follows:
 
 * What is a fenced frame: the concept, HTML element, security and privacy considerations 
