@@ -14,6 +14,7 @@
     - [Information channel between fenced frame and other frames](#information-channel-between-fenced-frame-and-other-frames)
   - [Security considerations](#security-considerations)
   - [Privacy considerations](#privacy-considerations)
+    - [Ongoing technical challenges](#ongoing-technical-challenges)  
   - [Parallels with Cross-site portals](#parallels-with-cross-site-portals)
   - [API alternatives considered](#api-alternatives-considered)
       - [Using iframe with document policy](#using-iframe-with-document-policy)
@@ -38,6 +39,8 @@ The fenced frame enforces a boundary between the embedding page and the cross-si
 The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
+
+See [Privacy considerations](#privacy-considerations) and [Ongoing technical challenges](#ongoing-technical-challenges) for more details.
 
 The different use cases and their privacy model are discussed as the different fenced frame modes [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md).
 
@@ -161,6 +164,9 @@ The fenced frame’s main goal is to improve privacy by disallowing communicatio
 *   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some modes, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
 
 More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
+
+### Ongoing technical challenges
+Fenced frames disable explicit communication channels, but it is still possible to use covert channels to share data between the embedder and embeddee, e.g. global socket pool limit (as mentioned in the xsleaks document linked in the above section), network side channel and intersection observer as described above, etc. We believe that any use of these known covert channels is clearly hostile to users and undermines web platform intent to the point that it will be realistic for browsers to take action against sites that abuse them. 
 
 ## Parallels with Cross-site portals
 
