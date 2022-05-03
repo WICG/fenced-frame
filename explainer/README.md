@@ -36,11 +36,11 @@ In a web that has its cookies and storage partitioned by top-frame site, there a
 
 The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together. This can be helpful in preventing user tracking or other privacy threats. 
 
+**Caveat:** It could still be possible for documents colluding via covert channels to be able to communicate information (See [Ongoing technical constraints](#ongoing-technical-constraints) for more details). 
+
 The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
-
-See [Privacy considerations](#privacy-considerations) and [Ongoing technical constraints](#ongoing-technical-constraints) for more details.
 
 The different use cases and their privacy model are discussed as the different fenced frame modes [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md).
 
@@ -166,7 +166,7 @@ The fenced frame’s main goal is to improve privacy by disallowing communicatio
 More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
 
 ### Ongoing technical constraints
-Fenced frames disable explicit communication channels, but it is still possible to use covert channels to share data between the embedder and embeddee, e.g. global socket pool limit (as mentioned in the xsleaks document linked in the above section), network side channel and intersection observer as described above, etc. We believe that any use of these known covert channels is clearly hostile to users and undermines web platform intent to the point that it will be realistic for browsers to take action against sites that abuse them. 
+Fenced frames disable explicit communication channels, but it is still possible to use covert channels to share data between the embedder and embeddee, e.g. global socket pool limit (as mentioned in the [xsleaks audit](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing)), network side channel and intersection observer as described above, etc. Mitigations to some of these are being brainstormed. We also believe that any use of these known covert channels is clearly hostile to users and undermines web platform intent to the point that it will be realistic for browsers to take action against sites that abuse them. 
 
 ## Parallels with Cross-site portals
 
