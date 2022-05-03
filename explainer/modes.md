@@ -31,24 +31,15 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
      *   Note that for this mode, the interesting part is that the source is opaque to the publisher and that is what is discussed in the information flow section below. Having said that, if the fenced frame was navigated by the embedding frame to a non-opaque url, it is still accepted because in that case there isn't any cross-site data being accessed inside the fenced frame and its information flow then defaults to the **Default** mode described below. We could have restricted this mode to opaque urls only but that made local testing of this mode a bit cumbersome. As a side-effect, allowing non-opaque urls means this mode can be used for contextual ads to be displayed in a more private environment and still have access to some of the APIs like "Navigating the top-level page".
      
 *   **Example** usage from FLEDGE:
-
+    ```js
     navigator.runAdAuction(myAuctionConfig).then((auctionWinnerUrl) => {
-
-
       // auctionWinnerUrl value e.g.
-
-
       // urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-
-
       var adFrame = document.createElement('fencedframe');
-
       adFrame.mode = "opaque-ads";
-
       adFrame.src = auctionWinnerUrl;
-
-
     });
+    ```
 
 *   **Information flow and privacy model:**
     *   Src is always guaranteed to be opaque to the embedding context via the urn:uuid mechanism described above. 
