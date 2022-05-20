@@ -88,8 +88,9 @@ Note that irrespective of a CSP policy, fenced frames are restricted to be creat
 
 
 
-*   Support for https:\* to be treated as https: We only do this carve out to the spec and implementation if needed and reported as an issue. We don’t currently have this carve-out because it expects the default port and so acceptance/rejection of an opaque url based on this can leak some information.
-*   Only https or potentially trustworthy: If opaque fenced frames can map to any potentially-trustworthy urls and if we do allow https scheme-source to only match https urls but reject for others, this might be a privacy leak. For example, if the opaque fenced frame is created using [Shared Storage’s runURLSelectionOperation](https://github.com/pythagoraskitty/shared-storage#simple-example-consistent-ab-experiments-across-sites), then the 2 parties could collude to create 32 fenced frames and each of those would either be blocked or loaded to transmit one bit.
+*   Only https or more potentially trustworthy schemes: If opaque fenced frames can map to non-https potentially-trustworthy urls and if we do allow https scheme-source to only match https urls but reject for others, this might be a privacy leak. For example, if the opaque fenced frame is created using [Shared Storage’s runURLSelectionOperation](https://github.com/pythagoraskitty/shared-storage#simple-example-consistent-ab-experiments-across-sites), then the 2 parties could collude to create 32 fenced frames and each of those would either be blocked or loaded to transmit one bit.
+
+*   Support for https:\* to be treated as https: We only do this carve out to the spec and implementation if needed and reported as an issue. We don’t currently have this carve-out because it expects the default port and so acceptance/rejection of an opaque url based on this can leak some information. 
 
 
 # **New CSP directive**
