@@ -119,3 +119,15 @@ A new CSP directive called fenced-frame-src to be introduced which if not presen
     Content-security-policy: fenced-frame-src http://example.com	; frame-src `none`
     ```
 
+# **Alternatives considered for opaque fenced frames**
+*   Apply policy to the mapped URL
+The alternative approach could have been to apply the csp header to the actual URL and not report it. That would be hard to roll out from a site owner’s perspective. The standard way to add or change a CSP on a site is:
+1. Come up with a CSP the developer thinks is right
+2. Turn it on with Content-Security-Policy-Report-Only and a reporting url
+3. Verify the site is not getting any unexpected reports
+4. Turn it on with Content-Security-Policy
+
+As long as the site is relatively unchanged during this process, if something's going to break in step 4 site owners will learn about it in step 3. If we go with this alternate approach, it would change this property: if the site or a third party library on the site puts fenced-frames on the page, it could break in step 4 without any notice.  This breakage won't appear in CSP reporting, CSP violation events, or any page metrics.  This would make CSP much riskier to deploy.
+*   Specifically mention urn:uuid scheme
+In this approach, the embedding context says whether urn:uuid based fenced frames are allowed or not : `Content-Security-Policy: fenced-frame-src 'urn:uuid:*' `. Note that the embedding context does not have any say in whether the actual URL it maps to, should be allowed or not. The downside of this approach is that there is no backward compatibility.
+
