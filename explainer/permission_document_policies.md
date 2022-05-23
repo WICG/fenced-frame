@@ -19,7 +19,9 @@ As mentioned in the list [here](https://developer.mozilla.org/en-US/docs/Web/HTT
 
 ### Summary
 
-Permission policy can neither be delegated to a fenced frame nor can a fenced frame enable permissions based on its header exchange like a top-level page. A fenced frame is therefore restricted to use cases that do not depend on these powerful features. Since permission policy is used for powerful features, restricting these should still leave use cases where fenced frames can be utilized e.g. ads. Having said that, there may be API-specific caveats as discussed in the open questions below.
+Permission policy can neither be delegated to a fenced frame nor can a fenced frame enable permissions based on its header exchange like a top-level page. A fenced frame is therefore restricted to use cases that do not depend on these powerful features. Since permission policy is used for powerful features, restricting these should still leave use cases where fenced frames can be utilized e.g. ads. 
+
+Based on above, [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API) should return "denied" inside a fenced frame tree.
 
 
 ### UA Client hints: open question
