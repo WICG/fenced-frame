@@ -165,3 +165,17 @@ The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
 This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
+
+<h3 id=coep>Patching Cross-Origin Resource Policy Internal Check</h3>
+
+In [[!Fetch]]'s <a href="https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check">cross-origin resource policy internal check</a> steps, in the step
+
+> 5. Switch on policy:
+
+Where it currently states
+
+> If origin is same origin with response’s URL’s origin, then return allowed.
+
+Modify it to say
+
+> If origin is same origin with response’s URL’s origin, and [=request/destination=] is not a fenced frame, then return allowed.
