@@ -36,6 +36,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: reflect; url: common-dom-interfaces.html#reflect
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: non-subresource requests; url: #non-subresource-request
+    text: navigation requests; url: #navigation-request
+    text: RequestDestination enum; url: #dom-requestdestination
 </pre>
 
 <style>
@@ -166,8 +171,14 @@ The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective
 
 This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
 
-<h3 id=coep>New fencedframe [=request=] [=request/destination=]</h3>
+<h3 id=new-request-destination>New fencedframe [=request=] [=request/destination=]</h3>
 
-Update the list of <a href="https://fetch.spec.whatwg.org/#concept-request-destination">associated destinations</a> to include a new entry, <code>fencedframe</code>. It will have the initiator <code>""</code>, the CSP directive <code>child-src</code>, and the features <code>HTML's &lt;fencedframe&gt;</code>.
+Update the list of <a href="https://fetch.spec.whatwg.org/#concept-request-destination">associated destinations</a> to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the CSP directive <code>fenced-frame-src</code>, and the features HTML's <code>&lt;fencedframe&gt;</code>.
+
+Add "<code>fencedframe</code>" to the list of [=non-subresource requests=] and to the list of [=navigation requests=].
+
+Add "<code>fencedframe</code>" to the [=RequestDestination enum=].
+
+
 
 Inherit the same properties and rules that the <code>iframe</code> destination currently has. 
