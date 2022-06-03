@@ -181,4 +181,4 @@ Where it currently states
 
 Modify it to say
 
-> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, and [=request/destination=] is not a fenced frame, then return allowed.
+> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, and [=request/destination=] is not "<code>fencedframe</code>", then return <b>allowed</b>.
