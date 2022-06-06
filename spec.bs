@@ -40,6 +40,7 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: request; url: #concept-request
     text: policy; url: #content-security-policy-object
+    text: cross-origin resource policy internal check; url: #cross-origin-resource-policy-internal-check
 </pre>
 
 <style>
@@ -229,3 +230,17 @@ In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">di
 : "`fenced-frame-src`"
 ::
   1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
+
+<h3 id=coep>Patching [=Cross-Origin Resource Policy Internal Check=]</h3>
+
+In [[!Fetch]]'s [=cross-origin resource policy internal check=] steps, in the step
+
+> 5. Switch on policy:
+
+Where it currently states
+
+> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, then return <b>allowed</b>.
+
+Modify it to say
+
+> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, and [=request/destination=] is not "<code>fencedframe</code>", then return <b>allowed</b>.
