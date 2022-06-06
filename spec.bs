@@ -43,6 +43,7 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
     text: RequestDestination enum; url: #dom-requestdestination
     text: associated request destinations; url: #concept-request-destination
     text: fetching; url: #fetching
+    text: cross-origin resource policy internal check; url: #cross-origin-resource-policy-internal-check
 </pre>
 
 <style>
@@ -186,3 +187,17 @@ In the [=fetching=] algorithm, step 13.2, where it says:
 > A user agent should set value to the first matching statement, if any, switching on request’s [=request/destination=]:
 
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".
+
+<h3 id=coep>Patching [=Cross-Origin Resource Policy Internal Check=]</h3>
+
+In [[!Fetch]]'s [=cross-origin resource policy internal check=] steps, in the step
+
+> 5. Switch on policy:
+
+Where it currently states
+
+> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, then return <b>allowed</b>.
+
+Modify it to say
+
+> If origin is <a>same origin</a> with response's <a for=response>URL</a>'s <a for=url>origin</a>, and [=request/destination=] is not "<code>fencedframe</code>", then return <b>allowed</b>.
