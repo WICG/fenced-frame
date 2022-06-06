@@ -41,6 +41,7 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
     text: non-subresource requests; url: #non-subresource-request
     text: navigation requests; url: #navigation-request
     text: RequestDestination enum; url: #dom-requestdestination
+    text: associated request destinations; url: #concept-request-destination
     text: fetching; url: #fetching
 </pre>
 
@@ -174,7 +175,7 @@ This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.wha
 
 <h3 id=new-request-destination>New fencedframe [=request=] [=request/destination=]</h3>
 
-Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the list of <a href="https://fetch.spec.whatwg.org/#concept-request-destination">associated destinations</a> to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the CSP directive <code>fenced-frame-src</code>, and the features HTML's <code>&lt;fencedframe&gt;</code>.
+Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the list of [=associated request destinations=] to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the CSP directive <code>fenced-frame-src</code>, and the features HTML's <code>&lt;fencedframe&gt;</code>.
 
 Add "<code>fencedframe</code>" to the list of [=non-subresource requests=] and to the list of [=navigation requests=].
 
