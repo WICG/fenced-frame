@@ -176,8 +176,8 @@ Fenced frames are a different element from an iframe. Therefore, using the <b><i
 
 <h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
 
-The <dfn export>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
-<a>nested browsing contexts</a>. The syntax for the directive's name and value
+The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
+a <span class="XXX">TODO: create a new browsing context, nested navigable, to be used here instead of the <a>nested browsing context</a> that is currently in use for other request destinations</span>. The syntax for the directive's name and value
 is described by the following ABNF:
 
 <pre>
@@ -185,14 +185,14 @@ is described by the following ABNF:
   directive-value = <a grammar>serialized-source-list</a>
 </pre>
 
-<div id="fenced-frame-src example" class="example">
+<div id="fenced-frame-src-example" class="example">
   Given a page with the following Content Security Policy:
   <pre>
     <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
   </pre>
 
-  Fetches for the following code will return a network errors, as the URL
-  provided do not match `fenced-frame-src`'s <a>source list</a>:
+  Fetches for the following code will return a [=network error=], as the URL
+  provided does not match `fenced-frame-src`'s <a>source list</a>:
 
   <pre highlight="html">
     &lt;fencedframe src="https://example.org/"&gt;
