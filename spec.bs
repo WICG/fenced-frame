@@ -233,7 +233,7 @@ In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">di
 
 <h3 id=coep>Patching [=Cross-Origin Resource Policy Internal Check=]</h3>
 
-In [[!Fetch]]'s [=cross-origin resource policy internal check=] steps, in the step
+In [=Fetch=]'s [=cross-origin resource policy internal check=] steps, in the step
 
 > 5. Switch on policy:
 
