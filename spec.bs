@@ -38,8 +38,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: height; url: embedded-content-other.html#attr-dim-height
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
-    text: request; url: #concept-request
-    text: policy; url: #content-security-policy-object
     text: cross-origin resource policy internal check; url: #cross-origin-resource-policy-internal-check
 </pre>
 
