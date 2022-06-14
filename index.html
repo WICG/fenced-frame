@@ -657,7 +657,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-06-08">8 June 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-06-13">13 June 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -698,7 +698,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <a href="#the-fencedframe-element"><span class="secno">1</span> <span class="content">The <span><code>fencedframe</code></span> element</span></a>
      <ol class="toc">
       <li><a href="#dimension-attributes"><span class="secno">1.1</span> <span class="content">Dimension attributes</span></a>
-      <li><a href="#coep"><span class="secno">1.2</span> <span class="content">Patching <span>Cross-Origin Resource Policy Internal Check</span></span></a>
+      <li><a href="#new-request-destination"><span class="secno">1.2</span> <span class="content">New fencedframe <span>request</span> <span>destination</span></span></a>
+      <li><a href="#coep"><span class="secno">1.3</span> <span class="content">Patching <span>Cross-Origin Resource Policy Internal Check</span></span></a>
      </ol>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -753,7 +754,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute of the same name.</p>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
    <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> in the list of elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
-   <h3 class="heading settled" data-level="1.2" id="coep"><span class="secno">1.2. </span><span class="content">Patching <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check" id="ref-for-cross-origin-resource-policy-internal-check">Cross-Origin Resource Policy Internal Check</a></span><a class="self-link" href="#coep"></a></h3>
+   <h3 class="heading settled" data-level="1.2" id="new-request-destination"><span class="secno">1.2. </span><span class="content">New fencedframe <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a></span><a class="self-link" href="#new-request-destination"></a></h3>
+   <p>Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the associated request <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination①">destination</a> list to include a new entry, "<code>fencedframe</code>". It will have the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> "", the CSP directive <code>fenced-frame-src</code>, and the features HTML’s <code>&lt;fencedframe></code>.</p>
+   <p>Add "<code>fencedframe</code>" to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#non-subresource-request" id="ref-for-non-subresource-request">non-subresource request</a> list and to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#navigation-request" id="ref-for-navigation-request">navigation request</a> list.</p>
+   <p>Add "<code>fencedframe</code>" to the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#requestdestination" id="ref-for-requestdestination">RequestDestination</a></code> enum.</p>
+   <p>In the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-fetch" id="ref-for-concept-fetch">fetch</a> algorithm, step 13.2, where it says:</p>
+   <blockquote>
+    <p>A user agent should set value to the first matching statement, if any, switching on request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination②">destination</a>:</p>
+   </blockquote>
+   <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".</p>
+   <h3 class="heading settled" data-level="1.3" id="coep"><span class="secno">1.3. </span><span class="content">Patching <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check" id="ref-for-cross-origin-resource-policy-internal-check">Cross-Origin Resource Policy Internal Check</a></span><a class="self-link" href="#coep"></a></h3>
    <p>In <a data-link-type="biblio" href="#biblio-fetch">[Fetch]</a>'s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check" id="ref-for-cross-origin-resource-policy-internal-check①">cross-origin resource policy internal check</a> steps, in the step</p>
    <blockquote>
     <ol start="5">
@@ -767,7 +777,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </blockquote>
    <p>Modify it to say</p>
    <blockquote>
-    <p>If origin is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin①">same origin</a> with response’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url①">URL</a>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①">origin</a>, and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a> is not "<code>fencedframe</code>", then return <b>allowed</b>.</p>
+    <p>If origin is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin①">same origin</a> with response’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url①">URL</a>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①">origin</a>, and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination③">destination</a> is not "<code>fencedframe</code>", then return <b>allowed</b>.</p>
    </blockquote>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
@@ -787,22 +797,59 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ul>
    <li><a href="#dom-htmlfencedframeelement-width">width</a><span>, in § 1</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-requestdestination">
+   <a href="https://fetch.spec.whatwg.org/#requestdestination">https://fetch.spec.whatwg.org/#requestdestination</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-requestdestination">1.2. New fencedframe request destination</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cross-origin-resource-policy-internal-check">
    <a href="https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check">https://fetch.spec.whatwg.org/#cross-origin-resource-policy-internal-check</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-cross-origin-resource-policy-internal-check">1.2. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-cross-origin-resource-policy-internal-check①">(2)</a>
+    <li><a href="#ref-for-cross-origin-resource-policy-internal-check">1.3. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-cross-origin-resource-policy-internal-check①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-destination">
    <a href="https://fetch.spec.whatwg.org/#concept-request-destination">https://fetch.spec.whatwg.org/#concept-request-destination</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-destination">1.2. Patching Cross-Origin Resource Policy Internal Check</a>
+    <li><a href="#ref-for-concept-request-destination">1.2. New fencedframe request destination</a> <a href="#ref-for-concept-request-destination①">(2)</a> <a href="#ref-for-concept-request-destination②">(3)</a>
+    <li><a href="#ref-for-concept-request-destination③">1.3. Patching Cross-Origin Resource Policy Internal Check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-fetch">
+   <a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-fetch">1.2. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-initiator">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-initiator">https://fetch.spec.whatwg.org/#concept-request-initiator</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-initiator">1.2. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-navigation-request">
+   <a href="https://fetch.spec.whatwg.org/#navigation-request">https://fetch.spec.whatwg.org/#navigation-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-navigation-request">1.2. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-non-subresource-request">
+   <a href="https://fetch.spec.whatwg.org/#non-subresource-request">https://fetch.spec.whatwg.org/#non-subresource-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-non-subresource-request">1.2. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request">
+   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request">1.2. New fencedframe request destination</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-response-url">
    <a href="https://fetch.spec.whatwg.org/#concept-response-url">https://fetch.spec.whatwg.org/#concept-response-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-response-url">1.2. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-concept-response-url①">(2)</a>
+    <li><a href="#ref-for-concept-response-url">1.3. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-concept-response-url①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
@@ -917,7 +964,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-same-origin">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#same-origin">https://html.spec.whatwg.org/multipage/origin.html#same-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-same-origin">1.2. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-same-origin①">(2)</a>
+    <li><a href="#ref-for-same-origin">1.3. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-same-origin①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-attr-dim-width">
@@ -930,7 +977,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-concept-url-origin">
    <a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-origin">1.2. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-concept-url-origin①">(2)</a>
+    <li><a href="#ref-for-concept-url-origin">1.3. Patching Cross-Origin Resource Policy Internal Check</a> <a href="#ref-for-concept-url-origin①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -956,8 +1003,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[Fetch]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-requestdestination">RequestDestination</span>
      <li><span class="dfn-paneled" id="term-for-cross-origin-resource-policy-internal-check">cross-origin resource policy internal check</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-destination">destination</span>
+     <li><span class="dfn-paneled" id="term-for-concept-fetch">fetch</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-initiator">initiator</span>
+     <li><span class="dfn-paneled" id="term-for-navigation-request">navigation request</span>
+     <li><span class="dfn-paneled" id="term-for-non-subresource-request">non-subresource request</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
      <li><span class="dfn-paneled" id="term-for-concept-response-url">url</span>
     </ul>
    <li>
