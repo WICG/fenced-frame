@@ -169,7 +169,7 @@ The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective
 
 This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
 
-<h3 id=new-request-destination>New fenced-frame-src [[!CSP]] [=directive=]</h3>
+<h3 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h3>
 
 Fenced frames are a different element from an iframe. Therefore, using the <b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules. Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:
 
