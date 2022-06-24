@@ -27,7 +27,7 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
 
 *   **Mode: “opaque-ads”**
 *   **Source URL:** 
-     *   src should be a urn::uuid that should be mapped by the browser to an actual url. 
+     *   src should be a urn::uuid that should be mapped by the browser to an actual url. The mapped url can only be an https, localhost, about:blank.
      *   Note that for this mode, the interesting part is that the source is opaque to the publisher and that is what is discussed in the information flow section below. Having said that, if the fenced frame was navigated by the embedding frame to a non-opaque url, it is still accepted because in that case there isn't any cross-site data being accessed inside the fenced frame and its information flow then defaults to the **Default** mode described below. We could have restricted this mode to opaque urls only but that made local testing of this mode a bit cumbersome. As a side-effect, allowing non-opaque urls means this mode can be used for contextual ads to be displayed in a more private environment and still have access to some of the APIs like "Navigating the top-level page".
      
 *   **Example** usage from FLEDGE:
@@ -71,7 +71,7 @@ This mode is for rendering personalized information in a fenced frame at the sam
 
 
 *   **Mode: “read-only”**
-*   **Source URL:** [Potentially trustworthy](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) url with no restrictions. Is able to carry 1p data from the embedding context to the fenced frame. This is not however an issue as described in the next section. 
+*   **Source URL:** url can only be an https, localhost or about:blank. Is able to carry 1p data from the embedding context to the fenced frame. This is not however an issue as described in the next section. 
 *   **Information flow and privacy model:**
     *   The ‘src’ attribute can carry user id in the embedding page. Up until the fenced frame has completed navigation, there is an unrestricted network. That is fine because there isn’t any unpartitioned data available to the fenced frame till that point.
     *   The fenced frame is able to request access to read-only cookies after navigation is complete. At that point the network will be disallowed so that there is no exfiltration of joined data across sites via either the network or persistent storage. Othe partitioned state like storage, service workers, network and http cache will continue to stay partitioned.
