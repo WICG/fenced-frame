@@ -131,6 +131,29 @@ There are many channels between the fenced frame tree and the other frames that 
 
 This discussion assumes that third-party cookies, like all other third party storage,  are also [disallowed](https://blog.chromium.org/2020/01/building-more-private-web-path-towards.html) or else those would be a communication channel between the fenced frame and the embedding site.
 
+### HTMLFencedFrameElement class
+
+All fenced frame related functions will live in its own class, in the same way that iframe-related funcionality lives in HTMLIFrameElement.
+
+#### Opaque-Ads Can Load API
+
+There are various reasons a fenced frame embedded as an opaque ad could refuse to load in a page. For example, if the page is not in a secure context, or if CSPEE is specified in the embedding frame, the fenced frame will refuse to load. This is a lot for a developer to keep track of.
+
+If the process of getting an ad in the page is complex or expensive, there needs to be a way to ensure that the resulting ad will actually end up in the page before the expensive process begins.
+
+An static API method will be introuced to the HTMLFencedFrameElement class to check this. It will be called before a fenced frame is created, and will return a boolean, true if an opaque-ads fenced frame can load, and false if not.
+
+##### Example usage
+
+```
+HTMLFencedFrameElement.canLoadOpaqueURL();
+```
+```
+> true
+```
+
+This is called synchronously, and will look at which ever frame its execution context sits in.
+
 ## Security considerations
 
 Even though a fenced frame is isolated from its embedding context, it cannot be used as a workaround to the security restrictions that the top-level site wants to enforce on the embedding frames, without the knowledge of the top-level site. The design decisions of fenced frames related to security mechanisms like sandbox, csp, permission policy etc. are based on the following principles:
