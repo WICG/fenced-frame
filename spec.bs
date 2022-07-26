@@ -165,3 +165,77 @@ The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
 This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
+
+<h3 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h3>
+
+Fenced frames are a different element from an iframe. Therefore, using the <b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules. Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:
+
+<h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
+
+The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
+a <span class="XXX">TODO: create a new browsing context, nested navigable, to be used here instead of the <a>nested browsing context</a> that is currently in use for other request destinations</span>. The syntax for the directive's name and value
+is described by the following ABNF:
+
+<pre>
+  directive-name  = "fenced-frame-src"
+  directive-value = <a grammar>serialized-source-list</a>
+</pre>
+
+<div id="fenced-frame-src-example" class="example">
+  Given a page with the following Content Security Policy:
+  <pre>
+    <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
+  </pre>
+
+  Fetches for the following code will return a [=network error=], as the URL
+  provided does not match `fenced-frame-src`'s <a>source list</a>:
+
+  <pre highlight="html">
+    &lt;fencedframe src="https://example.org/"&gt;
+    &lt;/fencedframe&gt;
+  </pre>
+</div>
+
+The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s check.
+
+<h4 id="default-src-amendment">Amending [=default-src=]</h4>
+
+The [=default-src=] directive's Example 7 and Example 8 will be amended. Where it says:
+
+<pre>
+  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                           ...
+                           <a>worker-src</a> <a grammar>'self'</a>
+</pre>
+
+It will now say:
+
+<pre>
+  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                           ...
+                           <a>fenced-frame-src</a> <a grammar>'self'</a>;
+                           ...
+                           <a>worker-src</a> <a grammar>'self'</a>
+</pre>
+
+<h4 id="fallback-list-amendment"> Amending The Directive Fallback List</h4>
+
+In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback list</a>, in step 1, add a new entry to the list:
+
+: "`fenced-frame-src`"
+::
+  1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
+
+<h3 id=new-request-destination>New fencedframe [=request=] [=request/destination=]</h3>
+
+Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the associated request [=request/destination=] list to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the CSP directive <code>fenced-frame-src</code>, and the features HTML's <code>&lt;fencedframe&gt;</code>.
+
+Add "<code>fencedframe</code>" to the [=non-subresource request=] list and to the [=navigation request=] list.
+
+Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
+
+In the [=fetch=] algorithm, step 13.2, where it says:
+
+> A user agent should set value to the first matching statement, if any, switching on request’s [=request/destination=]:
+
+Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".
