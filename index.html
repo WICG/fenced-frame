@@ -657,7 +657,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-07-17">17 July 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-07-25">25 July 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -698,6 +698,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <a href="#the-fencedframe-element"><span class="secno">1</span> <span class="content">The <span><code>fencedframe</code></span> element</span></a>
      <ol class="toc">
       <li><a href="#dimension-attributes"><span class="secno">1.1</span> <span class="content">Dimension attributes</span></a>
+      <li>
+       <a href="#new-csp-directive"><span class="secno">1.2</span> <span class="content">New fenced-frame-src <span>[CSP]</span> <span>directive</span></span></a>
+       <ol class="toc">
+        <li><a href="#directive-fenced-frame-src"><span class="secno">1.2.1</span> <span class="content"><code>fenced-frame-src</code></span></a>
+        <li><a href="#default-src-amendment"><span class="secno">1.2.2</span> <span class="content">Amending <span>default-src</span></span></a>
+        <li><a href="#fallback-list-amendment"><span class="secno">1.2.3</span> <span class="content"> Amending The Directive Fallback List</span></a>
+       </ol>
+      <li><a href="#new-request-destination"><span class="secno">1.3</span> <span class="content">New fencedframe <span>request</span> <span>destination</span></span></a>
      </ol>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -752,6 +760,58 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute of the same name.</p>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
    <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> in the list of elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
+   <h3 class="heading settled" data-level="1.2" id="new-csp-directive"><span class="secno">1.2. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
+   <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules. Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:</p>
+   <h4 class="heading settled" data-level="1.2.1" id="directive-fenced-frame-src"><span class="secno">1.2.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
+a <span class="XXX">TODO: create a new browsing context, nested navigable, to be used here instead of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context" id="ref-for-nested-browsing-context">nested browsing context</a> that is currently in use for other request destinations</span>. The syntax for the directive’s name and value
+is described by the following ABNF:</p>
+<pre>directive-name  = "fenced-frame-src"
+directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
+</pre>
+   <div class="example" id="fenced-frame-src-example">
+    <a class="self-link" href="#fenced-frame-src-example"></a> Given a page with the following Content Security Policy: 
+<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/
+</pre>
+    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL
+  provided does not match <code>fenced-frame-src</code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
+<pre class="highlight"><c- p>&lt;</c-><c- f>fencedframe</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://example.org/"</c-><c- p>></c->
+<c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c->
+</pre>
+   </div>
+   <p>The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>’s check.</p>
+   <h4 class="heading settled" data-level="1.2.2" id="default-src-amendment"><span class="secno">1.2.2. </span><span class="content">Amending <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src">default-src</a></span><a class="self-link" href="#default-src-amendment"></a></h4>
+   <p>The <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src①">default-src</a> directive’s Example 7 and Example 8 will be amended. Where it says:</p>
+<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy①">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self">'self'</a>;
+                         ...
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self①">'self'</a>
+</pre>
+   <p>It will now say:</p>
+<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy②">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src①">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self②">'self'</a>;
+                         ...
+                         <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src①">fenced-frame-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self③">'self'</a>;
+                         ...
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a>
+</pre>
+   <h4 class="heading settled" data-level="1.2.3" id="fallback-list-amendment"><span class="secno">1.2.3. </span><span class="content"> Amending The Directive Fallback List</span><a class="self-link" href="#fallback-list-amendment"></a></h4>
+   <p>In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback list</a>, in step 1, add a new entry to the list:</p>
+   <dl>
+    <dt data-md>"<code>fenced-frame-src</code>"
+    <dd data-md>
+     <ol>
+      <li data-md>
+       <p>Return <code>&lt;&lt; "fenced-frame-src", "frame-src", "child-src", "default-src" >></code>.</p>
+     </ol>
+   </dl>
+   <h3 class="heading settled" data-level="1.3" id="new-request-destination"><span class="secno">1.3. </span><span class="content">New fencedframe <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a></span><a class="self-link" href="#new-request-destination"></a></h3>
+   <p>Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the associated request <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination①">destination</a> list to include a new entry, "<code>fencedframe</code>". It will have the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> "", the CSP directive <code>fenced-frame-src</code>, and the features HTML’s <code>&lt;fencedframe></code>.</p>
+   <p>Add "<code>fencedframe</code>" to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#non-subresource-request" id="ref-for-non-subresource-request">non-subresource request</a> list and to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#navigation-request" id="ref-for-navigation-request">navigation request</a> list.</p>
+   <p>Add "<code>fencedframe</code>" to the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#requestdestination" id="ref-for-requestdestination">RequestDestination</a></code> enum.</p>
+   <p>In the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-fetch" id="ref-for-concept-fetch">fetch</a> algorithm, step 13.2, where it says:</p>
+   <blockquote>
+    <p>A user agent should set value to the first matching statement, if any, switching on request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination②">destination</a>:</p>
+   </blockquote>
+   <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -759,6 +819,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <ul class="index">
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">constructor()</a><span>, in § 1</span>
    <li><a href="#elementdef-fencedframe">fencedframe</a><span>, in § 1</span>
+   <li><a href="#fenced-frame-src">fenced-frame-src</a><span>, in § 1.2.1</span>
    <li><a href="#dom-htmlfencedframeelement-height">height</a><span>, in § 1</span>
    <li><a href="#htmlfencedframeelement">HTMLFencedFrameElement</a><span>, in § 1</span>
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">HTMLFencedFrameElement()</a><span>, in § 1</span>
@@ -770,6 +831,109 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ul>
    <li><a href="#dom-htmlfencedframeelement-width">width</a><span>, in § 1</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-grammardef-self">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-self">https://w3c.github.io/webappsec-csp/#grammardef-self</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-self">1.2.2. Amending default-src</a> <a href="#ref-for-grammardef-self①">(2)</a> <a href="#ref-for-grammardef-self②">(3)</a> <a href="#ref-for-grammardef-self③">(4)</a> <a href="#ref-for-grammardef-self④">(5)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-connect-src">
+   <a href="https://w3c.github.io/webappsec-csp/#connect-src">https://w3c.github.io/webappsec-csp/#connect-src</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-connect-src">1.2.2. Amending default-src</a> <a href="#ref-for-connect-src①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-header-content-security-policy">
+   <a href="https://w3c.github.io/webappsec-csp/#header-content-security-policy">https://w3c.github.io/webappsec-csp/#header-content-security-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-header-content-security-policy">1.2.1. fenced-frame-src</a>
+    <li><a href="#ref-for-header-content-security-policy①">1.2.2. Amending default-src</a> <a href="#ref-for-header-content-security-policy②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-default-src">
+   <a href="https://w3c.github.io/webappsec-csp/#default-src">https://w3c.github.io/webappsec-csp/#default-src</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-default-src">1.2.2. Amending default-src</a> <a href="#ref-for-default-src①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directives">
+   <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directives">1.2. New fenced-frame-src [CSP] directive</a> <a href="#ref-for-directives①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-frame-src">
+   <a href="https://w3c.github.io/webappsec-csp/#frame-src">https://w3c.github.io/webappsec-csp/#frame-src</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-frame-src">1.2. New fenced-frame-src [CSP] directive</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-grammardef-serialized-source-list">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list">https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-serialized-source-list">1.2.1. fenced-frame-src</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-source-lists">
+   <a href="https://w3c.github.io/webappsec-csp/#source-lists">https://w3c.github.io/webappsec-csp/#source-lists</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-source-lists">1.2.1. fenced-frame-src</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-worker-src">
+   <a href="https://w3c.github.io/webappsec-csp/#worker-src">https://w3c.github.io/webappsec-csp/#worker-src</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-worker-src">1.2.2. Amending default-src</a> <a href="#ref-for-worker-src①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-requestdestination">
+   <a href="https://fetch.spec.whatwg.org/#requestdestination">https://fetch.spec.whatwg.org/#requestdestination</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-requestdestination">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-destination">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-destination">https://fetch.spec.whatwg.org/#concept-request-destination</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-destination">1.3. New fencedframe request destination</a> <a href="#ref-for-concept-request-destination①">(2)</a> <a href="#ref-for-concept-request-destination②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-fetch">
+   <a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-fetch">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-initiator">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-initiator">https://fetch.spec.whatwg.org/#concept-request-initiator</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-initiator">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-navigation-request">
+   <a href="https://fetch.spec.whatwg.org/#navigation-request">https://fetch.spec.whatwg.org/#navigation-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-navigation-request">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-network-error">
+   <a href="https://fetch.spec.whatwg.org/#concept-network-error">https://fetch.spec.whatwg.org/#concept-network-error</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-network-error">1.2.1. fenced-frame-src</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-non-subresource-request">
+   <a href="https://fetch.spec.whatwg.org/#non-subresource-request">https://fetch.spec.whatwg.org/#non-subresource-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-non-subresource-request">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request">
+   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request">1.3. New fencedframe request destination</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
@@ -855,6 +1019,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-interactive-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-nested-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-nested-browsing-context">1.2.1. fenced-frame-src</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-content-nothing">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing">https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing</a><b>Referenced in:</b>
    <ul>
@@ -907,6 +1077,31 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[CSP]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-grammardef-self">'self'</span>
+     <li><span class="dfn-paneled" id="term-for-connect-src">connect-src</span>
+     <li><span class="dfn-paneled" id="term-for-header-content-security-policy">content-security-policy</span>
+     <li><span class="dfn-paneled" id="term-for-default-src">default-src</span>
+     <li><span class="dfn-paneled" id="term-for-directives">directives</span>
+     <li><span class="dfn-paneled" id="term-for-frame-src">frame-src</span>
+     <li><span class="dfn-paneled" id="term-for-grammardef-serialized-source-list">serialized-source-list</span>
+     <li><span class="dfn-paneled" id="term-for-source-lists">source lists</span>
+     <li><span class="dfn-paneled" id="term-for-worker-src">worker-src</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-requestdestination">RequestDestination</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-destination">destination</span>
+     <li><span class="dfn-paneled" id="term-for-concept-fetch">fetch</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-initiator">initiator</span>
+     <li><span class="dfn-paneled" id="term-for-navigation-request">navigation request</span>
+     <li><span class="dfn-paneled" id="term-for-concept-network-error">network error</span>
+     <li><span class="dfn-paneled" id="term-for-non-subresource-request">non-subresource request</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-cereactions">CEReactions</span>
@@ -923,6 +1118,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-global-attributes">global attributes</span>
      <li><span class="dfn-paneled" id="term-for-attr-dim-height">height</span>
      <li><span class="dfn-paneled" id="term-for-interactive-content-2">interactive content</span>
+     <li><span class="dfn-paneled" id="term-for-nested-browsing-context">nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-content-nothing">nothing</span>
      <li><span class="dfn-paneled" id="term-for-palpable-content-2">palpable content</span>
      <li><span class="dfn-paneled" id="term-for-phrasing-content-2">phrasing content</span>
@@ -940,6 +1136,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-csp">[CSP]
+   <dd>Mike West. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
+   <dt id="biblio-fetch">[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-webidl">[WEBIDL]
@@ -973,6 +1173,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#element-attrdef-fencedframe-src">#element-attrdef-fencedframe-src</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-element-attrdef-fencedframe-src">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="fenced-frame-src">
+   <b><a href="#fenced-frame-src">#fenced-frame-src</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fenced-frame-src">1.2.1. fenced-frame-src</a>
+    <li><a href="#ref-for-fenced-frame-src①">1.2.2. Amending default-src</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
