@@ -152,7 +152,7 @@ HTMLFencedFrameElement.canLoadOpaqueURL();
 > true
 ```
 
-This is called synchronously, and will look at which ever frame its execution context sits in.
+This is called synchronously, and will look at the execution context of the frame invoking the API.
 
 ## Security considerations
 
