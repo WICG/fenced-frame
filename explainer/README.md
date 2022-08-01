@@ -141,7 +141,7 @@ There are various reasons a fenced frame embedded as an opaque ad could refuse t
 
 If the process of getting an ad in the page is complex or expensive, there needs to be a way to ensure that the resulting ad will actually end up in the page before the expensive process begins.
 
-An static API method will be introuced to the HTMLFencedFrameElement class to check this. It will be called before a fenced frame is created, and will return a boolean, true if an opaque-ads fenced frame can load, and false if not.
+A static API method will be introduced to the HTMLFencedFrameElement class to check this. No fenced frame will be created when calling this API, and it can be invoked before actually attempting to create a fenced frame. The API will return a boolean, true if an opaque-ads fenced frame would be able to load in the caller's context, false if not.
 
 ##### Example usage
 
