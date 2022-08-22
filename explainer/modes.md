@@ -43,8 +43,8 @@ This mode is for rendering ads whose url is opaque to the embedding context. The
 
 *   **Information flow and privacy model:**
     *   Src is always guaranteed to be opaque to the embedding context via the urn:uuid mechanism described above. 
-    *   The URL must be k-anonymous
-    *   Size of the fenced frame is limited to a set of popular ad sizes.
+    *   The URL and any other information passed to the fenced frame like the size must be k-anonymous. Resizing of the fenced frame by the embedder will also be restricted in the sense that the document loaded in the fenced frame will be scaled for the new size but will not be able to access the current size.
+    * The network access being unrestricted is an ongoing technical challenge due to the issue of network timing side channel (described in the explainer [here](https://github.com/WICG/fenced-frame/blob/master/explainer/network_side_channel.md)) and we are considering what a long-term solution for this would look like in fenced frames. For the opaque-ads mode, the considerations are either 1) denying any network access (e.g., loaded via navigable web bundles) or 2) network access only allowed to some trusted caching service that promises to only log aggregate data.    
     *   Like all modes, the fenced frame is isolated from the embedded context via any JS window references, script access, storage access, messaging APIs etc. The fenced frame does not know the embedding site’s origin or etld+1.
     *   The fenced frame is allowed to create a popup (with noopener) or navigate the top-level page on user activation as described [here](https://github.com/WICG/fenced-frame/blob/master/explainer/integration_with_web_platform.md#top-level-navigation). (This is an ads requirement)
 *   **Cross-site data**: Interest groups in Fledge, the cross-site data used to choose the one-of-N URLs for shared storage. 
