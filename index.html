@@ -4,7 +4,7 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 9559857, updated Fri Jul 29 17:25:02 2022 -0700" name="generator">
+  <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
 <style>
 .selected-text-file-an-issue {
@@ -657,7 +657,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-08-01">1 August 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-09-21">21 September 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -743,7 +743,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <dt><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations" id="ref-for-concept-element-accessibility-considerations">Accessibility considerations</a>:
     <dd>
      <p class="XXX">TODO</p>
-    <dt><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom" id="ref-for-concept-element-dom">DOM interface</a>:</dt>
+    <dt><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom" id="ref-for-concept-element-dom">DOM interface</a>:
+    <dd>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="idl-code" data-dfn-type="interface" data-export id="htmlfencedframeelement"><code><c- g>HTMLFencedFrameElement</c-></code><a class="self-link" href="#htmlfencedframeelement"></a></dfn> : <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor" id="ref-for-htmlconstructor"><c- g>HTMLConstructor</c-></a>] <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="constructor" data-export data-lt="HTMLFencedFrameElement()|constructor()" id="dom-htmlfencedframeelement-htmlfencedframeelement"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-htmlfencedframeelement"></a></dfn>();
@@ -753,7 +754,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-height"></a></dfn>;
 };
 </pre>
-    <p><br></p>
    </dl>
    <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents a <span class="XXX">TODO: Wire up the browsing context "mode" that is being worked on in <a href="https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection">WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span></p>
    <p>The <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="element-attr" data-export id="element-attrdef-fencedframe-src"><code>src</code></dfn> attribute <span class="XXX">TODO</span>.</p>
@@ -1137,7 +1137,7 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-csp">[CSP]
-   <dd>Mike West. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
+   <dd>Mike West; Antonio Sartori. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
