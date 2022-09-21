@@ -143,6 +143,7 @@ dl, dd {
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
+ <dd>
 <xmp class=idl>
 [Exposed=Window]
 interface HTMLFencedFrameElement : HTMLElement {
@@ -153,7 +154,7 @@ interface HTMLFencedFrameElement : HTMLElement {
   [CEReactions] attribute DOMString height;
 };
 </xmp>
-<br>
+</dd>
 </dl>
 
 The <{fencedframe}> element represents a <span class=XXX>TODO: Wire up the browsing context "mode" that is being worked on in <a href=https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection>WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span>
