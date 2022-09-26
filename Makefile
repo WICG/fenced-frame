@@ -21,10 +21,5 @@ spec.html: spec.bs
 
 remote: spec.html
 
-ci: spec.bs
-	mkdir -p out
-	make remote
-	mv spec.html out/index.html
-
 clean:
 	rm spec.html
