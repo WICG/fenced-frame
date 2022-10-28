@@ -19,9 +19,9 @@ As mentioned in the list [here](https://developer.mozilla.org/en-US/docs/Web/HTT
 
 ### Summary
 
-Permission policy can neither be delegated to a fenced frame nor can a fenced frame enable permissions based on its header exchange like a top-level page. A fenced frame is therefore restricted to use cases that do not depend on these powerful features. Since permission policy is used for powerful features, restricting these should still leave use cases where fenced frames can be utilized e.g. ads. 
+Given the above challenges, permissions delegation will either need to be disabled or requires a separate verification to ensure that it is not used to communicate user identifying information. Completely disabling doesn't work for our main use cases e.g. FLEDGE ads require usage of APIs like attribution reporting to be able to do reporting correctly. To see how those are planned to be supported, please read https://github.com/WICG/fenced-frame/blob/master/explainer/permissions_policy_for_API_backed_fenced_frames.md 
 
-Based on above, [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API) should return "denied" inside a fenced frame tree.
+Relatedly, [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API) should return the correct result inside a fenced frame tree.
 
 
 ### UA Client hints: open question
