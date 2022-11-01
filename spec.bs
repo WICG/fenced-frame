@@ -173,8 +173,8 @@ Fenced frames are a different element from an iframe. Therefore, using the <b><i
 
 <h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
 
-The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
-a <span class="XXX">TODO: create a new browsing context, nested navigable, to be used here instead of the <a>nested browsing context</a> that is currently in use for other request destinations</span>. The syntax for the directive's name and value
+The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span
+class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive's name and value
 is described by the following ABNF:
 
 <pre>
