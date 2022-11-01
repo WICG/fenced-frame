@@ -52,6 +52,6 @@ The algorithm steps will be as follows:
     2. Otherwise navigate the fenced frame and only allow the permissions in **`required-permissions-to-load`** to be delegated to it even if **`allow-attribute`** contained more permissions than that.
 3. The fenced frame loads the document and the response headers **`document-response-restricted-permissions`** can further restrict the permissions applied to the document similar to how it does for an iframe.
 
-**Which features/permissions can be granted to a fenced frame**
+### Which features/permissions can be granted to a fenced frame
 
 Some permission based features may not align well with the privacy guarantees of an API, e.g. we do not want to allow JoinAdInterestGroup from a FLEDGE FF since users would expect to join an IG from a top-level page they visited and not from an ad. Similarly, we might not allow a hypothetical feature for getting unpartitioned cookies in a FLEDGE fenced frame given that FLEDGE does not allow microtargeting. APIs can therefore additionally have allow-lists based on their privacy guarantees and that would further restrict the **`required-permissions-to-load`** in step 1 of the algorithm above.
