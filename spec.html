@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="ac2071219ee541fb75c7598328825dfb64b153fc" name="document-revision">
+  <meta content="7b29c0583f44589b206871531eed0cee9e29fb90" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -666,7 +666,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-28">28 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-11-01">1 November 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -772,8 +772,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h3 class="heading settled" data-level="1.2" id="new-csp-directive"><span class="secno">1.2. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
    <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules. Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:</p>
    <h4 class="heading settled" data-level="1.2.1" id="directive-fenced-frame-src"><span class="secno">1.2.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into
-a <span class="XXX">TODO: create a new browsing context, nested navigable, to be used here instead of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context" id="ref-for-nested-browsing-context">nested browsing context</a> that is currently in use for other request destinations</span>. The syntax for the directive’s name and value
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive’s name and value
 is described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
 directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
@@ -1028,12 +1027,6 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
     <li><a href="#ref-for-interactive-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-nested-browsing-context">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-nested-browsing-context">1.2.1. fenced-frame-src</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-content-nothing">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing">https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing</a><b>Referenced in:</b>
    <ul>
@@ -1127,7 +1120,6 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
      <li><span class="dfn-paneled" id="term-for-global-attributes">global attributes</span>
      <li><span class="dfn-paneled" id="term-for-attr-dim-height">height</span>
      <li><span class="dfn-paneled" id="term-for-interactive-content-2">interactive content</span>
-     <li><span class="dfn-paneled" id="term-for-nested-browsing-context">nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-content-nothing">nothing</span>
      <li><span class="dfn-paneled" id="term-for-palpable-content-2">palpable content</span>
      <li><span class="dfn-paneled" id="term-for-phrasing-content-2">phrasing content</span>
