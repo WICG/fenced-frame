@@ -4,7 +4,7 @@
 
 # **Introduction**
 
-Current behavior in the origin trial is that all of the permission policy based features in fenced frames are disallowed as described in the explainer [here](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md#permission-policy) (with a caveat given in Note below). This is to make sure that the permission delegation doesn’t act as a communication channel as well as there isn’t any escalation of privilege by virtue of creating a fenced frame.
+Current behavior in the origin trial is that all of the permission policy based features in fenced frames are disallowed (with a caveat given in Note below). This is to make sure that the permission delegation doesn’t act as a communication channel as well as there isn’t any escalation of privilege by virtue of creating a fenced frame.
 
  
 
