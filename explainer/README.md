@@ -64,7 +64,7 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case for a fenced frame is to have read-only access to some other partition’s storage, for example, in Turtledove, it is the interest-based ad to be loaded which was added while visiting another site. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
+A primary use case for a fenced frame is to have read-only access to some other partition’s storage, for example, in Turtledove, it is the interest-based ad to be loaded which was added while visiting another site. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is stored opaquely in a fenced frame config (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
 
 We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
 
@@ -85,14 +85,9 @@ Since fenced frames are embedded frames, they also behave like iframes in many w
 
 
 ```
-<fencedframe src="demo_fenced_frame.html"></fencedframe>
+var fencedframe = document.createElement('fencedframe');
+fencedframe.config = FencedFrameConfig({'src': 'demo_fenced_frame.html'});
 ```
-
-
-  
-
-
-
 
 *   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is from a fenced frame tree.
 *   The server needs to opt-in to be loaded in a fenced frame or in an iframe embedded in a fenced frame tree. Without an opt-in, the document cannot be loaded. For opt-in, we use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
