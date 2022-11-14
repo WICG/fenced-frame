@@ -64,7 +64,7 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case for a fenced frame is to have read-only access to some other partition’s storage, for example, in Turtledove, it is the interest-based ad to be loaded which was added while visiting another site. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is stored opaquely in a fenced frame config (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
+A primary use case for fenced frames is to load content that depends on values in another partition’s storage. For example, in Turtledove, we pick an ad based on the user's interest groups (which are joined while browsing other sites) and load it in a fenced frame. The URL of the ad reflects the user's interest group memberships, which is a form of cross-site data, therefore we store the URL for the ad creative _opaquely_ in a fenced frame config (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)). The embedder can use this object to load the ad resulting from the Turtledove auction, but can't inspect it to determine _which_ ad won.
 
 We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
 
