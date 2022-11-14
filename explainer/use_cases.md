@@ -1,4 +1,4 @@
-# Fenced frame modes
+# Fenced frame use cases
 
 
 
@@ -14,9 +14,7 @@ This document summarizes the various use cases for [fenced frames](https://githu
 *   All use cases are similar such that they are isolated from the embedded context via any JS window references, script access, storage access, resizing of the fenced frame, messaging APIs etc.
 *   Every use case of fenced frame is different in how its privacy guarantees are preserved and would need a separate launch/review process. The first phase and the associated review process of fenced frames will focus only on its use by FLEDGE, sharedStorage, and the default `FencedFrameConfig()` constructor(s).
 *   Each mode’s src attribute’s privacy characteristics are different E.g. the “opaque-ads” mode allows providing a urn:uuid src by the embedder which contains cross-site data e.g. interest groups, “read-only” mode has src that is known to the embedder and does not need to be mitigated against link decoration. A future “unpartitioned-storage” mode will need the src to be mitigated against link decoration.
-*   It is important that the mode doesn’t change when there is a cross-document navigation. E.g. An “opaque-ads” mode fenced frame which has the interest group of the user, if navigated to the read-only mode from within the fenced frame can add the interest group to the target url and still get access to cookies thus creating a hybrid of two modes that we do not want to support.
-*   Similar to the above point, a fenced frame tree of one mode cannot contain a child fenced frame of another mode.
-*   One of the questions we are trying to answer from an API perspective is how to represent these different modes of fenced frames. Should they be separate elements all inheriting the base Fenced Frame element or whether there should be an attribute which can only be set once in the lifetime of the frame even across navigations. In phase 1, for simplicity, we are going with it as an attribute and then if need be and based on TAG/standards discussions, we can pivot to create separate elements.
+*   One of the questions we are trying to answer from an API perspective is how to represent these different use cases of fenced frames. Should they be separate elements, all inheriting the base Fenced Frame element; or should they ; or a hybrid between these two approaches? there should be an attribute which can only be set once in the lifetime of the frame even across navigations. In phase 1, for simplicity, we are going with it as an attribute and then if need be and based on TAG/standards discussions, we can pivot to create separate elements.
 
 
 ## **Opaque-ads**
