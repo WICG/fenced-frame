@@ -42,7 +42,7 @@ The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
 
-The different use cases and their privacy model are discussed as the different fenced frame modes [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md).
+The different use cases and their privacy models are discussed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md).
 
 ## Design
 
@@ -175,11 +175,11 @@ More about security mechanisms are detailed in:
 The fenced frame’s main goal is to improve privacy by disallowing communication with the embedder. There are however some attributes that might need to be shared between the two and their privacy impact needs to be carefully considered and mitigated, if possible. Some of these attributes are:
 
 
-*   **Initial size and resize:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads for the "opaque-ads" mode. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. 
+*   **Initial size and resize:** The API that generates a fenced frame config can pick the initial size that the fenced frame document sees, subject to whatever restrictions it deems necessary for its privacy model. If the initial size is fixed, then any changes the embedder makes to the `width` and `height` attributes of the `<fencedframe>` will not be reflected inside the fenced frame.
 *   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in some way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). We can't fully support it as iframes do, to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and intersection observer capability will be supported until the alternative is provided.
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
 *   **Network side channel:** This is detailed more here: [network side channel](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md)
-*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some modes, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
+*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some use cases, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
 
 More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
 
