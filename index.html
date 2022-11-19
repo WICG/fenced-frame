@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="f5f0c395bd6c4a0e933b4180923cc3feaa125ae2" name="document-revision">
+  <meta content="e4c6254033805a47b2053d9ec25580e8e931fde6" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -666,7 +666,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-11-01">1 November 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-11-19">19 November 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -764,16 +764,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 };
 </pre>
    </dl>
-   <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents a <span class="XXX">TODO: Wire up the browsing context "mode" that is being worked on in <a href="https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection">WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span></p>
+   <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents a <span class="XXX">TODO: Wire up the browsing context "mode"
+that is being worked on in <a href="https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection">WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span></p>
    <p>The <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="element-attr" data-export id="element-attrdef-fencedframe-src"><code>src</code></dfn> attribute <span class="XXX">TODO</span>.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute of the same name.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute
+of the same name.</p>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
-   <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> in the list of elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
+   <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
+attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> in the list of
+elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
    <h3 class="heading settled" data-level="1.2" id="new-csp-directive"><span class="secno">1.2. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
-   <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules. Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:</p>
+   <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules.
+Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched
+specification is printed below:</p>
    <h4 class="heading settled" data-level="1.2.1" id="directive-fenced-frame-src"><span class="secno">1.2.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive’s name and value
-is described by the following ABNF:</p>
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive’s name and value is
+described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
 directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
 </pre>
@@ -781,13 +787,14 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
     <a class="self-link" href="#fenced-frame-src-example"></a> Given a page with the following Content Security Policy: 
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/
 </pre>
-    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL
-  provided does not match <code>fenced-frame-src</code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
+    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL provided does not match <code>fenced-frame-src</code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
 <pre class="highlight"><c- p>&lt;</c-><c- f>fencedframe</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://example.org/"</c-><c- p>></c->
 <c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c->
 </pre>
    </div>
-   <p>The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>’s check.</p>
+   <p>The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
+the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>’s
+check.</p>
    <h4 class="heading settled" data-level="1.2.2" id="default-src-amendment"><span class="secno">1.2.2. </span><span class="content">Amending <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src">default-src</a></span><a class="self-link" href="#default-src-amendment"></a></h4>
    <p>The <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src①">default-src</a> directive’s Example 7 and Example 8 will be amended. Where it says:</p>
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy①">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self">'self'</a>;
@@ -802,7 +809,8 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
                          <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a>
 </pre>
    <h4 class="heading settled" data-level="1.2.3" id="fallback-list-amendment"><span class="secno">1.2.3. </span><span class="content"> Amending The Directive Fallback List</span><a class="self-link" href="#fallback-list-amendment"></a></h4>
-   <p>In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback list</a>, in step 1, add a new entry to the list:</p>
+   <p>In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
+list</a>, in step 1, add a new entry to the list:</p>
    <dl>
     <dt data-md>"<code>fenced-frame-src</code>"
     <dd data-md>
@@ -812,14 +820,20 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
      </ol>
    </dl>
    <h3 class="heading settled" data-level="1.3" id="new-request-destination"><span class="secno">1.3. </span><span class="content">New fencedframe <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a></span><a class="self-link" href="#new-request-destination"></a></h3>
-   <p>Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the associated request <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination①">destination</a> list to include a new entry, "<code>fencedframe</code>". It will have the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> "", the CSP directive <code>fenced-frame-src</code>, and the features HTML’s <code>&lt;fencedframe></code>.</p>
-   <p>Add "<code>fencedframe</code>" to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#non-subresource-request" id="ref-for-non-subresource-request">non-subresource request</a> list and to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#navigation-request" id="ref-for-navigation-request">navigation request</a> list.</p>
+   <p>Every distinct element should have its own request destination to allow for special handling when
+making requests (fenced frame request behavior deviates from iframe behavior in enough ways to
+justify having a separate destination). Update the associated request <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination①">destination</a> list
+to include a new entry, "<code>fencedframe</code>". It will have the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> "", the
+CSP directive <code>fenced-frame-src</code>, and the features HTML’s <code>&lt;fencedframe></code>.</p>
+   <p>Add "<code>fencedframe</code>" to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#non-subresource-request" id="ref-for-non-subresource-request">non-subresource request</a> list and to the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#navigation-request" id="ref-for-navigation-request">navigation
+request</a> list.</p>
    <p>Add "<code>fencedframe</code>" to the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#requestdestination" id="ref-for-requestdestination">RequestDestination</a></code> enum.</p>
    <p>In the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-fetch" id="ref-for-concept-fetch">fetch</a> algorithm, step 13.2, where it says:</p>
    <blockquote>
     <p>A user agent should set value to the first matching statement, if any, switching on request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination②">destination</a>:</p>
    </blockquote>
-   <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".</p>
+   <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
+"<code>frame</code>", and "<code>iframe</code>".</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
