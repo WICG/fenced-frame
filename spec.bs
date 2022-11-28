@@ -155,7 +155,6 @@ dl, dd {
  <dd>[=Nothing=].</dd>
  <dt>[=Content attributes=]:</dt>
  <dd>[=Global attributes=]</dd>
- <dd><{fencedframe/src}> — Address of the resource</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
  <dt>[=Accessibility considerations=]:</dt>
@@ -167,7 +166,7 @@ dl, dd {
 interface HTMLFencedFrameElement : HTMLElement {
   [HTMLConstructor] constructor();
 
-  [CEReactions] attribute USVString src;
+  [CEReactions] attribute FencedFrameConfig config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
 };
@@ -194,10 +193,7 @@ Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which 
   1. <span class=XXX>Process the actual attributes, and start the navigation</span>
 </div>
 
-The <dfn element-attr for=fencedframe>src</dfn> attribute <span class=XXX>TODO</span>.
-
-The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective content attribute
-of the same name.
+The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute <span class=XXX>TODO</span>.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
