@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="9b7fc13378a70cb8195f55d3011be09363936c49" name="document-revision">
+  <meta content="f738e952168c6eef3d53b8a22af117eb7e586cbc" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -766,7 +766,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <dd><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing" id="ref-for-concept-content-nothing">Nothing</a>.
     <dt><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes" id="ref-for-concept-element-attributes">Content attributes</a>:
     <dd><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#global-attributes" id="ref-for-global-attributes">Global attributes</a>
-    <dd><code><a data-link-type="element-sub" href="#element-attrdef-fencedframe-src" id="ref-for-element-attrdef-fencedframe-src">src</a></code> — Address of the resource
     <dd><code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width">width</a></code> — Horizontal dimension
     <dd><code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height">height</a></code> — Vertical dimension
     <dt><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations" id="ref-for-concept-element-accessibility-considerations">Accessibility considerations</a>:
@@ -778,7 +777,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 <c- b>interface</c-> <dfn class="idl-code" data-dfn-type="interface" data-export id="htmlfencedframeelement"><code><c- g>HTMLFencedFrameElement</c-></code><a class="self-link" href="#htmlfencedframeelement"></a></dfn> : <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor" id="ref-for-htmlconstructor"><c- g>HTMLConstructor</c-></a>] <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="constructor" data-export data-lt="HTMLFencedFrameElement()|constructor()" id="dom-htmlfencedframeelement-htmlfencedframeelement"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-htmlfencedframeelement"></a></dfn>();
 
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="USVString" id="dom-htmlfencedframeelement-src"><code><c- g>src</c-></code></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig"><c- n>FencedFrameConfig</c-></a> <a class="idl-code" data-link-type="attribute" data-type="FencedFrameConfig" href="#dom-htmlfencedframeelement-config" id="ref-for-dom-htmlfencedframeelement-config"><c- g>config</c-></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-width"><code><c- g>width</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-width"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-height"></a></dfn>;
 };
@@ -801,19 +800,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p><span class="XXX">Process the actual attributes, and start the navigation</span></p>
     </ol>
    </div>
-   <p>The <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="element-attr" data-export id="element-attrdef-fencedframe-src"><code>src</code></dfn> attribute <span class="XXX">TODO</span>.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute
-of the same name.</p>
+   <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export id="dom-htmlfencedframeelement-config"><code>config</code></dfn> IDL attribute <span class="XXX">TODO</span>.</p>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
    <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
 attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> in the list of
 elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
-   <h3 class="heading settled" data-level="1.2" id="fenced-frame-config-interface"><span class="secno">1.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig">FencedFrameConfig</a></code> interface</span><a class="self-link" href="#fenced-frame-config-interface"></a></h3>
+   <h3 class="heading settled" data-level="1.2" id="fenced-frame-config-interface"><span class="secno">1.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①">FencedFrameConfig</a></code> interface</span><a class="self-link" href="#fenced-frame-config-interface"></a></h3>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fencedframeconfig"><code><c- g>FencedFrameConfig</c-></code></dfn> {
 };
 </pre>
-   <p><span class="XXX">Define the <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①">FencedFrameConfig</a></code> interface here.</span></p>
+   <p><span class="XXX">Define the <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig②">FencedFrameConfig</a></code> interface here.</span></p>
    <h3 class="heading settled" data-level="1.3" id="fence-interface"><span class="secno">1.3. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fence" id="ref-for-fence">Fence</a></code> interface</span><a class="self-link" href="#fence-interface"></a></h3>
    <p><span class="XXX">Describe this infrastructure in detail.</span></p>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="idl-code" data-dfn-type="enum" data-export id="enumdef-fencereportingdestination"><code><c- g>FenceReportingDestination</c-></code><a class="self-link" href="#enumdef-fencereportingdestination"></a></dfn> {
@@ -966,6 +963,7 @@ traversables</a> section.</p>
   <ul class="index">
    <li><a href="#dom-fencereportingdestination-buyer">"buyer"</a><span>, in § 1.3</span>
    <li><a href="#dom-fencereportingdestination-component-seller">"component-seller"</a><span>, in § 1.3</span>
+   <li><a href="#dom-htmlfencedframeelement-config">config</a><span>, in § 1</span>
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">constructor()</a><span>, in § 1</span>
    <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 3.2</span>
    <li><a href="#dom-fenceevent-destination">destination</a><span>, in § 1.3</span>
@@ -990,12 +988,6 @@ traversables</a> section.</p>
    <li><a href="#dom-fence-reportevent">reportEvent(event)</a><span>, in § 1.3</span>
    <li><a href="#dom-fencereportingdestination-seller">"seller"</a><span>, in § 1.3</span>
    <li><a href="#dom-fencereportingdestination-shared-storage-select-url">"shared-storage-select-url"</a><span>, in § 1.3</span>
-   <li>
-    src
-    <ul>
-     <li><a href="#dom-htmlfencedframeelement-src">attribute for HTMLFencedFrameElement</a><span>, in § 1</span>
-     <li><a href="#element-attrdef-fencedframe-src">element-attr for fencedframe</a><span>, in § 1</span>
-    </ul>
    <li><a href="#dom-htmlfencedframeelement-width">width</a><span>, in § 1</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-grammardef-self">
@@ -1276,12 +1268,6 @@ traversables</a> section.</p>
     <li><a href="#ref-for-phrasing-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-reflect">
-   <a href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect">https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-reflect">1. The fencedframe element</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-tn-session-history-entries">
    <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
    <ul>
@@ -1329,12 +1315,6 @@ traversables</a> section.</p>
     <li><a href="#ref-for-Exposed">1. The fencedframe element</a>
     <li><a href="#ref-for-Exposed①">1.2. The FencedFrameConfig interface</a>
     <li><a href="#ref-for-Exposed②">1.3. The Fence interface</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-USVString">
-   <a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-USVString">1. The fencedframe element</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-sequence">
@@ -1418,7 +1398,6 @@ traversables</a> section.</p>
      <li><span class="dfn-paneled" id="term-for-concept-content-nothing">nothing</span>
      <li><span class="dfn-paneled" id="term-for-palpable-content-2">palpable content</span>
      <li><span class="dfn-paneled" id="term-for-phrasing-content-2">phrasing content</span>
-     <li><span class="dfn-paneled" id="term-for-reflect">reflect</span>
      <li><span class="dfn-paneled" id="term-for-tn-session-history-entries">session history entries</span>
      <li><span class="dfn-paneled" id="term-for-top-level-traversable">top-level traversable</span>
      <li><span class="dfn-paneled" id="term-for-traversable-navigable">traversable navigable</span>
@@ -1434,7 +1413,6 @@ traversables</a> section.</p>
     <ul>
      <li><span class="dfn-paneled" id="term-for-idl-DOMString">DOMString</span>
      <li><span class="dfn-paneled" id="term-for-Exposed">Exposed</span>
-     <li><span class="dfn-paneled" id="term-for-idl-USVString">USVString</span>
      <li><span class="dfn-paneled" id="term-for-idl-sequence">sequence</span>
      <li><span class="dfn-paneled" id="term-for-this">this</span>
      <li><span class="dfn-paneled" id="term-for-idl-undefined">undefined</span>
@@ -1459,7 +1437,7 @@ traversables</a> section.</p>
 <c- b>interface</c-> <a href="#htmlfencedframeelement"><code><c- g>HTMLFencedFrameElement</c-></code></a> : <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor"><c- g>HTMLConstructor</c-></a>] <a href="#dom-htmlfencedframeelement-htmlfencedframeelement"><code><c- g>constructor</c-></code></a>();
 
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString" href="#dom-htmlfencedframeelement-src"><code><c- g>src</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#fencedframeconfig"><c- n>FencedFrameConfig</c-></a> <a class="idl-code" data-link-type="attribute" data-type="FencedFrameConfig" href="#dom-htmlfencedframeelement-config"><c- g>config</c-></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-width"><code><c- g>width</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-height"><code><c- g>height</c-></code></a>;
 };
@@ -1500,28 +1478,23 @@ traversables</a> section.</p>
     <li><a href="#ref-for-elementdef-fencedframe④">2. Prerendering specification monkeypatches</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-htmlfencedframeelement-src">
-   <b><a href="#dom-htmlfencedframeelement-src">#dom-htmlfencedframeelement-src</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-htmlfencedframeelement-src">1. The fencedframe element</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="fencedframe-nested-traversable">
    <b><a href="#fencedframe-nested-traversable">#fencedframe-nested-traversable</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fencedframe-nested-traversable">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="element-attrdef-fencedframe-src">
-   <b><a href="#element-attrdef-fencedframe-src">#element-attrdef-fencedframe-src</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-htmlfencedframeelement-config">
+   <b><a href="#dom-htmlfencedframeelement-config">#dom-htmlfencedframeelement-config</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-element-attrdef-fencedframe-src">1. The fencedframe element</a>
+    <li><a href="#ref-for-dom-htmlfencedframeelement-config">1. The fencedframe element</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fencedframeconfig">
    <b><a href="#fencedframeconfig">#fencedframeconfig</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fencedframeconfig">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig①">(2)</a>
+    <li><a href="#ref-for-fencedframeconfig">1. The fencedframe element</a>
+    <li><a href="#ref-for-fencedframeconfig①">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-fenceevent">
