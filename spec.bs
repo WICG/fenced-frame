@@ -36,6 +36,17 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: reflect; url: common-dom-interfaces.html#reflect
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
+    text: creating a new top-level browsing context and document; url: document-sequences.html#creating-a-new-top-level-browsing-context
+    text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
+    text: node navigable; url: document-sequences.html#node-navigable
+    text: document state; url: browsing-the-web.html#she-document-state
+    for: document state
+      text: document; url: browsing-the-web.html#document-state-document
+    for: navigable
+      text: active session history entry; url: document-sequences.html#nav-active-history-entry
+      text: current session history entry; url: document-sequences.html#nav-current-history-entry
+    for: traversable navigable
+      text: session history entries; url: document-sequences.html#tn-session-history-entries
 </pre>
 
 <style>
@@ -162,6 +173,17 @@ The <{fencedframe}> element represents its [=fencedframe/nested traversable=].
 Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which is either a
 [=traversable navigable=] or null. It is initially null.
 
+<div algorithm=insertion>
+  When a <{fencedframe}> element is |element| is [=node is inserted into a document|inserted into a
+  document=] whose [=Document/browsing context=] is non-null, run these steps:
+
+  1. [=Create a new nested traversable=] for |element|.
+
+  1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
+
+  1. <span class=XXX>Process the actual attributes, and start the navigation</span>
+</div>
+
 The <dfn element-attr for=fencedframe>src</dfn> attribute <span class=XXX>TODO</span>.
 
 The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective content attribute
@@ -262,3 +284,45 @@ In the [=fetch=] algorithm, step 13.2, where it says:
 
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".
+
+<h2 id=html-integration>HTML Integration</h2>
+
+<h3 id=window-extension>Extensions to the {{Window}} interface</h3>
+
+<span class=XXX>Describe window.fence, etc</span>
+
+<h3 id=nested-traversables>Nested traversables</h3>
+
+In [[HTML]]'s <a
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables>Nested
+navigables</a> section, add the following algorithm:
+
+<div algorithm>
+  To <dfn>create a new nested traversable</dfn> given an element |element|:
+
+  1. Let |parentNavigable| be |element|'s [=node navigable=].
+
+  1. Let |document| to the second return value of [=creating a new top-level browsing context and
+     document=].
+
+  1. Let |documentState| be a new [=document state=], whose [=document state/document=] is |document|.
+
+  1. Let |traversable| be a new [=traversable navigable=].
+
+  1. [=Initialize the navigable=] |traversable| given |documentState| and |parentNavigable|.
+
+  1. Let |initialHistoryEntry| be |traversable|'s [=navigable/active session history entry=].
+
+  1. Set |initialHistoryEntry|'s step to 0.
+
+  1. [=Append=] |initialHistoryEntry| to |traversable|'s [=traversable navigable/session history
+     entries=].
+
+  1. Return |traversable|.
+</div>
+
+Note that the [=create a new nested traversable=] creates the first kind of [=traversable
+navigable=] that is not a [=top-level traversable=]. This will require removing the note about
+nested traversables in [[HTML]]'s <a
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
+traversables</a> section.
