@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="d45c68139898055a963194204fffde807f638238" name="document-revision">
+  <meta content="4e2708fc9803eafab494c1d663482dde80de9414" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -871,8 +871,8 @@ request</a> list.</p>
 Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched
 specification is printed below:</p>
    <h4 class="heading settled" data-level="1.5.1" id="directive-fenced-frame-src"><span class="secno">1.5.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive’s name and value is
-described by the following ABNF:</p>
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable①">nested traversable</a>. The syntax for the directive’s name and value
+is described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
 directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
 </pre>
@@ -918,7 +918,7 @@ specification adds another value for fenced frames:</p>
    <dl>
     <dt data-md>"<code>fencedframe</code>"
     <dd data-md>
-     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④">fencedframe</a></code>'s content</p>
+     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤">fencedframe</a></code>'s content</p>
    </dl>
    <h2 class="heading settled" data-level="3" id="html-integration"><span class="secno">3. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
    <h3 class="heading settled" data-level="3.1" id="window-extension"><span class="secno">3.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
@@ -1488,13 +1488,15 @@ traversables</a> section.</p>
    <ul>
     <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a> <a href="#ref-for-elementdef-fencedframe②">(3)</a>
     <li><a href="#ref-for-elementdef-fencedframe③">1.1. Dimension attributes</a>
-    <li><a href="#ref-for-elementdef-fencedframe④">2. Prerendering specification monkeypatches</a>
+    <li><a href="#ref-for-elementdef-fencedframe④">1.5.1. fenced-frame-src</a>
+    <li><a href="#ref-for-elementdef-fencedframe⑤">2. Prerendering specification monkeypatches</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="fencedframe-nested-traversable">
    <b><a href="#fencedframe-nested-traversable">#fencedframe-nested-traversable</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fencedframe-nested-traversable">1. The fencedframe element</a>
+    <li><a href="#ref-for-fencedframe-nested-traversable①">1.5.1. fenced-frame-src</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-htmlfencedframeelement-config">
