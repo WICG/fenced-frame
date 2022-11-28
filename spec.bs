@@ -157,10 +157,10 @@ interface HTMLFencedFrameElement : HTMLElement {
 </dd>
 </dl>
 
-The <{fencedframe}> element represents a <span class=XXX>TODO: Wire up the browsing context "mode"
-that is being worked on in <a
-href=https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection>WICG/nav-speculation</a>
-so we can have something like a nested top-level browsing context.</span>
+The <{fencedframe}> element represents its [=fencedframe/nested traversable=].
+
+Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which is either a
+[=traversable navigable=] or null. It is initially null.
 
 The <dfn element-attr for=fencedframe>src</dfn> attribute <span class=XXX>TODO</span>.
 
