@@ -193,7 +193,17 @@ Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which 
   1. <span class=XXX>Process the actual attributes, and start the navigation</span>
 </div>
 
-The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute <span class=XXX>TODO</span>.
+<div algorithm=config-getter>
+  The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
+
+<div algorithm=config-setter>
+  The {{HTMLFencedFrameElement/config}} IDL attribute setter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
