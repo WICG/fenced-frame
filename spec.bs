@@ -283,9 +283,9 @@ specification is printed below:
 
 <h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
 
-The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span
-class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive's name and value is
-described by the following ABNF:
+The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
+<{fencedframe}>'s [=fencedframe/nested traversable=]. The syntax for the directive's name and value
+is described by the following ABNF:
 
 <pre>
   directive-name  = "fenced-frame-src"
