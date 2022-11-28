@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="6ae3d6c28c9121db70de06c53661b0221c38639e" name="document-revision">
+  <meta content="81aff3604baa84eb8811d7954f624cb9d76d2010" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -472,6 +472,17 @@ c-[vg] { color: #0077aa } /* Name.Variable.Global */
 c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
+<style>/* style-var-click-highlighting */
+
+    var { cursor: pointer; }
+    var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+    var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+    var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+    var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+    var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+    var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+    var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+    </style>
 <style>/* style-darkmode */
 
 @media (prefers-color-scheme: dark) {
@@ -717,6 +728,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#new-request-destination"><span class="secno">1.3</span> <span class="content">New fencedframe <span>request</span> <span>destination</span></span></a>
      </ol>
     <li>
+     <a href="#html-integration"><span class="secno">2</span> <span class="content">HTML Integration</span></a>
+     <ol class="toc">
+      <li><a href="#window-extension"><span class="secno">2.1</span> <span class="content">Extensions to the <code class="idl"><span>Window</span></code> interface</span></a>
+      <li><a href="#nested-traversables"><span class="secno">2.2</span> <span class="content">Nested traversables</span></a>
+     </ol>
+    <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
       <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
@@ -766,12 +783,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </dl>
    <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents its <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable">nested traversable</a>.</p>
    <p>Each <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="dfn" data-noexport id="fencedframe-nested-traversable">nested traversable</dfn>, which is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a> or null. It is initially null.</p>
+   <div class="algorithm" data-algorithm="insertion">
+     When a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe②">fencedframe</a></code> element is <var>element</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document" id="ref-for-insert-an-element-into-a-document">inserted into a
+  document</a> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc" id="ref-for-concept-document-bc">browsing context</a> is non-null, run these steps: 
+    <ol>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable">Create a new nested traversable</a> for <var>element</var>.</p>
+     <li data-md>
+      <p><span class="XXX">Parse the sandbox attributes, once it exists</span></p>
+     <li data-md>
+      <p><span class="XXX">Process the actual attributes, and start the navigation</span></p>
+    </ol>
+   </div>
    <p>The <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="element-attr" data-export id="element-attrdef-fencedframe-src"><code>src</code></dfn> attribute <span class="XXX">TODO</span>.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-htmlfencedframeelement-src" id="ref-for-dom-htmlfencedframeelement-src">src</a></code> IDL attribute must <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflect</a> the respective content attribute
 of the same name.</p>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
    <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
-attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe②">fencedframe</a></code> in the list of
+attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> in the list of
 elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
    <h3 class="heading settled" data-level="1.2" id="new-csp-directive"><span class="secno">1.2. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
    <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules.
@@ -834,12 +863,48 @@ request</a> list.</p>
    </blockquote>
    <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".</p>
+   <h2 class="heading settled" data-level="2" id="html-integration"><span class="secno">2. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
+   <h3 class="heading settled" data-level="2.1" id="window-extension"><span class="secno">2.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
+   <p><span class="XXX">Describe window.fence, etc</span></p>
+   <h3 class="heading settled" data-level="2.2" id="nested-traversables"><span class="secno">2.2. </span><span class="content">Nested traversables</span><a class="self-link" href="#nested-traversables"></a></h3>
+   <p>In <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables">Nested
+navigables</a> section, add the following algorithm:</p>
+   <div class="algorithm" data-algorithm="create a new nested traversable">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-new-nested-traversable">create a new nested traversable</dfn> given an element <var>element</var>: 
+    <ol>
+     <li data-md>
+      <p>Let <var>parentNavigable</var> be <var>element</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a>.</p>
+     <li data-md>
+      <p>Let <var>document</var> to the second return value of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context" id="ref-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context and
+ document</a>.</p>
+     <li data-md>
+      <p>Let <var>documentState</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state" id="ref-for-she-document-state">document state</a>, whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document" id="ref-for-document-state-document">document</a> is <var>document</var>.</p>
+     <li data-md>
+      <p>Let <var>traversable</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①">traversable navigable</a>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable" id="ref-for-initialize-the-navigable">Initialize the navigable</a> <var>traversable</var> given <var>documentState</var> and <var>parentNavigable</var>.</p>
+     <li data-md>
+      <p>Let <var>initialHistoryEntry</var> be <var>traversable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry" id="ref-for-nav-active-history-entry">active session history entry</a>.</p>
+     <li data-md>
+      <p>Set <var>initialHistoryEntry</var>’s step to 0.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-append" id="ref-for-concept-node-append">Append</a> <var>initialHistoryEntry</var> to <var>traversable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries" id="ref-for-tn-session-history-entries">session history
+ entries</a>.</p>
+     <li data-md>
+      <p>Return <var>traversable</var>.</p>
+    </ol>
+   </div>
+   <p>Note that the <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">create a new nested traversable</a> creates the first kind of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable
+navigable</a> that is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversable</a>. This will require removing the note about
+nested traversables in <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables">Top-level
+traversables</a> section.</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">constructor()</a><span>, in § 1</span>
+   <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 2.2</span>
    <li><a href="#elementdef-fencedframe">fencedframe</a><span>, in § 1</span>
    <li><a href="#fenced-frame-src">fenced-frame-src</a><span>, in § 1.2.1</span>
    <li><a href="#dom-htmlfencedframeelement-height">height</a><span>, in § 1</span>
@@ -909,6 +974,12 @@ request</a> list.</p>
     <li><a href="#ref-for-worker-src">1.2.2. Amending default-src</a> <a href="#ref-for-worker-src①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-node-append">
+   <a href="https://dom.spec.whatwg.org/#concept-node-append">https://dom.spec.whatwg.org/#concept-node-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-node-append">2.2. Nested traversables</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-requestdestination">
    <a href="https://fetch.spec.whatwg.org/#requestdestination">https://fetch.spec.whatwg.org/#requestdestination</a><b>Referenced in:</b>
    <ul>
@@ -975,10 +1046,28 @@ request</a> list.</p>
     <li><a href="#ref-for-htmlelement">1. The fencedframe element</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-window">
+   <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-window">2.1. Extensions to the Window interface</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-accessibility-considerations">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations">https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-accessibility-considerations">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-nav-active-history-entry">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-nav-active-history-entry">2.2. Nested traversables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-bc">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc">https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-bc">1. The fencedframe element</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-categories">
@@ -1003,6 +1092,24 @@ request</a> list.</p>
    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts">https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-contexts">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-creating-a-new-top-level-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-creating-a-new-top-level-browsing-context">2.2. Nested traversables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-document-state-document">
+   <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-document-state-document">2.2. Nested traversables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-she-document-state">
+   <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state">https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-she-document-state">2.2. Nested traversables</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-dom">
@@ -1036,10 +1143,28 @@ request</a> list.</p>
     <li><a href="#ref-for-attr-dim-height①">1.1. Dimension attributes</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-initialize-the-navigable">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-initialize-the-navigable">2.2. Nested traversables</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-interactive-content-2">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2">https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-interactive-content-2">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-insert-an-element-into-a-document">
+   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document">https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-insert-an-element-into-a-document">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-node-navigable">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-node-navigable">2.2. Nested traversables</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-content-nothing">
@@ -1066,10 +1191,23 @@ request</a> list.</p>
     <li><a href="#ref-for-reflect">1. The fencedframe element</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-tn-session-history-entries">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-tn-session-history-entries">2.2. Nested traversables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-top-level-traversable">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-top-level-traversable">2.2. Nested traversables</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-traversable-navigable">
    <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-traversable-navigable">1. The fencedframe element</a>
+    <li><a href="#ref-for-traversable-navigable①">2.2. Nested traversables</a> <a href="#ref-for-traversable-navigable②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-attr-dim-width">
@@ -1113,6 +1251,11 @@ request</a> list.</p>
      <li><span class="dfn-paneled" id="term-for-worker-src">worker-src</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-node-append">append</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-requestdestination">RequestDestination</span>
@@ -1130,21 +1273,32 @@ request</a> list.</p>
      <li><span class="dfn-paneled" id="term-for-cereactions">CEReactions</span>
      <li><span class="dfn-paneled" id="term-for-htmlconstructor">HTMLConstructor</span>
      <li><span class="dfn-paneled" id="term-for-htmlelement">HTMLElement</span>
+     <li><span class="dfn-paneled" id="term-for-window">Window</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-accessibility-considerations">accessibility considerations</span>
+     <li><span class="dfn-paneled" id="term-for-nav-active-history-entry">active session history entry</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-categories">categories</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-attributes">content attributes</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-content-model">content model</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-contexts">contexts in which this element can be used</span>
+     <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context and document</span>
+     <li><span class="dfn-paneled" id="term-for-document-state-document">document</span>
+     <li><span class="dfn-paneled" id="term-for-she-document-state">document state</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-dom">dom interface</span>
      <li><span class="dfn-paneled" id="term-for-embedded-content-category">embedded content</span>
      <li><span class="dfn-paneled" id="term-for-flow-content-2">flow content</span>
      <li><span class="dfn-paneled" id="term-for-global-attributes">global attributes</span>
      <li><span class="dfn-paneled" id="term-for-attr-dim-height">height</span>
+     <li><span class="dfn-paneled" id="term-for-initialize-the-navigable">initialize the navigable</span>
      <li><span class="dfn-paneled" id="term-for-interactive-content-2">interactive content</span>
+     <li><span class="dfn-paneled" id="term-for-insert-an-element-into-a-document">node is inserted into a document</span>
+     <li><span class="dfn-paneled" id="term-for-node-navigable">node navigable</span>
      <li><span class="dfn-paneled" id="term-for-concept-content-nothing">nothing</span>
      <li><span class="dfn-paneled" id="term-for-palpable-content-2">palpable content</span>
      <li><span class="dfn-paneled" id="term-for-phrasing-content-2">phrasing content</span>
      <li><span class="dfn-paneled" id="term-for-reflect">reflect</span>
+     <li><span class="dfn-paneled" id="term-for-tn-session-history-entries">session history entries</span>
+     <li><span class="dfn-paneled" id="term-for-top-level-traversable">top-level traversable</span>
      <li><span class="dfn-paneled" id="term-for-traversable-navigable">traversable navigable</span>
      <li><span class="dfn-paneled" id="term-for-attr-dim-width">width</span>
     </ul>
@@ -1161,6 +1315,8 @@ request</a> list.</p>
   <dl>
    <dt id="biblio-csp">[CSP]
    <dd>Mike West; Antonio Sartori. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
@@ -1182,8 +1338,8 @@ request</a> list.</p>
   <aside class="dfn-panel" data-for="elementdef-fencedframe">
    <b><a href="#elementdef-fencedframe">#elementdef-fencedframe</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a>
-    <li><a href="#ref-for-elementdef-fencedframe②">1.1. Dimension attributes</a>
+    <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a> <a href="#ref-for-elementdef-fencedframe②">(3)</a>
+    <li><a href="#ref-for-elementdef-fencedframe③">1.1. Dimension attributes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-htmlfencedframeelement-src">
@@ -1209,6 +1365,13 @@ request</a> list.</p>
    <ul>
     <li><a href="#ref-for-fenced-frame-src">1.2.1. fenced-frame-src</a>
     <li><a href="#ref-for-fenced-frame-src①">1.2.2. Amending default-src</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="create-a-new-nested-traversable">
+   <b><a href="#create-a-new-nested-traversable">#create-a-new-nested-traversable</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-create-a-new-nested-traversable">1. The fencedframe element</a>
+    <li><a href="#ref-for-create-a-new-nested-traversable①">2.2. Nested traversables</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
@@ -1267,3 +1430,87 @@ document.body.addEventListener("click", function(e) {
 
 });
 </script>
+<script>/* script-var-click-highlighting */
+
+    document.addEventListener("click", e=>{
+        if(e.target.nodeName == "VAR") {
+            highlightSameAlgoVars(e.target);
+        }
+    });
+    {
+        const indexCounts = new Map();
+        const indexNames = new Map();
+        function highlightSameAlgoVars(v) {
+            // Find the algorithm container.
+            let algoContainer = null;
+            let searchEl = v;
+            while(algoContainer == null && searchEl != document.body) {
+                searchEl = searchEl.parentNode;
+                if(searchEl.hasAttribute("data-algorithm")) {
+                    algoContainer = searchEl;
+                }
+            }
+
+            // Not highlighting document-global vars,
+            // too likely to be unrelated.
+            if(algoContainer == null) return;
+
+            const algoName = algoContainer.getAttribute("data-algorithm");
+            const varName = getVarName(v);
+            const addClass = !v.classList.contains("selected");
+            let highlightClass = null;
+            if(addClass) {
+                const index = chooseHighlightIndex(algoName, varName);
+                indexCounts.get(algoName)[index] += 1;
+                indexNames.set(algoName+"///"+varName, index);
+                highlightClass = nameFromIndex(index);
+            } else {
+                const index = previousHighlightIndex(algoName, varName);
+                indexCounts.get(algoName)[index] -= 1;
+                highlightClass = nameFromIndex(index);
+            }
+
+            // Find all same-name vars, and toggle their class appropriately.
+            for(const el of algoContainer.querySelectorAll("var")) {
+                if(getVarName(el) == varName) {
+                    el.classList.toggle("selected", addClass);
+                    el.classList.toggle(highlightClass, addClass);
+                }
+            }
+        }
+        function getVarName(el) {
+            return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+        }
+        function chooseHighlightIndex(algoName, varName) {
+            let indexes = null;
+            if(indexCounts.has(algoName)) {
+                indexes = indexCounts.get(algoName);
+            } else {
+                // 7 classes right now
+                indexes = [0,0,0,0,0,0,0];
+                indexCounts.set(algoName, indexes);
+            }
+
+            // If the element was recently unclicked,
+            // *and* that color is still unclaimed,
+            // give it back the same color.
+            const lastIndex = previousHighlightIndex(algoName, varName);
+            if(indexes[lastIndex] === 0) return lastIndex;
+
+            // Find the earliest index with the lowest count.
+            const minCount = Math.min.apply(null, indexes);
+            let index = null;
+            for(var i = 0; i < indexes.length; i++) {
+                if(indexes[i] == minCount) {
+                    return i;
+                }
+            }
+        }
+        function previousHighlightIndex(algoName, varName) {
+            return indexNames.get(algoName+"///"+varName);
+        }
+        function nameFromIndex(index) {
+            return "selected" + index;
+        }
+    }
+    </script>
