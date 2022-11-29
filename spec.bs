@@ -215,12 +215,21 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
 
 <pre class=idl>
+  enum OpaqueProperty {"opaque"};
+
+  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
+  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
+
   [Exposed=Window]
   interface FencedFrameConfig {
+    constructor(USVString url);
+    readonly attribute FencedFrameConfigURL? url;
+    readonly attribute FencedFrameConfigSize? width;
+    readonly attribute FencedFrameConfigSize? height;
   };
 </pre>
 
-<span class=XXX>Define the {{FencedFrameConfig}} interface here.</span>
+<span class=XXX>TODO: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
 
