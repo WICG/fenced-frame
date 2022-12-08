@@ -119,7 +119,7 @@ A new CSP directive called fenced-frame-src to be introduced which if not presen
     Content-security-policy: fenced-frame-src http://example.com	; frame-src `none`
     ```
 
-# **Alternatives considered for opaque fenced frames**
+# **Alternatives considered for opaque url fenced frames**
 *   Apply policy to the mapped URL
 The alternative approach could have been to apply the csp header to the actual URL and not report it. That would be hard to roll out from a site owner’s perspective. The standard way to add or change a CSP on a site is:
 1. Come up with a CSP the developer thinks is right
