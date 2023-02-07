@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
+  <meta content="Bikeshed version 859efb4bd, updated Fri Jan 27 16:04:01 2023 -0800" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="b9fcf470ee24727bcee7d40096489d7ca3b0a8b1" name="document-revision">
+  <meta content="9de4dd3494deb563999d8d7042adefa0f276e103" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -677,7 +677,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-11-29">29 November 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-02-07">7 February 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -691,7 +691,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2022 the Contributors to the Fenced frame Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2023 the Contributors to the Fenced frame Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
 A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
@@ -722,7 +722,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#fence-interface"><span class="secno">1.3</span> <span class="content">The <code class="idl"><span>Fence</span></code> interface</span></a>
       <li><a href="#new-request-destination"><span class="secno">1.4</span> <span class="content">New <span>request</span> <span>destination</span></span></a>
       <li>
-       <a href="#new-csp-directive"><span class="secno">1.5</span> <span class="content">New fenced-frame-src <span>[CSP]</span> <span>directive</span></span></a>
+       <a href="#new-csp-directive"><span class="secno">1.5</span> <span class="content">New fenced-frame-src <span title="Content Security Policy Level 3">[CSP]</span> <span>directive</span></span></a>
        <ol class="toc">
         <li><a href="#directive-fenced-frame-src"><span class="secno">1.5.1</span> <span class="content"><code>fenced-frame-src</code></span></a>
         <li><a href="#default-src-amendment"><span class="secno">1.5.2</span> <span class="content">Amending <span>default-src</span></span></a>
@@ -815,7 +815,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
-   <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
+   <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
 attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> in the list of
 elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
    <h3 class="heading settled" data-level="1.2" id="fenced-frame-config-interface"><span class="secno">1.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①">FencedFrameConfig</a></code> interface</span><a class="self-link" href="#fenced-frame-config-interface"></a></h3>
@@ -875,9 +875,9 @@ request</a> list.</p>
    </blockquote>
    <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".</p>
-   <h3 class="heading settled" data-level="1.5" id="new-csp-directive"><span class="secno">1.5. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
+   <h3 class="heading settled" data-level="1.5" id="new-csp-directive"><span class="secno">1.5. </span><span class="content">New fenced-frame-src <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a></span><a class="self-link" href="#new-csp-directive"></a></h3>
    <p>Fenced frames are a different element from an iframe. Therefore, using the <b><i><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#frame-src" id="ref-for-frame-src">frame-src</a></i></b> directive wouldn’t give web sites enough control over their CSP rules.
-Introduce a new <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched
+Introduce a new <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched
 specification is printed below:</p>
    <h4 class="heading settled" data-level="1.5.1" id="directive-fenced-frame-src"><span class="secno">1.5.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable①">nested traversable</a>. The syntax for the directive’s name and value
@@ -947,7 +947,7 @@ specification adds another value for fenced frames:</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.2" id="nested-traversables"><span class="secno">3.2. </span><span class="content">Nested traversables</span><a class="self-link" href="#nested-traversables"></a></h3>
-   <p>In <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables">Nested
+   <p>In <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables">Nested
 navigables</a> section, add the following algorithm:</p>
    <div class="algorithm" data-algorithm="create a new nested traversable">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-new-nested-traversable">create a new nested traversable</dfn> given an element <var>element</var>: 
@@ -976,7 +976,7 @@ navigables</a> section, add the following algorithm:</p>
    </div>
    <p>Note that the <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">create a new nested traversable</a> creates the first kind of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable
 navigable</a> that is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversable</a>. This will require removing the note about
-nested traversables in <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables">Top-level
+nested traversables in <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables">Top-level
 traversables</a> section.</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
@@ -1482,6 +1482,8 @@ traversables</a> section.</p>
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dt id="biblio-prerendering-revamped">[PRERENDERING-REVAMPED]
+   <dd>Prerendering Revamped URL: <a href="https://wicg.github.io/nav-speculation/prerendering.html">https://wicg.github.io/nav-speculation/prerendering.html</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
   </dl>
@@ -1682,12 +1684,13 @@ document.body.addEventListener("click", function(e) {
 </script>
 <script>/* script-var-click-highlighting */
 
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
+    "use strict";
     {
+        document.addEventListener("click", e=>{
+            if(e.target.nodeName == "VAR") {
+                highlightSameAlgoVars(e.target);
+            }
+        });
         const indexCounts = new Map();
         const indexNames = new Map();
         function highlightSameAlgoVars(v) {
