@@ -32,7 +32,7 @@ Note that this is not applicable to opaque urls which are discussed in the next 
 
 # **Opaque URL**
 
-The first use cases for fenced frames are going to be for [opaque ads](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md#opaque-ads) and since the url of the fenced frame needs to be hidden from the embedding page, we cannot apply the frame-src directive directly to the mapped url, since CSP reporting can reveal to the embedding page if a fenced frame was successfully created or not. This would lead to the embedding page deriving the possible origins of the opaque ad, going against the isolation guarantees of this mode.
+The first use cases for fenced frames are going to be for [opaque ads](https://github.com/WICG/fenced-frame/blob/master/explainer/use_cases.md#opaque-ads) and since the url of the fenced frame needs to be hidden from the embedding page, we cannot apply the frame-src directive directly to the mapped url, since CSP reporting can reveal to the embedding page if a fenced frame was successfully created or not. This would lead to the embedding page deriving the possible origins of the opaque ad, going against the isolation guarantees of this mode.
 
 The other option of requiring the embedding site to mention urn:uuid (scheme of the opaque url) in their CSP rules to allow opaque ads, is also not feasible. The limitation is that there are a large number of publisher sites that currently have their csp set to e.g. `frame-src: https:` and requiring the publisher sites to change their headers in order to allow interest-group based advertising to work correctly, is not amenable to deployment. 
 
