@@ -25,8 +25,8 @@ navigator.runAdAuction(myAuctionConfig).then((auctionWinnerConfig) => {
   //   'src': opaque ('ad.com/foo' internally)
   //   ...
   // }
-  var adFrame = document.createElement('fencedframe');
-  adFrame.setAttribute(config,auctionWinnerConfig);
+  const adFrame = document.createElement('fencedframe');
+  adFrame.config = auctionWinnerConfig;
 });
 ```
 
