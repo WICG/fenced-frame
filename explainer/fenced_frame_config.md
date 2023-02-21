@@ -10,7 +10,7 @@ For use cases involving APIs that access cross-site data, we need to be able to 
 
 `<fencedframe>` has an attribute `config`, rather than `src`. APIs like FLEDGE return a `FencedFrameConfig` object defined by our [WebIDL](https://wicg.github.io/fenced-frame/#fenced-frame-config-interface). This object has a series of fields that specify the behavior desired by the API (e.g. the ad url, width and height as seen from within the fenced frame, etc.). When the embedder stores this object into the `config` attribute, the fenced frame loads the context accordingly.
   
-In order to hide information as described above, the browser _redacts_ `FencedFrameConfig` before sending it to the embedder. This means that certain fields which are sensitive, like the ad url, are replaced with an enum value `opaque`. The embedder may see whether there is a value defined for that field, but not what the value is. Likewise, when the embedder requests that a config be loaded into the fenced frame, the browser is responsible for looking up the config in a data structure in order to access the unredacted information.
+In order to hide information as described above, the browser _redacts_ `FencedFrameConfig` before sending it to the embedder. This means that certain fields which are sensitive, like the ad url, are replaced with a string `opaque`. The embedder may see whether there is a value defined for that field, but not what the value is. Likewise, when the embedder requests that a config be loaded into the fenced frame, the browser is responsible for looking up the config in a data structure in order to access the unredacted information.
 
   
 ## Turtledove Example
