@@ -85,8 +85,8 @@ Since fenced frames are embedded frames, they also behave like iframes in many w
 
 
 ```
-var fencedframe = document.createElement('fencedframe');
-fencedframe.config = FencedFrameConfig({'src': 'demo_fenced_frame.html'});
+const fencedframe = document.createElement('fencedframe');
+fencedframe.config = new FencedFrameConfig('demo_fenced_frame.html');
 ```
 
 *   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is from a fenced frame tree.
