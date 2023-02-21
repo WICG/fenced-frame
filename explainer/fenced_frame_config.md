@@ -3,7 +3,7 @@
 
 # Introduction
 
-For use cases involving APIs that access cross-site data, we need to be able to load a fenced frame with content determined by the API without revealing information about the content to the embedding context. For example, with interest-based ads in [FLEDGE](https://github.com/WICG/turtledove), the winning ad that's returned from the auction auction depends on the user's cross-site interest group data, which we don't want to expose to the site that calls the auction. This document proposes a web-platform way of loading content into a fenced frame using an opaque object.
+For use cases involving APIs that access cross-site data, we need to be able to load a fenced frame with content determined by the API without revealing information about the content to the embedding context. For example, with interest-based ads in [FLEDGE](https://github.com/WICG/turtledove), the winning ad that's returned from the auction depends on the user's cross-site interest group data, which we don't want to expose to the site that calls the auction. This document proposes a web-platform way of loading content into a fenced frame using an opaque object.
 
 
 # Proposed solution
