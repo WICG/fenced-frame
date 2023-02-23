@@ -10,7 +10,7 @@ In a scenario where the input URLs for the fenced frame are required to be k-ano
 
 Instead, before navigating the fenced frame to the auction's winning [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md), the embedder could write the event-level ID, or other contextual information, as a string, to the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `context` attribute, as in the example below. 
 
-Subsequently, anything written to the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `context` prior to navigation to that config, can be read from inside a [shared storage worklet](https://github.com/WICG/shared-storage#in-the-worklet-during-an-operation) created by the [fenced frame](https://github.com/wicg/fenced-frame/), or created by any of its same-origin children, via `sharedStorage.context()`.
+Subsequently, anything written to the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `context` prior to navigation to that config, can be read via `sharedStorage.context()` from inside a worklet for the [Shared Storage API](https://github.com/WICG/shared-storage) created by the [fenced frame](https://github.com/wicg/fenced-frame/) or by any of its same-origin children.
 
 ## Example
 
