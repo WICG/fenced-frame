@@ -21,7 +21,7 @@ It allows a fenced frame to be navigated successfully only if the embedding fram
 
 # **Proposed Solution**
 
-The proposed solution is to extend the urn:uuid bound attributes as described in this [issue](https://github.com/WICG/fenced-frame/issues/48) to also include the permissions that the fenced frame’s consumer API considers important for a particular url to load. 
+The proposed solution is to extend the config-bound attributes as described in this [issue](https://github.com/WICG/fenced-frame/issues/48) to also include the permissions that the fenced frame’s consumer API considers important for a particular url to load. 
 
 There are various inputs to compute the final permissions for a document loaded in the fenced frame. Dividing them further into what currently exists for iframes vs the new ones:
 
@@ -46,8 +46,8 @@ The algorithm steps will be as follows:
 
 
 
-1. The embedder calls an API to generate a urn:uuid e.g. navigator.runAdAuction(). The API takes `predeclared-allow-attribute`, any default list as mentioned above into consideration and picks `required-permissions-to-load`. Any permissions that are allowed inside the fenced frame should have gone through the k-anonymity check along with the url and resulted in **`required-permissions-to-load` .**
-2. The embedder navigates the FF to the urn:uuid. 
+1. The embedder calls an API (e.g. navigator.runAdAuction()) to generate a config. The API takes `predeclared-allow-attribute`, any default list as mentioned above into consideration and picks `required-permissions-to-load`. Any permissions that are allowed inside the fenced frame should have gone through the k-anonymity check along with the url and resulted in **`required-permissions-to-load` .**
+2. The embedder loads the config in the FF. 
     1. If **`allow-attribute`** does not contain a permission that is part of **`required-permissions-to-load`**, then the FF fails to load.
     2. Otherwise navigate the fenced frame and only allow the permissions in **`required-permissions-to-load`** to be delegated to it even if **`allow-attribute`** contained more permissions than that.
 3. The fenced frame loads the document and the response headers **`document-response-restricted-permissions`** can further restrict the permissions applied to the document similar to how it does for an iframe.

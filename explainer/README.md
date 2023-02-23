@@ -42,7 +42,7 @@ The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
 
-The different use cases and their privacy model are discussed as the different fenced frame modes [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md).
+The different use cases and their privacy models are discussed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md).
 
 ## Design
 
@@ -64,7 +64,7 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case for a fenced frame is to have read-only access to some other partition’s storage, for example, in Turtledove, it is the interest-based ad to be loaded which was added while visiting another site. The URL of the ad is sufficient to give away the interest group that the user belongs to, to the embedding site. Therefore the URL for the ad creative is an opaque url (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_src.md)) — which can be used for rendering, but cannot be inspected directly. 
+A primary use case for fenced frames is to load content that depends on values in another partition’s storage. For example, in Turtledove, we pick an ad based on the user's interest groups (which are joined while browsing other sites) and load it in a fenced frame. The URL of the ad reflects the user's interest group memberships, which is a form of cross-site data, therefore we store the URL for the ad creative _opaquely_ in a fenced frame config (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/fenced_frame_config.md)). The embedder can use this object to load the ad resulting from the Turtledove auction, but can't inspect it to determine _which_ ad won.
 
 We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
 
@@ -85,14 +85,9 @@ Since fenced frames are embedded frames, they also behave like iframes in many w
 
 
 ```
-<fencedframe src="demo_fenced_frame.html"></fencedframe>
+const fencedframe = document.createElement('fencedframe');
+fencedframe.config = new FencedFrameConfig('demo_fenced_frame.html');
 ```
-
-
-  
-
-
-
 
 *   Browser lets the server know via a new [`sec-fetch-dest`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Dest) header value `fencedframe` to let it know that a request is from a fenced frame tree.
 *   The server needs to opt-in to be loaded in a fenced frame or in an iframe embedded in a fenced frame tree. Without an opt-in, the document cannot be loaded. For opt-in, we use the [supports-loading-mode](https://github.com/jeremyroman/alternate-loading-modes/blob/main/opt-in.md#declaration) header with a new value of `fenced-frame`.
@@ -135,13 +130,13 @@ This discussion assumes that third-party cookies, like all other third party sto
 
 All fenced frame related functions will live in its own class, in the same way that iframe-related funcionality lives in HTMLIFrameElement.
 
-#### Opaque-Ads Can Load API
+#### Can Load API
 
-There are various reasons a fenced frame embedded as an opaque ad could refuse to load in a page. For example, if the page is not in a secure context, or if CSPEE is specified in the embedding frame, the fenced frame will refuse to load. This is a lot for a developer to keep track of.
+There are various reasons a fenced frame config with an opaque url could refuse to load in a page. For example, if the page is not in a secure context, or if CSPEE is specified in the embedding frame, the fenced frame config will refuse to load. This is a lot for a developer to keep track of.
 
 If the process of getting an ad in the page is complex or expensive, there needs to be a way to ensure that the resulting ad will actually end up in the page before the expensive process begins.
 
-A static API method will be introduced to the HTMLFencedFrameElement class to check this. No fenced frame will be created when calling this API, and it can be invoked before actually attempting to create a fenced frame. The API will return a boolean, true if an opaque-ads fenced frame would be able to load in the caller's context, false if not.
+A static API method will be introduced to the HTMLFencedFrameElement class to check this. No fenced frame will be created when calling this API, and it can be invoked before actually attempting to load a fenced frame config. The API will return a boolean, true if a config with an opaque mapped url would be able to load in the caller's context, false if not.
 
 ##### Example usage
 
@@ -180,11 +175,11 @@ More about security mechanisms are detailed in:
 The fenced frame’s main goal is to improve privacy by disallowing communication with the embedder. There are however some attributes that might need to be shared between the two and their privacy impact needs to be carefully considered and mitigated, if possible. Some of these attributes are:
 
 
-*   **Initial size and resize:** To avoid the size attribute being used to communicate user identifying information from the embedding context to the fenced frame, this will be limited to only a few values. E.g. Some of the values that are relevant for ads for the "opaque-ads" mode. We are also considering allowing some of these sizes to be flexible based on the viewport width. Note that since size is a channel, these ads cannot be resized by the publisher. 
+*   **Initial size and resize:** The API that generates a fenced frame config can pick the initial size that the fenced frame document sees, subject to whatever restrictions it deems necessary for its privacy model. If the initial size is fixed, then any changes the embedder attempts to make to the fenced frame's size will not be reflected inside of it.
 *   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in some way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). We can't fully support it as iframes do, to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and intersection observer capability will be supported until the alternative is provided.
 *   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
 *   **Network side channel:** This is detailed more here: [network side channel](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md)
-*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some modes, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
+*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some use cases, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
 
 More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
 

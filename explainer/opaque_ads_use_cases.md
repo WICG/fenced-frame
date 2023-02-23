@@ -1,6 +1,6 @@
 ## Use-cases/Key scenarios
 
-Following are the use cases for fenced frames [opaque mode](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md#opaque-ads). 
+Following are the use cases for fenced frames loading [ads with opaque urls](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md#opaque-ads). 
 
 ### Interest Group ads based on user activity (TURTLEDOVE)
 
