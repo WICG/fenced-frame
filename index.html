@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 859efb4bd, updated Fri Jan 27 16:04:01 2023 -0800" name="generator">
+  <meta content="Bikeshed version f043d3484, updated Fri Feb 17 10:53:48 2023 -0800" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="9de4dd3494deb563999d8d7042adefa0f276e103" name="document-revision">
+  <meta content="f14ad02b29bc080b6f47c2ef5b614272a7c46530" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -89,7 +89,6 @@ dl, dd {
 }
 </style>
 <style>/* style-autolinks */
-
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
     font-size: inherit;
@@ -149,7 +148,8 @@ pre .property::before, pre .property::after {
 
 [data-link-type=biblio] {
     white-space: pre;
-}</style>
+}
+</style>
 <style>/* style-colors */
 
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
@@ -258,9 +258,9 @@ pre .property::before, pre .property::after {
     --outdated-shadow: red;
 
     --editedrec-bg: darkorange;
-}</style>
+}
+</style>
 <style>/* style-counters */
-
 body {
     counter-reset: example figure issue;
 }
@@ -287,9 +287,9 @@ figcaption {
 }
 figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
-}</style>
+}
+</style>
 <style>/* style-dfn-panel */
-
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
@@ -297,10 +297,10 @@ figcaption:not(.no-marker)::before {
 .dfn-panel {
     position: absolute;
     z-index: 35;
-    height: auto;
-    width: -webkit-fit-content;
-    width: fit-content;
+    width: 20em;
+    min-width: min-content;
     max-width: 300px;
+    height: auto;
     max-height: 500px;
     overflow: auto;
     padding: 0.5em 0.75em;
@@ -308,6 +308,7 @@ figcaption:not(.no-marker)::before {
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
 }
 .dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
@@ -330,7 +331,6 @@ figcaption:not(.no-marker)::before {
 .dfn-paneled { cursor: pointer; }
 </style>
 <style>/* style-issues */
-
 a[href].issue-return {
     float: right;
     float: inline-end;
@@ -340,7 +340,6 @@ a[href].issue-return {
 }
 </style>
 <style>/* style-md-lists */
-
 /* This is a weird hack for me not yet following the commonmark spec
    regarding paragraph and lists. */
 [data-md] > :first-child {
@@ -348,7 +347,8 @@ a[href].issue-return {
 }
 [data-md] > :last-child {
     margin-bottom: 0;
-}</style>
+}
+</style>
 <style>/* style-selflinks */
 
 :root {
@@ -596,6 +596,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
        which is quite common in practice... */
     img { background: white; }
 }
+
 @media (prefers-color-scheme: dark) {
     :root {
         --selflink-text: black;
@@ -610,6 +611,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
         --dfnpanel-text: var(--text);
     }
 }
+
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
 
@@ -677,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-02-07">7 February 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-02-23">23 February 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1029,359 +1031,359 @@ traversables</a> section.</p>
      <li><a href="#dom-htmlfencedframeelement-width">attribute for HTMLFencedFrameElement</a><span>, in § 1</span>
     </ul>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-grammardef-self">
-   <a href="https://w3c.github.io/webappsec-csp/#grammardef-self">https://w3c.github.io/webappsec-csp/#grammardef-self</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-0767ca6dc5cfbe33bf18821344833543" class="dfn-panel" data-for="0767ca6dc5cfbe33bf18821344833543" id="infopanel-for-0767ca6dc5cfbe33bf18821344833543">
+   <span id="infopaneltitle-for-0767ca6dc5cfbe33bf18821344833543" style="display:none">Info about the ''self'' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#grammardef-self">https://w3c.github.io/webappsec-csp/#grammardef-self</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-grammardef-self">1.5.2. Amending default-src</a> <a href="#ref-for-grammardef-self①">(2)</a> <a href="#ref-for-grammardef-self②">(3)</a> <a href="#ref-for-grammardef-self③">(4)</a> <a href="#ref-for-grammardef-self④">(5)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-connect-src">
-   <a href="https://w3c.github.io/webappsec-csp/#connect-src">https://w3c.github.io/webappsec-csp/#connect-src</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-597fbf2d1db034644a8eba4bdab3f3c5" class="dfn-panel" data-for="597fbf2d1db034644a8eba4bdab3f3c5" id="infopanel-for-597fbf2d1db034644a8eba4bdab3f3c5">
+   <span id="infopaneltitle-for-597fbf2d1db034644a8eba4bdab3f3c5" style="display:none">Info about the 'connect-src' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#connect-src">https://w3c.github.io/webappsec-csp/#connect-src</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-connect-src">1.5.2. Amending default-src</a> <a href="#ref-for-connect-src①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-header-content-security-policy">
-   <a href="https://w3c.github.io/webappsec-csp/#header-content-security-policy">https://w3c.github.io/webappsec-csp/#header-content-security-policy</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-29b9bec6818d7a2bb9f83e11dc731b0a" class="dfn-panel" data-for="29b9bec6818d7a2bb9f83e11dc731b0a" id="infopanel-for-29b9bec6818d7a2bb9f83e11dc731b0a">
+   <span id="infopaneltitle-for-29b9bec6818d7a2bb9f83e11dc731b0a" style="display:none">Info about the 'content-security-policy' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#header-content-security-policy">https://w3c.github.io/webappsec-csp/#header-content-security-policy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-header-content-security-policy">1.5.1. fenced-frame-src</a>
     <li><a href="#ref-for-header-content-security-policy①">1.5.2. Amending default-src</a> <a href="#ref-for-header-content-security-policy②">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-default-src">
-   <a href="https://w3c.github.io/webappsec-csp/#default-src">https://w3c.github.io/webappsec-csp/#default-src</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c839b5e2d49d51a3acae6a2adaad64da" class="dfn-panel" data-for="c839b5e2d49d51a3acae6a2adaad64da" id="infopanel-for-c839b5e2d49d51a3acae6a2adaad64da">
+   <span id="infopaneltitle-for-c839b5e2d49d51a3acae6a2adaad64da" style="display:none">Info about the 'default-src' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#default-src">https://w3c.github.io/webappsec-csp/#default-src</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-default-src">1.5.2. Amending default-src</a> <a href="#ref-for-default-src①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-directives">
-   <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f24df3476b3fb236d04cbb6ebd9f5c21" class="dfn-panel" data-for="f24df3476b3fb236d04cbb6ebd9f5c21" id="infopanel-for-f24df3476b3fb236d04cbb6ebd9f5c21">
+   <span id="infopaneltitle-for-f24df3476b3fb236d04cbb6ebd9f5c21" style="display:none">Info about the 'directives' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-directives">1.5. New fenced-frame-src [CSP] directive</a> <a href="#ref-for-directives①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-frame-src">
-   <a href="https://w3c.github.io/webappsec-csp/#frame-src">https://w3c.github.io/webappsec-csp/#frame-src</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-b6f5a1f95d31f1c86f0bb87564cf2859" class="dfn-panel" data-for="b6f5a1f95d31f1c86f0bb87564cf2859" id="infopanel-for-b6f5a1f95d31f1c86f0bb87564cf2859">
+   <span id="infopaneltitle-for-b6f5a1f95d31f1c86f0bb87564cf2859" style="display:none">Info about the 'frame-src' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#frame-src">https://w3c.github.io/webappsec-csp/#frame-src</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-frame-src">1.5. New fenced-frame-src [CSP] directive</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-grammardef-serialized-source-list">
-   <a href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list">https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-800a660f803659c576032fa90039a27e" class="dfn-panel" data-for="800a660f803659c576032fa90039a27e" id="infopanel-for-800a660f803659c576032fa90039a27e">
+   <span id="infopaneltitle-for-800a660f803659c576032fa90039a27e" style="display:none">Info about the 'serialized-source-list' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list">https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-grammardef-serialized-source-list">1.5.1. fenced-frame-src</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-source-lists">
-   <a href="https://w3c.github.io/webappsec-csp/#source-lists">https://w3c.github.io/webappsec-csp/#source-lists</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-869ce39e4005794c01c6e7ee3a9c27ae" class="dfn-panel" data-for="869ce39e4005794c01c6e7ee3a9c27ae" id="infopanel-for-869ce39e4005794c01c6e7ee3a9c27ae">
+   <span id="infopaneltitle-for-869ce39e4005794c01c6e7ee3a9c27ae" style="display:none">Info about the 'source lists' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#source-lists">https://w3c.github.io/webappsec-csp/#source-lists</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-source-lists">1.5.1. fenced-frame-src</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-worker-src">
-   <a href="https://w3c.github.io/webappsec-csp/#worker-src">https://w3c.github.io/webappsec-csp/#worker-src</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-2426420e6f5ce419481d6ffd1a68243e" class="dfn-panel" data-for="2426420e6f5ce419481d6ffd1a68243e" id="infopanel-for-2426420e6f5ce419481d6ffd1a68243e">
+   <span id="infopaneltitle-for-2426420e6f5ce419481d6ffd1a68243e" style="display:none">Info about the 'worker-src' external reference.</span><a href="https://w3c.github.io/webappsec-csp/#worker-src">https://w3c.github.io/webappsec-csp/#worker-src</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-worker-src">1.5.2. Amending default-src</a> <a href="#ref-for-worker-src①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-node-append">
-   <a href="https://dom.spec.whatwg.org/#concept-node-append">https://dom.spec.whatwg.org/#concept-node-append</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-7b7df0a8762384a133b9bbb352e4b30a" class="dfn-panel" data-for="7b7df0a8762384a133b9bbb352e4b30a" id="infopanel-for-7b7df0a8762384a133b9bbb352e4b30a">
+   <span id="infopaneltitle-for-7b7df0a8762384a133b9bbb352e4b30a" style="display:none">Info about the 'append' external reference.</span><a href="https://dom.spec.whatwg.org/#concept-node-append">https://dom.spec.whatwg.org/#concept-node-append</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-node-append">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-requestdestination">
-   <a href="https://fetch.spec.whatwg.org/#requestdestination">https://fetch.spec.whatwg.org/#requestdestination</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e1ac7de0852912b5a20d534c658e409c" class="dfn-panel" data-for="e1ac7de0852912b5a20d534c658e409c" id="infopanel-for-e1ac7de0852912b5a20d534c658e409c">
+   <span id="infopaneltitle-for-e1ac7de0852912b5a20d534c658e409c" style="display:none">Info about the 'RequestDestination' external reference.</span><a href="https://fetch.spec.whatwg.org/#requestdestination">https://fetch.spec.whatwg.org/#requestdestination</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-requestdestination">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-destination">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-destination">https://fetch.spec.whatwg.org/#concept-request-destination</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-89ba93986b2df9b70ab56597f4c96beb" class="dfn-panel" data-for="89ba93986b2df9b70ab56597f4c96beb" id="infopanel-for-89ba93986b2df9b70ab56597f4c96beb">
+   <span id="infopaneltitle-for-89ba93986b2df9b70ab56597f4c96beb" style="display:none">Info about the 'destination' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-destination">https://fetch.spec.whatwg.org/#concept-request-destination</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-destination">1.4. New request destination</a> <a href="#ref-for-concept-request-destination①">(2)</a> <a href="#ref-for-concept-request-destination②">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-fetch">
-   <a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-0bae0f8d0fc019614ef3bb69c15d5311" class="dfn-panel" data-for="0bae0f8d0fc019614ef3bb69c15d5311" id="infopanel-for-0bae0f8d0fc019614ef3bb69c15d5311">
+   <span id="infopaneltitle-for-0bae0f8d0fc019614ef3bb69c15d5311" style="display:none">Info about the 'fetch' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-fetch">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-initiator">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-initiator">https://fetch.spec.whatwg.org/#concept-request-initiator</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fbcfa904ec1519986ad26d2b61d17047" class="dfn-panel" data-for="fbcfa904ec1519986ad26d2b61d17047" id="infopanel-for-fbcfa904ec1519986ad26d2b61d17047">
+   <span id="infopaneltitle-for-fbcfa904ec1519986ad26d2b61d17047" style="display:none">Info about the 'initiator' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-initiator">https://fetch.spec.whatwg.org/#concept-request-initiator</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-initiator">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-navigation-request">
-   <a href="https://fetch.spec.whatwg.org/#navigation-request">https://fetch.spec.whatwg.org/#navigation-request</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e9338f70c9fffeed408c8d866e03c566" class="dfn-panel" data-for="e9338f70c9fffeed408c8d866e03c566" id="infopanel-for-e9338f70c9fffeed408c8d866e03c566">
+   <span id="infopaneltitle-for-e9338f70c9fffeed408c8d866e03c566" style="display:none">Info about the 'navigation request' external reference.</span><a href="https://fetch.spec.whatwg.org/#navigation-request">https://fetch.spec.whatwg.org/#navigation-request</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigation-request">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-network-error">
-   <a href="https://fetch.spec.whatwg.org/#concept-network-error">https://fetch.spec.whatwg.org/#concept-network-error</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-92488b0d05da99120fd8466a06ec480f" class="dfn-panel" data-for="92488b0d05da99120fd8466a06ec480f" id="infopanel-for-92488b0d05da99120fd8466a06ec480f">
+   <span id="infopaneltitle-for-92488b0d05da99120fd8466a06ec480f" style="display:none">Info about the 'network error' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-network-error">https://fetch.spec.whatwg.org/#concept-network-error</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-network-error">1.5.1. fenced-frame-src</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-non-subresource-request">
-   <a href="https://fetch.spec.whatwg.org/#non-subresource-request">https://fetch.spec.whatwg.org/#non-subresource-request</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-cf83eba96d3f2cbb17eb5277ee645572" class="dfn-panel" data-for="cf83eba96d3f2cbb17eb5277ee645572" id="infopanel-for-cf83eba96d3f2cbb17eb5277ee645572">
+   <span id="infopaneltitle-for-cf83eba96d3f2cbb17eb5277ee645572" style="display:none">Info about the 'non-subresource request' external reference.</span><a href="https://fetch.spec.whatwg.org/#non-subresource-request">https://fetch.spec.whatwg.org/#non-subresource-request</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-non-subresource-request">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request">
-   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-491791562dd138987138e7051a96c07c" class="dfn-panel" data-for="491791562dd138987138e7051a96c07c" id="infopanel-for-491791562dd138987138e7051a96c07c">
+   <span id="infopaneltitle-for-491791562dd138987138e7051a96c07c" style="display:none">Info about the 'request' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request">1.4. New request destination</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-cereactions">
-   <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-62d5145a686fb21602c40aa7f2dc6dcb" class="dfn-panel" data-for="62d5145a686fb21602c40aa7f2dc6dcb" id="infopanel-for-62d5145a686fb21602c40aa7f2dc6dcb">
+   <span id="infopaneltitle-for-62d5145a686fb21602c40aa7f2dc6dcb" style="display:none">Info about the 'CEReactions' external reference.</span><a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cereactions">1. The fencedframe element</a> <a href="#ref-for-cereactions①">(2)</a> <a href="#ref-for-cereactions②">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-htmlconstructor">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor">https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-b4e8acac2860d885589fae862a919d91" class="dfn-panel" data-for="b4e8acac2860d885589fae862a919d91" id="infopanel-for-b4e8acac2860d885589fae862a919d91">
+   <span id="infopaneltitle-for-b4e8acac2860d885589fae862a919d91" style="display:none">Info about the 'HTMLConstructor' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor">https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-htmlconstructor">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-htmlelement">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement">https://html.spec.whatwg.org/multipage/dom.html#htmlelement</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-5730d1ddfe1f2fb0ef0ec8736abc159d" class="dfn-panel" data-for="5730d1ddfe1f2fb0ef0ec8736abc159d" id="infopanel-for-5730d1ddfe1f2fb0ef0ec8736abc159d">
+   <span id="infopaneltitle-for-5730d1ddfe1f2fb0ef0ec8736abc159d" style="display:none">Info about the 'HTMLElement' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement">https://html.spec.whatwg.org/multipage/dom.html#htmlelement</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-htmlelement">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-window">
-   <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" class="dfn-panel" data-for="d1f0a86fd49be388d8b0159e241a1172" id="infopanel-for-d1f0a86fd49be388d8b0159e241a1172">
+   <span id="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" style="display:none">Info about the 'Window' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window">3.1. Extensions to the Window interface</a> <a href="#ref-for-window①">(2)</a> <a href="#ref-for-window②">(3)</a> <a href="#ref-for-window③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-accessibility-considerations">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations">https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-97b36d1eb7e9f470e5efb14cf0d0db07" class="dfn-panel" data-for="97b36d1eb7e9f470e5efb14cf0d0db07" id="infopanel-for-97b36d1eb7e9f470e5efb14cf0d0db07">
+   <span id="infopaneltitle-for-97b36d1eb7e9f470e5efb14cf0d0db07" style="display:none">Info about the 'accessibility considerations' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations">https://html.spec.whatwg.org/multipage/dom.html#concept-element-accessibility-considerations</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-accessibility-considerations">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-nav-active-history-entry">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-5849cffb2c99a28f507669110957cb59" class="dfn-panel" data-for="5849cffb2c99a28f507669110957cb59" id="infopanel-for-5849cffb2c99a28f507669110957cb59">
+   <span id="infopaneltitle-for-5849cffb2c99a28f507669110957cb59" style="display:none">Info about the 'active session history entry' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-nav-active-history-entry">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document-bc">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc">https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-3eaa51ed66e1d8aa0c39a4f1fead29c0" class="dfn-panel" data-for="3eaa51ed66e1d8aa0c39a4f1fead29c0" id="infopanel-for-3eaa51ed66e1d8aa0c39a4f1fead29c0">
+   <span id="infopaneltitle-for-3eaa51ed66e1d8aa0c39a4f1fead29c0" style="display:none">Info about the 'browsing context' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc">https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document-bc">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-categories">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-categories">https://html.spec.whatwg.org/multipage/dom.html#concept-element-categories</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-3f848e4f69ce64fe4c766fad7fdffdc7" class="dfn-panel" data-for="3f848e4f69ce64fe4c766fad7fdffdc7" id="infopanel-for-3f848e4f69ce64fe4c766fad7fdffdc7">
+   <span id="infopaneltitle-for-3f848e4f69ce64fe4c766fad7fdffdc7" style="display:none">Info about the 'categories' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-categories">https://html.spec.whatwg.org/multipage/dom.html#concept-element-categories</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-categories">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-attributes">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes">https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-56d977f87f79f0de3bb0c5ce53846293" class="dfn-panel" data-for="56d977f87f79f0de3bb0c5ce53846293" id="infopanel-for-56d977f87f79f0de3bb0c5ce53846293">
+   <span id="infopaneltitle-for-56d977f87f79f0de3bb0c5ce53846293" style="display:none">Info about the 'content attributes' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes">https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-attributes">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-content-model">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model">https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9274c0cb8bbb3e7cc77fd47cc78b35c5" class="dfn-panel" data-for="9274c0cb8bbb3e7cc77fd47cc78b35c5" id="infopanel-for-9274c0cb8bbb3e7cc77fd47cc78b35c5">
+   <span id="infopaneltitle-for-9274c0cb8bbb3e7cc77fd47cc78b35c5" style="display:none">Info about the 'content model' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model">https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-content-model">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-contexts">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts">https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-6d1e7e6396e4f656a4a510526c1e1c53" class="dfn-panel" data-for="6d1e7e6396e4f656a4a510526c1e1c53" id="infopanel-for-6d1e7e6396e4f656a4a510526c1e1c53">
+   <span id="infopaneltitle-for-6d1e7e6396e4f656a4a510526c1e1c53" style="display:none">Info about the 'contexts in which this element can be used' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts">https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-contexts">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-creating-a-new-top-level-browsing-context">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c372fcf3848e8d92fac014b83de9b278" class="dfn-panel" data-for="c372fcf3848e8d92fac014b83de9b278" id="infopanel-for-c372fcf3848e8d92fac014b83de9b278">
+   <span id="infopaneltitle-for-c372fcf3848e8d92fac014b83de9b278" style="display:none">Info about the 'creating a new top-level browsing context and document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-creating-a-new-top-level-browsing-context">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-document-state-document">
-   <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e16192f157d38d17d44510aa5639d0df" class="dfn-panel" data-for="e16192f157d38d17d44510aa5639d0df" id="infopanel-for-e16192f157d38d17d44510aa5639d0df">
+   <span id="infopaneltitle-for-e16192f157d38d17d44510aa5639d0df" style="display:none">Info about the 'document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-document-state-document">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-she-document-state">
-   <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state">https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-4f591b169f80df42dfbb264a73055974" class="dfn-panel" data-for="4f591b169f80df42dfbb264a73055974" id="infopanel-for-4f591b169f80df42dfbb264a73055974">
+   <span id="infopaneltitle-for-4f591b169f80df42dfbb264a73055974" style="display:none">Info about the 'document state' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state">https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-she-document-state">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-element-dom">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom">https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c78563f85bd66bcfc820de80dca519be" class="dfn-panel" data-for="c78563f85bd66bcfc820de80dca519be" id="infopanel-for-c78563f85bd66bcfc820de80dca519be">
+   <span id="infopaneltitle-for-c78563f85bd66bcfc820de80dca519be" style="display:none">Info about the 'dom interface' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom">https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-dom">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-embedded-content-category">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category">https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-60cc3e3ffbe298bcad82275f4573bfcb" class="dfn-panel" data-for="60cc3e3ffbe298bcad82275f4573bfcb" id="infopanel-for-60cc3e3ffbe298bcad82275f4573bfcb">
+   <span id="infopaneltitle-for-60cc3e3ffbe298bcad82275f4573bfcb" style="display:none">Info about the 'embedded content' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category">https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-embedded-content-category">1. The fencedframe element</a> <a href="#ref-for-embedded-content-category①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-flow-content-2">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#flow-content-2">https://html.spec.whatwg.org/multipage/dom.html#flow-content-2</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-71f1e0cd9adbbcae830ca24b8fe2192a" class="dfn-panel" data-for="71f1e0cd9adbbcae830ca24b8fe2192a" id="infopanel-for-71f1e0cd9adbbcae830ca24b8fe2192a">
+   <span id="infopaneltitle-for-71f1e0cd9adbbcae830ca24b8fe2192a" style="display:none">Info about the 'flow content' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#flow-content-2">https://html.spec.whatwg.org/multipage/dom.html#flow-content-2</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-flow-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-global-attributes">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#global-attributes">https://html.spec.whatwg.org/multipage/dom.html#global-attributes</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9a02a2d703e48bd832f0d6b65c0c56fe" class="dfn-panel" data-for="9a02a2d703e48bd832f0d6b65c0c56fe" id="infopanel-for-9a02a2d703e48bd832f0d6b65c0c56fe">
+   <span id="infopaneltitle-for-9a02a2d703e48bd832f0d6b65c0c56fe" style="display:none">Info about the 'global attributes' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#global-attributes">https://html.spec.whatwg.org/multipage/dom.html#global-attributes</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-global-attributes">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-attr-dim-height">
-   <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height">https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e8ebd393fe999d63d70a239f044dfca2" class="dfn-panel" data-for="e8ebd393fe999d63d70a239f044dfca2" id="infopanel-for-e8ebd393fe999d63d70a239f044dfca2">
+   <span id="infopaneltitle-for-e8ebd393fe999d63d70a239f044dfca2" style="display:none">Info about the 'height' external reference.</span><a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height">https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-attr-dim-height">1. The fencedframe element</a>
     <li><a href="#ref-for-attr-dim-height①">1.1. Dimension attributes</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-initialize-the-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-bc7b614b2d847f8145f861abf060f202" class="dfn-panel" data-for="bc7b614b2d847f8145f861abf060f202" id="infopanel-for-bc7b614b2d847f8145f861abf060f202">
+   <span id="infopaneltitle-for-bc7b614b2d847f8145f861abf060f202" style="display:none">Info about the 'initialize the navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-initialize-the-navigable">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-interactive-content-2">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2">https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9cc5ad63c4b6d1715ab31c4feff643e2" class="dfn-panel" data-for="9cc5ad63c4b6d1715ab31c4feff643e2" id="infopanel-for-9cc5ad63c4b6d1715ab31c4feff643e2">
+   <span id="infopaneltitle-for-9cc5ad63c4b6d1715ab31c4feff643e2" style="display:none">Info about the 'interactive content' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2">https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-interactive-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9b61a10aca6020532301db95d903ae46" class="dfn-panel" data-for="9b61a10aca6020532301db95d903ae46" id="infopanel-for-9b61a10aca6020532301db95d903ae46">
+   <span id="infopaneltitle-for-9b61a10aca6020532301db95d903ae46" style="display:none">Info about the 'navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigable">2. Prerendering specification monkeypatches</a> <a href="#ref-for-navigable①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-window-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c65e32440cdd5af483d6b90189ff0d46" class="dfn-panel" data-for="c65e32440cdd5af483d6b90189ff0d46" id="infopanel-for-c65e32440cdd5af483d6b90189ff0d46">
+   <span id="infopaneltitle-for-c65e32440cdd5af483d6b90189ff0d46" style="display:none">Info about the 'navigable (for Window)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window-navigable">3.1. Extensions to the Window interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-insert-an-element-into-a-document">
-   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document">https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9159c932d44984ad0abd63c25a284a3c" class="dfn-panel" data-for="9159c932d44984ad0abd63c25a284a3c" id="infopanel-for-9159c932d44984ad0abd63c25a284a3c">
+   <span id="infopaneltitle-for-9159c932d44984ad0abd63c25a284a3c" style="display:none">Info about the 'node is inserted into a document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document">https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-insert-an-element-into-a-document">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-node-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" class="dfn-panel" data-for="d5ad1e20f67eb03bd0608119efdd55f5" id="infopanel-for-d5ad1e20f67eb03bd0608119efdd55f5">
+   <span id="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" style="display:none">Info about the 'node navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-node-navigable">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-content-nothing">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing">https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-1bc1f9b3190b065dbdbf28586e3be5e5" class="dfn-panel" data-for="1bc1f9b3190b065dbdbf28586e3be5e5" id="infopanel-for-1bc1f9b3190b065dbdbf28586e3be5e5">
+   <span id="infopaneltitle-for-1bc1f9b3190b065dbdbf28586e3be5e5" style="display:none">Info about the 'nothing' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing">https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-content-nothing">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-palpable-content-2">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2">https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-a9fc24eea54a0d0d16ceece394831900" class="dfn-panel" data-for="a9fc24eea54a0d0d16ceece394831900" id="infopanel-for-a9fc24eea54a0d0d16ceece394831900">
+   <span id="infopaneltitle-for-a9fc24eea54a0d0d16ceece394831900" style="display:none">Info about the 'palpable content' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2">https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-palpable-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-phrasing-content-2">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2">https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-4252c6677f702595b89302ac9e3cef64" class="dfn-panel" data-for="4252c6677f702595b89302ac9e3cef64" id="infopanel-for-4252c6677f702595b89302ac9e3cef64">
+   <span id="infopaneltitle-for-4252c6677f702595b89302ac9e3cef64" style="display:none">Info about the 'phrasing content' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2">https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-phrasing-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-tn-session-history-entries">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" class="dfn-panel" data-for="a072527f75033fb4ed6119239e352e1f" id="infopanel-for-a072527f75033fb4ed6119239e352e1f">
+   <span id="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" style="display:none">Info about the 'session history entries' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tn-session-history-entries">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-top-level-traversable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-6bb36d47a5f9a04109a4493b81f2720a" class="dfn-panel" data-for="6bb36d47a5f9a04109a4493b81f2720a" id="infopanel-for-6bb36d47a5f9a04109a4493b81f2720a">
+   <span id="infopaneltitle-for-6bb36d47a5f9a04109a4493b81f2720a" style="display:none">Info about the 'top-level traversable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-top-level-traversable">3.2. Nested traversables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-traversable-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" class="dfn-panel" data-for="9df064b89e8130a9d4cee056b2fdeb2f" id="infopanel-for-9df064b89e8130a9d4cee056b2fdeb2f">
+   <span id="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" style="display:none">Info about the 'traversable navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-traversable-navigable">1. The fencedframe element</a>
     <li><a href="#ref-for-traversable-navigable①">3.2. Nested traversables</a> <a href="#ref-for-traversable-navigable②">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-attr-dim-width">
-   <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width">https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-7f88e6ad41ebf582deb64656e07c6a38" class="dfn-panel" data-for="7f88e6ad41ebf582deb64656e07c6a38" id="infopanel-for-7f88e6ad41ebf582deb64656e07c6a38">
+   <span id="infopaneltitle-for-7f88e6ad41ebf582deb64656e07c6a38" style="display:none">Info about the 'width' external reference.</span><a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width">https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-attr-dim-width">1. The fencedframe element</a>
     <li><a href="#ref-for-attr-dim-width①">1.1. Dimension attributes</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-navigable-loading-mode">
-   <a href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode">https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-37ea775b610d924b453f4dfc18c197ab" class="dfn-panel" data-for="37ea775b610d924b453f4dfc18c197ab" id="infopanel-for-37ea775b610d924b453f4dfc18c197ab">
+   <span id="infopaneltitle-for-37ea775b610d924b453f4dfc18c197ab" style="display:none">Info about the 'loading mode' external reference.</span><a href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode">https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigable-loading-mode">1. The fencedframe element</a>
     <li><a href="#ref-for-navigable-loading-mode①">2. Prerendering specification monkeypatches</a>
     <li><a href="#ref-for-navigable-loading-mode②">3.1. Extensions to the Window interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-DOMString">
-   <a href="https://webidl.spec.whatwg.org/#idl-DOMString">https://webidl.spec.whatwg.org/#idl-DOMString</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" class="dfn-panel" data-for="d0f238a61de9310f1738a214749fab18" id="infopanel-for-d0f238a61de9310f1738a214749fab18">
+   <span id="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" style="display:none">Info about the 'DOMString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMString">https://webidl.spec.whatwg.org/#idl-DOMString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DOMString">1. The fencedframe element</a> <a href="#ref-for-idl-DOMString①">(2)</a>
     <li><a href="#ref-for-idl-DOMString②">1.3. The Fence interface</a> <a href="#ref-for-idl-DOMString③">(2)</a> <a href="#ref-for-idl-DOMString④">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-Exposed">
-   <a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457">
+   <span id="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" style="display:none">Info about the 'Exposed' external reference.</span><a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-Exposed">1. The fencedframe element</a>
     <li><a href="#ref-for-Exposed①">1.2. The FencedFrameConfig interface</a>
     <li><a href="#ref-for-Exposed②">1.3. The Fence interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-USVString">
-   <a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" class="dfn-panel" data-for="e270bcd7cdb4abe27bc3bb16a1975937" id="infopanel-for-e270bcd7cdb4abe27bc3bb16a1975937">
+   <span id="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" style="display:none">Info about the 'USVString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-USVString">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-idl-USVString①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-sequence">
-   <a href="https://webidl.spec.whatwg.org/#idl-sequence">https://webidl.spec.whatwg.org/#idl-sequence</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" class="dfn-panel" data-for="38ab7db52e46bed36993204c29f67202" id="infopanel-for-38ab7db52e46bed36993204c29f67202">
+   <span id="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" style="display:none">Info about the 'sequence' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-sequence">https://webidl.spec.whatwg.org/#idl-sequence</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-sequence">1.3. The Fence interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-this">
-   <a href="https://webidl.spec.whatwg.org/#this">https://webidl.spec.whatwg.org/#this</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" class="dfn-panel" data-for="be0933df03cd63338f98de217c4158c7" id="infopanel-for-be0933df03cd63338f98de217c4158c7">
+   <span id="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" style="display:none">Info about the 'this' external reference.</span><a href="https://webidl.spec.whatwg.org/#this">https://webidl.spec.whatwg.org/#this</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-this">3.1. Extensions to the Window interface</a> <a href="#ref-for-this①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-undefined">
-   <a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
+   <span id="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" style="display:none">Info about the 'undefined' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-undefined">1.3. The Fence interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
-   <a href="https://webidl.spec.whatwg.org/#idl-unsigned-long">https://webidl.spec.whatwg.org/#idl-unsigned-long</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-03fa8b99cc63b35d2e7dcadb686676f1" class="dfn-panel" data-for="03fa8b99cc63b35d2e7dcadb686676f1" id="infopanel-for-03fa8b99cc63b35d2e7dcadb686676f1">
+   <span id="infopaneltitle-for-03fa8b99cc63b35d2e7dcadb686676f1" style="display:none">Info about the 'unsigned long' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-unsigned-long">https://webidl.spec.whatwg.org/#idl-unsigned-long</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-unsigned-long">1.2. The FencedFrameConfig interface</a>
    </ul>
@@ -1391,84 +1393,84 @@ traversables</a> section.</p>
    <li>
     <a data-link-type="biblio">[CSP]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-grammardef-self">'self'</span>
-     <li><span class="dfn-paneled" id="term-for-connect-src">connect-src</span>
-     <li><span class="dfn-paneled" id="term-for-header-content-security-policy">content-security-policy</span>
-     <li><span class="dfn-paneled" id="term-for-default-src">default-src</span>
-     <li><span class="dfn-paneled" id="term-for-directives">directives</span>
-     <li><span class="dfn-paneled" id="term-for-frame-src">frame-src</span>
-     <li><span class="dfn-paneled" id="term-for-grammardef-serialized-source-list">serialized-source-list</span>
-     <li><span class="dfn-paneled" id="term-for-source-lists">source lists</span>
-     <li><span class="dfn-paneled" id="term-for-worker-src">worker-src</span>
+     <li><span class="dfn-paneled" id="0767ca6dc5cfbe33bf18821344833543">'self'</span>
+     <li><span class="dfn-paneled" id="597fbf2d1db034644a8eba4bdab3f3c5">connect-src</span>
+     <li><span class="dfn-paneled" id="29b9bec6818d7a2bb9f83e11dc731b0a">content-security-policy</span>
+     <li><span class="dfn-paneled" id="c839b5e2d49d51a3acae6a2adaad64da">default-src</span>
+     <li><span class="dfn-paneled" id="f24df3476b3fb236d04cbb6ebd9f5c21">directives</span>
+     <li><span class="dfn-paneled" id="b6f5a1f95d31f1c86f0bb87564cf2859">frame-src</span>
+     <li><span class="dfn-paneled" id="800a660f803659c576032fa90039a27e">serialized-source-list</span>
+     <li><span class="dfn-paneled" id="869ce39e4005794c01c6e7ee3a9c27ae">source lists</span>
+     <li><span class="dfn-paneled" id="2426420e6f5ce419481d6ffd1a68243e">worker-src</span>
     </ul>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-concept-node-append">append</span>
+     <li><span class="dfn-paneled" id="7b7df0a8762384a133b9bbb352e4b30a">append</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-requestdestination">RequestDestination</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-destination">destination</span>
-     <li><span class="dfn-paneled" id="term-for-concept-fetch">fetch</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-initiator">initiator</span>
-     <li><span class="dfn-paneled" id="term-for-navigation-request">navigation request</span>
-     <li><span class="dfn-paneled" id="term-for-concept-network-error">network error</span>
-     <li><span class="dfn-paneled" id="term-for-non-subresource-request">non-subresource request</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
+     <li><span class="dfn-paneled" id="e1ac7de0852912b5a20d534c658e409c">RequestDestination</span>
+     <li><span class="dfn-paneled" id="89ba93986b2df9b70ab56597f4c96beb">destination</span>
+     <li><span class="dfn-paneled" id="0bae0f8d0fc019614ef3bb69c15d5311">fetch</span>
+     <li><span class="dfn-paneled" id="fbcfa904ec1519986ad26d2b61d17047">initiator</span>
+     <li><span class="dfn-paneled" id="e9338f70c9fffeed408c8d866e03c566">navigation request</span>
+     <li><span class="dfn-paneled" id="92488b0d05da99120fd8466a06ec480f">network error</span>
+     <li><span class="dfn-paneled" id="cf83eba96d3f2cbb17eb5277ee645572">non-subresource request</span>
+     <li><span class="dfn-paneled" id="491791562dd138987138e7051a96c07c">request</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-cereactions">CEReactions</span>
-     <li><span class="dfn-paneled" id="term-for-htmlconstructor">HTMLConstructor</span>
-     <li><span class="dfn-paneled" id="term-for-htmlelement">HTMLElement</span>
-     <li><span class="dfn-paneled" id="term-for-window">Window</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-accessibility-considerations">accessibility considerations</span>
-     <li><span class="dfn-paneled" id="term-for-nav-active-history-entry">active session history entry</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-categories">categories</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-attributes">content attributes</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-content-model">content model</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-contexts">contexts in which this element can be used</span>
-     <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context and document</span>
-     <li><span class="dfn-paneled" id="term-for-document-state-document">document</span>
-     <li><span class="dfn-paneled" id="term-for-she-document-state">document state</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-dom">dom interface</span>
-     <li><span class="dfn-paneled" id="term-for-embedded-content-category">embedded content</span>
-     <li><span class="dfn-paneled" id="term-for-flow-content-2">flow content</span>
-     <li><span class="dfn-paneled" id="term-for-global-attributes">global attributes</span>
-     <li><span class="dfn-paneled" id="term-for-attr-dim-height">height</span>
-     <li><span class="dfn-paneled" id="term-for-initialize-the-navigable">initialize the navigable</span>
-     <li><span class="dfn-paneled" id="term-for-interactive-content-2">interactive content</span>
-     <li><span class="dfn-paneled" id="term-for-navigable">navigable</span>
-     <li><span class="dfn-paneled" id="term-for-window-navigable">navigable <small>(for Window)</small></span>
-     <li><span class="dfn-paneled" id="term-for-insert-an-element-into-a-document">node is inserted into a document</span>
-     <li><span class="dfn-paneled" id="term-for-node-navigable">node navigable</span>
-     <li><span class="dfn-paneled" id="term-for-concept-content-nothing">nothing</span>
-     <li><span class="dfn-paneled" id="term-for-palpable-content-2">palpable content</span>
-     <li><span class="dfn-paneled" id="term-for-phrasing-content-2">phrasing content</span>
-     <li><span class="dfn-paneled" id="term-for-tn-session-history-entries">session history entries</span>
-     <li><span class="dfn-paneled" id="term-for-top-level-traversable">top-level traversable</span>
-     <li><span class="dfn-paneled" id="term-for-traversable-navigable">traversable navigable</span>
-     <li><span class="dfn-paneled" id="term-for-attr-dim-width">width</span>
+     <li><span class="dfn-paneled" id="62d5145a686fb21602c40aa7f2dc6dcb">CEReactions</span>
+     <li><span class="dfn-paneled" id="b4e8acac2860d885589fae862a919d91">HTMLConstructor</span>
+     <li><span class="dfn-paneled" id="5730d1ddfe1f2fb0ef0ec8736abc159d">HTMLElement</span>
+     <li><span class="dfn-paneled" id="d1f0a86fd49be388d8b0159e241a1172">Window</span>
+     <li><span class="dfn-paneled" id="97b36d1eb7e9f470e5efb14cf0d0db07">accessibility considerations</span>
+     <li><span class="dfn-paneled" id="5849cffb2c99a28f507669110957cb59">active session history entry</span>
+     <li><span class="dfn-paneled" id="3eaa51ed66e1d8aa0c39a4f1fead29c0">browsing context</span>
+     <li><span class="dfn-paneled" id="3f848e4f69ce64fe4c766fad7fdffdc7">categories</span>
+     <li><span class="dfn-paneled" id="56d977f87f79f0de3bb0c5ce53846293">content attributes</span>
+     <li><span class="dfn-paneled" id="9274c0cb8bbb3e7cc77fd47cc78b35c5">content model</span>
+     <li><span class="dfn-paneled" id="6d1e7e6396e4f656a4a510526c1e1c53">contexts in which this element can be used</span>
+     <li><span class="dfn-paneled" id="c372fcf3848e8d92fac014b83de9b278">creating a new top-level browsing context and document</span>
+     <li><span class="dfn-paneled" id="e16192f157d38d17d44510aa5639d0df">document</span>
+     <li><span class="dfn-paneled" id="4f591b169f80df42dfbb264a73055974">document state</span>
+     <li><span class="dfn-paneled" id="c78563f85bd66bcfc820de80dca519be">dom interface</span>
+     <li><span class="dfn-paneled" id="60cc3e3ffbe298bcad82275f4573bfcb">embedded content</span>
+     <li><span class="dfn-paneled" id="71f1e0cd9adbbcae830ca24b8fe2192a">flow content</span>
+     <li><span class="dfn-paneled" id="9a02a2d703e48bd832f0d6b65c0c56fe">global attributes</span>
+     <li><span class="dfn-paneled" id="e8ebd393fe999d63d70a239f044dfca2">height</span>
+     <li><span class="dfn-paneled" id="bc7b614b2d847f8145f861abf060f202">initialize the navigable</span>
+     <li><span class="dfn-paneled" id="9cc5ad63c4b6d1715ab31c4feff643e2">interactive content</span>
+     <li><span class="dfn-paneled" id="9b61a10aca6020532301db95d903ae46">navigable</span>
+     <li><span class="dfn-paneled" id="c65e32440cdd5af483d6b90189ff0d46">navigable <small>(for Window)</small></span>
+     <li><span class="dfn-paneled" id="9159c932d44984ad0abd63c25a284a3c">node is inserted into a document</span>
+     <li><span class="dfn-paneled" id="d5ad1e20f67eb03bd0608119efdd55f5">node navigable</span>
+     <li><span class="dfn-paneled" id="1bc1f9b3190b065dbdbf28586e3be5e5">nothing</span>
+     <li><span class="dfn-paneled" id="a9fc24eea54a0d0d16ceece394831900">palpable content</span>
+     <li><span class="dfn-paneled" id="4252c6677f702595b89302ac9e3cef64">phrasing content</span>
+     <li><span class="dfn-paneled" id="a072527f75033fb4ed6119239e352e1f">session history entries</span>
+     <li><span class="dfn-paneled" id="6bb36d47a5f9a04109a4493b81f2720a">top-level traversable</span>
+     <li><span class="dfn-paneled" id="9df064b89e8130a9d4cee056b2fdeb2f">traversable navigable</span>
+     <li><span class="dfn-paneled" id="7f88e6ad41ebf582deb64656e07c6a38">width</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PRERENDERING-REVAMPED]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-navigable-loading-mode">loading mode</span>
+     <li><span class="dfn-paneled" id="37ea775b610d924b453f4dfc18c197ab">loading mode</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-idl-DOMString">DOMString</span>
-     <li><span class="dfn-paneled" id="term-for-Exposed">Exposed</span>
-     <li><span class="dfn-paneled" id="term-for-idl-USVString">USVString</span>
-     <li><span class="dfn-paneled" id="term-for-idl-sequence">sequence</span>
-     <li><span class="dfn-paneled" id="term-for-this">this</span>
-     <li><span class="dfn-paneled" id="term-for-idl-undefined">undefined</span>
-     <li><span class="dfn-paneled" id="term-for-idl-unsigned-long">unsigned long</span>
+     <li><span class="dfn-paneled" id="d0f238a61de9310f1738a214749fab18">DOMString</span>
+     <li><span class="dfn-paneled" id="dde049eb112f043fc45407ec0d4cb457">Exposed</span>
+     <li><span class="dfn-paneled" id="e270bcd7cdb4abe27bc3bb16a1975937">USVString</span>
+     <li><span class="dfn-paneled" id="38ab7db52e46bed36993204c29f67202">sequence</span>
+     <li><span class="dfn-paneled" id="be0933df03cd63338f98de217c4158c7">this</span>
+     <li><span class="dfn-paneled" id="cee863f1f2ec91066cfb7f5d309d59dc">undefined</span>
+     <li><span class="dfn-paneled" id="03fa8b99cc63b35d2e7dcadb686676f1">unsigned long</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1534,8 +1536,8 @@ traversables</a> section.</p>
 };
 
 </pre>
-  <aside class="dfn-panel" data-for="elementdef-fencedframe">
-   <b><a href="#elementdef-fencedframe">#elementdef-fencedframe</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-elementdef-fencedframe" class="dfn-panel" data-for="elementdef-fencedframe" id="infopanel-for-elementdef-fencedframe">
+   <span id="infopaneltitle-for-elementdef-fencedframe" style="display:none">Info about the 'fencedframe' definition.</span><b><a href="#elementdef-fencedframe">#elementdef-fencedframe</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a> <a href="#ref-for-elementdef-fencedframe②">(3)</a>
     <li><a href="#ref-for-elementdef-fencedframe③">1.1. Dimension attributes</a>
@@ -1543,144 +1545,198 @@ traversables</a> section.</p>
     <li><a href="#ref-for-elementdef-fencedframe⑤">2. Prerendering specification monkeypatches</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="fencedframe-nested-traversable">
-   <b><a href="#fencedframe-nested-traversable">#fencedframe-nested-traversable</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fencedframe-nested-traversable" class="dfn-panel" data-for="fencedframe-nested-traversable" id="infopanel-for-fencedframe-nested-traversable">
+   <span id="infopaneltitle-for-fencedframe-nested-traversable" style="display:none">Info about the 'nested traversable' definition.</span><b><a href="#fencedframe-nested-traversable">#fencedframe-nested-traversable</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fencedframe-nested-traversable">1. The fencedframe element</a>
     <li><a href="#ref-for-fencedframe-nested-traversable①">1.5.1. fenced-frame-src</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-htmlfencedframeelement-config">
-   <b><a href="#dom-htmlfencedframeelement-config">#dom-htmlfencedframeelement-config</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-htmlfencedframeelement-config" class="dfn-panel" data-for="dom-htmlfencedframeelement-config" id="infopanel-for-dom-htmlfencedframeelement-config">
+   <span id="infopaneltitle-for-dom-htmlfencedframeelement-config" style="display:none">Info about the 'config' definition.</span><b><a href="#dom-htmlfencedframeelement-config">#dom-htmlfencedframeelement-config</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-htmlfencedframeelement-config">1. The fencedframe element</a> <a href="#ref-for-dom-htmlfencedframeelement-config①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="enumdef-opaqueproperty">
-   <b><a href="#enumdef-opaqueproperty">#enumdef-opaqueproperty</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-enumdef-opaqueproperty" class="dfn-panel" data-for="enumdef-opaqueproperty" id="infopanel-for-enumdef-opaqueproperty">
+   <span id="infopaneltitle-for-enumdef-opaqueproperty" style="display:none">Info about the 'OpaqueProperty' definition.</span><b><a href="#enumdef-opaqueproperty">#enumdef-opaqueproperty</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-enumdef-opaqueproperty">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-enumdef-opaqueproperty①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="typedefdef-fencedframeconfigsize">
-   <b><a href="#typedefdef-fencedframeconfigsize">#typedefdef-fencedframeconfigsize</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-typedefdef-fencedframeconfigsize" class="dfn-panel" data-for="typedefdef-fencedframeconfigsize" id="infopanel-for-typedefdef-fencedframeconfigsize">
+   <span id="infopaneltitle-for-typedefdef-fencedframeconfigsize" style="display:none">Info about the 'FencedFrameConfigSize' definition.</span><b><a href="#typedefdef-fencedframeconfigsize">#typedefdef-fencedframeconfigsize</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-typedefdef-fencedframeconfigsize">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-typedefdef-fencedframeconfigsize①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="typedefdef-fencedframeconfigurl">
-   <b><a href="#typedefdef-fencedframeconfigurl">#typedefdef-fencedframeconfigurl</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-typedefdef-fencedframeconfigurl" class="dfn-panel" data-for="typedefdef-fencedframeconfigurl" id="infopanel-for-typedefdef-fencedframeconfigurl">
+   <span id="infopaneltitle-for-typedefdef-fencedframeconfigurl" style="display:none">Info about the 'FencedFrameConfigURL' definition.</span><b><a href="#typedefdef-fencedframeconfigurl">#typedefdef-fencedframeconfigurl</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-typedefdef-fencedframeconfigurl">1.2. The FencedFrameConfig interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="fencedframeconfig">
-   <b><a href="#fencedframeconfig">#fencedframeconfig</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fencedframeconfig" class="dfn-panel" data-for="fencedframeconfig" id="infopanel-for-fencedframeconfig">
+   <span id="infopaneltitle-for-fencedframeconfig" style="display:none">Info about the 'FencedFrameConfig' definition.</span><b><a href="#fencedframeconfig">#fencedframeconfig</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fencedframeconfig">1. The fencedframe element</a>
     <li><a href="#ref-for-fencedframeconfig①">1.2. The FencedFrameConfig interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dictdef-fenceevent">
-   <b><a href="#dictdef-fenceevent">#dictdef-fenceevent</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dictdef-fenceevent" class="dfn-panel" data-for="dictdef-fenceevent" id="infopanel-for-dictdef-fenceevent">
+   <span id="infopaneltitle-for-dictdef-fenceevent" style="display:none">Info about the 'FenceEvent' definition.</span><b><a href="#dictdef-fenceevent">#dictdef-fenceevent</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dictdef-fenceevent">1.3. The Fence interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="fence">
-   <b><a href="#fence">#fence</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fence" class="dfn-panel" data-for="fence" id="infopanel-for-fence">
+   <span id="infopaneltitle-for-fence" style="display:none">Info about the 'Fence' definition.</span><b><a href="#fence">#fence</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fence">1.3. The Fence interface</a>
     <li><a href="#ref-for-fence①">3.1. Extensions to the Window interface</a> <a href="#ref-for-fence②">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-fence-reportevent">
-   <b><a href="#dom-fence-reportevent">#dom-fence-reportevent</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-fence-reportevent" class="dfn-panel" data-for="dom-fence-reportevent" id="infopanel-for-dom-fence-reportevent">
+   <span id="infopaneltitle-for-dom-fence-reportevent" style="display:none">Info about the 'reportEvent(event)' definition.</span><b><a href="#dom-fence-reportevent">#dom-fence-reportevent</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-fence-reportevent">1.3. The Fence interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="fenced-frame-src">
-   <b><a href="#fenced-frame-src">#fenced-frame-src</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fenced-frame-src" class="dfn-panel" data-for="fenced-frame-src" id="infopanel-for-fenced-frame-src">
+   <span id="infopaneltitle-for-fenced-frame-src" style="display:none">Info about the 'fenced-frame-src' definition.</span><b><a href="#fenced-frame-src">#fenced-frame-src</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fenced-frame-src">1.5.1. fenced-frame-src</a>
     <li><a href="#ref-for-fenced-frame-src①">1.5.2. Amending default-src</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="window-fence">
-   <b><a href="#window-fence">#window-fence</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-window-fence" class="dfn-panel" data-for="window-fence" id="infopanel-for-window-fence">
+   <span id="infopaneltitle-for-window-fence" style="display:none">Info about the 'fence' definition.</span><b><a href="#window-fence">#window-fence</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window-fence">3.1. Extensions to the Window interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-window-fence">
-   <b><a href="#dom-window-fence">#dom-window-fence</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-window-fence" class="dfn-panel" data-for="dom-window-fence" id="infopanel-for-dom-window-fence">
+   <span id="infopaneltitle-for-dom-window-fence" style="display:none">Info about the 'fence' definition.</span><b><a href="#dom-window-fence">#dom-window-fence</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-window-fence">3.1. Extensions to the Window interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="create-a-new-nested-traversable">
-   <b><a href="#create-a-new-nested-traversable">#create-a-new-nested-traversable</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-create-a-new-nested-traversable" class="dfn-panel" data-for="create-a-new-nested-traversable" id="infopanel-for-create-a-new-nested-traversable">
+   <span id="infopaneltitle-for-create-a-new-nested-traversable" style="display:none">Info about the 'create a new nested traversable' definition.</span><b><a href="#create-a-new-nested-traversable">#create-a-new-nested-traversable</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-create-a-new-nested-traversable">1. The fencedframe element</a>
     <li><a href="#ref-for-create-a-new-nested-traversable①">3.2. Nested traversables</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
-
-document.body.addEventListener("click", function(e) {
-    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
-    // Find the dfn element or panel, if any, that was clicked on.
-    var el = e.target;
-    var target;
-    var hitALink = false;
-    while(el.parentElement) {
-        if(el.tagName == "A") {
-            // Clicking on a link in a <dfn> shouldn't summon the panel
-            hitALink = true;
-        }
-        if(el.classList.contains("dfn-paneled")) {
-            target = "dfn";
-            break;
-        }
-        if(el.classList.contains("dfn-panel")) {
-            target = "dfn-panel";
-            break;
-        }
-        el = el.parentElement;
+"use strict";
+{
+    function queryAll(sel) {
+        return [].slice.call(document.querySelectorAll(sel));
     }
-    if(target != "dfn-panel") {
+
+    // Add popup behavior to all dfns to show the corresponding dfn-panel.
+    var dfns = document.querySelectorAll('.dfn-paneled');
+    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+
+    function hideAllDfnPanels() {
         // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
-            el.classList.remove("on");
-            el.classList.remove("activated");
-        });
-    }
-    if(target == "dfn" && !hitALink) {
-        // open the panel
-        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
-        if(dfnPanel) {
-            dfnPanel.classList.add("on");
-            var rect = el.getBoundingClientRect();
-            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
-            dfnPanel.style.top = window.scrollY + rect.top + "px";
-            var panelRect = dfnPanel.getBoundingClientRect();
-            var panelWidth = panelRect.right - panelRect.left;
-            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
-                // Reposition, because the panel is overflowing
-                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
-            }
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
-        }
-    } else if(target == "dfn-panel") {
-        // Switch it to "activated" state, which pins it.
-        el.classList.add("activated");
-        el.style.left = null;
-        el.style.top = null;
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
     }
 
-});
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn) {
+        // Find dfn panel
+        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
+        if (dfnPanel) {
+            const panelWrapper = document.createElement('span');
+            panelWrapper.appendChild(dfnPanel);
+            panelWrapper.style.position = "relative";
+            panelWrapper.style.height = "0px";
+            dfn.insertAdjacentElement("afterend", panelWrapper);
+            dfn.setAttribute('role', 'button');
+            dfn.setAttribute('aria-expanded', 'false')
+            dfn.tabIndex = 0;
+            dfn.classList.add('has-dfn-panel');
+            dfn.addEventListener('click', (event) => {
+                showDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+            });
+            dfn.addEventListener('keypress', (event) => {
+                const kc = event.keyCode;
+                // 32->Space, 13->Enter
+                if(kc == 32 || kc == 13) {
+                    toggleDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            });
+
+            dfnPanel.addEventListener('click', (event) => {
+                pinDfnPanel(dfnPanel);
+                event.stopPropagation();
+            });
+
+            dfnPanel.addEventListener('keydown', (event) => {
+                if(event.keyCode == 27) { // Escape key
+                    hideDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            })
+
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
+        }
+    }
+}
 </script>
 <script>/* script-var-click-highlighting */
 
