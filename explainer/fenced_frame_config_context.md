@@ -10,7 +10,7 @@ In a scenario where the input URLs for the fenced frame are required to be k-ano
 
 Instead, before navigating the fenced frame to the auction's winning [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md), the embedder could write the event-level ID, or other contextual information, as a string, by using the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setContext()` method, as in the example below. 
 
-Subsequently, anything written through the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setContext()` method prior to a fenced frame's navigation to that config, can be read via `sharedStorage.context()` from inside a worklet for the [Shared Storage API](https://github.com/WICG/shared-storage) created by the fenced frame or by any of its same-origin children.
+Subsequently, anything written through the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setContext()` method prior to a fenced frame's navigation to that config, can be read via `sharedStorage.context` from inside a worklet for the [Shared Storage API](https://github.com/WICG/shared-storage) created by the fenced frame or by any of its same-origin children.
 
 ## Example
 
@@ -70,7 +70,7 @@ class ReportingOperation {
     // The user agent sends the report to the reporting endpoint of the script's
     // origin (that is, the caller of `sharedStorage.run()`) after a delay.
     privateAggregation.sendHistogramReport({
-      bucket: convertEventIdToBucketId(sharedStorage.context()) ,
+      bucket: convertEventIdToBucketId(sharedStorage.context) ,
       value: convertFrameInfoToValue(data.info)
     });
   }
