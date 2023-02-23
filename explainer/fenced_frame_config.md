@@ -22,7 +22,7 @@ When the SSP JS invokes the Turtledove API to run the ad auction, it gets back t
 navigator.runAdAuction(myAuctionConfig).then((auctionWinnerConfig) => {
   // auctionWinnerConfig value e.g.
   // FencedFrameConfig {
-  //   'src': opaque ('ad.com/foo' internally)
+  //   'src': 'opaque' ('ad.com/foo' internally)
   //   ...
   // }
   const adFrame = document.createElement('fencedframe');
