@@ -22,6 +22,11 @@ Assume Explicit For: yes
 <pre class="link-defaults">
 </pre>
 <pre class="anchors">
+spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/prerendering.html
+  type: dfn
+    for: navigable
+      text: loading mode; url: #navigable-loading-mode
+
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     text: categories; url: dom.html#concept-element-categories
@@ -36,6 +41,19 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: reflect; url: common-dom-interfaces.html#reflect
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
+    text: creating a new top-level browsing context and document; url: document-sequences.html#creating-a-new-top-level-browsing-context
+    text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
+    text: node navigable; url: document-sequences.html#node-navigable
+    text: document state; url: browsing-the-web.html#she-document-state
+    for: document state
+      text: document; url: browsing-the-web.html#document-state-document
+    for: navigable
+      text: active session history entry; url: document-sequences.html#nav-active-history-entry
+      text: current session history entry; url: document-sequences.html#nav-current-history-entry
+    for: traversable navigable
+      text: session history entries; url: document-sequences.html#tn-session-history-entries
+    for: Window
+      text: navigable; url: nav-history-apis.html#window-navigable
 </pre>
 
 <style>
@@ -137,7 +155,6 @@ dl, dd {
  <dd>[=Nothing=].</dd>
  <dt>[=Content attributes=]:</dt>
  <dd>[=Global attributes=]</dd>
- <dd><{fencedframe/src}> — Address of the resource</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
  <dt>[=Accessibility considerations=]:</dt>
@@ -149,7 +166,7 @@ dl, dd {
 interface HTMLFencedFrameElement : HTMLElement {
   [HTMLConstructor] constructor();
 
-  [CEReactions] attribute USVString src;
+  [CEReactions] attribute FencedFrameConfig config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
 };
@@ -157,24 +174,126 @@ interface HTMLFencedFrameElement : HTMLElement {
 </dd>
 </dl>
 
-The <{fencedframe}> element represents a <span class=XXX>TODO: Wire up the browsing context "mode" that is being worked on in <a href=https://wicg.github.io/nav-speculation/prerendering.html#prerendering-bcs-subsection>WICG/nav-speculation</a> so we can have something like a nested top-level browsing context.</span>
+The <{fencedframe}> element represents its [=fencedframe/nested traversable=].
 
-The <dfn element-attr for=fencedframe>src</dfn> attribute <span class=XXX>TODO</span>.
+Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which is either a
+[=traversable navigable=] or null. It is initially null.
 
-The {{HTMLFencedFrameElement/src}} IDL attribute must [=reflect=] the respective content attribute of the same name.
+<div algorithm=insertion>
+  When a <{fencedframe}> element is |element| is [=node is inserted into a document|inserted into a
+  document=] whose [=Document/browsing context=] is non-null, run these steps:
+
+  1. Let |nested traversable| be the result of [=create a new nested traversable|creating a new
+     nested traversable=] for |element|.
+
+  1. Set |nested traversable|'s [=navigable/loading mode=] to "`fencedframe`".
+
+  1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
+
+  1. <span class=XXX>Process the actual attributes, and start the navigation</span>
+</div>
+
+<div algorithm=config-getter>
+  The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
+
+<div algorithm=config-setter>
+  The {{HTMLFencedFrameElement/config}} IDL attribute setter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
-This section details monkeypatches to [[!HTML]]'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension attributes</a> section. This section will be updated to include <{fencedframe}> in the list of elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
+This section details monkeypatches to [[!HTML]]'s <a
+href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
+attributes</a> section. This section will be updated to include <{fencedframe}> in the list of
+elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
+
+<h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
+
+<pre class=idl>
+  enum OpaqueProperty {"opaque"};
+
+  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
+  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
+
+  [Exposed=Window]
+  interface FencedFrameConfig {
+    constructor(USVString url);
+    readonly attribute FencedFrameConfigURL? url;
+    readonly attribute FencedFrameConfigSize? width;
+    readonly attribute FencedFrameConfigSize? height;
+  };
+</pre>
+
+<span class=XXX>TODO: Fix the "indistinguishable" IDL bug with the unions above.</span>
+
+<h3 id=fence-interface>The {{Fence}} interface</h3>
+
+<span class=XXX>Describe this infrastructure in detail.</span>
+
+<pre class=idl>
+  enum FenceReportingDestination {
+    "buyer",
+    "seller",
+    "component-seller",
+    "shared-storage-select-url",
+  };
+
+  dictionary FenceEvent {
+    required DOMString eventType;
+    required DOMString eventData;
+    required sequence&lt;DOMString&gt; destination;
+  };
+
+  [Exposed=Window]
+  interface Fence {
+      undefined reportEvent(FenceEvent event);
+  };
+</pre>
+
+<div algorithm>
+  The <dfn method for=Fence>reportEvent(<var ignore>event</var>)</dfn> method steps are:
+
+  1. <span class=XXX>Fill this out!</span>
+</div>
+
+<h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
+
+Every distinct element should have its own request destination to allow for special handling when
+making requests (fenced frame request behavior deviates from iframe behavior in enough ways to
+justify having a separate destination). Update the associated request [=request/destination=] list
+to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the
+CSP directive <code>fenced-frame-src</code>, and the features HTML's
+<code>&lt;fencedframe&gt;</code>.
+
+Add "<code>fencedframe</code>" to the [=non-subresource request=] list and to the [=navigation
+request=] list.
+
+Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
+
+In the [=fetch=] algorithm, step 13.2, where it says:
+
+> A user agent should set value to the first matching statement, if any, switching on request’s
+[=request/destination=]:
+
+Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
+"<code>frame</code>", and "<code>iframe</code>".
 
 <h3 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h3>
 
-Fenced frames are a different element from an iframe. Therefore, using the <b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules. Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:
+Fenced frames are a different element from an iframe. Therefore, using the
+<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
+Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
+specification is printed below:
 
 <h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
 
-The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <span
-class="XXX">TODO: use "nested navigable"</span>. The syntax for the directive's name and value
+The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
+<{fencedframe}>'s [=fencedframe/nested traversable=]. The syntax for the directive's name and value
 is described by the following ABNF:
 
 <pre>
@@ -188,8 +307,8 @@ is described by the following ABNF:
     <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
   </pre>
 
-  Fetches for the following code will return a [=network error=], as the URL
-  provided does not match `fenced-frame-src`'s <a>source list</a>:
+  Fetches for the following code will return a [=network error=], as the URL provided does not match
+  `fenced-frame-src`'s <a>source list</a>:
 
   <pre highlight="html">
     &lt;fencedframe src="https://example.org/"&gt;
@@ -197,7 +316,10 @@ is described by the following ABNF:
   </pre>
 </div>
 
-The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s check.
+The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and
+<a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
+the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s
+check.
 
 <h4 id="default-src-amendment">Amending [=default-src=]</h4>
 
@@ -221,22 +343,76 @@ It will now say:
 
 <h4 id="fallback-list-amendment"> Amending The Directive Fallback List</h4>
 
-In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback list</a>, in step 1, add a new entry to the list:
+In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
+list</a>, in step 1, add a new entry to the list:
 
 : "`fenced-frame-src`"
 ::
   1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
 
-<h3 id=new-request-destination>New fencedframe [=request=] [=request/destination=]</h3>
 
-Every distinct element should have its own request destination to allow for special handling when making requests (fenced frame request behavior deviates from iframe behavior in enough ways to justify having a separate destination). Update the associated request [=request/destination=] list to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the CSP directive <code>fenced-frame-src</code>, and the features HTML's <code>&lt;fencedframe&gt;</code>.
+<h2 id=prerendering-monkeypatch>Prerendering specification monkeypatches</h2>
 
-Add "<code>fencedframe</code>" to the [=non-subresource request=] list and to the [=navigation request=] list.
+The <a href=https://wicg.github.io/nav-speculation/prerendering.html>Prerendering Revamped</a>
+specification defines [=navigable=]'s [=navigable/loading mode=] and the values it can take on. Our
+specification adds another value for fenced frames:
 
-Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
+: "`fencedframe`"
+:: This [=navigable=] is displaying a <{fencedframe}>'s content
 
-In the [=fetch=] algorithm, step 13.2, where it says:
+<h2 id=html-integration>HTML Integration</h2>
 
-> A user agent should set value to the first matching statement, if any, switching on request’s [=request/destination=]:
+<h3 id=window-extension>Extensions to the {{Window}} interface</h3>
 
-Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>", "<code>frame</code>", and "<code>iframe</code>".
+<pre class="idl">
+  partial interface Window {
+    // Collection of fenced frame APIs
+    readonly attribute Fence? fence;
+  };
+</pre>
+
+Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a {{Fence}} instance created alongside the {{Window}}.
+
+<div algorithm>
+  The <dfn attribute for=Window>fence</dfn> getter steps are:
+    1. If [=this=]'s [=Window/navigable=]'s [=navigable/loading mode=] is "`fencedframe`", return
+       [=this=]'s [=Window/fence=].
+
+    1. Return null.
+</div>
+
+<h3 id=nested-traversables>Nested traversables</h3>
+
+In [[HTML]]'s <a
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables>Nested
+navigables</a> section, add the following algorithm:
+
+<div algorithm>
+  To <dfn>create a new nested traversable</dfn> given an element |element|:
+
+  1. Let |parentNavigable| be |element|'s [=node navigable=].
+
+  1. Let |document| to the second return value of [=creating a new top-level browsing context and
+     document=].
+
+  1. Let |documentState| be a new [=document state=], whose [=document state/document=] is |document|.
+
+  1. Let |traversable| be a new [=traversable navigable=].
+
+  1. [=Initialize the navigable=] |traversable| given |documentState| and |parentNavigable|.
+
+  1. Let |initialHistoryEntry| be |traversable|'s [=navigable/active session history entry=].
+
+  1. Set |initialHistoryEntry|'s step to 0.
+
+  1. [=Append=] |initialHistoryEntry| to |traversable|'s [=traversable navigable/session history
+     entries=].
+
+  1. Return |traversable|.
+</div>
+
+Note that the [=create a new nested traversable=] creates the first kind of [=traversable
+navigable=] that is not a [=top-level traversable=]. This will require removing the note about
+nested traversables in [[HTML]]'s <a
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
+traversables</a> section.
