@@ -33,3 +33,7 @@ navigator.runAdAuction(myAuctionConfig).then((auctionWinnerConfig) => {
 ## Backwards compatibility
   
 Previously we used a [`urn:uuid`](https://tools.ietf.org/html/rfc4122) and the `src` attribute to accomplish this same behavior. We will continue to support `urn:uuid` and `src` for a transition period.
+
+## Embedder context
+
+After creating the config and prior to loading the config into the fenced frame, an embedder can communicate a string of contextual information to one or more worklets for the [Shared Storage API](https://github.com/WICG/shared-storage) that are spun up inside the fenced frame (details [here](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config_context.md)). This can be useful for reporting purposes.
