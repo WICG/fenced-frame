@@ -132,16 +132,16 @@ All fenced frame related functions will live in its own class, in the same way t
 
 #### Can Load API
 
-There are various reasons a fenced frame config could refuse to load in a page. For example, if the page is not in a secure context, or if CSPEE is specified in the embedding frame, the fenced frame config will refuse to load. This is a lot for a developer to keep track of.
+There are various reasons a fenced frame config with an opaque url could refuse to load in a page. For example, if the page is not in a secure context, or if CSPEE is specified in the embedding frame, the fenced frame config will refuse to load. This is a lot for a developer to keep track of.
 
 If the process of getting an ad in the page is complex or expensive, there needs to be a way to ensure that the resulting ad will actually end up in the page before the expensive process begins.
 
-A static API method will be introduced to the HTMLFencedFrameElement class to check this. No fenced frame will be created when calling this API, and it can be invoked before actually attempting to load a fenced frame config. The API will return a boolean, true if the config would be able to load in the caller's context, false if not.
+A static API method will be introduced to the HTMLFencedFrameElement class to check this. No fenced frame will be created when calling this API, and it can be invoked before actually attempting to load a fenced frame config. The API will return a boolean, true if a config with an opaque mapped url would be able to load in the caller's context, false if not.
 
 ##### Example usage
 
 ```
-HTMLFencedFrameElement.canLoadConfig(config);
+HTMLFencedFrameElement.canLoadOpaqueURL();
 ```
 ```
 > true
