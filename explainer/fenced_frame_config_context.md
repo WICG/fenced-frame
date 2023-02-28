@@ -14,7 +14,7 @@ Subsequently, anything written through the [FencedFrameConfig](https://github.co
 
 ## Example
 
-After the SSP's JavaScript invokes the [Turtledove/FLEDGE API](https://github.com/WICG/turtledove/blob/main/FLEDGE.md) and receives the resulting [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md) `fencedFrameConfig`, the SSP JS can write an event ID string via `fencedFrameConfig.setContext()`.
+After the SSP's JavaScript invokes the [Turtledove/FLEDGE API](https://github.com/WICG/turtledove/blob/main/FLEDGE.md) and receives the resulting [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md) `fencedFrameConfig`, the SSP JS can write an event ID string via `fencedFrameConfig.setSharedStorageContext()`.
 
 In the embedder page:
 
