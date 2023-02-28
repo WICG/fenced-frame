@@ -8,9 +8,9 @@ In a scenario where the input URLs for the fenced frame are required to be k-ano
 
 ## Proposed solution
 
-Instead, before navigating the fenced frame to the auction's winning [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md), the embedder could write the event-level ID, or other contextual information, as a string, by using the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setContext()` method, as in the example below. 
+Instead, before navigating the fenced frame to the auction's winning [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md), the embedder could write the event-level ID, or other contextual information, as a string, by using the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setSharedStorageContext()` method, as in the example below. 
 
-Subsequently, anything written through the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setContext()` method prior to a fenced frame's navigation to that config, can be read via `sharedStorage.context` from inside a worklet for the [Shared Storage API](https://github.com/WICG/shared-storage) created by the fenced frame or by any of its same-origin children.
+Subsequently, anything written through the [FencedFrameConfig](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)'s `setSharedStorageContext()` method prior to a fenced frame's navigation to that config, can be read via `sharedStorage.context` from inside a worklet for the [Shared Storage API](https://github.com/WICG/shared-storage) created by the fenced frame or by any of its same-origin children. That is, `sharedStorage.context` can be invoked via the script for a operation previously registered through [`sharedStorage.worklet.addModule()`](https://github.com/WICG/shared-storage/tree/main#outside-the-worklet) and then called by either [`sharedStorage.run()`](https://github.com/WICG/shared-storage/tree/main#outside-the-worklet) or [`sharedStorage.selectURL()`](https://github.com/WICG/shared-storage/tree/main#outside-the-worklet).
 
 ## Example
 
@@ -27,7 +27,7 @@ auctionConfig.resolveToConfig = true;
 const fencedFrameConfig = await navigator.runAdAuction(auctionConfig);
 
 // Write to the config any desired embedder contextual information as a string.
-fencedFrameConfig.setContext("My Event ID 123");
+fencedFrameConfig.setSharedStorageContext("My Event ID 123");
 
 // Navigate the fenced frame to the config.
 document.getElementById('my-fenced-frame').config = fencedFrameConfig;
