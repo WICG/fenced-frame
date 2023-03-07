@@ -10,7 +10,7 @@ The explainer is organized as follows:
    * [explainer/README](https://github.com/shivanigithub/fenced-frame/tree/master/explainer)
    
 * What are the problems being solved/ different modes of fenced frames?
-   * [Modes/Use cases of fenced frames](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/modes.md)
+   * [Modes/Use cases of fenced frames](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md)
 
 * Deep dive in the "opaque-ads" use case which will be the first launch of fenced frames
    * [Opaque ads use cases](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/opaque_ads_use_cases.md)
