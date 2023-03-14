@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 077497365, updated Thu Mar 2 15:15:29 2023 -0800" name="generator">
+  <meta content="Bikeshed version d9f9c3533, updated Fri Mar 10 11:31:29 2023 -0800" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="c1d72183e95147337693575422e8e8b4b9b905d0" name="document-revision">
+  <meta content="b13b80b5014d36b6f2b68798635220f9f79c34e1" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-07">7 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-14">14 March 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -802,6 +802,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p><span class="XXX">Process the actual attributes, and start the navigation</span></p>
     </ol>
    </div>
+   <div class="algorithm" data-algorithm="destroy">
+     When a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> element is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#remove-an-element-from-a-document" id="ref-for-remove-an-element-from-a-document">removed from a document</a>, the user agent 
+    <p class="XXX">TODO:
+  destroy the nested traversable</p>
+    . 
+   </div>
    <div class="algorithm" data-algorithm="config-getter">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export id="dom-htmlfencedframeelement-config"><code>config</code></dfn> IDL attribute getter steps are: 
     <ol>
@@ -818,7 +824,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </div>
    <h3 class="heading settled" data-level="1.1" id="dimension-attributes"><span class="secno">1.1. </span><span class="content">Dimension attributes</span><a class="self-link" href="#dimension-attributes"></a></h3>
    <p>This section details monkeypatches to <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimension-attributes">Dimension
-attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> in the list of
+attributes</a> section. This section will be updated to include <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④">fencedframe</a></code> in the list of
 elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
    <h3 class="heading settled" data-level="1.2" id="fenced-frame-config-interface"><span class="secno">1.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①">FencedFrameConfig</a></code> interface</span><a class="self-link" href="#fenced-frame-config-interface"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-opaqueproperty"><code><c- g>OpaqueProperty</c-></code></dfn> {<dfn class="idl-code" data-dfn-for="OpaqueProperty" data-dfn-type="enum-value" data-export id="dom-opaqueproperty-opaque"><code><c- s>"opaque"</c-></code><a class="self-link" href="#dom-opaqueproperty-opaque"></a></dfn>};
@@ -882,7 +888,7 @@ request</a> list.</p>
 Introduce a new <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>: <b><i>fenced-frame-src</i></b>. The monkey-patched
 specification is printed below:</p>
    <h4 class="heading settled" data-level="1.5.1" id="directive-fenced-frame-src"><span class="secno">1.5.1. </span><span class="content"><code>fenced-frame-src</code></span><a class="self-link" href="#directive-fenced-frame-src"></a></h4>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable①">nested traversable</a>. The syntax for the directive’s name and value
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable①">nested traversable</a>. The syntax for the directive’s name and value
 is described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
 directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
@@ -929,7 +935,7 @@ specification adds another value for fenced frames:</p>
    <dl>
     <dt data-md>"<code>fencedframe</code>"
     <dd data-md>
-     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤">fencedframe</a></code>'s content</p>
+     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑥">fencedframe</a></code>'s content</p>
    </dl>
    <h2 class="heading settled" data-level="3" id="html-integration"><span class="secno">3. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
    <h3 class="heading settled" data-level="3.1" id="window-extension"><span class="secno">3.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
@@ -976,7 +982,7 @@ navigables</a> section, add the following algorithm:</p>
       <p>Return <var>traversable</var>.</p>
     </ol>
    </div>
-   <p>Note that the <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">create a new nested traversable</a> creates the first kind of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable
+   <p class="note" role="note"><span class="marker">Note:</span> The <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">create a new nested traversable</a> algorithm creates the first kind of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable
 navigable</a> that is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversable</a>. This will require removing the note about
 nested traversables in <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables">Top-level
 traversables</a> section.</p>
@@ -1309,6 +1315,12 @@ traversables</a> section.</p>
     <li><a href="#ref-for-phrasing-content-2">1. The fencedframe element</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-003fb40d70ab3764e384b9decc40bb62" class="dfn-panel" data-for="003fb40d70ab3764e384b9decc40bb62" id="infopanel-for-003fb40d70ab3764e384b9decc40bb62">
+   <span id="infopaneltitle-for-003fb40d70ab3764e384b9decc40bb62" style="display:none">Info about the 'removed from a document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#remove-an-element-from-a-document">https://html.spec.whatwg.org/multipage/infrastructure.html#remove-an-element-from-a-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-remove-an-element-from-a-document">1. The fencedframe element</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" class="dfn-panel" data-for="a072527f75033fb4ed6119239e352e1f" id="infopanel-for-a072527f75033fb4ed6119239e352e1f">
    <span id="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" style="display:none">Info about the 'session history entries' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
    <ul>
@@ -1451,6 +1463,7 @@ traversables</a> section.</p>
      <li><span class="dfn-paneled" id="1bc1f9b3190b065dbdbf28586e3be5e5">nothing</span>
      <li><span class="dfn-paneled" id="a9fc24eea54a0d0d16ceece394831900">palpable content</span>
      <li><span class="dfn-paneled" id="4252c6677f702595b89302ac9e3cef64">phrasing content</span>
+     <li><span class="dfn-paneled" id="003fb40d70ab3764e384b9decc40bb62">removed from a document</span>
      <li><span class="dfn-paneled" id="a072527f75033fb4ed6119239e352e1f">session history entries</span>
      <li><span class="dfn-paneled" id="6bb36d47a5f9a04109a4493b81f2720a">top-level traversable</span>
      <li><span class="dfn-paneled" id="9df064b89e8130a9d4cee056b2fdeb2f">traversable navigable</span>
@@ -1539,10 +1552,10 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-elementdef-fencedframe" class="dfn-panel" data-for="elementdef-fencedframe" id="infopanel-for-elementdef-fencedframe">
    <span id="infopaneltitle-for-elementdef-fencedframe" style="display:none">Info about the 'fencedframe' definition.</span><b><a href="#elementdef-fencedframe">#elementdef-fencedframe</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a> <a href="#ref-for-elementdef-fencedframe②">(3)</a>
-    <li><a href="#ref-for-elementdef-fencedframe③">1.1. Dimension attributes</a>
-    <li><a href="#ref-for-elementdef-fencedframe④">1.5.1. fenced-frame-src</a>
-    <li><a href="#ref-for-elementdef-fencedframe⑤">2. Prerendering specification monkeypatches</a>
+    <li><a href="#ref-for-elementdef-fencedframe">1. The fencedframe element</a> <a href="#ref-for-elementdef-fencedframe①">(2)</a> <a href="#ref-for-elementdef-fencedframe②">(3)</a> <a href="#ref-for-elementdef-fencedframe③">(4)</a>
+    <li><a href="#ref-for-elementdef-fencedframe④">1.1. Dimension attributes</a>
+    <li><a href="#ref-for-elementdef-fencedframe⑤">1.5.1. fenced-frame-src</a>
+    <li><a href="#ref-for-elementdef-fencedframe⑥">2. Prerendering specification monkeypatches</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframe-nested-traversable" class="dfn-panel" data-for="fencedframe-nested-traversable" id="infopanel-for-fencedframe-nested-traversable">
