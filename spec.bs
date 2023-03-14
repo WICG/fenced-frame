@@ -411,7 +411,7 @@ navigables</a> section, add the following algorithm:
   1. Return |traversable|.
 </div>
 
-Note that the [=create a new nested traversable=] creates the first kind of [=traversable
+Note: The [=create a new nested traversable=] algorithm creates the first kind of [=traversable
 navigable=] that is not a [=top-level traversable=]. This will require removing the note about
 nested traversables in [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
