@@ -193,6 +193,11 @@ Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which 
   1. <span class=XXX>Process the actual attributes, and start the navigation</span>
 </div>
 
+<div algorithm=destroy>
+  When a <{fencedframe}> element is [=removed from a document=], the user agent <p class=XXX>TODO:
+  destroy the nested traversable</p>.
+</div>
+
 <div algorithm=config-getter>
   The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are:
 
