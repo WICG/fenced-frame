@@ -166,7 +166,7 @@ dl, dd {
 interface HTMLFencedFrameElement : HTMLElement {
   [HTMLConstructor] constructor();
 
-  [CEReactions] attribute FencedFrameConfig config;
+  [CEReactions] attribute FencedFrameConfig? config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
 };
@@ -178,6 +178,9 @@ The <{fencedframe}> element represents its [=fencedframe/nested traversable=].
 
 Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which is either a
 [=traversable navigable=] or null. It is initially null.
+
+Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
+{{FencedFrameConfig}} or null. It is initially null.
 
 <div algorithm=insertion>
   When a <{fencedframe}> element is |element| is [=node is inserted into a document|inserted into a
@@ -198,11 +201,8 @@ Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which 
   destroy the nested traversable</p>.
 </div>
 
-<div algorithm=config-getter>
-  The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are:
-
-  1. <span class=XXX>TODO</span>
-</div>
+The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are to return
+[=this=]'s [=fencedframe/config=].
 
 <div algorithm=config-setter>
   The {{HTMLFencedFrameElement/config}} IDL attribute setter steps are:
