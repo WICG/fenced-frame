@@ -222,7 +222,7 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   1. Let |url| be the [=URL record=] <code>about:blank</code>.
 
   1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
-     [=fencedframeconfig/url=] relative to [=element=]'s [=Node/node document=]. If this is
+     [=fencedframeconfig/url=] relative to |element|'s [=Node/node document=]. If this is
      successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
 
   1. [=Navigate=] |element|'s [=fencedframe/nested traversable=] to |url| using |element|'s
