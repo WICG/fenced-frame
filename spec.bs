@@ -45,6 +45,10 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
     text: node navigable; url: document-sequences.html#node-navigable
     text: document state; url: browsing-the-web.html#she-document-state
+    text: historyHandling; url: browsing-the-web.html#navigation-hh
+    text: referrerPolicy; url: browsing-the-web.html#navigation-referrer-policy
+    for: history handling behavior
+      text: replace; url: browsing-the-web.html#hh-replace
     for: document state
       text: document; url: browsing-the-web.html#document-state-document
     for: navigable
@@ -210,12 +214,21 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   href=https://html.spec.whatwg.org/multipage/nav-history-apis.html#apis-for-creating-and-navigating-browsing-contexts-by-name:url-and-history-update-steps>top-level
   traversable creation</a>, but we still need a mechanism to initialize
   {{History}}.{{History/length}} in the new navigable. This is an existing issue in the HTML
-  Standard: <a href=https://github.com/whatwg/html/issues/9030>https://github.com/whatwg/html/issues/9030</a>.
+  Standard: <a
+  href=https://github.com/whatwg/html/issues/9030>https://github.com/whatwg/html/issues/9030</a>.
 
-  1. If |element| has a config
+  1. If |element|'s [=fencedframe/config=] is null and |initialInsertion| is true, then return.
+
   1. Let |url| be the [=URL record=] <code>about:blank</code>.
 
-  1. If |element| has a <span class=XXX>Get the URL</span>
+  1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
+     [=fencedframeconfig/url=] relative to [=element=]'s [=Node/node document=]. If this is
+     successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
+
+  1. [=Navigate=] |element|'s [=fencedframe/nested traversable=] to |url| using |element|'s
+     [=fencedframe/nested traversable=]'s [=navigable/active document=], with [=historyHandling=]
+     set to "<a for="history handling behavior">`replace`</a>" , and [=referrerPolicy=] set to
+     <a>"`no-referrer`"</a>.
 </div>
 
 <div algorithm=destroy>
@@ -255,6 +268,9 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
     readonly attribute FencedFrameConfigSize? height;
   };
 </pre>
+
+Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
+null.
 
 <span class=XXX>TODO: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
