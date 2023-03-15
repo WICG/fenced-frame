@@ -193,7 +193,29 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 
   1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
 
-  1. <span class=XXX>Process the actual attributes, and start the navigation</span>
+  1. [=Process the fencedframe attributes=] with |element| and [=initialInsertion=] set to true.
+</div>
+
+<div algorithm=process-the-fencedframe-attributes>
+  To <dfn>process the <{fencedframe}> attributes</dfn> given a <{fencedframe}> element |element| and
+  a boolean <dfn><var>initialInsertion</var></dfn>, run these steps:
+
+  1. [=Assert=]: |element| is [=connected=].
+
+  Issue: It's not necessary to call the <a
+  href=https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps>URL
+  and history update steps</a> as we do during usual <a
+  href=https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element:url-and-history-update-steps>child
+  navigable creation</a> or <a
+  href=https://html.spec.whatwg.org/multipage/nav-history-apis.html#apis-for-creating-and-navigating-browsing-contexts-by-name:url-and-history-update-steps>top-level
+  traversable creation</a>, but we still need a mechanism to initialize
+  {{History}}.{{History/length}} in the new navigable. This is an existing issue in the HTML
+  Standard: <a href=https://github.com/whatwg/html/issues/9030>https://github.com/whatwg/html/issues/9030</a>.
+
+  1. If |element| has a config
+  1. Let |url| be the [=URL record=] <code>about:blank</code>.
+
+  1. If |element| has a <span class=XXX>Get the URL</span>
 </div>
 
 <div algorithm=destroy>
