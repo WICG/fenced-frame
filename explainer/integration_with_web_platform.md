@@ -91,7 +91,11 @@ Chromium is implementing [Multiple Page Architecture](https://docs.google.com/do
 A page in MPArch behaves as the top-level frame for their frame tree and as a top-level browsing context from a spec perspective. Any calls to window.parent, window.top or window.frames[x] work for the inner and outer pages independently i.e. a frame in the inner page cannot access the outer page using window.parent/top etc. A fenced frame does not allow script access to the embedding context and thus aligns well with being implemented using MPArch. The implementation design is detailed here: 
 [fenced frames implementation design](https://docs.google.com/document/d/1HAU9IiHZU4KBPC_rEk3BQYrWTK50PdNGg8CcHhVLXig/edit?usp=sharing)
 
-### Initial version: using shadowDOM based iframes
+### How new features should integrate with fenced frames
+
+When implementing a new feature on the web platform, its integration with many other parts of the web platform must be considered, e.g., [inactive Documents in the BFCache](https://w3ctag.github.io/design-principles/#support-non-fully-active), and [prerendering](https://wicg.github.io/nav-speculation/prerendering.html#delay-async-apis).  Fenced frames adds another dimension within which new features must consider their behavior. We've written some preliminary guidelines on how to think about the behavior of new features that operate within a fenced frame [**here**](https://chromium.googlesource.com/chromium/src/+/master/content/browser/fenced_frame/README.md), which we will consider upstreaming to a more broad venue, perhaps like the [W3C TAG Design Principles](https://w3ctag.github.io/design-principles/) document.
+
+### Obsolete: Initial version: using shadowDOM based iframes
 While MPArch is being developed in parallel with fenced frames, the initial implementation that will be available for origin trial will be based on the shadowDOM architecture. The implementation design is detailed here:
 [Fenced Frames Origin Trial Design: ShadowDOM + IDL](https://docs.google.com/document/d/1ijTZJT3DHQ1ljp4QQe4E4XCCRaYAxmInNzN1SzeJM8s/edit?usp=sharing)
 
