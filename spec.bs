@@ -41,12 +41,15 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: reflect; url: common-dom-interfaces.html#reflect
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
+    text: browsing context group; url: document-sequences.html#browsing-context-group
     text: creating a new top-level browsing context and document; url: document-sequences.html#creating-a-new-top-level-browsing-context
     text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
     text: node navigable; url: document-sequences.html#node-navigable
     text: document state; url: browsing-the-web.html#she-document-state
     text: historyHandling; url: browsing-the-web.html#navigation-hh
     text: referrerPolicy; url: browsing-the-web.html#navigation-referrer-policy
+    text: activation notification; url: interaction.html#activation-notification
+    text: consume user activation; url: interaction.html#consume-user-activation
     for: history handling behavior
       text: replace; url: browsing-the-web.html#hh-replace
     for: document state
@@ -54,6 +57,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     for: navigable
       text: active session history entry; url: document-sequences.html#nav-active-history-entry
       text: current session history entry; url: document-sequences.html#nav-current-history-entry
+      text: parent; url: document-sequences.html#nav-parent
     for: traversable navigable
       text: session history entries; url: document-sequences.html#tn-session-history-entries
     for: Window
@@ -425,6 +429,42 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 </div>
 
 <h3 id=nested-traversables>Nested traversables</h3>
+
+The [[HTML]] Standard organizes [=navigables=] into two categories: [=child navigables=] and
+[=traversable navigables=] (also known as [=top-level traversables=]). The introduction of features
+like fenced frames, and to a lesser extent <a href=https://github.com/wicg/portals>portals</a>,
+complicates this model by adding a new type of [=traversable navigable=] that is *also* a [=child
+navigable=]. Because these new frame types are housed in a separate [=browsing context group=] from
+their [=navigable/parent=], some concrete level of isolation is expected and required; on the other
+hand since they are composed visually inside of *other* [=browsing context groups=], sometimes they
+need to behave like the normal [=child navigables=] that we see in e.g., <{iframe}>s.
+
+The complexity here is in deciding when terms like [=navigable container=],
+[=navigable/parent|navigable parent=], and [=Document/descendant navigables=] need to cross the
+[=traversable navigable=]/[=browsing context group=] boundary, versus when doing so would be unsafe
+or incorrect. The examples below illustrate this point.
+
+<p class=example id=fenced-user-activation>When a user [=user activation|activates=] content inside
+of a {{Document}}, ordinarily the [=activation notification=] steps give user activation to all
+[=Document/ancestor navigables=] and all [=same origin=] [=Document/descendant navigables=]. But
+because a <{fencedframe}> can host sensitive content that needs to be isolated from its embedder,
+and because [=user activation=] and [=consume user activation|consumption=] offer a communication
+vector between these two parties, for the purpose of user activation a <{fencedframe}>'s
+[=fencedframe/nested traversable=] cannot not be considered a descendant of its
+[=navigable/parent=], nor can its [=navigable/parent=] be considered an ancestor of the
+<{fencedframe}>'s [=fencedframe/nested traversable=]. In other words, we consider user activation to
+be "fenced" to denote that it never crosses the [=fencedframe/nested traversable=] boundary.</p>
+
+<p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
+[=fencedframe/nested traversable=] gets [=created a new nested traversable|created=] or
+[=navigated=], it <span class=allow-2119>must</span> <a
+href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inherit</a> its embedder
+{{Document}}'s [=Document/active sandboxing flag set=] as is standard for {{Document}}s in normal
+[=child navigables=]. If we did not do this, then the <{fencedframe}> element would be a trivial
+sandbox bypass.</p>
+
+This section provides patches to various [[HTML]] definitions (and their uses) that deal with
+collections of related navigables, with the intention of fencing and unfencing uses appropriately.
 
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables>Nested
