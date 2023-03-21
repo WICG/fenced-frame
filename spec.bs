@@ -427,15 +427,6 @@ list</a>, in step 1, add a new entry to the list:
   1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
 
 
-<h2 id=prerendering-monkeypatch>Prerendering specification monkeypatches</h2>
-
-The <a href=https://wicg.github.io/nav-speculation/prerendering.html>Prerendering Revamped</a>
-specification defines [=navigable=]'s [=navigable/loading mode=] and the values it can take on. Our
-specification adds another value for fenced frames:
-
-: "`fencedframe`"
-:: This [=navigable=] is displaying a <{fencedframe}>'s content
-
 <h2 id=html-integration>HTML Integration</h2>
 
 <h3 id=window-extension>Extensions to the {{Window}} interface</h3>
@@ -552,3 +543,19 @@ navigable=] that is not a [=top-level traversable=]. This will require removing 
 nested traversables in [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
 traversables</a> section.
+
+<h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
+
+Due to the necessarily cross-cutting nature of the <{fencedframe}> element and its interactions with
+core concepts like [=navigable=] and [=browsing context group=], there are a number of
+specifications that rely on terms whose usages must be re-evaluated in light of this specification;
+this section houses the various changes that we propose to other specifications.
+
+<h3 id=prerendering-monkeypatch>Prerendering</h3>
+
+The <a href=https://wicg.github.io/nav-speculation/prerendering.html>Prerendering Revamped</a>
+specification defines [=navigable=]'s [=navigable/loading mode=] and the values it can take on. Our
+specification adds another value for fenced frames:
+
+: "`fencedframe`"
+:: This [=navigable=] is displaying a <{fencedframe}>'s content
