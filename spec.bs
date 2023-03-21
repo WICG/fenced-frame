@@ -42,7 +42,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
     text: browsing context group; url: document-sequences.html#browsing-context-group
-    text: creating a new top-level browsing context and document; url: document-sequences.html#creating-a-new-top-level-browsing-context
+    text: creator base url; url: document-sequences.html#creator-base-url
+    text: create a new browsing context and document; url: document-sequences.html#creating-a-new-browsing-context
     text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
     text: node navigable; url: document-sequences.html#node-navigable
     text: document state; url: browsing-the-web.html#she-document-state
@@ -428,6 +429,25 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
     1. Return null.
 </div>
 
+<h3 id=creating-browsing-contexts-patch>Modifications to creating browsing contexts</h3>
+
+<div algorithm="creating a new browsing context and document patch">
+  In [[HTML]]'s [=creating a new browsing context and document=] algorithm, rewrite the two steps
+  starting with;
+
+  1. If |creator| is non-null, then:
+
+  to instead use the tighter condition:
+
+  1. If |creator| is non-null and <var ignore>embedder</var> is not a <{fencedframe}> element, then:
+</div>
+
+Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
+document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
+container=], across the fenced frame boundary.
+
+Issue: Ensure we are doing the right thing for [=Document/permissions policy=].
+
 <h3 id=nested-traversables>Nested traversables</h3>
 
 The [[HTML]] Standard organizes [=navigables=] into two categories: [=child navigables=] and
@@ -473,14 +493,13 @@ navigables</a> section, add the following algorithm:
 <div algorithm>
   To <dfn>create a new nested traversable</dfn> given an element |element|:
 
-  1. Let |parentNavigable| be |element|'s [=node navigable=].
-
-  1. Let |document| to the second return value of [=creating a new top-level browsing context and
-     document=].
+  1. Let |document| be the second return value of [=creating a new browsing context and document=].
 
   1. Let |documentState| be a new [=document state=], whose [=document state/document=] is |document|.
 
   1. Let |traversable| be a new [=traversable navigable=].
+
+  1. Let |parentNavigable| be |element|'s [=node navigable=].
 
   1. [=Initialize the navigable=] |traversable| given |documentState| and |parentNavigable|.
 
