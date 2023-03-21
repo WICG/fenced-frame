@@ -22,6 +22,9 @@ Assume Explicit For: yes
 <pre class="link-defaults">
 </pre>
 <pre class="anchors">
+urlPrefix: https://www.ietf.org/rfc/rfc4122.txt
+  type: dfn; text: urn uuid
+
 spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/prerendering.html
   type: dfn
     for: navigable
@@ -260,6 +263,9 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
 
+One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
+maps to an internal [=fenced frame config=] [=struct=].
+
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
@@ -275,10 +281,24 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
   };
 </pre>
 
+Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
+
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
 null.
 
-<span class=XXX>TODO: Fix the "indistinguishable" IDL bug with the unions above.</span>
+Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>urn uuid</dfn>, which is a [=urn uuid=]
+string, initially null.
+
+Note: A {{FencedFrameConfig}}'s [=fencedframeconfig/urn uuid=] is a non-web-exposed unique ID that
+serves as the key to the <{fencedframe}> element's [=fencedframe/nested traversable=]'s <span
+class=XXX>URN config mapping</span>, which maps [=urn uuids=] to [=fenced frame config=]
+[=structs=] (that represent the web-exposed {{FencedFrameConfig}} object).
+
+A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
+
+* An <dfn for="fenced frame config">urn uuid</dfn>, a [=urn uuid=] string
+* <span class=XXX>TODO: Specify the other members</span>
+
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
 
