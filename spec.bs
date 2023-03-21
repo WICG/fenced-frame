@@ -42,8 +42,10 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: width; url: embedded-content-other.html#attr-dim-width
     text: height; url: embedded-content-other.html#attr-dim-height
     text: browsing context group; url: document-sequences.html#browsing-context-group
+    text: browsing context group set; url: document-sequences.html#browsing-context-group-set
     text: creator base url; url: document-sequences.html#creator-base-url
     text: create a new browsing context and document; url: document-sequences.html#creating-a-new-browsing-context
+    text: create a new browsing context group and document; url: document-sequences.html#creating-a-new-browsing-context-group
     text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
     text: node navigable; url: document-sequences.html#node-navigable
     text: document state; url: browsing-the-web.html#she-document-state
@@ -493,7 +495,13 @@ navigables</a> section, add the following algorithm:
 <div algorithm>
   To <dfn>create a new nested traversable</dfn> given an element |element|:
 
-  1. Let |document| be the second return value of [=creating a new browsing context and document=].
+  1. Let |group| be a new [=browsing context group=].
+
+  Note: There doesn't seem to be a reason to [=set/append=] |group| to the user agent's [=browsing
+  context group set=] like [=create a new browsing context group and document=] does.
+
+  1. Let |document| be the second return value of [=creating a new browsing context and document=]
+     given |element| [=Node/node document=], |element|, and |group|.
 
   1. Let |documentState| be a new [=document state=], whose [=document state/document=] is |document|.
 
