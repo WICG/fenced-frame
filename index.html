@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d9f9c3533, updated Fri Mar 10 11:31:29 2023 -0800" name="generator">
+  <meta content="Bikeshed version be9d81bf4, updated Tue Mar 21 14:43:08 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="3bd5a4a4f46efed37cfeb30b3b4849871e28544e" name="document-revision">
+  <meta content="dbecc0395955ff8ebd77fb1af9cc481b5f7d3961" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -731,13 +731,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#fallback-list-amendment"><span class="secno">1.5.3</span> <span class="content"> Amending The Directive Fallback List</span></a>
        </ol>
      </ol>
-    <li><a href="#prerendering-monkeypatch"><span class="secno">2</span> <span class="content">Prerendering specification monkeypatches</span></a>
     <li>
-     <a href="#html-integration"><span class="secno">3</span> <span class="content">HTML Integration</span></a>
+     <a href="#html-integration"><span class="secno">2</span> <span class="content">HTML Integration</span></a>
      <ol class="toc">
-      <li><a href="#window-extension"><span class="secno">3.1</span> <span class="content">Extensions to the <code class="idl"><span>Window</span></code> interface</span></a>
-      <li><a href="#creating-browsing-contexts-patch"><span class="secno">3.2</span> <span class="content">Modifications to creating browsing contexts</span></a>
-      <li><a href="#nested-traversables"><span class="secno">3.3</span> <span class="content">Nested traversables</span></a>
+      <li><a href="#window-extension"><span class="secno">2.1</span> <span class="content">Extensions to the <code class="idl"><span>Window</span></code> interface</span></a>
+      <li><a href="#creating-browsing-contexts-patch"><span class="secno">2.2</span> <span class="content">Modifications to creating browsing contexts</span></a>
+      <li><a href="#nested-traversables"><span class="secno">2.3</span> <span class="content">Nested traversables</span></a>
+     </ol>
+    <li>
+     <a href="#interaction-with-other-specs"><span class="secno">3</span> <span class="content">Interactions with other specifications</span></a>
+     <ol class="toc">
+      <li><a href="#prerendering-monkeypatch"><span class="secno">3.1</span> <span class="content">Prerendering</span></a>
      </ol>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -784,8 +788,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig"><c- n>FencedFrameConfig</c-></a>? <a class="idl-code" data-link-type="attribute" data-type="FencedFrameConfig?" href="#dom-htmlfencedframeelement-config" id="ref-for-dom-htmlfencedframeelement-config"><c- g>config</c-></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-width"><code><c- g>width</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-width"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-height"></a></dfn>;
-};
-</pre>
+};</pre>
    </dl>
    <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents its <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable">nested traversable</a>.</p>
    <p>Each <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="dfn" data-noexport id="fencedframe-nested-traversable">nested traversable</dfn>, which is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a> or null. It is initially null.</p>
@@ -861,8 +864,7 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigurl" id="ref-for-typedefdef-fencedframeconfigurl"><c- n>FencedFrameConfigURL</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigURL?" id="dom-fencedframeconfig-url"><code><c- g>url</c-></code><a class="self-link" href="#dom-fencedframeconfig-url"></a></dfn>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-width"><code><c- g>width</c-></code><a class="self-link" href="#dom-fencedframeconfig-width"></a></dfn>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize①"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-fencedframeconfig-height"></a></dfn>;
-};
-</pre>
+};</pre>
    <p class="issue" id="issue-fd312a21"><a class="self-link" href="#issue-fd312a21"></a> Fix the "indistinguishable" IDL bug with the unions above.</p>
    <p>Each <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig④">FencedFrameConfig</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-noexport id="fencedframeconfig-url">url</dfn>, which is a string, initially
 null.</p>
@@ -894,8 +896,7 @@ serves as the key to the <code><a data-link-type="element" href="#elementdef-fen
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fence"><code><c- g>Fence</c-></code></dfn> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent" id="ref-for-dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent"><c- n>FenceEvent</c-></a> <dfn class="idl-code" data-dfn-for="Fence/reportEvent(event)" data-dfn-type="argument" data-export id="dom-fence-reportevent-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-reportevent-event-event"></a></dfn>);
-};
-</pre>
+};</pre>
    <div class="algorithm" data-algorithm="reportEvent(event)" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-reportevent"><code>reportEvent(<var>event</var>)</code></dfn> method steps are: 
     <ol>
@@ -926,16 +927,13 @@ specification is printed below:</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⓪">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable③">nested traversable</a>. The syntax for the directive’s name and value
 is described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
-directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
-</pre>
+directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a></pre>
    <div class="example" id="fenced-frame-src-example">
     <a class="self-link" href="#fenced-frame-src-example"></a> Given a page with the following Content Security Policy: 
-<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/
-</pre>
-    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL provided does not match <code>fenced-frame-src</code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
+<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/</pre>
+    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL provided does not match <code>fenced-frame-src</code>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
 <pre class="highlight"><c- p>&lt;</c-><c- f>fencedframe</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://example.org/"</c-><c- p>></c->
-<c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c->
-</pre>
+<c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c-></pre>
    </div>
    <p>The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
 the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>’s
@@ -944,15 +942,13 @@ check.</p>
    <p>The <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src①">default-src</a> directive’s Example 7 and Example 8 will be amended. Where it says:</p>
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy①">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self">'self'</a>;
                          ...
-                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self①">'self'</a>
-</pre>
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self①">'self'</a></pre>
    <p>It will now say:</p>
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy②">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src①">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self②">'self'</a>;
                          ...
                          <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src①">fenced-frame-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self③">'self'</a>;
                          ...
-                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a>
-</pre>
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a></pre>
    <h4 class="heading settled" data-level="1.5.3" id="fallback-list-amendment"><span class="secno">1.5.3. </span><span class="content"> Amending The Directive Fallback List</span><a class="self-link" href="#fallback-list-amendment"></a></h4>
    <p>In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
 list</a>, in step 1, add a new entry to the list:</p>
@@ -964,32 +960,23 @@ list</a>, in step 1, add a new entry to the list:</p>
        <p>Return <code>&lt;&lt; "fenced-frame-src", "frame-src", "child-src", "default-src" >></code>.</p>
      </ol>
    </dl>
-   <h2 class="heading settled" data-level="2" id="prerendering-monkeypatch"><span class="secno">2. </span><span class="content">Prerendering specification monkeypatches</span><a class="self-link" href="#prerendering-monkeypatch"></a></h2>
-   <p>The <a href="https://wicg.github.io/nav-speculation/prerendering.html">Prerendering Revamped</a> specification defines <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable">navigable</a>'s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode" id="ref-for-navigable-loading-mode①">loading mode</a> and the values it can take on. Our
-specification adds another value for fenced frames:</p>
-   <dl>
-    <dt data-md>"<code>fencedframe</code>"
-    <dd data-md>
-     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①①">fencedframe</a></code>'s content</p>
-   </dl>
-   <h2 class="heading settled" data-level="3" id="html-integration"><span class="secno">3. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
-   <h3 class="heading settled" data-level="3.1" id="window-extension"><span class="secno">3.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
+   <h2 class="heading settled" data-level="2" id="html-integration"><span class="secno">2. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
+   <h3 class="heading settled" data-level="2.1" id="window-extension"><span class="secno">2.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①"><c- g>Window</c-></a> {
   // Collection of fenced frame APIs
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#fence" id="ref-for-fence①"><c- n>Fence</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="Fence?" href="#dom-window-fence" id="ref-for-dom-window-fence"><c- g>fence</c-></a>;
-};
-</pre>
+};</pre>
    <p>Each <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window②">Window</a></code> object has an associated <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-fence">fence</dfn>, which is a <code class="idl"><a data-link-type="idl" href="#fence" id="ref-for-fence②">Fence</a></code> instance created alongside the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window③">Window</a></code>.</p>
    <div class="algorithm" data-algorithm="fence" data-algorithm-for="Window">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export id="dom-window-fence"><code>fence</code></dfn> getter steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable">navigable</a>'s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode" id="ref-for-navigable-loading-mode②">loading mode</a> is "<code>fencedframe</code>", return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="#window-fence" id="ref-for-window-fence">fence</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable">navigable</a>'s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode" id="ref-for-navigable-loading-mode①">loading mode</a> is "<code>fencedframe</code>", return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="#window-fence" id="ref-for-window-fence">fence</a>.</p>
      <li data-md>
       <p>Return null.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="3.2" id="creating-browsing-contexts-patch"><span class="secno">3.2. </span><span class="content">Modifications to creating browsing contexts</span><a class="self-link" href="#creating-browsing-contexts-patch"></a></h3>
+   <h3 class="heading settled" data-level="2.2" id="creating-browsing-contexts-patch"><span class="secno">2.2. </span><span class="content">Modifications to creating browsing contexts</span><a class="self-link" href="#creating-browsing-contexts-patch"></a></h3>
    <div class="algorithm" data-algorithm="creating a new browsing context and document patch">
      In <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context" id="ref-for-creating-a-new-browsing-context">creating a new browsing context and document</a> algorithm, rewrite the two steps
   starting with; 
@@ -1000,14 +987,14 @@ specification adds another value for fenced frames:</p>
     <p>to instead use the tighter condition:</p>
     <ol>
      <li data-md>
-      <p>If <var>creator</var> is non-null and <var>embedder</var> is not a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①②">fencedframe</a></code> element, then:</p>
+      <p>If <var>creator</var> is non-null and <var>embedder</var> is not a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①①">fencedframe</a></code> element, then:</p>
     </ol>
    </div>
    <p class="note" role="note"><span class="marker">Note:</span> This is because we need to ensure that we do not leak <var>creator</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#the-document&apos;s-referrer" id="ref-for-the-document&apos;s-referrer">referrer</a>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#creator-base-url" id="ref-for-creator-base-url">creator base url</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container" id="ref-for-concept-document-policy-container">policy
 container</a>, across the fenced frame boundary.</p>
    <p class="issue" id="issue-d31f6063"><a class="self-link" href="#issue-d31f6063"></a> Ensure we are doing the right thing for <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy" id="ref-for-concept-document-permissions-policy">permissions policy</a>.</p>
-   <h3 class="heading settled" data-level="3.3" id="nested-traversables"><span class="secno">3.3. </span><span class="content">Nested traversables</span><a class="self-link" href="#nested-traversables"></a></h3>
-   <p>The <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> Standard organizes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable②">navigables</a> into two categories: <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable">child navigables</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①">traversable navigables</a> (also known as <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversables</a>). The introduction of features
+   <h3 class="heading settled" data-level="2.3" id="nested-traversables"><span class="secno">2.3. </span><span class="content">Nested traversables</span><a class="self-link" href="#nested-traversables"></a></h3>
+   <p>The <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> Standard organizes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable">navigables</a> into two categories: <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable">child navigables</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①">traversable navigables</a> (also known as <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversables</a>). The introduction of features
 like fenced frames, and to a lesser extent <a href="https://github.com/wicg/portals">portals</a>,
 complicates this model by adding a new type of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable navigable</a> that is <em>also</em> a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable①">child
 navigable</a>. Because these new frame types are housed in a separate <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group" id="ref-for-browsing-context-group">browsing context group</a> from
@@ -1018,11 +1005,11 @@ need to behave like the normal <a data-link-type="dfn" href="https://html.spec.w
 or incorrect. The examples below illustrate this point.</p>
    <p class="example" id="fenced-user-activation"><a class="self-link" href="#fenced-user-activation"></a>When a user <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation" id="ref-for-tracking-user-activation">activates</a> content inside
 of a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>, ordinarily the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#activation-notification" id="ref-for-activation-notification">activation notification</a> steps give user activation to all <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#ancestor-navigables" id="ref-for-ancestor-navigables">ancestor navigables</a> and all <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin">same origin</a> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#descendant-navigables" id="ref-for-descendant-navigables①">descendant navigables</a>. But
-because a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①③">fencedframe</a></code> can host sensitive content that needs to be isolated from its embedder,
+because a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①②">fencedframe</a></code> can host sensitive content that needs to be isolated from its embedder,
 and because <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation" id="ref-for-tracking-user-activation①">user activation</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation" id="ref-for-consume-user-activation">consumption</a> offer a communication
-vector between these two parties, for the purpose of user activation a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable④">nested traversable</a> cannot not be considered a descendant of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent" id="ref-for-nav-parent②">parent</a>, nor can its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent" id="ref-for-nav-parent③">parent</a> be considered an ancestor of the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable⑤">nested traversable</a>. In other words, we consider user activation to
+vector between these two parties, for the purpose of user activation a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①③">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable④">nested traversable</a> cannot not be considered a descendant of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent" id="ref-for-nav-parent②">parent</a>, nor can its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent" id="ref-for-nav-parent③">parent</a> be considered an ancestor of the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable⑤">nested traversable</a>. In other words, we consider user activation to
 be "fenced" to denote that it never crosses the <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable⑥">nested traversable</a> boundary.</p>
-   <p class="example" id="unfenced-sandbox-inheritance"><a class="self-link" href="#unfenced-sandbox-inheritance"></a>On the other hand, when a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑥">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable⑦">nested traversable</a> gets <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">created</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate①">navigated</a>, it <span class="allow-2119">must</span> <a href="https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3">inherit</a> its embedder <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set" id="ref-for-active-sandboxing-flag-set">active sandboxing flag set</a> as is standard for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code>s in normal <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable③">child navigables</a>. If we did not do this, then the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑦">fencedframe</a></code> element would be a trivial
+   <p class="example" id="unfenced-sandbox-inheritance"><a class="self-link" href="#unfenced-sandbox-inheritance"></a>On the other hand, when a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable⑦">nested traversable</a> gets <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">created</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate①">navigated</a>, it <span class="allow-2119">must</span> <a href="https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3">inherit</a> its embedder <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set" id="ref-for-active-sandboxing-flag-set">active sandboxing flag set</a> as is standard for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code>s in normal <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable③">child navigables</a>. If we did not do this, then the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑥">fencedframe</a></code> element would be a trivial
 sandbox bypass.</p>
    <p>This section provides patches to various <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> definitions (and their uses) that deal with
 collections of related navigables, with the intention of fencing and unfencing uses appropriately.</p>
@@ -1062,6 +1049,19 @@ navigables</a> section, add the following algorithm:</p>
 navigable</a> that is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable①">top-level traversable</a>. This will require removing the note about
 nested traversables in <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables">Top-level
 traversables</a> section.</p>
+   <h2 class="heading settled" data-level="3" id="interaction-with-other-specs"><span class="secno">3. </span><span class="content">Interactions with other specifications</span><a class="self-link" href="#interaction-with-other-specs"></a></h2>
+   <p>Due to the necessarily cross-cutting nature of the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑦">fencedframe</a></code> element and its interactions with
+core concepts like <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①">navigable</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group" id="ref-for-browsing-context-group④">browsing context group</a>, there are a number of
+specifications that rely on terms whose usages must be re-evaluated in light of this specification;
+this section houses the various changes that we propose to other specifications.</p>
+   <h3 class="heading settled" data-level="3.1" id="prerendering-monkeypatch"><span class="secno">3.1. </span><span class="content">Prerendering</span><a class="self-link" href="#prerendering-monkeypatch"></a></h3>
+   <p>The <a href="https://wicg.github.io/nav-speculation/prerendering.html">Prerendering Revamped</a> specification defines <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable②">navigable</a>'s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode" id="ref-for-navigable-loading-mode②">loading mode</a> and the values it can take on. Our
+specification adds another value for fenced frames:</p>
+   <dl>
+    <dt data-md>"<code>fencedframe</code>"
+    <dd data-md>
+     <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable③">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑧">fencedframe</a></code>'s content</p>
+   </dl>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -1077,7 +1077,7 @@ traversables</a> section.</p>
     </ul>
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">constructor()</a><span>, in § 1</span>
    <li><a href="#dom-fencedframeconfig-fencedframeconfig">constructor(url)</a><span>, in § 1.2</span>
-   <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 3.3</span>
+   <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 2.3</span>
    <li><a href="#dom-fenceevent-destination">destination</a><span>, in § 1.3</span>
    <li><a href="#dom-fenceevent-eventdata">eventData</a><span>, in § 1.3</span>
    <li><a href="#dom-fenceevent-eventtype">eventType</a><span>, in § 1.3</span>
@@ -1085,8 +1085,8 @@ traversables</a> section.</p>
    <li>
     fence
     <ul>
-     <li><a href="#dom-window-fence">attribute for Window</a><span>, in § 3.1</span>
-     <li><a href="#window-fence">dfn for Window</a><span>, in § 3.1</span>
+     <li><a href="#dom-window-fence">attribute for Window</a><span>, in § 2.1</span>
+     <li><a href="#window-fence">dfn for Window</a><span>, in § 2.1</span>
     </ul>
    <li><a href="#elementdef-fencedframe">fencedframe</a><span>, in § 1</span>
    <li><a href="#fenced-frame-config">fenced frame config</a><span>, in § 1.2</span>
@@ -1196,13 +1196,13 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-07886e33695d0e7b473ef18f656ad7ac" class="dfn-panel" data-for="07886e33695d0e7b473ef18f656ad7ac" id="infopanel-for-07886e33695d0e7b473ef18f656ad7ac">
    <span id="infopaneltitle-for-07886e33695d0e7b473ef18f656ad7ac" style="display:none">Info about the 'Document' external reference.</span><a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document">3.3. Nested traversables</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
+    <li><a href="#ref-for-document">2.3. Nested traversables</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-7b7df0a8762384a133b9bbb352e4b30a" class="dfn-panel" data-for="7b7df0a8762384a133b9bbb352e4b30a" id="infopanel-for-7b7df0a8762384a133b9bbb352e4b30a">
    <span id="infopaneltitle-for-7b7df0a8762384a133b9bbb352e4b30a" style="display:none">Info about the 'append' external reference.</span><a href="https://dom.spec.whatwg.org/#concept-node-append">https://dom.spec.whatwg.org/#concept-node-append</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-node-append">3.3. Nested traversables</a>
+    <li><a href="#ref-for-concept-node-append">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-67e5935433cd04e5d9a81198721eda05" class="dfn-panel" data-for="67e5935433cd04e5d9a81198721eda05" id="infopanel-for-67e5935433cd04e5d9a81198721eda05">
@@ -1215,13 +1215,13 @@ traversables</a> section.</p>
    <span id="infopaneltitle-for-e374c2a979dc7a73f7d03be0623d67e6" style="display:none">Info about the 'node document' external reference.</span><a href="https://dom.spec.whatwg.org/#concept-node-document">https://dom.spec.whatwg.org/#concept-node-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-node-document">1. The fencedframe element</a> <a href="#ref-for-concept-node-document①">(2)</a>
-    <li><a href="#ref-for-concept-node-document②">3.3. Nested traversables</a>
+    <li><a href="#ref-for-concept-node-document②">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-9c5cdbb5c3dd225a70ea0af45a02c608" class="dfn-panel" data-for="9c5cdbb5c3dd225a70ea0af45a02c608" id="infopanel-for-9c5cdbb5c3dd225a70ea0af45a02c608">
    <span id="infopaneltitle-for-9c5cdbb5c3dd225a70ea0af45a02c608" style="display:none">Info about the 'origin' external reference.</span><a href="https://dom.spec.whatwg.org/#concept-document-origin">https://dom.spec.whatwg.org/#concept-document-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-origin">3.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-concept-document-origin">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-e1ac7de0852912b5a20d534c658e409c" class="dfn-panel" data-for="e1ac7de0852912b5a20d534c658e409c" id="infopanel-for-e1ac7de0852912b5a20d534c658e409c">
@@ -1299,7 +1299,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" class="dfn-panel" data-for="d1f0a86fd49be388d8b0159e241a1172" id="infopanel-for-d1f0a86fd49be388d8b0159e241a1172">
    <span id="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" style="display:none">Info about the 'Window' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window">3.1. Extensions to the Window interface</a> <a href="#ref-for-window①">(2)</a> <a href="#ref-for-window②">(3)</a> <a href="#ref-for-window③">(4)</a>
+    <li><a href="#ref-for-window">2.1. Extensions to the Window interface</a> <a href="#ref-for-window①">(2)</a> <a href="#ref-for-window②">(3)</a> <a href="#ref-for-window③">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-97b36d1eb7e9f470e5efb14cf0d0db07" class="dfn-panel" data-for="97b36d1eb7e9f470e5efb14cf0d0db07" id="infopanel-for-97b36d1eb7e9f470e5efb14cf0d0db07">
@@ -1311,25 +1311,25 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-25155e0c95bc63cc9d7eb438622b81d4" class="dfn-panel" data-for="25155e0c95bc63cc9d7eb438622b81d4" id="infopanel-for-25155e0c95bc63cc9d7eb438622b81d4">
    <span id="infopaneltitle-for-25155e0c95bc63cc9d7eb438622b81d4" style="display:none">Info about the 'activation notification' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#activation-notification">https://html.spec.whatwg.org/multipage/interaction.html#activation-notification</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-activation-notification">3.3. Nested traversables</a>
+    <li><a href="#ref-for-activation-notification">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-5e4961145cfdb95a6762792ed4145fbf" class="dfn-panel" data-for="5e4961145cfdb95a6762792ed4145fbf" id="infopanel-for-5e4961145cfdb95a6762792ed4145fbf">
    <span id="infopaneltitle-for-5e4961145cfdb95a6762792ed4145fbf" style="display:none">Info about the 'active sandboxing flag set' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set">https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-active-sandboxing-flag-set">3.3. Nested traversables</a>
+    <li><a href="#ref-for-active-sandboxing-flag-set">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-5849cffb2c99a28f507669110957cb59" class="dfn-panel" data-for="5849cffb2c99a28f507669110957cb59" id="infopanel-for-5849cffb2c99a28f507669110957cb59">
    <span id="infopaneltitle-for-5849cffb2c99a28f507669110957cb59" style="display:none">Info about the 'active session history entry' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-nav-active-history-entry">3.3. Nested traversables</a>
+    <li><a href="#ref-for-nav-active-history-entry">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-576fb603e242351f14a2481ef4416814" class="dfn-panel" data-for="576fb603e242351f14a2481ef4416814" id="infopanel-for-576fb603e242351f14a2481ef4416814">
    <span id="infopaneltitle-for-576fb603e242351f14a2481ef4416814" style="display:none">Info about the 'ancestor navigables' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#ancestor-navigables">https://html.spec.whatwg.org/multipage/document-sequences.html#ancestor-navigables</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ancestor-navigables">3.3. Nested traversables</a>
+    <li><a href="#ref-for-ancestor-navigables">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-3eaa51ed66e1d8aa0c39a4f1fead29c0" class="dfn-panel" data-for="3eaa51ed66e1d8aa0c39a4f1fead29c0" id="infopanel-for-3eaa51ed66e1d8aa0c39a4f1fead29c0">
@@ -1341,13 +1341,14 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-a691f3d63735e1b5b0767725ed844218" class="dfn-panel" data-for="a691f3d63735e1b5b0767725ed844218" id="infopanel-for-a691f3d63735e1b5b0767725ed844218">
    <span id="infopaneltitle-for-a691f3d63735e1b5b0767725ed844218" style="display:none">Info about the 'browsing context group' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group">https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-browsing-context-group">3.3. Nested traversables</a> <a href="#ref-for-browsing-context-group①">(2)</a> <a href="#ref-for-browsing-context-group②">(3)</a> <a href="#ref-for-browsing-context-group③">(4)</a>
+    <li><a href="#ref-for-browsing-context-group">2.3. Nested traversables</a> <a href="#ref-for-browsing-context-group①">(2)</a> <a href="#ref-for-browsing-context-group②">(3)</a> <a href="#ref-for-browsing-context-group③">(4)</a>
+    <li><a href="#ref-for-browsing-context-group④">3. Interactions with other specifications</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-6e4ead68b5b53c799e404634745c8d0c" class="dfn-panel" data-for="6e4ead68b5b53c799e404634745c8d0c" id="infopanel-for-6e4ead68b5b53c799e404634745c8d0c">
    <span id="infopaneltitle-for-6e4ead68b5b53c799e404634745c8d0c" style="display:none">Info about the 'browsing context group set' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group-set">https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context-group-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-browsing-context-group-set">3.3. Nested traversables</a>
+    <li><a href="#ref-for-browsing-context-group-set">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-3f848e4f69ce64fe4c766fad7fdffdc7" class="dfn-panel" data-for="3f848e4f69ce64fe4c766fad7fdffdc7" id="infopanel-for-3f848e4f69ce64fe4c766fad7fdffdc7">
@@ -1359,13 +1360,13 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-cf9d263a9722f9674575d8cc71ad954e" class="dfn-panel" data-for="cf9d263a9722f9674575d8cc71ad954e" id="infopanel-for-cf9d263a9722f9674575d8cc71ad954e">
    <span id="infopaneltitle-for-cf9d263a9722f9674575d8cc71ad954e" style="display:none">Info about the 'child navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-child-navigable">3.3. Nested traversables</a> <a href="#ref-for-child-navigable①">(2)</a> <a href="#ref-for-child-navigable②">(3)</a> <a href="#ref-for-child-navigable③">(4)</a>
+    <li><a href="#ref-for-child-navigable">2.3. Nested traversables</a> <a href="#ref-for-child-navigable①">(2)</a> <a href="#ref-for-child-navigable②">(3)</a> <a href="#ref-for-child-navigable③">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" class="dfn-panel" data-for="293dcd27f7228c1698581dc6518812f9" id="infopanel-for-293dcd27f7228c1698581dc6518812f9">
    <span id="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" style="display:none">Info about the 'consume user activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation">https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-consume-user-activation">3.3. Nested traversables</a>
+    <li><a href="#ref-for-consume-user-activation">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-56d977f87f79f0de3bb0c5ce53846293" class="dfn-panel" data-for="56d977f87f79f0de3bb0c5ce53846293" id="infopanel-for-56d977f87f79f0de3bb0c5ce53846293">
@@ -1389,38 +1390,38 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-6667a692cda341328b321243cda5eea0" class="dfn-panel" data-for="6667a692cda341328b321243cda5eea0" id="infopanel-for-6667a692cda341328b321243cda5eea0">
    <span id="infopaneltitle-for-6667a692cda341328b321243cda5eea0" style="display:none">Info about the 'create a new browsing context and document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-creating-a-new-browsing-context">3.2. Modifications to creating browsing contexts</a>
-    <li><a href="#ref-for-creating-a-new-browsing-context①">3.3. Nested traversables</a>
+    <li><a href="#ref-for-creating-a-new-browsing-context">2.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-creating-a-new-browsing-context①">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-968f558a9a0ae0b956954ffd153cdb92" class="dfn-panel" data-for="968f558a9a0ae0b956954ffd153cdb92" id="infopanel-for-968f558a9a0ae0b956954ffd153cdb92">
    <span id="infopaneltitle-for-968f558a9a0ae0b956954ffd153cdb92" style="display:none">Info about the 'create a new browsing context group and document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context-group">https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context-group</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-creating-a-new-browsing-context-group">3.3. Nested traversables</a>
+    <li><a href="#ref-for-creating-a-new-browsing-context-group">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-f035aa589e8b47a703c8733df822eb1e" class="dfn-panel" data-for="f035aa589e8b47a703c8733df822eb1e" id="infopanel-for-f035aa589e8b47a703c8733df822eb1e">
    <span id="infopaneltitle-for-f035aa589e8b47a703c8733df822eb1e" style="display:none">Info about the 'creator base url' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#creator-base-url">https://html.spec.whatwg.org/multipage/document-sequences.html#creator-base-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-creator-base-url">3.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-creator-base-url">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-a81611b931aeb074712a908933dfb902" class="dfn-panel" data-for="a81611b931aeb074712a908933dfb902" id="infopanel-for-a81611b931aeb074712a908933dfb902">
    <span id="infopaneltitle-for-a81611b931aeb074712a908933dfb902" style="display:none">Info about the 'descendant navigables' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#descendant-navigables">https://html.spec.whatwg.org/multipage/document-sequences.html#descendant-navigables</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-descendant-navigables">3.3. Nested traversables</a> <a href="#ref-for-descendant-navigables①">(2)</a>
+    <li><a href="#ref-for-descendant-navigables">2.3. Nested traversables</a> <a href="#ref-for-descendant-navigables①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-e16192f157d38d17d44510aa5639d0df" class="dfn-panel" data-for="e16192f157d38d17d44510aa5639d0df" id="infopanel-for-e16192f157d38d17d44510aa5639d0df">
    <span id="infopaneltitle-for-e16192f157d38d17d44510aa5639d0df" style="display:none">Info about the 'document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document-state-document">3.3. Nested traversables</a>
+    <li><a href="#ref-for-document-state-document">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-4f591b169f80df42dfbb264a73055974" class="dfn-panel" data-for="4f591b169f80df42dfbb264a73055974" id="infopanel-for-4f591b169f80df42dfbb264a73055974">
    <span id="infopaneltitle-for-4f591b169f80df42dfbb264a73055974" style="display:none">Info about the 'document state' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state">https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-she-document-state">3.3. Nested traversables</a>
+    <li><a href="#ref-for-she-document-state">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-c78563f85bd66bcfc820de80dca519be" class="dfn-panel" data-for="c78563f85bd66bcfc820de80dca519be" id="infopanel-for-c78563f85bd66bcfc820de80dca519be">
@@ -1463,13 +1464,13 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-baf95ce8d0404079723db392663d355e" class="dfn-panel" data-for="baf95ce8d0404079723db392663d355e" id="infopanel-for-baf95ce8d0404079723db392663d355e">
    <span id="infopaneltitle-for-baf95ce8d0404079723db392663d355e" style="display:none">Info about the 'iframe' external reference.</span><a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-the-iframe-element">3.3. Nested traversables</a>
+    <li><a href="#ref-for-the-iframe-element">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-bc7b614b2d847f8145f861abf060f202" class="dfn-panel" data-for="bc7b614b2d847f8145f861abf060f202" id="infopanel-for-bc7b614b2d847f8145f861abf060f202">
    <span id="infopaneltitle-for-bc7b614b2d847f8145f861abf060f202" style="display:none">Info about the 'initialize the navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#initialize-the-navigable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-initialize-the-navigable">3.3. Nested traversables</a>
+    <li><a href="#ref-for-initialize-the-navigable">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-9cc5ad63c4b6d1715ab31c4feff643e2" class="dfn-panel" data-for="9cc5ad63c4b6d1715ab31c4feff643e2" id="infopanel-for-9cc5ad63c4b6d1715ab31c4feff643e2">
@@ -1487,27 +1488,28 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-9b61a10aca6020532301db95d903ae46" class="dfn-panel" data-for="9b61a10aca6020532301db95d903ae46" id="infopanel-for-9b61a10aca6020532301db95d903ae46">
    <span id="infopaneltitle-for-9b61a10aca6020532301db95d903ae46" style="display:none">Info about the 'navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#navigable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigable">2. Prerendering specification monkeypatches</a> <a href="#ref-for-navigable①">(2)</a>
-    <li><a href="#ref-for-navigable②">3.3. Nested traversables</a>
+    <li><a href="#ref-for-navigable">2.3. Nested traversables</a>
+    <li><a href="#ref-for-navigable①">3. Interactions with other specifications</a>
+    <li><a href="#ref-for-navigable②">3.1. Prerendering</a> <a href="#ref-for-navigable③">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-c65e32440cdd5af483d6b90189ff0d46" class="dfn-panel" data-for="c65e32440cdd5af483d6b90189ff0d46" id="infopanel-for-c65e32440cdd5af483d6b90189ff0d46">
    <span id="infopaneltitle-for-c65e32440cdd5af483d6b90189ff0d46" style="display:none">Info about the 'navigable (for Window)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window-navigable">3.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-window-navigable">2.1. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dafb0ebfee99f77becebf8c0dfaa16f5" class="dfn-panel" data-for="dafb0ebfee99f77becebf8c0dfaa16f5" id="infopanel-for-dafb0ebfee99f77becebf8c0dfaa16f5">
    <span id="infopaneltitle-for-dafb0ebfee99f77becebf8c0dfaa16f5" style="display:none">Info about the 'navigable container' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container">https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigable-container">3.3. Nested traversables</a>
+    <li><a href="#ref-for-navigable-container">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-566b28e53fa11b6a6ff3a9d32626c2c5" class="dfn-panel" data-for="566b28e53fa11b6a6ff3a9d32626c2c5" id="infopanel-for-566b28e53fa11b6a6ff3a9d32626c2c5">
    <span id="infopaneltitle-for-566b28e53fa11b6a6ff3a9d32626c2c5" style="display:none">Info about the 'navigate' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigate">1. The fencedframe element</a>
-    <li><a href="#ref-for-navigate①">3.3. Nested traversables</a>
+    <li><a href="#ref-for-navigate①">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-9159c932d44984ad0abd63c25a284a3c" class="dfn-panel" data-for="9159c932d44984ad0abd63c25a284a3c" id="infopanel-for-9159c932d44984ad0abd63c25a284a3c">
@@ -1519,7 +1521,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" class="dfn-panel" data-for="d5ad1e20f67eb03bd0608119efdd55f5" id="infopanel-for-d5ad1e20f67eb03bd0608119efdd55f5">
    <span id="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" style="display:none">Info about the 'node navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-node-navigable">3.3. Nested traversables</a>
+    <li><a href="#ref-for-node-navigable">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-1bc1f9b3190b065dbdbf28586e3be5e5" class="dfn-panel" data-for="1bc1f9b3190b065dbdbf28586e3be5e5" id="infopanel-for-1bc1f9b3190b065dbdbf28586e3be5e5">
@@ -1537,7 +1539,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-a01112171433ddb75edac83232f5f040" class="dfn-panel" data-for="a01112171433ddb75edac83232f5f040" id="infopanel-for-a01112171433ddb75edac83232f5f040">
    <span id="infopaneltitle-for-a01112171433ddb75edac83232f5f040" style="display:none">Info about the 'parent' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-nav-parent">3.3. Nested traversables</a> <a href="#ref-for-nav-parent①">(2)</a> <a href="#ref-for-nav-parent②">(3)</a> <a href="#ref-for-nav-parent③">(4)</a>
+    <li><a href="#ref-for-nav-parent">2.3. Nested traversables</a> <a href="#ref-for-nav-parent①">(2)</a> <a href="#ref-for-nav-parent②">(3)</a> <a href="#ref-for-nav-parent③">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-2e8820b60579cf34dd50387f025365d0" class="dfn-panel" data-for="2e8820b60579cf34dd50387f025365d0" id="infopanel-for-2e8820b60579cf34dd50387f025365d0">
@@ -1549,7 +1551,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-c8a8ffe673019218223a10e45dee6a88" class="dfn-panel" data-for="c8a8ffe673019218223a10e45dee6a88" id="infopanel-for-c8a8ffe673019218223a10e45dee6a88">
    <span id="infopaneltitle-for-c8a8ffe673019218223a10e45dee6a88" style="display:none">Info about the 'permissions policy' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy">https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-permissions-policy">3.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-concept-document-permissions-policy">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-4252c6677f702595b89302ac9e3cef64" class="dfn-panel" data-for="4252c6677f702595b89302ac9e3cef64" id="infopanel-for-4252c6677f702595b89302ac9e3cef64">
@@ -1561,7 +1563,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-c347d27e1964141a379e6573882af9ee" class="dfn-panel" data-for="c347d27e1964141a379e6573882af9ee" id="infopanel-for-c347d27e1964141a379e6573882af9ee">
    <span id="infopaneltitle-for-c347d27e1964141a379e6573882af9ee" style="display:none">Info about the 'policy container' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container">https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-policy-container">3.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-concept-document-policy-container">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-6cb5560fb42557c66b6caf557d48e98d" class="dfn-panel" data-for="6cb5560fb42557c66b6caf557d48e98d" id="infopanel-for-6cb5560fb42557c66b6caf557d48e98d">
@@ -1591,38 +1593,38 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-3bd07dd1ec2f367091cfd0df47c118a5" class="dfn-panel" data-for="3bd07dd1ec2f367091cfd0df47c118a5" id="infopanel-for-3bd07dd1ec2f367091cfd0df47c118a5">
    <span id="infopaneltitle-for-3bd07dd1ec2f367091cfd0df47c118a5" style="display:none">Info about the 'same origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin">https://html.spec.whatwg.org/multipage/browsers.html#same-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-same-origin">3.3. Nested traversables</a>
+    <li><a href="#ref-for-same-origin">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" class="dfn-panel" data-for="a072527f75033fb4ed6119239e352e1f" id="infopanel-for-a072527f75033fb4ed6119239e352e1f">
    <span id="infopaneltitle-for-a072527f75033fb4ed6119239e352e1f" style="display:none">Info about the 'session history entries' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries">https://html.spec.whatwg.org/multipage/document-sequences.html#tn-session-history-entries</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tn-session-history-entries">3.3. Nested traversables</a>
+    <li><a href="#ref-for-tn-session-history-entries">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-24e70894321b922029e3e3b26ccbf501" class="dfn-panel" data-for="24e70894321b922029e3e3b26ccbf501" id="infopanel-for-24e70894321b922029e3e3b26ccbf501">
    <span id="infopaneltitle-for-24e70894321b922029e3e3b26ccbf501" style="display:none">Info about the 'the document's referrer' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#the-document&apos;s-referrer">https://html.spec.whatwg.org/multipage/dom.html#the-document's-referrer</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-the-document&apos;s-referrer">3.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-the-document&apos;s-referrer">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-6bb36d47a5f9a04109a4493b81f2720a" class="dfn-panel" data-for="6bb36d47a5f9a04109a4493b81f2720a" id="infopanel-for-6bb36d47a5f9a04109a4493b81f2720a">
    <span id="infopaneltitle-for-6bb36d47a5f9a04109a4493b81f2720a" style="display:none">Info about the 'top-level traversable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-top-level-traversable">3.3. Nested traversables</a> <a href="#ref-for-top-level-traversable①">(2)</a>
+    <li><a href="#ref-for-top-level-traversable">2.3. Nested traversables</a> <a href="#ref-for-top-level-traversable①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" class="dfn-panel" data-for="9df064b89e8130a9d4cee056b2fdeb2f" id="infopanel-for-9df064b89e8130a9d4cee056b2fdeb2f">
    <span id="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" style="display:none">Info about the 'traversable navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-traversable-navigable">1. The fencedframe element</a>
-    <li><a href="#ref-for-traversable-navigable①">3.3. Nested traversables</a> <a href="#ref-for-traversable-navigable②">(2)</a> <a href="#ref-for-traversable-navigable③">(3)</a> <a href="#ref-for-traversable-navigable④">(4)</a> <a href="#ref-for-traversable-navigable⑤">(5)</a>
+    <li><a href="#ref-for-traversable-navigable①">2.3. Nested traversables</a> <a href="#ref-for-traversable-navigable②">(2)</a> <a href="#ref-for-traversable-navigable③">(3)</a> <a href="#ref-for-traversable-navigable④">(4)</a> <a href="#ref-for-traversable-navigable⑤">(5)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-30f3fc447c887dab9db60f5e6f38a99f" class="dfn-panel" data-for="30f3fc447c887dab9db60f5e6f38a99f" id="infopanel-for-30f3fc447c887dab9db60f5e6f38a99f">
    <span id="infopaneltitle-for-30f3fc447c887dab9db60f5e6f38a99f" style="display:none">Info about the 'user activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation">https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tracking-user-activation">3.3. Nested traversables</a> <a href="#ref-for-tracking-user-activation①">(2)</a>
+    <li><a href="#ref-for-tracking-user-activation">2.3. Nested traversables</a> <a href="#ref-for-tracking-user-activation①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-be59b235511532233fac6b5761be501f" class="dfn-panel" data-for="be59b235511532233fac6b5761be501f" id="infopanel-for-be59b235511532233fac6b5761be501f">
@@ -1635,7 +1637,7 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-53c2c70bc752d6cf2a1f7deddc029549" class="dfn-panel" data-for="53c2c70bc752d6cf2a1f7deddc029549" id="infopanel-for-53c2c70bc752d6cf2a1f7deddc029549">
    <span id="infopaneltitle-for-53c2c70bc752d6cf2a1f7deddc029549" style="display:none">Info about the 'append' external reference.</span><a href="https://infra.spec.whatwg.org/#set-append">https://infra.spec.whatwg.org/#set-append</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-set-append">3.3. Nested traversables</a>
+    <li><a href="#ref-for-set-append">2.3. Nested traversables</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-7618b9a6d44febb7e784c8f39faac140" class="dfn-panel" data-for="7618b9a6d44febb7e784c8f39faac140" id="infopanel-for-7618b9a6d44febb7e784c8f39faac140">
@@ -1660,8 +1662,8 @@ traversables</a> section.</p>
    <span id="infopaneltitle-for-37ea775b610d924b453f4dfc18c197ab" style="display:none">Info about the 'loading mode' external reference.</span><a href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode">https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigable-loading-mode">1. The fencedframe element</a>
-    <li><a href="#ref-for-navigable-loading-mode①">2. Prerendering specification monkeypatches</a>
-    <li><a href="#ref-for-navigable-loading-mode②">3.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-navigable-loading-mode①">2.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-navigable-loading-mode②">3.1. Prerendering</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-3c0fc13205e521456876022aad01bc20" class="dfn-panel" data-for="3c0fc13205e521456876022aad01bc20" id="infopanel-for-3c0fc13205e521456876022aad01bc20">
@@ -1713,7 +1715,7 @@ traversables</a> section.</p>
    <span id="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" style="display:none">Info about the 'this' external reference.</span><a href="https://webidl.spec.whatwg.org/#this">https://webidl.spec.whatwg.org/#this</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-this">1. The fencedframe element</a>
-    <li><a href="#ref-for-this①">3.1. Extensions to the Window interface</a> <a href="#ref-for-this②">(2)</a>
+    <li><a href="#ref-for-this①">2.1. Extensions to the Window interface</a> <a href="#ref-for-this②">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
@@ -1899,7 +1901,6 @@ traversables</a> section.</p>
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-width"><code><c- g>width</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-height"><code><c- g>height</c-></code></a>;
 };
-
 <c- b>enum</c-> <a href="#enumdef-opaqueproperty"><code><c- g>OpaqueProperty</c-></code></a> {<a href="#dom-opaqueproperty-opaque"><code><c- s>"opaque"</c-></code></a>};
 
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#enumdef-opaqueproperty"><c- n>OpaqueProperty</c-></a>) <a href="#typedefdef-fencedframeconfigsize"><code><c- g>FencedFrameConfigSize</c-></code></a>;
@@ -1912,7 +1913,6 @@ traversables</a> section.</p>
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-width"><code><c- g>width</c-></code></a>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-height"><code><c- g>height</c-></code></a>;
 };
-
 <c- b>enum</c-> <a href="#enumdef-fencereportingdestination"><code><c- g>FenceReportingDestination</c-></code></a> {
   <a href="#dom-fencereportingdestination-buyer"><code><c- s>"buyer"</c-></code></a>,
   <a href="#dom-fencereportingdestination-seller"><code><c- s>"seller"</c-></code></a>,
@@ -1930,12 +1930,10 @@ traversables</a> section.</p>
 <c- b>interface</c-> <a href="#fence"><code><c- g>Fence</c-></code></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent"><c- n>FenceEvent</c-></a> <a href="#dom-fence-reportevent-event-event"><code><c- g>event</c-></code></a>);
 };
-
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"><c- g>Window</c-></a> {
   // Collection of fenced frame APIs
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#fence"><c- n>Fence</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="Fence?" href="#dom-window-fence"><c- g>fence</c-></a>;
 };
-
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
@@ -1954,9 +1952,10 @@ traversables</a> section.</p>
     <li><a href="#ref-for-elementdef-fencedframe⑦">1.1. Dimension attributes</a>
     <li><a href="#ref-for-elementdef-fencedframe⑧">1.2. The FencedFrameConfig interface</a> <a href="#ref-for-elementdef-fencedframe⑨">(2)</a>
     <li><a href="#ref-for-elementdef-fencedframe①⓪">1.5.1. fenced-frame-src</a>
-    <li><a href="#ref-for-elementdef-fencedframe①①">2. Prerendering specification monkeypatches</a>
-    <li><a href="#ref-for-elementdef-fencedframe①②">3.2. Modifications to creating browsing contexts</a>
-    <li><a href="#ref-for-elementdef-fencedframe①③">3.3. Nested traversables</a> <a href="#ref-for-elementdef-fencedframe①④">(2)</a> <a href="#ref-for-elementdef-fencedframe①⑤">(3)</a> <a href="#ref-for-elementdef-fencedframe①⑥">(4)</a> <a href="#ref-for-elementdef-fencedframe①⑦">(5)</a>
+    <li><a href="#ref-for-elementdef-fencedframe①①">2.2. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-elementdef-fencedframe①②">2.3. Nested traversables</a> <a href="#ref-for-elementdef-fencedframe①③">(2)</a> <a href="#ref-for-elementdef-fencedframe①④">(3)</a> <a href="#ref-for-elementdef-fencedframe①⑤">(4)</a> <a href="#ref-for-elementdef-fencedframe①⑥">(5)</a>
+    <li><a href="#ref-for-elementdef-fencedframe①⑦">3. Interactions with other specifications</a>
+    <li><a href="#ref-for-elementdef-fencedframe①⑧">3.1. Prerendering</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframe-nested-traversable" class="dfn-panel" data-for="fencedframe-nested-traversable" id="infopanel-for-fencedframe-nested-traversable">
@@ -1965,7 +1964,7 @@ traversables</a> section.</p>
     <li><a href="#ref-for-fencedframe-nested-traversable">1. The fencedframe element</a> <a href="#ref-for-fencedframe-nested-traversable①">(2)</a>
     <li><a href="#ref-for-fencedframe-nested-traversable②">1.2. The FencedFrameConfig interface</a>
     <li><a href="#ref-for-fencedframe-nested-traversable③">1.5.1. fenced-frame-src</a>
-    <li><a href="#ref-for-fencedframe-nested-traversable④">3.3. Nested traversables</a> <a href="#ref-for-fencedframe-nested-traversable⑤">(2)</a> <a href="#ref-for-fencedframe-nested-traversable⑥">(3)</a> <a href="#ref-for-fencedframe-nested-traversable⑦">(4)</a>
+    <li><a href="#ref-for-fencedframe-nested-traversable④">2.3. Nested traversables</a> <a href="#ref-for-fencedframe-nested-traversable⑤">(2)</a> <a href="#ref-for-fencedframe-nested-traversable⑥">(3)</a> <a href="#ref-for-fencedframe-nested-traversable⑦">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframe-config" class="dfn-panel" data-for="fencedframe-config" id="infopanel-for-fencedframe-config">
@@ -2045,7 +2044,7 @@ traversables</a> section.</p>
    <span id="infopaneltitle-for-fence" style="display:none">Info about the 'Fence' definition.</span><b><a href="#fence">#fence</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fence">1.3. The Fence interface</a>
-    <li><a href="#ref-for-fence①">3.1. Extensions to the Window interface</a> <a href="#ref-for-fence②">(2)</a>
+    <li><a href="#ref-for-fence①">2.1. Extensions to the Window interface</a> <a href="#ref-for-fence②">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dom-fence-reportevent" class="dfn-panel" data-for="dom-fence-reportevent" id="infopanel-for-dom-fence-reportevent">
@@ -2064,20 +2063,20 @@ traversables</a> section.</p>
   <aside aria-labelledby="infopaneltitle-for-window-fence" class="dfn-panel" data-for="window-fence" id="infopanel-for-window-fence">
    <span id="infopaneltitle-for-window-fence" style="display:none">Info about the 'fence' definition.</span><b><a href="#window-fence">#window-fence</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window-fence">3.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-window-fence">2.1. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dom-window-fence" class="dfn-panel" data-for="dom-window-fence" id="infopanel-for-dom-window-fence">
    <span id="infopaneltitle-for-dom-window-fence" style="display:none">Info about the 'fence' definition.</span><b><a href="#dom-window-fence">#dom-window-fence</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-fence">3.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-dom-window-fence">2.1. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-create-a-new-nested-traversable" class="dfn-panel" data-for="create-a-new-nested-traversable" id="infopanel-for-create-a-new-nested-traversable">
    <span id="infopaneltitle-for-create-a-new-nested-traversable" style="display:none">Info about the 'create a new nested traversable' definition.</span><b><a href="#create-a-new-nested-traversable">#create-a-new-nested-traversable</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-create-a-new-nested-traversable">1. The fencedframe element</a>
-    <li><a href="#ref-for-create-a-new-nested-traversable①">3.3. Nested traversables</a> <a href="#ref-for-create-a-new-nested-traversable②">(2)</a>
+    <li><a href="#ref-for-create-a-new-nested-traversable①">2.3. Nested traversables</a> <a href="#ref-for-create-a-new-nested-traversable②">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
