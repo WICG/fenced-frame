@@ -32,42 +32,49 @@ spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/p
 
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
-    text: categories; url: dom.html#concept-element-categories
-    text: contexts in which this element can be used; url: dom.html#concept-element-contexts
-    text: embedded content; url: dom.html#embedded-content-category
-    text: content model; url: dom.html#concept-element-content-model
-    text: nothing; url: dom.html#concept-content-nothing
-    text: content attributes; url: dom.html#concept-element-attributes
-    text: global attributes; url: dom.html#global-attributes
-    text: dom interface; url: dom.html#concept-element-dom
-    text: accessibility considerations; url: dom.html#concept-element-accessibility-considerations
-    text: reflect; url: common-dom-interfaces.html#reflect
-    text: width; url: embedded-content-other.html#attr-dim-width
-    text: height; url: embedded-content-other.html#attr-dim-height
-    text: browsing context group; url: document-sequences.html#browsing-context-group
-    text: browsing context group set; url: document-sequences.html#browsing-context-group-set
-    text: creator base url; url: document-sequences.html#creator-base-url
-    text: create a new browsing context and document; url: document-sequences.html#creating-a-new-browsing-context
-    text: create a new browsing context group and document; url: document-sequences.html#creating-a-new-browsing-context-group
-    text: initialize the navigable; url: document-sequences.html#initialize-the-navigable
-    text: node navigable; url: document-sequences.html#node-navigable
-    text: document state; url: browsing-the-web.html#she-document-state
-    text: historyHandling; url: browsing-the-web.html#navigation-hh
-    text: referrerPolicy; url: browsing-the-web.html#navigation-referrer-policy
-    text: activation notification; url: interaction.html#activation-notification
-    text: consume user activation; url: interaction.html#consume-user-activation
-    for: history handling behavior
-      text: replace; url: browsing-the-web.html#hh-replace
-    for: document state
-      text: document; url: browsing-the-web.html#document-state-document
-    for: navigable
-      text: active session history entry; url: document-sequences.html#nav-active-history-entry
-      text: current session history entry; url: document-sequences.html#nav-current-history-entry
-      text: parent; url: document-sequences.html#nav-parent
-    for: traversable navigable
-      text: session history entries; url: document-sequences.html#tn-session-history-entries
-    for: Window
-      text: navigable; url: nav-history-apis.html#window-navigable
+    urlPrefix: dom.html
+      text: categories; url: concept-element-categories
+      text: contexts in which this element can be used; url: concept-element-contexts
+      text: embedded content; url: embedded-content-category
+      text: content model; url: concept-element-content-model
+      text: nothing; url: concept-content-nothing
+      text: content attributes; url: concept-element-attributes
+      text: global attributes; url: global-attributes
+      text: dom interface; url: concept-element-dom
+      text: accessibility considerations; url: concept-element-accessibility-considerations
+    urlPrefix: common-dom-interfaces.html
+      text: reflect; url: reflect
+    urlPrefix: embedder-content-other.html
+      text: width; url: attr-dim-width
+      text: height; url: attr-dim-height
+    urlPrefix: document-sequences.html
+      text: browsing context group; url: browsing-context-group
+      text: browsing context group set; url: browsing-context-group-set
+      text: creator base url; url: creator-base-url
+      text: create a new browsing context and document; url: creating-a-new-browsing-context
+      text: create a new browsing context group and document; url: creating-a-new-browsing-context-group
+      text: initialize the navigable; url: initialize-the-navigable
+      text: node navigable; url: node-navigable
+      for: navigable
+        text: active session history entry; url: nav-active-history-entry
+        text: current session history entry; url: nav-current-history-entry
+        text: parent; url: nav-parent
+      for: traversable navigable
+        text: session history entries; url: tn-session-history-entries
+    urlPrefix: browsing-the-web.html
+      text: document state; url: she-document-state
+      text: historyHandling; url: navigation-hh
+      text: referrerPolicy; url: navigation-referrer-policy
+      for: history handling behavior
+        text: replace; url: hh-replace
+      for: document state
+        text: document; url: document-state-document
+    urlPrefix: interaction.html
+      text: activation notification; url: activation-notification
+      text: consume user activation; url: consume-user-activation
+    urlPrefix: nav-history-apis.html
+      for: Window
+        text: navigable; url: window-navigable
 </pre>
 
 <style>
