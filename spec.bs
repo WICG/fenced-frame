@@ -233,9 +233,8 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
      successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
 
   1. [=Navigate=] |element|'s [=fencedframe/nested traversable=] to |url| using |element|'s
-     [=fencedframe/nested traversable=]'s [=navigable/active document=], with [=historyHandling=]
-     set to "<a for="history handling behavior">`replace`</a>" , and [=referrerPolicy=] set to
-     <a>"`no-referrer`"</a>.
+     [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
+     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
 </div>
 
 <div algorithm=destroy>
