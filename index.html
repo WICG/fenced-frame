@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version be9d81bf4, updated Tue Mar 21 14:43:08 2023 -0700" name="generator">
+  <meta content="Bikeshed version a5f70c68e, updated Wed Mar 22 08:02:23 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="dbecc0395955ff8ebd77fb1af9cc481b5f7d3961" name="document-revision">
+  <meta content="8759cce961b38a4c8625d785d762b78c50fc6643" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-21">21 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-22">22 March 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1013,8 +1013,7 @@ be "fenced" to denote that it never crosses the <a data-link-type="dfn" href="#f
 sandbox bypass.</p>
    <p>This section provides patches to various <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> definitions (and their uses) that deal with
 collections of related navigables, with the intention of fencing and unfencing uses appropriately.</p>
-   <p>In <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables">Nested
-navigables</a> section, add the following algorithm:</p>
+   <p>In <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigables">Navigables</a> section, add a new subsection titled "Nested traversables" containing the following algorithm:</p>
    <div class="algorithm" data-algorithm="create a new nested traversable">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-new-nested-traversable">create a new nested traversable</dfn> given an element <var>element</var>: 
     <ol>
