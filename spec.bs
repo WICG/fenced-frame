@@ -506,8 +506,8 @@ This section provides patches to various [[HTML]] definitions (and their uses) t
 collections of related navigables, with the intention of fencing and unfencing uses appropriately.
 
 In [[HTML]]'s <a
-href=https://html.spec.whatwg.org/multipage/document-sequences.html#nested-navigables>Nested
-navigables</a> section, add the following algorithm:
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#navigables>Navigables</a>
+section, add a new subsection titled "Nested traversables" containing the following algorithm:
 
 <div algorithm>
   To <dfn>create a new nested traversable</dfn> given an element |element|:
