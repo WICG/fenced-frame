@@ -4,9 +4,9 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version a5f70c68e, updated Wed Mar 22 08:02:23 2023 -0700" name="generator">
+  <meta content="Bikeshed version 739efad8e, updated Thu Mar 23 07:02:40 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="8759cce961b38a4c8625d785d762b78c50fc6643" name="document-revision">
+  <meta content="5d09acf24aa5cba0ca91e53eaa1adada45c4bca5" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-22">22 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-23">23 March 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -788,13 +788,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig"><c- n>FencedFrameConfig</c-></a>? <a class="idl-code" data-link-type="attribute" data-type="FencedFrameConfig?" href="#dom-htmlfencedframeelement-config" id="ref-for-dom-htmlfencedframeelement-config"><c- g>config</c-></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-width"><code><c- g>width</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-width"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLFencedFrameElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlfencedframeelement-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-htmlfencedframeelement-height"></a></dfn>;
-};</pre>
+};
+</pre>
    </dl>
    <p>The <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe">fencedframe</a></code> element represents its <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable">nested traversable</a>.</p>
    <p>Each <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①">fencedframe</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="dfn" data-noexport id="fencedframe-nested-traversable">nested traversable</dfn>, which is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a> or null. It is initially null.</p>
    <p>Each <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe②">fencedframe</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframe" data-dfn-type="dfn" data-noexport id="fencedframe-config">config</dfn>, which is either a <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①">FencedFrameConfig</a></code> or null. It is initially null.</p>
    <div class="algorithm" data-algorithm="insertion">
-     When a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> element is <var>element</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document" id="ref-for-insert-an-element-into-a-document">inserted into a
+     When a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③">fencedframe</a></code> element <var>element</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#insert-an-element-into-a-document" id="ref-for-insert-an-element-into-a-document">inserted into a
   document</a> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc" id="ref-for-concept-document-bc">browsing context</a> is non-null, run these steps: 
     <ol>
      <li data-md>
@@ -864,7 +865,8 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigurl" id="ref-for-typedefdef-fencedframeconfigurl"><c- n>FencedFrameConfigURL</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigURL?" id="dom-fencedframeconfig-url"><code><c- g>url</c-></code><a class="self-link" href="#dom-fencedframeconfig-url"></a></dfn>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-width"><code><c- g>width</c-></code><a class="self-link" href="#dom-fencedframeconfig-width"></a></dfn>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize①"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-height"><code><c- g>height</c-></code><a class="self-link" href="#dom-fencedframeconfig-height"></a></dfn>;
-};</pre>
+};
+</pre>
    <p class="issue" id="issue-fd312a21"><a class="self-link" href="#issue-fd312a21"></a> Fix the "indistinguishable" IDL bug with the unions above.</p>
    <p>Each <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig④">FencedFrameConfig</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-noexport id="fencedframeconfig-url">url</dfn>, which is a string, initially
 null.</p>
@@ -896,7 +898,8 @@ serves as the key to the <code><a data-link-type="element" href="#elementdef-fen
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fence"><code><c- g>Fence</c-></code></dfn> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent" id="ref-for-dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent"><c- n>FenceEvent</c-></a> <dfn class="idl-code" data-dfn-for="Fence/reportEvent(event)" data-dfn-type="argument" data-export id="dom-fence-reportevent-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-reportevent-event-event"></a></dfn>);
-};</pre>
+};
+</pre>
    <div class="algorithm" data-algorithm="reportEvent(event)" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-reportevent"><code>reportEvent(<var>event</var>)</code></dfn> method steps are: 
     <ol>
@@ -927,13 +930,16 @@ specification is printed below:</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="fenced-frame-src">fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⓪">fencedframe</a></code>'s <a data-link-type="dfn" href="#fencedframe-nested-traversable" id="ref-for-fencedframe-nested-traversable③">nested traversable</a>. The syntax for the directive’s name and value
 is described by the following ABNF:</p>
 <pre>directive-name  = "fenced-frame-src"
-directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a></pre>
+directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-serialized-source-list" id="ref-for-grammardef-serialized-source-list">serialized-source-list</a>
+</pre>
    <div class="example" id="fenced-frame-src-example">
     <a class="self-link" href="#fenced-frame-src-example"></a> Given a page with the following Content Security Policy: 
-<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/</pre>
-    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL provided does not match <code>fenced-frame-src</code>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
+<pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy">Content-Security-Policy</a>: <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src">fenced-frame-src</a> https://example.com/
+</pre>
+    <p>Fetches for the following code will return a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, as the URL provided does not match <code>fenced-frame-src</code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a>:</p>
 <pre class="highlight"><c- p>&lt;</c-><c- f>fencedframe</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://example.org/"</c-><c- p>></c->
-<c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c-></pre>
+<c- p>&lt;/</c-><c- f>fencedframe</c-><c- p>></c->
+</pre>
    </div>
    <p>The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
 the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>’s
@@ -942,13 +948,15 @@ check.</p>
    <p>The <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#default-src" id="ref-for-default-src①">default-src</a> directive’s Example 7 and Example 8 will be amended. Where it says:</p>
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy①">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self">'self'</a>;
                          ...
-                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self①">'self'</a></pre>
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self①">'self'</a>
+</pre>
    <p>It will now say:</p>
 <pre><a data-link-type="http-header" href="https://w3c.github.io/webappsec-csp/#header-content-security-policy" id="ref-for-header-content-security-policy②">Content-Security-Policy</a>: <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#connect-src" id="ref-for-connect-src①">connect-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self②">'self'</a>;
                          ...
                          <a data-link-type="dfn" href="#fenced-frame-src" id="ref-for-fenced-frame-src①">fenced-frame-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self③">'self'</a>;
                          ...
-                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a></pre>
+                         <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#worker-src" id="ref-for-worker-src①">worker-src</a> <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-self" id="ref-for-grammardef-self④">'self'</a>
+</pre>
    <h4 class="heading settled" data-level="1.5.3" id="fallback-list-amendment"><span class="secno">1.5.3. </span><span class="content"> Amending The Directive Fallback List</span><a class="self-link" href="#fallback-list-amendment"></a></h4>
    <p>In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
 list</a>, in step 1, add a new entry to the list:</p>
@@ -965,7 +973,8 @@ list</a>, in step 1, add a new entry to the list:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①"><c- g>Window</c-></a> {
   // Collection of fenced frame APIs
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#fence" id="ref-for-fence①"><c- n>Fence</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="Fence?" href="#dom-window-fence" id="ref-for-dom-window-fence"><c- g>fence</c-></a>;
-};</pre>
+};
+</pre>
    <p>Each <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window②">Window</a></code> object has an associated <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-fence">fence</dfn>, which is a <code class="idl"><a data-link-type="idl" href="#fence" id="ref-for-fence②">Fence</a></code> instance created alongside the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window③">Window</a></code>.</p>
    <div class="algorithm" data-algorithm="fence" data-algorithm-for="Window">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export id="dom-window-fence"><code>fence</code></dfn> getter steps are: 
@@ -1900,6 +1909,7 @@ specification adds another value for fenced frames:</p>
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-width"><code><c- g>width</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlfencedframeelement-height"><code><c- g>height</c-></code></a>;
 };
+
 <c- b>enum</c-> <a href="#enumdef-opaqueproperty"><code><c- g>OpaqueProperty</c-></code></a> {<a href="#dom-opaqueproperty-opaque"><code><c- s>"opaque"</c-></code></a>};
 
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#enumdef-opaqueproperty"><c- n>OpaqueProperty</c-></a>) <a href="#typedefdef-fencedframeconfigsize"><code><c- g>FencedFrameConfigSize</c-></code></a>;
@@ -1912,6 +1922,7 @@ specification adds another value for fenced frames:</p>
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-width"><code><c- g>width</c-></code></a>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-height"><code><c- g>height</c-></code></a>;
 };
+
 <c- b>enum</c-> <a href="#enumdef-fencereportingdestination"><code><c- g>FenceReportingDestination</c-></code></a> {
   <a href="#dom-fencereportingdestination-buyer"><code><c- s>"buyer"</c-></code></a>,
   <a href="#dom-fencereportingdestination-seller"><code><c- s>"seller"</c-></code></a>,
@@ -1929,10 +1940,12 @@ specification adds another value for fenced frames:</p>
 <c- b>interface</c-> <a href="#fence"><code><c- g>Fence</c-></code></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent"><c- n>FenceEvent</c-></a> <a href="#dom-fence-reportevent-event-event"><code><c- g>event</c-></code></a>);
 };
+
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"><c- g>Window</c-></a> {
   // Collection of fenced frame APIs
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#fence"><c- n>Fence</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="Fence?" href="#dom-window-fence"><c- g>fence</c-></a>;
 };
+
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
