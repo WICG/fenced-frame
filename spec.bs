@@ -204,7 +204,7 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
 
 <div algorithm=insertion>
-  When a <{fencedframe}> element is |element| is [=node is inserted into a document|inserted into a
+  When a <{fencedframe}> element |element| is [=node is inserted into a document|inserted into a
   document=] whose [=Document/browsing context=] is non-null, run these steps:
 
   1. Let |nested traversable| be the result of [=create a new nested traversable|creating a new
