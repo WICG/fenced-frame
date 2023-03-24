@@ -483,9 +483,9 @@ Issue: Ensure we are doing the right thing for [=Document/permissions policy=].
 The [[HTML]] Standard organizes [=navigables=] into two categories: [=child navigables=] and
 [=traversable navigables=] (also known as [=top-level traversables=]). The introduction of features
 like fenced frames, and to a lesser extent <a href=https://github.com/wicg/portals>portals</a>,
-complicates this model by adding a new type of [=traversable navigable=] that is *also* a [=child
-navigable=]. Because these new frame types are housed in a separate [=browsing context group=] from
-their [=navigable/parent=], some concrete level of isolation is expected and required; on the other
+complicates this model by adding a new type of [=traversable navigable=] that is *sometimes* like a
+[=child navigable=]. Because these new frame types are housed in a separate [=browsing context
+group=] from their embedder, some concrete level of isolation is expected and required; on the other
 hand since they are composed visually inside of *other* [=browsing context groups=], sometimes they
 need to behave like the normal [=child navigables=] that we see in e.g., <{iframe}>s.
 
@@ -500,10 +500,11 @@ of a {{Document}}, ordinarily the [=activation notification=] steps give user ac
 because a <{fencedframe}> can host sensitive content that needs to be isolated from its embedder,
 and because [=user activation=] and [=consume user activation|consumption=] offer a communication
 vector between these two parties, for the purpose of user activation a <{fencedframe}>'s
-[=fencedframe/nested traversable=] cannot not be considered a descendant of its
-[=navigable/parent=], nor can its [=navigable/parent=] be considered an ancestor of the
-<{fencedframe}>'s [=fencedframe/nested traversable=]. In other words, we consider user activation to
-be "fenced" to denote that it never crosses the [=fencedframe/nested traversable=] boundary.</p>
+[=fencedframe/nested traversable=] cannot not be considered a descendant of its embedder, nor can
+its embedder be considered an ancestor of the <{fencedframe}>'s [=fencedframe/nested traversable=],
+in the way that the [=user activation=] algorithms currently use those terms. In other words, we
+consider user activation to be "fenced" to denote that it never crosses the [=fencedframe/nested
+traversable=] boundary.</p>
 
 <p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
 [=fencedframe/nested traversable=] gets [=created a new nested traversable|created=] or
@@ -513,12 +514,49 @@ href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inher
 [=child navigables=]. If we did not do this, then the <{fencedframe}> element would be a trivial
 sandbox bypass.</p>
 
-This section provides patches to various [[HTML]] definitions (and their uses) that deal with
-collections of related navigables, with the intention of fencing and unfencing uses appropriately.
+To provide the isolation mentioned above, and its conditional relaxation, this specification defines
+a new kind of "*parent*" for [=traversable navigables=] called an [=traversable navigable/unfenced
+parent=], which provides a link to its embedder that algorithms can intentionally use when they need
+to be "*unfenced*", as described above.
+
+Note: Introducing a new kind of parent ([=traversable navigable/unfenced parent=]) is an intentional
+design decision. It means that by default, the <{fencedframe}> boundary is private and isolated,
+since by default nothing in the web platform traverses from a <{fencedframe}>'s [=fencedframe/nested
+traversable=] to its embedder. Care <span class=allow-2119>must</span> be taken when modifying
+algorithms to make them capable of traversing across the <{fencedframe}> [=fencedframe/nested
+traversable=] boundary, and each modification of this sort will be evaluated independently and
+appear in this specification.
+
+<br>
+
+The rest of this section provides patches to various [[HTML]] definitions (and their uses) that deal
+with collections of related navigables, with the intention of fencing and unfencing various parts of
+the web platform appropriately.
+
+In [[HTML]]'s <a
+href=https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable>Traversable
+navigables</a> section, add the following:
+
+In addition to the properties of a [=navigable=], a [=traversable navigable=] has:
+
+ * An <dfn for="traversable navigable">unfenced parent</dfn>, a [=navigable=] or null, initially null.
+
+Note: The [=traversable navigable/unfenced parent=] link is what gives a <{fencedframe}>'s
+[=fencedframe/nested traversable=] a link to its embedder, which is used carefully for things that
+need to be "*unfenced*", like some algorithms in the focus processing model.
 
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#navigables>Navigables</a>
-section, add a new subsection titled "Nested traversables" containing the following algorithm:
+section, add a new subsection titled "Nested traversables" containing the following algorithms:
+
+<div algorithm>
+  To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
+  |documentState| and a [=navigable=] |parent|:
+
+  1. [=Initialize the navigable=] |traversable| given |documentState| and null.
+
+  1. Set |traversable|'s [=traversable navigable/unfenced parent=] to |parent|.
+</div>
 
 <div algorithm>
   To <dfn>create a new nested traversable</dfn> given an element |element|:
@@ -537,7 +575,8 @@ section, add a new subsection titled "Nested traversables" containing the follow
 
   1. Let |parentNavigable| be |element|'s [=node navigable=].
 
-  1. [=Initialize the navigable=] |traversable| given |documentState| and |parentNavigable|.
+  1. [=Initialize the nested traversable=] |traversable| given |documentState| and
+     |parentNavigable|.
 
   1. Let |initialHistoryEntry| be |traversable|'s [=navigable/active session history entry=].
 
