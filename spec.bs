@@ -268,6 +268,17 @@ href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimensi
 attributes</a> section. This section will be updated to include <{fencedframe}> in the list of
 elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
 
+<h3 id=configuration-map>Configuration mapping</h3>
+
+Each [=traversable navigable=] has a <dfn for="traversable navigable" export>urn configuration
+mapping</dfn>, a [=map=] mapping [=urn uuids=] to [=fenced frame config=] [=structs=].
+
+Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
+colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
+uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <{iframe}> elements.
+See for example, the <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
+href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
+
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
 
 One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
