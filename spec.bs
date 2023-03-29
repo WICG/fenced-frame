@@ -55,6 +55,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: create a new browsing context group and document; url: creating-a-new-browsing-context-group
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
+      text: system visibility state; url: system-visibility-state
       for: navigable
         text: active session history entry; url: nav-active-history-entry
         text: current session history entry; url: nav-current-history-entry
@@ -547,7 +548,14 @@ need to be "*unfenced*", like some algorithms in the focus processing model.
 
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#navigables>Navigables</a>
-section, add a new subsection titled "Nested traversables" containing the following algorithms:
+section, add a new subsection titled "Nested traversables" with the following definitions and
+algorithms.
+
+Similar [=navigable containers=] and their respective [=navigable container/content navigable=],
+other elements (so far only the <{fencedframe}> element) present a more isolated [=navigable=] to
+the user, and are called <dfn>fenced navigable containers</dfn>. A [=fenced navigable container=]
+has a <dfn for="fenced navigable container">fenced navigable</dfn>, which is either a [=navigable=]
+or null. It is initially null.
 
 <div algorithm>
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
@@ -593,6 +601,53 @@ navigable=] that is not a [=top-level traversable=]. This will require removing 
 nested traversables in [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
 traversables</a> section.
+
+<h3 id=navigable-traversing-algorithms>Modifications to navigable-traversing algorithms</h3>
+
+<div algorithm="inclusive-descendant-navigables-patch">
+  Modify the [=Document/inclusive descendant navigables=] algorithm to take a new optional
+  [=boolean=] argument <dfn lt="inclusive-dn-unfenced">unfenced</dfn> that defaults to false.
+
+  Further rewrite step 2 of this algorithm to:
+
+  2. [=list/Extend=] <var ignore>navigables</var> with <var ignore>document</var>'s
+     [=Document/descendant navigables=] with [=dn-unfenced|unfenced=] set to
+     [=inclusive-dn-unfenced|unfenced=].
+</div>
+
+<div algorithm="descendant-navigables-patch">
+  Modify the [=Document/descendant navigables=] algorithm to take a new optional [=boolean=]
+  argument <dfn lt="dn-unfenced">unfenced</dfn> that defaults to false, and rewrite the algorithm
+  like so:
+
+  1. Let |navigables| be a new [=list=].
+
+  1. Let |navigableContainers| be a [=list=] of all [=shadow-including descendants=] of <var
+     ignore>document</var> that are [=navigable containers=] (or [=fenced navigable containers=], if
+     [=dn-unfenced|unfenced=] us true), in [=shadow-including tree order=].
+
+  1. [=list/For each=] |navigableContainer| of |navigableContainers|:
+
+    1. If |navigableContainer|'s [=navigable container/content navigable=] and [=fenced navigable
+       container/fenced navigable=] are both null, then [=iteration/continue=].
+
+    1. Let |descendantNavigable| be either |navigableContainer|'s [=navigable container/content
+       navigable=] or [=fenced navigable container/fenced navigable=], whichever is non-null.
+
+    1. [=list/Extend=] |navigables| with |descendantNavigable|'s [=navigable/active document=]'s
+       [=Document/inclusive descendant navigables=] with [=inclusive-dn-unfenced|unfenced=] set to
+       [=dn-unfenced=].
+
+  1. Return |navigables|.
+</div>
+
+
+<h3 id=page-visibility>Page visibility</h3>
+
+The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
+modified such that the first step of the algorithm that runs when a user-agent changes a
+[=traversable navigable=]'s [=system visibility state=] calls the [=Document/inclusive descendant
+navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
