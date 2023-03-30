@@ -42,6 +42,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: global attributes; url: global-attributes
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
+      text: represents; url: represents
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -196,10 +197,7 @@ interface HTMLFencedFrameElement : HTMLElement {
 </dd>
 </dl>
 
-The <{fencedframe}> element represents its [=fencedframe/nested traversable=].
-
-Each <{fencedframe}> has a <dfn for=fencedframe>nested traversable</dfn>, which is either a
-[=traversable navigable=] or null. It is initially null.
+The <{fencedframe}> element [=represents=] its [=fenced navigable container/fenced navigable=].
 
 Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
@@ -243,8 +241,8 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
      [=fencedframeconfig/url=] relative to |element|'s [=Node/node document=]. If this is
      successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
 
-  1. [=Navigate=] |element|'s [=fencedframe/nested traversable=] to |url| using |element|'s
-     [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |url| using
+     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
 </div>
 
@@ -309,8 +307,8 @@ Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>urn uuid</dfn>, whic
 string, initially null.
 
 Note: A {{FencedFrameConfig}}'s [=fencedframeconfig/urn uuid=] is a non-web-exposed unique ID that
-serves as the key to the <{fencedframe}> element's [=fencedframe/nested traversable=]'s <span
-class=XXX>URN config mapping</span>, which maps [=urn uuids=] to [=fenced frame config=]
+serves as the key to the <{fencedframe}> element's [=fenced navigable container/fenced navigable=]'s
+<span class=XXX>URN config mapping</span>, which maps [=urn uuids=] to [=fenced frame config=]
 [=structs=] (that represent the web-exposed {{FencedFrameConfig}} object).
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
@@ -381,8 +379,8 @@ specification is printed below:
 <h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
 
 The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
-<{fencedframe}>'s [=fencedframe/nested traversable=]. The syntax for the directive's name and value
-is described by the following ABNF:
+<{fencedframe}>'s [=fenced navigable container/fenced navigable=]. The syntax for the directive's
+name and value is described by the following ABNF:
 
 <pre>
   directive-name  = "fenced-frame-src"
@@ -501,14 +499,14 @@ of a {{Document}}, ordinarily the [=activation notification=] steps give user ac
 because a <{fencedframe}> can host sensitive content that needs to be isolated from its embedder,
 and because [=user activation=] and [=consume user activation|consumption=] offer a communication
 vector between these two parties, for the purpose of user activation a <{fencedframe}>'s
-[=fencedframe/nested traversable=] cannot not be considered a descendant of its embedder, nor can
-its embedder be considered an ancestor of the <{fencedframe}>'s [=fencedframe/nested traversable=],
-in the way that the [=user activation=] algorithms currently use those terms. In other words, we
-consider user activation to be "fenced" to denote that it never crosses the [=fencedframe/nested
-traversable=] boundary.</p>
+[=fenced navigable container/fenced navigable=] cannot not be considered a descendant of its
+embedder, nor can its embedder be considered an ancestor of the <{fencedframe}>'s [=fenced navigable
+container/fenced navigable=], in the way that the [=user activation=] algorithms currently use those
+terms. In other words, we consider user activation to be "fenced" to denote that it never crosses the
+[=fenced navigable container/fenced navigable=] boundary.</p>
 
 <p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
-[=fencedframe/nested traversable=] gets [=created a new nested traversable|created=] or
+[=fenced navigable container/fenced navigable=] gets [=created a new nested traversable|created=] or
 [=navigated=], it <span class=allow-2119>must</span> <a
 href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inherit</a> its embedder
 {{Document}}'s [=Document/active sandboxing flag set=] as is standard for {{Document}}s in normal
@@ -522,11 +520,11 @@ to be "*unfenced*", as described above.
 
 Note: Introducing a new kind of parent ([=traversable navigable/unfenced parent=]) is an intentional
 design decision. It means that by default, the <{fencedframe}> boundary is private and isolated,
-since by default nothing in the web platform traverses from a <{fencedframe}>'s [=fencedframe/nested
-traversable=] to its embedder. Care <span class=allow-2119>must</span> be taken when modifying
-algorithms to make them capable of traversing across the <{fencedframe}> [=fencedframe/nested
-traversable=] boundary, and each modification of this sort will be evaluated independently and
-appear in this specification.
+since by default nothing in the web platform traverses from a <{fencedframe}>'s [=fenced navigable
+container/fenced navigable=] to its embedder. Care <span class=allow-2119>must</span> be taken when
+modifying algorithms to make them capable of traversing across the <{fencedframe}> [=fenced navigable
+container/fenced navigable=] boundary, and each modification of this sort will be evaluated
+independently and appear in this specification.
 
 <br>
 
@@ -543,19 +541,20 @@ In addition to the properties of a [=navigable=], a [=traversable navigable=] ha
  * An <dfn for="traversable navigable">unfenced parent</dfn>, a [=navigable=] or null, initially null.
 
 Note: The [=traversable navigable/unfenced parent=] link is what gives a <{fencedframe}>'s
-[=fencedframe/nested traversable=] a link to its embedder, which is used carefully for things that
-need to be "*unfenced*", like some algorithms in the focus processing model.
+[=fenced navigable container/fenced navigable=] a link to its embedder, which is used carefully for
+things that need to be "*unfenced*", like some algorithms in the focus processing model.
 
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#navigables>Navigables</a>
 section, add a new subsection titled "Nested traversables" with the following definitions and
 algorithms.
 
-Similar [=navigable containers=] and their respective [=navigable container/content navigable=],
-other elements (so far only the <{fencedframe}> element) present a more isolated [=navigable=] to
-the user, and are called <dfn>fenced navigable containers</dfn>. A [=fenced navigable container=]
-has a <dfn for="fenced navigable container">fenced navigable</dfn>, which is either a [=navigable=]
-or null. It is initially null.
+Similar to [=navigable containers=] and their respective [=navigable container/content navigables=],
+other elements (so far, only the <{fencedframe}> element) present a more isolated [=navigable=] to
+the user. These elements are called <dfn>fenced navigable containers</dfn>.
+
+A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
+which is either a [=traversable navigable=] or null. It is initially null.
 
 <div algorithm>
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
@@ -585,6 +584,8 @@ or null. It is initially null.
 
   1. [=Initialize the nested traversable=] |traversable| given |documentState| and
      |parentNavigable|.
+
+  1. Set |element|'s [=fenced navigable container/fenced navigable=] to |traversable|.
 
   1. Let |initialHistoryEntry| be |traversable|'s [=navigable/active session history entry=].
 
