@@ -67,6 +67,10 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: document state; url: she-document-state
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
+      text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
+      for: navigation params
+        text: response; url: navigation-params-response
+        text: navigable; url: navigation-params-navigable
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -77,6 +81,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
+  type: dfn
+    text: structured header; url: #section-1
+    for: structured header
+      text: token; url: name-tokens
 </pre>
 
 <style>
@@ -642,6 +651,38 @@ traversables</a> section.
   1. Return |navigables|.
 </div>
 
+
+<h3 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h3>
+
+Add the new [=structured header/token=] below to the list of valid [=structured header/tokens=] for the \`<a
+http-header><code>Supports-Loading-Mode</code></a>\` response header:
+
+The \`<code><dfn export for="Supports-Loading-Mode">fenced-frame</dfn></code>\` token indicates that
+the response can be used to create a {{Document}} inside of a [=fenced navigable container/fenced
+navigable=]. Without this explicit opt-in, all navigations inside of a [=fenced navigable
+container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
+
+<h3 id=navigation-patch>Navigation</h3>
+
+[[HTML]]'s [=attempt to populate the history entry's document=] algorithm is modified such that just
+before the step inside the [=queue a task|queued task=] starting with "If <var ignore>failure</var>
+is true, then:", insert a new step:
+
+<div algorithm=navigation-patch>
+
+1. Otherwise, if all of the following conditions are true:
+
+    * |navigationParams|'s [=navigation params/navigable=]'s [=navigable/traversable navigable=] is
+      a [=fenced navigable container/fenced navigable=];
+    * |navigationParams|'s [=navigation params/response=]'s [=response/URL=]'s [=url/scheme=] is
+      "<code>https</code>"; and
+    * the result of [=getting the supported loading modes=] for |navigationParams|'s [=navigation
+      params/response=] does not [=list/contain=] \`<code><a
+      for="Supports-Loading-Mode">fenced-frame</a></code>\`
+
+   then set <var ignore>failure</var> to true.
+
+</div>
 
 <h3 id=page-visibility>Page visibility</h3>
 
