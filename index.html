@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="2a6e15bb1b45604262c7d9817bd36744d094c88d" name="document-revision">
+  <meta content="0e29df237031a27558936d88e299b7182fa7abb8" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-30">30 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-04">4 April 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -739,7 +739,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#creating-browsing-contexts-patch"><span class="secno">2.2</span> <span class="content">Modifications to creating browsing contexts</span></a>
       <li><a href="#nested-traversables"><span class="secno">2.3</span> <span class="content">Nested traversables</span></a>
       <li><a href="#navigable-traversing-algorithms"><span class="secno">2.4</span> <span class="content">Modifications to navigable-traversing algorithms</span></a>
-      <li><a href="#page-visibility"><span class="secno">2.5</span> <span class="content">Page visibility</span></a>
+      <li><a href="#supports-loading-mode"><span class="secno">2.5</span> <span class="content">The `<span><code>Supports-Loading-Mode</code></span>` HTTP response header</span></a>
+      <li><a href="#navigation-patch"><span class="secno">2.6</span> <span class="content">Navigation</span></a>
+      <li><a href="#page-visibility"><span class="secno">2.7</span> <span class="content">Page visibility</span></a>
      </ol>
     <li>
      <a href="#interaction-with-other-specs"><span class="secno">3</span> <span class="content">Interactions with other specifications</span></a>
@@ -1135,7 +1137,32 @@ traversables</a> section.</p>
       <p>Return <var>navigables</var>.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="2.5" id="page-visibility"><span class="secno">2.5. </span><span class="content">Page visibility</span><a class="self-link" href="#page-visibility"></a></h3>
+   <h3 class="heading settled" data-level="2.5" id="supports-loading-mode"><span class="secno">2.5. </span><span class="content">The `<a data-link-type="http-header" href="https://wicg.github.io/nav-speculation/prerendering.html#http-headerdef-supports-loading-mode" id="ref-for-http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></a>` HTTP response header</span><a class="self-link" href="#supports-loading-mode"></a></h3>
+   <p>Add the new <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">token</a> below to the list of valid <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">tokens</a> for the `<a data-link-type="http-header" href="https://wicg.github.io/nav-speculation/prerendering.html#http-headerdef-supports-loading-mode" id="ref-for-http-headerdef-supports-loading-mode①"><code>Supports-Loading-Mode</code></a>` response header:</p>
+   <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-export id="supports-loading-mode-fenced-frame">fenced-frame</dfn></code>` token indicates that
+the response can be used to create a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> inside of a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①④">fenced
+navigable</a>. Without this explicit opt-in, all navigations inside of a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①⑤">fenced navigable</a> will fail, as outlined in <a href="#navigation-patch">§ 2.6 Navigation</a>.</p>
+   <h3 class="heading settled" data-level="2.6" id="navigation-patch"><span class="secno">2.6. </span><span class="content">Navigation</span><a class="self-link" href="#navigation-patch"></a></h3>
+   <p><a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry&apos;s-document" id="ref-for-attempt-to-populate-the-history-entry&apos;s-document">attempt to populate the history entry’s document</a> algorithm is modified such that just
+before the step inside the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">queued task</a> starting with "If <var>failure</var> is true, then:", insert a new step:</p>
+   <div class="algorithm" data-algorithm="navigation-patch">
+    <ol>
+     <li data-md>
+      <p>Otherwise, if all of the following conditions are true:</p>
+      <ul>
+       <li data-md>
+        <p><var>navigationParams</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-navigable" id="ref-for-navigation-params-navigable">navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable" id="ref-for-nav-traversable">traversable navigable</a> is
+a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①⑥">fenced navigable</a>;</p>
+       <li data-md>
+        <p><var>navigationParams</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response" id="ref-for-navigation-params-response">response</a>'s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url">URL</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is
+"<code>https</code>"; and</p>
+       <li data-md>
+        <p>the result of <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prerendering.html#get-the-supported-loading-modes" id="ref-for-get-the-supported-loading-modes">getting the supported loading modes</a> for <var>navigationParams</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response" id="ref-for-navigation-params-response①">response</a> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contain</a> `<code><a data-link-type="dfn" href="#supports-loading-mode-fenced-frame" id="ref-for-supports-loading-mode-fenced-frame">fenced-frame</a></code>`</p>
+      </ul>
+      <p>then set <var>failure</var> to true.</p>
+    </ol>
+   </div>
+   <h3 class="heading settled" data-level="2.7" id="page-visibility"><span class="secno">2.7. </span><span class="content">Page visibility</span><a class="self-link" href="#page-visibility"></a></h3>
    <p>The <a href="https://html.spec.whatwg.org/#page-visibility">Page visibility</a> section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> is
 modified such that the first step of the algorithm that runs when a user-agent changes a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable⑨">traversable navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#system-visibility-state" id="ref-for-system-visibility-state">system visibility state</a> calls the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#inclusive-descendant-navigables" id="ref-for-inclusive-descendant-navigables②">inclusive descendant
 navigables</a> algorithm with <a data-link-type="dfn" href="#inclusive-dn-unfenced" id="ref-for-inclusive-dn-unfenced②">unfenced</a> set to true.</p>
@@ -1179,6 +1206,7 @@ specification adds another value for fenced frames:</p>
      <li><a href="#dom-window-fence">attribute for Window</a><span>, in § 2.1</span>
      <li><a href="#window-fence">dfn for Window</a><span>, in § 2.1</span>
     </ul>
+   <li><a href="#supports-loading-mode-fenced-frame">fenced-frame</a><span>, in § 2.5</span>
    <li><a href="#elementdef-fencedframe">fencedframe</a><span>, in § 1</span>
    <li><a href="#fenced-frame-config">fenced frame config</a><span>, in § 1.3</span>
    <li><a href="#fencedframeconfig">FencedFrameConfig</a><span>, in § 1.3</span>
@@ -1294,6 +1322,7 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-07886e33695d0e7b473ef18f656ad7ac" style="display:none">Info about the 'Document' external reference.</span><a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-document">2.3. Nested traversables</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
+    <li><a href="#ref-for-document③">2.5. The `Supports-Loading-Mode` HTTP response header</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-7b7df0a8762384a133b9bbb352e4b30a" class="dfn-panel" data-for="7b7df0a8762384a133b9bbb352e4b30a" id="infopanel-for-7b7df0a8762384a133b9bbb352e4b30a">
@@ -1381,6 +1410,12 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-concept-request">1.5. New request destination</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-3e7b167935ca300cf96cb89f946d5476" class="dfn-panel" data-for="3e7b167935ca300cf96cb89f946d5476" id="infopanel-for-3e7b167935ca300cf96cb89f946d5476">
+   <span id="infopaneltitle-for-3e7b167935ca300cf96cb89f946d5476" style="display:none">Info about the 'url' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-url">https://fetch.spec.whatwg.org/#concept-response-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-response-url">2.6. Navigation</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-62d5145a686fb21602c40aa7f2dc6dcb" class="dfn-panel" data-for="62d5145a686fb21602c40aa7f2dc6dcb" id="infopanel-for-62d5145a686fb21602c40aa7f2dc6dcb">
    <span id="infopaneltitle-for-62d5145a686fb21602c40aa7f2dc6dcb" style="display:none">Info about the 'CEReactions' external reference.</span><a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
@@ -1445,6 +1480,12 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-576fb603e242351f14a2481ef4416814" style="display:none">Info about the 'ancestor navigables' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#ancestor-navigables">https://html.spec.whatwg.org/multipage/document-sequences.html#ancestor-navigables</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ancestor-navigables">2.3. Nested traversables</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-a768cc5978ddc018508fdd09a0ee0038" class="dfn-panel" data-for="a768cc5978ddc018508fdd09a0ee0038" id="infopanel-for-a768cc5978ddc018508fdd09a0ee0038">
+   <span id="infopaneltitle-for-a768cc5978ddc018508fdd09a0ee0038" style="display:none">Info about the 'attempt to populate the history entry's document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry&apos;s-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry's-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-attempt-to-populate-the-history-entry&apos;s-document">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-3eaa51ed66e1d8aa0c39a4f1fead29c0" class="dfn-panel" data-for="3eaa51ed66e1d8aa0c39a4f1fead29c0" id="infopanel-for-3eaa51ed66e1d8aa0c39a4f1fead29c0">
@@ -1595,7 +1636,7 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-4375452ab73b49324283ed1b1a736702" style="display:none">Info about the 'inclusive descendant navigables' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#inclusive-descendant-navigables">https://html.spec.whatwg.org/multipage/document-sequences.html#inclusive-descendant-navigables</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-inclusive-descendant-navigables">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-inclusive-descendant-navigables①">(2)</a>
-    <li><a href="#ref-for-inclusive-descendant-navigables②">2.5. Page visibility</a>
+    <li><a href="#ref-for-inclusive-descendant-navigables②">2.7. Page visibility</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-bc7b614b2d847f8145f861abf060f202" class="dfn-panel" data-for="bc7b614b2d847f8145f861abf060f202" id="infopanel-for-bc7b614b2d847f8145f861abf060f202">
@@ -1628,6 +1669,12 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-c65e32440cdd5af483d6b90189ff0d46" style="display:none">Info about the 'navigable (for Window)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window-navigable">2.1. Extensions to the Window interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-d3d9a7fa1eecd7afb0e12ddc332dbbfb" class="dfn-panel" data-for="d3d9a7fa1eecd7afb0e12ddc332dbbfb" id="infopanel-for-d3d9a7fa1eecd7afb0e12ddc332dbbfb">
+   <span id="infopaneltitle-for-d3d9a7fa1eecd7afb0e12ddc332dbbfb" style="display:none">Info about the 'navigable (for navigation params)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-navigable">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-navigable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-navigation-params-navigable">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dafb0ebfee99f77becebf8c0dfaa16f5" class="dfn-panel" data-for="dafb0ebfee99f77becebf8c0dfaa16f5" id="infopanel-for-dafb0ebfee99f77becebf8c0dfaa16f5">
@@ -1699,6 +1746,12 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-concept-document-policy-container">2.2. Modifications to creating browsing contexts</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-da7ed5f190c4eedd375552d6f7876301" class="dfn-panel" data-for="da7ed5f190c4eedd375552d6f7876301" id="infopanel-for-da7ed5f190c4eedd375552d6f7876301">
+   <span id="infopaneltitle-for-da7ed5f190c4eedd375552d6f7876301" style="display:none">Info about the 'queue a task' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-queue-a-task">2.6. Navigation</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-6cb5560fb42557c66b6caf557d48e98d" class="dfn-panel" data-for="6cb5560fb42557c66b6caf557d48e98d" id="infopanel-for-6cb5560fb42557c66b6caf557d48e98d">
    <span id="infopaneltitle-for-6cb5560fb42557c66b6caf557d48e98d" style="display:none">Info about the 'referrerpolicy' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-referrer-policy">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-referrer-policy</a><b>Referenced in:</b>
    <ul>
@@ -1723,6 +1776,12 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-represents">1. The fencedframe element</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-5c17a4253febd6191926123123ef5ee6" class="dfn-panel" data-for="5c17a4253febd6191926123123ef5ee6" id="infopanel-for-5c17a4253febd6191926123123ef5ee6">
+   <span id="infopaneltitle-for-5c17a4253febd6191926123123ef5ee6" style="display:none">Info about the 'response' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-navigation-params-response">2.6. Navigation</a> <a href="#ref-for-navigation-params-response①">(2)</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-f65bdfd88c463d0fb9254e4530eca7a5" class="dfn-panel" data-for="f65bdfd88c463d0fb9254e4530eca7a5" id="infopanel-for-f65bdfd88c463d0fb9254e4530eca7a5">
    <span id="infopaneltitle-for-f65bdfd88c463d0fb9254e4530eca7a5" style="display:none">Info about the 'resulting url record' external reference.</span><a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record">https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record</a><b>Referenced in:</b>
    <ul>
@@ -1744,7 +1803,7 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-829cd0ea709a5b1ea6f32983441422f6" class="dfn-panel" data-for="829cd0ea709a5b1ea6f32983441422f6" id="infopanel-for-829cd0ea709a5b1ea6f32983441422f6">
    <span id="infopaneltitle-for-829cd0ea709a5b1ea6f32983441422f6" style="display:none">Info about the 'system visibility state' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#system-visibility-state">https://html.spec.whatwg.org/multipage/document-sequences.html#system-visibility-state</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-system-visibility-state">2.5. Page visibility</a>
+    <li><a href="#ref-for-system-visibility-state">2.7. Page visibility</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-24e70894321b922029e3e3b26ccbf501" class="dfn-panel" data-for="24e70894321b922029e3e3b26ccbf501" id="infopanel-for-24e70894321b922029e3e3b26ccbf501">
@@ -1764,7 +1823,13 @@ specification adds another value for fenced frames:</p>
    <ul>
     <li><a href="#ref-for-traversable-navigable">1.2. Configuration mapping</a>
     <li><a href="#ref-for-traversable-navigable①">2.3. Nested traversables</a> <a href="#ref-for-traversable-navigable②">(2)</a> <a href="#ref-for-traversable-navigable③">(3)</a> <a href="#ref-for-traversable-navigable④">(4)</a> <a href="#ref-for-9df064b89e8130a9d4cee056b2fdeb2f">(5)</a> <a href="#ref-for-traversable-navigable⑤">(6)</a> <a href="#ref-for-traversable-navigable⑥">(7)</a> <a href="#ref-for-traversable-navigable⑦">(8)</a> <a href="#ref-for-traversable-navigable⑧">(9)</a>
-    <li><a href="#ref-for-traversable-navigable⑨">2.5. Page visibility</a>
+    <li><a href="#ref-for-traversable-navigable⑨">2.7. Page visibility</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-0e2f334f68df47e02e59c1bb0e056e13" class="dfn-panel" data-for="0e2f334f68df47e02e59c1bb0e056e13" id="infopanel-for-0e2f334f68df47e02e59c1bb0e056e13">
+   <span id="infopaneltitle-for-0e2f334f68df47e02e59c1bb0e056e13" style="display:none">Info about the 'traversable navigable (for navigable)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-nav-traversable">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-30f3fc447c887dab9db60f5e6f38a99f" class="dfn-panel" data-for="30f3fc447c887dab9db60f5e6f38a99f" id="infopanel-for-30f3fc447c887dab9db60f5e6f38a99f">
@@ -1796,6 +1861,12 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-0d4cc8e47c65b15b2be5e5e730a09d3c" style="display:none">Info about the 'boolean' external reference.</span><a href="https://infra.spec.whatwg.org/#boolean">https://infra.spec.whatwg.org/#boolean</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-boolean">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-boolean①">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-eb75379b05abc264a531a791358e1eba" class="dfn-panel" data-for="eb75379b05abc264a531a791358e1eba" id="infopanel-for-eb75379b05abc264a531a791358e1eba">
+   <span id="infopaneltitle-for-eb75379b05abc264a531a791358e1eba" style="display:none">Info about the 'contain' external reference.</span><a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-contain">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-ce9efec0e74a2cbfe986593eb861ade6" class="dfn-panel" data-for="ce9efec0e74a2cbfe986593eb861ade6" id="infopanel-for-ce9efec0e74a2cbfe986593eb861ade6">
@@ -1841,6 +1912,12 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-struct①">1.3. The FencedFrameConfig interface</a> <a href="#ref-for-struct②">(2)</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-92ef4a126641efa3737a3b6dab8649ab" class="dfn-panel" data-for="92ef4a126641efa3737a3b6dab8649ab" id="infopanel-for-92ef4a126641efa3737a3b6dab8649ab">
+   <span id="infopaneltitle-for-92ef4a126641efa3737a3b6dab8649ab" style="display:none">Info about the 'get the supported loading modes' external reference.</span><a href="https://wicg.github.io/nav-speculation/prerendering.html#get-the-supported-loading-modes">https://wicg.github.io/nav-speculation/prerendering.html#get-the-supported-loading-modes</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-get-the-supported-loading-modes">2.6. Navigation</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-37ea775b610d924b453f4dfc18c197ab" class="dfn-panel" data-for="37ea775b610d924b453f4dfc18c197ab" id="infopanel-for-37ea775b610d924b453f4dfc18c197ab">
    <span id="infopaneltitle-for-37ea775b610d924b453f4dfc18c197ab" style="display:none">Info about the 'loading mode' external reference.</span><a href="https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode">https://wicg.github.io/nav-speculation/prerendering.html#navigable-loading-mode</a><b>Referenced in:</b>
    <ul>
@@ -1849,10 +1926,28 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-navigable-loading-mode②">3.1. Prerendering</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-13a594102785f8e9abddc2c3042d3bbb" class="dfn-panel" data-for="13a594102785f8e9abddc2c3042d3bbb" id="infopanel-for-13a594102785f8e9abddc2c3042d3bbb">
+   <span id="infopaneltitle-for-13a594102785f8e9abddc2c3042d3bbb" style="display:none">Info about the 'supports-loading-mode' external reference.</span><a href="https://wicg.github.io/nav-speculation/prerendering.html#http-headerdef-supports-loading-mode">https://wicg.github.io/nav-speculation/prerendering.html#http-headerdef-supports-loading-mode</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-http-headerdef-supports-loading-mode">2.5. The `Supports-Loading-Mode` HTTP response header</a> <a href="#ref-for-http-headerdef-supports-loading-mode①">(2)</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-3c0fc13205e521456876022aad01bc20" class="dfn-panel" data-for="3c0fc13205e521456876022aad01bc20" id="infopanel-for-3c0fc13205e521456876022aad01bc20">
    <span id="infopaneltitle-for-3c0fc13205e521456876022aad01bc20" style="display:none">Info about the '"no-referrer"' external reference.</span><a href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer">https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-referrer-policy-no-referrer">1. The fencedframe element</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-12b09d60bc2f60a9a2b5fae8051fabc0" class="dfn-panel" data-for="12b09d60bc2f60a9a2b5fae8051fabc0" id="infopanel-for-12b09d60bc2f60a9a2b5fae8051fabc0">
+   <span id="infopaneltitle-for-12b09d60bc2f60a9a2b5fae8051fabc0" style="display:none">Info about the 'token' external reference.</span><a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens">https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-name-tokens">2.5. The `Supports-Loading-Mode` HTTP response header</a> <a href="#ref-for-name-tokens①">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-67f83ca6d3c695660bfc2f054f534ffb" class="dfn-panel" data-for="67f83ca6d3c695660bfc2f054f534ffb" id="infopanel-for-67f83ca6d3c695660bfc2f054f534ffb">
+   <span id="infopaneltitle-for-67f83ca6d3c695660bfc2f054f534ffb" style="display:none">Info about the 'scheme' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-scheme">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fc05c76e016d3aec6a25a91c066500c8" class="dfn-panel" data-for="fc05c76e016d3aec6a25a91c066500c8" id="infopanel-for-fc05c76e016d3aec6a25a91c066500c8">
@@ -1955,6 +2050,7 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="92488b0d05da99120fd8466a06ec480f">network error</span>
      <li><span class="dfn-paneled" id="cf83eba96d3f2cbb17eb5277ee645572">non-subresource request</span>
      <li><span class="dfn-paneled" id="491791562dd138987138e7051a96c07c">request</span>
+     <li><span class="dfn-paneled" id="3e7b167935ca300cf96cb89f946d5476">url</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -1970,6 +2066,7 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="5e4961145cfdb95a6762792ed4145fbf">active sandboxing flag set</span>
      <li><span class="dfn-paneled" id="5849cffb2c99a28f507669110957cb59">active session history entry</span>
      <li><span class="dfn-paneled" id="576fb603e242351f14a2481ef4416814">ancestor navigables</span>
+     <li><span class="dfn-paneled" id="a768cc5978ddc018508fdd09a0ee0038">attempt to populate the history entry's document</span>
      <li><span class="dfn-paneled" id="3eaa51ed66e1d8aa0c39a4f1fead29c0">browsing context</span>
      <li><span class="dfn-paneled" id="a691f3d63735e1b5b0767725ed844218">browsing context group</span>
      <li><span class="dfn-paneled" id="6e4ead68b5b53c799e404634745c8d0c">browsing context group set</span>
@@ -1999,6 +2096,7 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="192703d37fc26a83fa4452eab0457128">length</span>
      <li><span class="dfn-paneled" id="9b61a10aca6020532301db95d903ae46">navigable</span>
      <li><span class="dfn-paneled" id="c65e32440cdd5af483d6b90189ff0d46">navigable <small>(for Window)</small></span>
+     <li><span class="dfn-paneled" id="d3d9a7fa1eecd7afb0e12ddc332dbbfb">navigable <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="dafb0ebfee99f77becebf8c0dfaa16f5">navigable container</span>
      <li><span class="dfn-paneled" id="566b28e53fa11b6a6ff3a9d32626c2c5">navigate</span>
      <li><span class="dfn-paneled" id="9159c932d44984ad0abd63c25a284a3c">node is inserted into a document</span>
@@ -2010,10 +2108,12 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="c8a8ffe673019218223a10e45dee6a88">permissions policy</span>
      <li><span class="dfn-paneled" id="4252c6677f702595b89302ac9e3cef64">phrasing content</span>
      <li><span class="dfn-paneled" id="c347d27e1964141a379e6573882af9ee">policy container</span>
+     <li><span class="dfn-paneled" id="da7ed5f190c4eedd375552d6f7876301">queue a task</span>
      <li><span class="dfn-paneled" id="6cb5560fb42557c66b6caf557d48e98d">referrerpolicy</span>
      <li><span class="dfn-paneled" id="003fb40d70ab3764e384b9decc40bb62">removed from a document</span>
      <li><span class="dfn-paneled" id="7306af8229456e45f49c0851cc0c6779">replace</span>
      <li><span class="dfn-paneled" id="fd273d40695b225de351d393e80d74a7">represents</span>
+     <li><span class="dfn-paneled" id="5c17a4253febd6191926123123ef5ee6">response</span>
      <li><span class="dfn-paneled" id="f65bdfd88c463d0fb9254e4530eca7a5">resulting url record</span>
      <li><span class="dfn-paneled" id="3bd07dd1ec2f367091cfd0df47c118a5">same origin</span>
      <li><span class="dfn-paneled" id="a072527f75033fb4ed6119239e352e1f">session history entries</span>
@@ -2021,6 +2121,7 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="24e70894321b922029e3e3b26ccbf501">the document's referrer</span>
      <li><span class="dfn-paneled" id="6bb36d47a5f9a04109a4493b81f2720a">top-level traversable</span>
      <li><span class="dfn-paneled" id="9df064b89e8130a9d4cee056b2fdeb2f">traversable navigable</span>
+     <li><span class="dfn-paneled" id="0e2f334f68df47e02e59c1bb0e056e13">traversable navigable <small>(for navigable)</small></span>
      <li><span class="dfn-paneled" id="30f3fc447c887dab9db60f5e6f38a99f">user activation</span>
      <li><span class="dfn-paneled" id="be59b235511532233fac6b5761be501f">width</span>
     </ul>
@@ -2030,6 +2131,7 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="53c2c70bc752d6cf2a1f7deddc029549">append</span>
      <li><span class="dfn-paneled" id="7618b9a6d44febb7e784c8f39faac140">assert</span>
      <li><span class="dfn-paneled" id="0d4cc8e47c65b15b2be5e5e730a09d3c">boolean</span>
+     <li><span class="dfn-paneled" id="eb75379b05abc264a531a791358e1eba">contain</span>
      <li><span class="dfn-paneled" id="ce9efec0e74a2cbfe986593eb861ade6">continue</span>
      <li><span class="dfn-paneled" id="36deff0843569301f4a70c34db646a95">extend</span>
      <li><span class="dfn-paneled" id="8b9e78ceedde26e69095bd6f6cce47bf">for each</span>
@@ -2041,7 +2143,9 @@ specification adds another value for fenced frames:</p>
    <li>
     <a data-link-type="biblio">[PRERENDERING-REVAMPED]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="92ef4a126641efa3737a3b6dab8649ab">get the supported loading modes</span>
      <li><span class="dfn-paneled" id="37ea775b610d924b453f4dfc18c197ab">loading mode</span>
+     <li><span class="dfn-paneled" id="13a594102785f8e9abddc2c3042d3bbb">supports-loading-mode</span>
     </ul>
    <li>
     <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
@@ -2049,8 +2153,14 @@ specification adds another value for fenced frames:</p>
      <li><span class="dfn-paneled" id="3c0fc13205e521456876022aad01bc20">"no-referrer"</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="12b09d60bc2f60a9a2b5fae8051fabc0">token</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="67f83ca6d3c695660bfc2f054f534ffb">scheme</span>
      <li><span class="dfn-paneled" id="fc05c76e016d3aec6a25a91c066500c8">url</span>
      <li><span class="dfn-paneled" id="d2e147380fb69adb69e29104be252de4">url record</span>
     </ul>
@@ -2083,6 +2193,8 @@ specification adds another value for fenced frames:</p>
    <dd>Prerendering Revamped URL: <a href="https://wicg.github.io/nav-speculation/prerendering.html">https://wicg.github.io/nav-speculation/prerendering.html</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://w3c.github.io/webappsec-referrer-policy/"><cite>Referrer Policy</cite></a>. URL: <a href="https://w3c.github.io/webappsec-referrer-policy/">https://w3c.github.io/webappsec-referrer-policy/</a>
+   <dt id="biblio-rfc8941">[RFC8941]
+   <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-webidl">[WEBIDL]
@@ -2286,6 +2398,8 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-fenced-navigable-container-fenced-navigable③">1.6.1. fenced-frame-src</a>
     <li><a href="#ref-for-fenced-navigable-container-fenced-navigable④">2.3. Nested traversables</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable⑤">(2)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable⑥">(3)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable⑦">(4)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable⑧">(5)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable⑨">(6)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable①⓪">(7)</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable①①">(8)</a>
     <li><a href="#ref-for-fenced-navigable-container-fenced-navigable①②">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable①③">(2)</a>
+    <li><a href="#ref-for-fenced-navigable-container-fenced-navigable①④">2.5. The `Supports-Loading-Mode` HTTP response header</a> <a href="#ref-for-fenced-navigable-container-fenced-navigable①⑤">(2)</a>
+    <li><a href="#ref-for-fenced-navigable-container-fenced-navigable①⑥">2.6. Navigation</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-initialize-the-nested-traversable" class="dfn-panel" data-for="initialize-the-nested-traversable" id="infopanel-for-initialize-the-nested-traversable">
@@ -2305,13 +2419,19 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-inclusive-dn-unfenced" style="display:none">Info about the 'unfenced' definition.</span><b><a href="#inclusive-dn-unfenced">#inclusive-dn-unfenced</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-inclusive-dn-unfenced">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-inclusive-dn-unfenced①">(2)</a>
-    <li><a href="#ref-for-inclusive-dn-unfenced②">2.5. Page visibility</a>
+    <li><a href="#ref-for-inclusive-dn-unfenced②">2.7. Page visibility</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dn-unfenced" class="dfn-panel" data-for="dn-unfenced" id="infopanel-for-dn-unfenced">
    <span id="infopaneltitle-for-dn-unfenced" style="display:none">Info about the 'unfenced' definition.</span><b><a href="#dn-unfenced">#dn-unfenced</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dn-unfenced">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-dn-unfenced①">(2)</a> <a href="#ref-for-dn-unfenced②">(3)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-supports-loading-mode-fenced-frame" class="dfn-panel" data-for="supports-loading-mode-fenced-frame" id="infopanel-for-supports-loading-mode-fenced-frame">
+   <span id="infopaneltitle-for-supports-loading-mode-fenced-frame" style="display:none">Info about the 'fenced-frame' definition.</span><b><a href="#supports-loading-mode-fenced-frame">#supports-loading-mode-fenced-frame</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-supports-loading-mode-fenced-frame">2.6. Navigation</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
