@@ -333,7 +333,13 @@ serves as the key to the <{fencedframe}> element's [=fenced navigable container/
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
-* An <dfn for="fenced frame config">urn uuid</dfn>, a [=urn uuid=] string
+* A <dfn for="fenced frame config">urn uuid</dfn>, a [=urn uuid=] string
+* optional FencedFrameProperty mapped url
+* optional FencedFrameProperty container size (width + height)
+* optional FencedFrameProperty content size (width + height)
+* optional FencedFrameProperty interest group descriptor (owner + name)
+* optional exhaustive sandbox flags
+* optional exhaustive permissions
 * <span class=XXX>TODO: Specify the other members</span>
 
 
