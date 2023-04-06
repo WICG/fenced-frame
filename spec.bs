@@ -335,18 +335,23 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     "buyer",
     "seller",
     "component-seller",
+    "direct-seller",
     "shared-storage-select-url",
   };
 
   dictionary FenceEvent {
     required DOMString eventType;
     required DOMString eventData;
-    required sequence&lt;DOMString&gt; destination;
+    required sequence&lt;FenceReportingDestination&gt; destination;
   };
+
+  typedef (FenceEvent or DOMString) ReportEventType;
 
   [Exposed=Window]
   interface Fence {
-      undefined reportEvent(FenceEvent event);
+      undefined reportEvent(ReportEventType event);
+      undefined setReportEventDataForAutomaticBeacons(FenceEvent event);
+      sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
   };
 </pre>
 
