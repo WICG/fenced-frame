@@ -361,6 +361,18 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   1. <span class=XXX>Fill this out!</span>
 </div>
 
+<div algorithm>
+  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn> method steps are:
+
+  1. <span class=XXX>Fill this out!</span>
+</div>
+
+<div algorithm>
+  The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
+
+  1. <span class=XXX>Fill this out!</span>
+</div>
+
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
 Every distinct element should have its own request destination to allow for special handling when
