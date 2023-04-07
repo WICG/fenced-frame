@@ -327,15 +327,34 @@ null.
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
-* <dfn for="fenced frame config">mapped url</dfn>, optional<url * boolean> (boolean is visibility to embedder)
-* <dfn for="fenced frame config">container size</dfn>, optional<(width:X * height:X) * boolean * boolean>
-* <dfn for="fenced frame config">content size</dfn>, optional<(width:X * height:X) * boolean * boolean>
-* <dfn for="fenced frame config">interest group descriptor</dfn>, optional<(owner:string + name:string) * boolean * boolean>
-* <dfn for="fenced frame config">effective sandbox flags</dfn>, optional<sandbox flags * boolean * boolean>
-* <dfn for="fenced frame config">effective permissions</dfn>, optional<permissions * boolean * boolean>
-* <dfn for="fenced frame config">fenced frame reporter</dfn>, optional<reporter * boolean * boolean>: TODO make sure reporters handles component ads correctly
-* <dfn for="fenced frame config">exfiltration budget metadata</dfn>, optional<(origin * double * boolean) * boolean * boolean>
-* <dfn for="fenced frame config">nested configs</dfn>, optional<(sequence of configs) * boolean * boolean>
+<dl export dfn-for="fenced frame config">
+  : <dfn>mapped url</dfn>
+  :: optional<url * boolean> (boolean is visibility to embedder)
+
+  : <dfn>container size</dfn>
+  :: optional<(width:X * height:X) * boolean * boolean>
+
+  : <dfn>content size</dfn>
+  :: optional<(width:X * height:X) * boolean * boolean>
+
+  : <dfn>interest group descriptor</dfn>
+  :: optional<(owner:string + name:string) * boolean * boolean>
+
+  : <dfn>effective sandbox flags</dfn>
+  :: optional<sandbox flags * boolean * boolean>
+
+  : <dfn>effective permissions</dfn>
+  :: optional<permissions * boolean * boolean>
+
+  : <dfn>fenced frame reporter</dfn>
+  :: optional<reporter * boolean * boolean>: TODO make sure reporters handles component ads correctly
+
+  : <dfn>exfiltration budget metadata</dfn>
+  :: optional<(origin * double * boolean) * boolean * boolean>
+
+  : <dfn>nested configs</dfn>
+  :: optional<(sequence of configs) * boolean * boolean>
+</dl>
 
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="fenced frame config instance">mapped url</dfn>
