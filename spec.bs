@@ -354,6 +354,9 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
   : <dfn>nested configs</dfn>
   :: optional<(sequence of configs) * boolean * boolean>
+
+  : <dfn>embedder shared storage context</dfn>
+  :: optional<string>
 </dl>
 
 
@@ -362,32 +365,62 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
   :: optional<url * boolean * boolean>
+
   : <dfn>container size</dfn>
   :: optional<(width:X * height:X) * boolean * boolean>
+
   : <dfn>content size</dfn>
   :: optional<(width:X * height:X) * boolean * boolean>
+
   : <dfn>interest group descriptor</dfn>
   :: optional<(owner:string + name:string) * boolean * boolean>
+
   : <dfn>effective sandbox flags</dfn>
   :: optional<sandbox flags * boolean * boolean>
+
   : <dfn>effective permissions</dfn>
   :: optional<permissions * boolean * boolean>
+
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
   :: optional<reporter * boolean * boolean>
+
   : <dfn>exfiltration budget metadata</dfn>
   :: optional<(origin * double * boolean) * boolean * boolean>
+
   : <dfn>nested configs</dfn>
   :: optional<(sequence of configs) * boolean * boolean>
+
   : <dfn>partition nonce</dfn>
   :: partition nonce
+
   : <dfn>embedder shared storage context</dfn>
   :: optional<string>
 </dl>
 
 <div algorithm=config instantiation>
-  In order to instantiate a fenced frame config (to construct a fenced frame config instance), run these steps:
+  In order to initialize a [=fenced frame config instance=] from a [=fenced frame config=], run these steps:
 
-  1. foo
+  1. Initialize [=fenced frame config instance/mapped url=] with [=fenced frame config/mapped url=]
+
+  1. Initialize [=fenced frame config instance/container size=] with [=fenced frame config/container size=]
+
+  1. Initialize [=fenced frame config instance/content size=] with [=fenced frame config/content size=]
+
+  1. Initialize [=fenced frame config instance/interest group descriptor=] with [=fenced frame config/interest group descriptor=]
+
+  1. Initialize [=fenced frame config instance/effective sandbox flags=] with [=fenced frame config/effective sandbox flags=]
+
+  1. Initialize [=fenced frame config instance/effective permissions=] with [=fenced frame config/effective permissions=]
+
+  1. TODO: fenced frame reporter
+
+  1. TODO: budget metadata
+
+  1. TODO: nested configs
+
+  1. Initialize [=fenced frame config instance/partition nonce=] with a random TODO(ref):partition nonce.
+
+  1. Initialize [=fenced frame config instance/embedder shared storage context=] with [=fenced frame config/embedder shared storage context=].
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
