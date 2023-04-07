@@ -329,7 +329,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: optional<url * boolean> (boolean is visibility to embedder)
+  :: optional<url * boolean * boolean> (boolean is visibility to embedder)
 
   : <dfn>container size</dfn>
   :: optional<(width:X * height:X) * boolean * boolean>
@@ -356,18 +356,33 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: optional<(sequence of configs) * boolean * boolean>
 </dl>
 
+
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
-* <dfn for="fenced frame config instance">mapped url</dfn>
-* <dfn for="fenced frame config instance">container size</dfn>
-* <dfn for="fenced frame config instance">content size</dfn>
-* <dfn for="fenced frame config instance">interest group descriptor</dfn>
-* <dfn for="fenced frame config instance">effective sandbox flags</dfn>
-* <dfn for="fenced frame config instance">effective permissions</dfn>
-* <dfn for="fenced frame config instance">fenced frame reporter</dfn> TODO: including automatic beacon info
-* <dfn for="fenced frame config instance">exfiltration budget metadata</dfn>
-* <dfn for="fenced frame config instance">nested configs</dfn>
-* <dfn for="fenced frame config instance">partition nonce</dfn>
-* <dfn for="fenced frame config instance">embedder shared storage context</dfn>
+
+<dl export dfn-for="fenced frame config instance">
+  : <dfn>mapped url</dfn>
+  :: optional<url * boolean * boolean>
+  : <dfn>container size</dfn>
+  :: optional<(width:X * height:X) * boolean * boolean>
+  : <dfn>content size</dfn>
+  :: optional<(width:X * height:X) * boolean * boolean>
+  : <dfn>interest group descriptor</dfn>
+  :: optional<(owner:string + name:string) * boolean * boolean>
+  : <dfn>effective sandbox flags</dfn>
+  :: optional<sandbox flags * boolean * boolean>
+  : <dfn>effective permissions</dfn>
+  :: optional<permissions * boolean * boolean>
+  : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
+  :: optional<reporter * boolean * boolean>
+  : <dfn>exfiltration budget metadata</dfn>
+  :: optional<(origin * double * boolean) * boolean * boolean>
+  : <dfn>nested configs</dfn>
+  :: optional<(sequence of configs) * boolean * boolean>
+  : <dfn>partition nonce</dfn>
+  :: partition nonce
+  : <dfn>embedder shared storage context</dfn>
+  :: optional<string>
+</dl>
 
 <div algorithm=config instantiation>
   In order to instantiate a fenced frame config (to construct a fenced frame config instance), run these steps:
