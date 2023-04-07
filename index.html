@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="0e29df237031a27558936d88e299b7182fa7abb8" name="document-revision">
+  <meta content="f0f07ea9284d5e9e344f7086ce50c26a4118f23c" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-04">4 April 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-07">7 April 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -893,26 +893,45 @@ serves as the key to the <code><a data-link-type="element" href="#elementdef-fen
    </ul>
    <h3 class="heading settled" data-level="1.4" id="fence-interface"><span class="secno">1.4. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fence" id="ref-for-fence">Fence</a></code> interface</span><a class="self-link" href="#fence-interface"></a></h3>
    <p><span class="XXX">Describe this infrastructure in detail.</span></p>
-<pre class="idl highlight def"><c- b>enum</c-> <dfn class="idl-code" data-dfn-type="enum" data-export id="enumdef-fencereportingdestination"><code><c- g>FenceReportingDestination</c-></code><a class="self-link" href="#enumdef-fencereportingdestination"></a></dfn> {
+<pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-fencereportingdestination"><code><c- g>FenceReportingDestination</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="FenceReportingDestination" data-dfn-type="enum-value" data-export id="dom-fencereportingdestination-buyer"><code><c- s>"buyer"</c-></code><a class="self-link" href="#dom-fencereportingdestination-buyer"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="FenceReportingDestination" data-dfn-type="enum-value" data-export id="dom-fencereportingdestination-seller"><code><c- s>"seller"</c-></code><a class="self-link" href="#dom-fencereportingdestination-seller"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="FenceReportingDestination" data-dfn-type="enum-value" data-export id="dom-fencereportingdestination-component-seller"><code><c- s>"component-seller"</c-></code><a class="self-link" href="#dom-fencereportingdestination-component-seller"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="FenceReportingDestination" data-dfn-type="enum-value" data-export id="dom-fencereportingdestination-direct-seller"><code><c- s>"direct-seller"</c-></code><a class="self-link" href="#dom-fencereportingdestination-direct-seller"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="FenceReportingDestination" data-dfn-type="enum-value" data-export id="dom-fencereportingdestination-shared-storage-select-url"><code><c- s>"shared-storage-select-url"</c-></code><a class="self-link" href="#dom-fencereportingdestination-shared-storage-select-url"></a></dfn>,
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-fenceevent"><code><c- g>FenceEvent</c-></code></dfn> {
   <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventtype"><code><c- g>eventType</c-></code><a class="self-link" href="#dom-fenceevent-eventtype"></a></dfn>;
   <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString③"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventdata"><code><c- g>eventData</c-></code><a class="self-link" href="#dom-fenceevent-eventdata"></a></dfn>;
-  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a>> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="sequence<DOMString> " id="dom-fenceevent-destination"><code><c- g>destination</c-></code><a class="self-link" href="#dom-fenceevent-destination"></a></dfn>;
+  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination"><c- n>FenceReportingDestination</c-></a>> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="sequence<FenceReportingDestination> " id="dom-fenceevent-destination"><code><c- g>destination</c-></code><a class="self-link" href="#dom-fenceevent-destination"></a></dfn>;
 };
+
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent"><c- n>FenceEvent</c-></a> <c- b>or</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-reporteventtype"><code><c- g>ReportEventType</c-></code></dfn>;
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fence"><code><c- g>Fence</c-></code></dfn> {
-    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent" id="ref-for-dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent"><c- n>FenceEvent</c-></a> <dfn class="idl-code" data-dfn-for="Fence/reportEvent(event)" data-dfn-type="argument" data-export id="dom-fence-reportevent-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-reportevent-event-event"></a></dfn>);
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent" id="ref-for-dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#typedefdef-reporteventtype" id="ref-for-typedefdef-reporteventtype"><c- n>ReportEventType</c-></a> <dfn class="idl-code" data-dfn-for="Fence/reportEvent(event)" data-dfn-type="argument" data-export id="dom-fence-reportevent-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-reportevent-event-event"></a></dfn>);
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined①"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-setreporteventdataforautomaticbeacons" id="ref-for-dom-fence-setreporteventdataforautomaticbeacons"><c- g>setReportEventDataForAutomaticBeacons</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent①"><c- n>FenceEvent</c-></a> <dfn class="idl-code" data-dfn-for="Fence/setReportEventDataForAutomaticBeacons(event)" data-dfn-type="argument" data-export id="dom-fence-setreporteventdataforautomaticbeacons-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-setreporteventdataforautomaticbeacons-event-event"></a></dfn>);
+    <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑧"><c- n>FencedFrameConfig</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-fence-getnestedconfigs" id="ref-for-dom-fence-getnestedconfigs"><c- g>getNestedConfigs</c-></a>();
 };
 </pre>
    <div class="algorithm" data-algorithm="reportEvent(event)" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-reportevent"><code>reportEvent(<var>event</var>)</code></dfn> method steps are: 
+    <ol>
+     <li data-md>
+      <p><span class="XXX">Fill this out!</span></p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="setReportEventDataForAutomaticBeacons(event)" data-algorithm-for="Fence">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-setreporteventdataforautomaticbeacons"><code>setReportEventDataForAutomaticBeacons(<var>event</var>)</code></dfn> method steps are: 
+    <ol>
+     <li data-md>
+      <p><span class="XXX">Fill this out!</span></p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="getNestedConfigs()" data-algorithm-for="Fence">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-getnestedconfigs"><code>getNestedConfigs()</code></dfn> method steps are: 
     <ol>
      <li data-md>
       <p><span class="XXX">Fill this out!</span></p>
@@ -1196,6 +1215,7 @@ specification adds another value for fenced frames:</p>
    <li><a href="#dom-fencedframeconfig-fencedframeconfig">constructor(url)</a><span>, in § 1.3</span>
    <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 2.3</span>
    <li><a href="#dom-fenceevent-destination">destination</a><span>, in § 1.4</span>
+   <li><a href="#dom-fencereportingdestination-direct-seller">"direct-seller"</a><span>, in § 1.4</span>
    <li><a href="#dn-unfenced">dn-unfenced</a><span>, in § 2.4</span>
    <li><a href="#dom-fenceevent-eventdata">eventData</a><span>, in § 1.4</span>
    <li><a href="#dom-fenceevent-eventtype">eventType</a><span>, in § 1.4</span>
@@ -1218,6 +1238,7 @@ specification adds another value for fenced frames:</p>
    <li><a href="#fenced-navigable-containers">fenced navigable containers</a><span>, in § 2.3</span>
    <li><a href="#dictdef-fenceevent">FenceEvent</a><span>, in § 1.4</span>
    <li><a href="#enumdef-fencereportingdestination">FenceReportingDestination</a><span>, in § 1.4</span>
+   <li><a href="#dom-fence-getnestedconfigs">getNestedConfigs()</a><span>, in § 1.4</span>
    <li>
     height
     <ul>
@@ -1233,7 +1254,9 @@ specification adds another value for fenced frames:</p>
    <li><a href="#enumdef-opaqueproperty">OpaqueProperty</a><span>, in § 1.3</span>
    <li><a href="#process-the-fencedframe-attributes">process the fencedframe attributes</a><span>, in § 1</span>
    <li><a href="#dom-fence-reportevent">reportEvent(event)</a><span>, in § 1.4</span>
+   <li><a href="#typedefdef-reporteventtype">ReportEventType</a><span>, in § 1.4</span>
    <li><a href="#dom-fencereportingdestination-seller">"seller"</a><span>, in § 1.4</span>
+   <li><a href="#dom-fence-setreporteventdataforautomaticbeacons">setReportEventDataForAutomaticBeacons(event)</a><span>, in § 1.4</span>
    <li><a href="#dom-fencereportingdestination-shared-storage-select-url">"shared-storage-select-url"</a><span>, in § 1.4</span>
    <li><a href="#traversable-navigable-unfenced-parent">unfenced parent</a><span>, in § 2.3</span>
    <li>
@@ -1986,7 +2009,7 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" class="dfn-panel" data-for="38ab7db52e46bed36993204c29f67202" id="infopanel-for-38ab7db52e46bed36993204c29f67202">
    <span id="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" style="display:none">Info about the 'sequence' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-sequence">https://webidl.spec.whatwg.org/#idl-sequence</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-sequence">1.4. The Fence interface</a>
+    <li><a href="#ref-for-idl-sequence">1.4. The Fence interface</a> <a href="#ref-for-idl-sequence①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" class="dfn-panel" data-for="be0933df03cd63338f98de217c4158c7" id="infopanel-for-be0933df03cd63338f98de217c4158c7">
@@ -1999,7 +2022,7 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
    <span id="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" style="display:none">Info about the 'undefined' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-undefined">1.4. The Fence interface</a>
+    <li><a href="#ref-for-idl-undefined">1.4. The Fence interface</a> <a href="#ref-for-idl-undefined①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-03fa8b99cc63b35d2e7dcadb686676f1" class="dfn-panel" data-for="03fa8b99cc63b35d2e7dcadb686676f1" id="infopanel-for-03fa8b99cc63b35d2e7dcadb686676f1">
@@ -2227,18 +2250,23 @@ specification adds another value for fenced frames:</p>
   <a href="#dom-fencereportingdestination-buyer"><code><c- s>"buyer"</c-></code></a>,
   <a href="#dom-fencereportingdestination-seller"><code><c- s>"seller"</c-></code></a>,
   <a href="#dom-fencereportingdestination-component-seller"><code><c- s>"component-seller"</c-></code></a>,
+  <a href="#dom-fencereportingdestination-direct-seller"><code><c- s>"direct-seller"</c-></code></a>,
   <a href="#dom-fencereportingdestination-shared-storage-select-url"><code><c- s>"shared-storage-select-url"</c-></code></a>,
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-fenceevent"><code><c- g>FenceEvent</c-></code></a> {
   <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString " href="#dom-fenceevent-eventtype"><code><c- g>eventType</c-></code></a>;
   <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a data-type="DOMString " href="#dom-fenceevent-eventdata"><code><c- g>eventData</c-></code></a>;
-  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-fenceevent-destination"><code><c- g>destination</c-></code></a>;
+  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#enumdef-fencereportingdestination"><c- n>FenceReportingDestination</c-></a>> <a data-type="sequence<FenceReportingDestination> " href="#dom-fenceevent-destination"><code><c- g>destination</c-></code></a>;
 };
+
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#dictdef-fenceevent"><c- n>FenceEvent</c-></a> <c- b>or</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a>) <a href="#typedefdef-reporteventtype"><code><c- g>ReportEventType</c-></code></a>;
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#fence"><code><c- g>Fence</c-></code></a> {
-    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent"><c- n>FenceEvent</c-></a> <a href="#dom-fence-reportevent-event-event"><code><c- g>event</c-></code></a>);
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#typedefdef-reporteventtype"><c- n>ReportEventType</c-></a> <a href="#dom-fence-reportevent-event-event"><code><c- g>event</c-></code></a>);
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-setreporteventdataforautomaticbeacons"><c- g>setReportEventDataForAutomaticBeacons</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent"><c- n>FenceEvent</c-></a> <a href="#dom-fence-setreporteventdataforautomaticbeacons-event-event"><code><c- g>event</c-></code></a>);
+    <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fencedframeconfig"><c- n>FencedFrameConfig</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-fence-getnestedconfigs"><c- g>getNestedConfigs</c-></a>();
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"><c- g>Window</c-></a> {
@@ -2318,6 +2346,7 @@ specification adds another value for fenced frames:</p>
    <ul>
     <li><a href="#ref-for-fencedframeconfig">1. The fencedframe element</a> <a href="#ref-for-fencedframeconfig①">(2)</a>
     <li><a href="#ref-for-fencedframeconfig②">1.3. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig③">(2)</a> <a href="#ref-for-fencedframeconfig④">(3)</a> <a href="#ref-for-fencedframeconfig⑤">(4)</a> <a href="#ref-for-fencedframeconfig⑥">(5)</a> <a href="#ref-for-fencedframeconfig⑦">(6)</a>
+    <li><a href="#ref-for-fencedframeconfig⑧">1.4. The Fence interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframeconfig-url" class="dfn-panel" data-for="fencedframeconfig-url" id="infopanel-for-fencedframeconfig-url">
@@ -2339,10 +2368,22 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-fenced-frame-config②">1.3. The FencedFrameConfig interface</a> <a href="#ref-for-fenced-frame-config③">(2)</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-enumdef-fencereportingdestination" class="dfn-panel" data-for="enumdef-fencereportingdestination" id="infopanel-for-enumdef-fencereportingdestination">
+   <span id="infopaneltitle-for-enumdef-fencereportingdestination" style="display:none">Info about the 'FenceReportingDestination' definition.</span><b><a href="#enumdef-fencereportingdestination">#enumdef-fencereportingdestination</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enumdef-fencereportingdestination">1.4. The Fence interface</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-dictdef-fenceevent" class="dfn-panel" data-for="dictdef-fenceevent" id="infopanel-for-dictdef-fenceevent">
    <span id="infopaneltitle-for-dictdef-fenceevent" style="display:none">Info about the 'FenceEvent' definition.</span><b><a href="#dictdef-fenceevent">#dictdef-fenceevent</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-fenceevent">1.4. The Fence interface</a>
+    <li><a href="#ref-for-dictdef-fenceevent">1.4. The Fence interface</a> <a href="#ref-for-dictdef-fenceevent①">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-typedefdef-reporteventtype" class="dfn-panel" data-for="typedefdef-reporteventtype" id="infopanel-for-typedefdef-reporteventtype">
+   <span id="infopaneltitle-for-typedefdef-reporteventtype" style="display:none">Info about the 'ReportEventType' definition.</span><b><a href="#typedefdef-reporteventtype">#typedefdef-reporteventtype</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-typedefdef-reporteventtype">1.4. The Fence interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fence" class="dfn-panel" data-for="fence" id="infopanel-for-fence">
@@ -2356,6 +2397,18 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-dom-fence-reportevent" style="display:none">Info about the 'reportEvent(event)' definition.</span><b><a href="#dom-fence-reportevent">#dom-fence-reportevent</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-fence-reportevent">1.4. The Fence interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-dom-fence-setreporteventdataforautomaticbeacons" class="dfn-panel" data-for="dom-fence-setreporteventdataforautomaticbeacons" id="infopanel-for-dom-fence-setreporteventdataforautomaticbeacons">
+   <span id="infopaneltitle-for-dom-fence-setreporteventdataforautomaticbeacons" style="display:none">Info about the 'setReportEventDataForAutomaticBeacons(event)' definition.</span><b><a href="#dom-fence-setreporteventdataforautomaticbeacons">#dom-fence-setreporteventdataforautomaticbeacons</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-fence-setreporteventdataforautomaticbeacons">1.4. The Fence interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-dom-fence-getnestedconfigs" class="dfn-panel" data-for="dom-fence-getnestedconfigs" id="infopanel-for-dom-fence-getnestedconfigs">
+   <span id="infopaneltitle-for-dom-fence-getnestedconfigs" style="display:none">Info about the 'getNestedConfigs()' definition.</span><b><a href="#dom-fence-getnestedconfigs">#dom-fence-getnestedconfigs</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-fence-getnestedconfigs">1.4. The Fence interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-src" class="dfn-panel" data-for="fenced-frame-src" id="infopanel-for-fenced-frame-src">
