@@ -289,8 +289,10 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 
 <h3 id=configuration-map>Configuration mapping</h3>
 
-Each [=traversable navigable=] has a <dfn for="traversable navigable" export>urn configuration
+Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
 mapping</dfn>, a [=map=] mapping [=urn uuids=] to [=fenced frame config=] [=structs=].
+
+TODO: Set up the mapping so that it can be removed from the spec when urn iframes are gone?
 
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
@@ -323,14 +325,6 @@ Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
 null.
 
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>urn uuid</dfn>, which is a [=urn uuid=]
-string, initially null.
-
-Note: A {{FencedFrameConfig}}'s [=fencedframeconfig/urn uuid=] is a non-web-exposed unique ID that
-serves as the key to the <{fencedframe}> element's [=fenced navigable container/fenced navigable=]'s
-<span class=XXX>URN config mapping</span>, which maps [=urn uuids=] to [=fenced frame config=]
-[=structs=] (that represent the web-exposed {{FencedFrameConfig}} object).
-
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
 * <dfn for="fenced frame config">mapped url</dfn>, optional<url * boolean> (boolean is visibility to embedder)
@@ -342,12 +336,6 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 * <dfn for="fenced frame config">fenced frame reporter</dfn>, optional<reporter * boolean * boolean>: TODO make sure reporters handles component ads correctly
 * <dfn for="fenced frame config">exfiltration budget metadata</dfn>, optional<(origin * double * boolean) * boolean * boolean>
 * <dfn for="fenced frame config">nested configs</dfn>, optional<(sequence of configs) * boolean * boolean>
-
-A <dfn export>fenced frame config mapping</dfn> is a map where each entry has the following structure:
-* The key is a <dfn for="fenced frame config mapping">urn uuid</dfn>, a [=urn uuid=] string
-* The value is a fenced frame config
-
-TODO: Set up the mapping so that it can be removed from the spec when urn iframes are gone?
 
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="fenced frame config instance">mapped url</dfn>
