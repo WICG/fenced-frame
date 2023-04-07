@@ -334,13 +334,15 @@ serves as the key to the <{fencedframe}> element's [=fenced navigable container/
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
 * A <dfn for="fenced frame config">urn uuid</dfn>, a [=urn uuid=] string
-* optional FencedFrameProperty mapped url
-* optional FencedFrameProperty container size (width + height)
-* optional FencedFrameProperty content size (width + height)
-* optional FencedFrameProperty interest group descriptor (owner + name)
-* optional exhaustive sandbox flags
-* optional exhaustive permissions
-* <span class=XXX>TODO: Specify the other members</span>
+* <dfn for="fenced frame config">mapped url</dfn>, optional<url * boolean> (boolean is visibility to embedder)
+* <dfn for="fenced frame config">container size</dfn>, optional<(width:X * height:X) * boolean * boolean>
+* <dfn for="fenced frame config">content size</dfn>, optional<(width:X * height:X) * boolean * boolean>
+* <dfn for="fenced frame config">interest group descriptor</dfn>, optional<(owner:string + name:string) * boolean * boolean>
+* <dfn for="fenced frame config">effective sandbox flags</dfn>, optional<sandbox flags * boolean * boolean>
+* <dfn for="fenced frame config">effective permissions</dfn>, optional<permissions * boolean * boolean>
+* <dfn for="fenced frame config">fenced frame reporter</dfn>, optional<reporter * boolean * boolean>: TODO make sure reporters handles component ads correctly
+* <dfn for="fenced frame config">exfiltration budget metadata</dfn>, optional<(origin * double * boolean) * boolean * boolean>
+* <dfn for="fenced frame config">nested configs</dfn>, optional<(sequence of configs) * boolean * boolean>
 
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
