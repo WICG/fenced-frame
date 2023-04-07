@@ -346,6 +346,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 A <dfn export>fenced frame config mapping</dfn> is a map where each entry has the following structure:
 * The key is a <dfn for="fenced frame config mapping">urn uuid</dfn>, a [=urn uuid=] string
 * The value is a fenced frame config
+
 TODO: Set up the mapping so that it can be removed from the spec when urn iframes are gone?
 
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
