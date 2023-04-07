@@ -78,9 +78,17 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
+      text: activation; url: activation
+      text: click focusable; url: click-focusable
+      text: focusable area; url: focusable-area
+      text: sequential focus navigation; url: sequential-focus-navigation
+    urlPefix: infrastructure.html
+      text: immediately; url: immediately
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+    urlPrefix: interactive-elements.html
+      text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -651,6 +659,49 @@ traversables</a> section.
   1. Return |navigables|.
 </div>
 
+<h3 id=focusing-steps-algorithm>Modifications to the focusing steps algorithm</h3>
+
+  Modify the [=focusing steps=] algorithm to take a new optional [=boolean=]
+  argument <dfn lt="focus-unfenced">unfenced</dfn> that defaults to false.
+
+  Add a new step after step 7 of the algorithm (that defines <var>old chain</var> and <var>new chain</var>) that reads:
+
+  8. If [=focus-unfenced|unfenced=] is set to false, <var>new chain</var>
+     contains a Document with a [=fenced navigable container/fenced navigable=]
+     <var>nav</var>, and <var>old chain</var> does not also contain
+     an entry with <var>nav</var>, then return.
+
+  Modify the user agent note after the algorithm steps to read:
+
+  <p>User agents must [=immediately=] run the [=focusing steps=] for a
+  [=focusable area=] or [=navigable=] <var>candidate</var> whenever the
+  user attempts to move the focus to <var>candidate</var>.</p>
+
+  Modify the action of the [=accesskey attribute command=] algorithm to be:
+
+  <ol>
+   <li>Run the [=focusing steps=] for the element with [=focus-unfenced|unfenced=] set to true.</li>
+
+   <li><span>Fire a <code data-x="event-click">click</code> event</span> at the element.</li>
+  </ol>
+
+  Modify the behavior when a user [=activation|activates=] a [=click focusable=] [=focusable area=] to be:
+
+  <p>When a user [=activation|activates=] a [=click focusable=] [=focusable area=],
+  the user agent must run the [=focusing steps=] on the [=focusable area=]
+  with <var ignore=''>focus trigger</var> set to "<code data-x="">click</code>" and
+  [=focus-unfenced|unfenced=] set to true.</p>
+
+  Modify step 6 of the [=sequential focus navigation=] algorithm to be:
+
+  6. If <var>candidate</var> is not null, then run the [=focusing steps=] for
+    <var>candidate</var> with [=focus-unfenced|unfenced=] set to true and return.
+
+  Modify step 10 of the [=hide popover algorithm=] to read:
+
+  10. 
+
+<h3 id=focus-chain-algorithm>Modifications to the focus chain algorithm</h3>
 
 <h3 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h3>
 
