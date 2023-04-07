@@ -89,6 +89,13 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: navigable; url: window-navigable
     urlPrefix: interactive-elements.html
       text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
+      text: previously focused element; url: previously-focused-element
+    urlPrefix: popover.html
+      text: hide popover algorithm; url: hide-popover-algorithm
+    urlPrefix: form-control-infrastructure.html
+      text: interactively validate the constraints; url: interactively-validate-the-constraints
+    urlPrefix: custom-elements.html
+      text: face validation anchor; url: face-validation-anchor
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -667,15 +674,15 @@ traversables</a> section.
   Add a new step after step 7 of the algorithm (that defines <var>old chain</var> and <var>new chain</var>) that reads:
 
   8. If [=focus-unfenced|unfenced=] is set to false, <var>new chain</var>
-     contains a Document with a [=fenced navigable container/fenced navigable=]
-     <var>nav</var>, and <var>old chain</var> does not also contain
-     an entry with <var>nav</var>, then return.
+     contains an [=element=] <var>ele</var> whose [=node navigable=]'s
+     [=traversable navigable=] is a [=fenced navigable container/fenced navigable=],
+     and <var>old chain</var> does not also contain <var>ele</var>, then return.
 
-  Modify the user agent note after the algorithm steps to read:
+  Modify the user agent sentence after the algorithm steps to read:
 
   <p>User agents must [=immediately=] run the [=focusing steps=] for a
-  [=focusable area=] or [=navigable=] <var>candidate</var> whenever the
-  user attempts to move the focus to <var>candidate</var>.</p>
+  [=focusable area=] or [=navigable=] <var>candidate</var> with [=focus-unfenced|unfenced=] set
+  to true whenever the user attempts to move the focus to <var>candidate</var>.</p>
 
   Modify the action of the [=accesskey attribute command=] algorithm to be:
 
@@ -699,9 +706,36 @@ traversables</a> section.
 
   Modify step 10 of the [=hide popover algorithm=] to read:
 
-  10. 
+  <ol>
+    <li value="10">
+      <p>If <var>previouslyFocusedElement</var> is not null, then:</p>
 
-<h3 id=focus-chain-algorithm>Modifications to the focus chain algorithm</h3>
+      <ol>
+      <li><p>Set <var ignore=''>element</var>'s [=previously focused element=] to null.</p></li>
+
+      <li><p>If <var ignore=''>focusPreviousElement</var> is true, then run the [=focusing steps=] for
+      <var>previouslyFocusedElement</var>; the viewport should not be scrolled by doing this
+      step.</p></li>
+      </ol>
+    </li>
+  </ol>
+
+  <p class="note">Although dismissing a popover manually is a user-initiated gesture, the
+  [=focusing steps=] will be called with [=focus-unfenced|unfenced=] set to false regardless
+  of whether this was called from user gesture or via a script call.</p>
+
+  Modify the first bullet point of step 3 of the [=interactively validate the constraints=] algorithm to read:
+
+  <ul>
+    <li>
+      <p>User agents may focus one of those elements in the process, by running the
+      [=focusing steps=] for that element, and may change the scrolling position of the
+      document, or perform some other action that brings the element to the user's attention.
+      If these steps were invoked by user gesture, [=focusing steps=] can be called with [=focus-unfenced|unfenced=] set to true.
+      For elements that are [=form-associated custom elements=], user agents
+      should use their [=face validation anchor=] instead, for the purposes of these actions.</p>
+    </li>
+  </ul>
 
 <h3 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h3>
 
