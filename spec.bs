@@ -505,6 +505,10 @@ Issue: Ensure we are doing the right thing for [=Document/permissions policy=].
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
+<h4 id=nested-traversables-intro>Introduction</h4>
+
+*This section is non-normative.*
+
 The [[HTML]] Standard organizes [=navigables=] into two categories: [=child navigables=] and
 [=traversable navigables=] (also known as [=top-level traversables=]). The introduction of features
 like fenced frames, and to a lesser extent <a href=https://github.com/wicg/portals>portals</a>,
@@ -552,11 +556,11 @@ modifying algorithms to make them capable of traversing across the <{fencedframe
 container/fenced navigable=] boundary, and each modification of this sort will be evaluated
 independently and appear in this specification.
 
-<br>
-
 The rest of this section provides patches to various [[HTML]] definitions (and their uses) that deal
 with collections of related navigables, with the intention of fencing and unfencing various parts of
 the web platform appropriately.
+
+<h4 id=traversable-navigables>Traversable navigables</h4>
 
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable>Traversable
@@ -570,9 +574,11 @@ Note: The [=traversable navigable/unfenced parent=] link is what gives a <{fence
 [=fenced navigable container/fenced navigable=] a link to its embedder, which is used carefully for
 things that need to be "*unfenced*", like some algorithms in the focus processing model.
 
+<h4 id=nested-traversables-inner>Nested traversables</h4>
+
 In [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#navigables>Navigables</a>
-section, add a new subsection titled "Nested traversables" with the following definitions and
+section, add a new subsection titled "Nested traversables" with the following text, definitions, and
 algorithms.
 
 Similar to [=navigable containers=] and their respective [=navigable container/content navigables=],
@@ -580,7 +586,8 @@ other elements (so far, only the <{fencedframe}> element) present a more isolate
 the user. These elements are called <dfn>fenced navigable containers</dfn>.
 
 A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
-which is either a [=traversable navigable=] or null. It is initially null.
+which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
+parent=], or null. It is initially null.
 
 <div algorithm>
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
@@ -629,6 +636,57 @@ nested traversables in [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
 traversables</a> section.
 
+<h4 id=top-level-traversables>Top-level traversables</h4>
+
+The [[HTML]] Standard currently defines a [=top-level traversable=] as a [=traversable navigable=]
+whose [=navigable/parent=] is null, however this is an insufficient definition that this
+specification changes. [[HTML]] mentions that outside of this specification, all [=traversable
+navigables=] are [=top-level traversables=], but "envisions" future specifications that may want to
+create a kind of [=traversable navigable|traversable=] that is nested, and achieves the nesting
+through a non-null [=navigable/parent=]; hence the distinction between [=top-level traversables=]
+and [=traversable navigables=] relies on the [=navigable/parent=] null-ness.
+
+The [=fenced navigable container/fenced navigable=] this specification proposes is precisely what
+[[HTML]] envisioned when carving out space for the distinction between [=top-level traversables=]
+and [=traversable navigables=], however this specification does not make use of the
+[=navigable/parent=] pointer for [=fenced navigable container/fenced navigables=], for reasons
+described <a href=#nested-traversables-intro>above</a> (instead they use the [=traversable
+navigable/unfenced parent=] pointer). That means by default, both [=top-level traversables=] and
+[=fenced navigable container/fenced navigables=] both have null [=navigable/parents=], which renders
+the distinction meaningless.
+
+To mend the intended distinction between [=top-level traversables=] and [=fenced navigable container
+/fenced navigables=], patch the following definitions like so:
+
+<div algorithm>
+  A <dfn>top-level traversable</dfn> is a [=traversable navigable=] whose [=navigable/parent=] and
+  [=traversable navigable/unfenced parent=] are both null.
+</div>
+
+<br>
+
+<div algorithm>
+  To get the <dfn for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
+
+    1. Let |navigable| be |inputNavigable|.
+
+    1. [=iteration/While=]:
+
+      1. If |navigable|'s [=navigable/parent=] and [=traversable navigable/unfenced parent=] are
+         both null, then [=iteration/break=].
+
+      1. Set |navigable| to |navigable|'s [=navigable/parent=] or [=traversable navigable/unfenced
+         parent=], whichever is non-null.
+
+         Note: Exactly one of |navigable|'s [=navigable/parent=] or [=traversable navigable/unfenced
+         parent=] will be non-null here.
+
+    1. Return |navigable|.
+</div>
+
+Note: With these new definitions, a [=top-level traversable=] is essentially "unfenced" as described
+in the [[#nested-traversables-intro]].
+
 <h3 id=navigable-traversing-algorithms>Modifications to navigable-traversing algorithms</h3>
 
 <div algorithm="inclusive-descendant-navigables-patch">
@@ -669,7 +727,12 @@ traversables</a> section.
 </div>
 
 
-<h3 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h3>
+<h3 id=navigation-patch>Navigation</h3>
+
+This section describes how the <{fencedframe}> element interacts with the ever-complicated process
+of navigation, which includes integration with various headers, isolation mechanisms, and policies.
+
+<h4 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h4>
 
 Add the new [=structured header/token=] below to the list of valid [=structured header/tokens=] for the \`<a
 http-header><code>Supports-Loading-Mode</code></a>\` response header:
@@ -678,8 +741,6 @@ The \`<code><dfn export for="Supports-Loading-Mode">fenced-frame</dfn></code>\` 
 the response can be used to create a {{Document}} inside of a [=fenced navigable container/fenced
 navigable=]. Without this explicit opt-in, all navigations inside of a [=fenced navigable
 container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
-
-<h3 id=navigation-patch>Navigation</h3>
 
 [[HTML]]'s [=attempt to populate the history entry's document=] algorithm is modified such that just
 before the step inside the [=queue a task|queued task=] starting with "If <var ignore>failure</var>
