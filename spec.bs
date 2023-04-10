@@ -709,9 +709,9 @@ traversables</a> section.
   (that defines <var>old chain</var> and <var>new chain</var>) that reads:
 
   9. If [=focus-unfenced|unfenced=] is set to false, <var>new chain</var>
-     contains an [=element=] <var>ele</var> whose [=node navigable=]'s
+     contains an element |element| whose [=node navigable=]'s
      [=traversable navigable=] is a [=fenced navigable container/fenced navigable=],
-     and <var>old chain</var> does not also contain <var>ele</var>, then return.
+     and <var>old chain</var> does not also contain |element|, then return.
 
   <h4 id=focusing-steps-callers>Changes to the callers of the [=focusing steps=] algorithm</h4>
 
