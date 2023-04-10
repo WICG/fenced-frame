@@ -762,6 +762,15 @@ is true, then:", insert a new step:
 
 </div>
 
+<h4 id=coop-coep>COOP & COEP integration</h4>
+
+Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Policy</code></a>\`
+header only <a
+href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:top-level-traversable-2>applies</a>
+to [=top-level traversables=] instead of all [=navigables=], and this specification continues this
+intention insofar as this header does not have an impact on [=fenced content navigables/fenced
+navigables=].
+
 <h3 id=page-visibility>Page visibility</h3>
 
 The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
