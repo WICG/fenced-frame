@@ -323,40 +323,42 @@ maps to an internal [=fenced frame config=] [=struct=].
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
-null.
+null. TODO: flesh out {{FencedFrameConfig}}
+
+A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>". There are two kinds of [=fencedframeconfig/visibility=]: <dfn export for=visibility>visibility to embedder</dfn> and <dfn export for=visibility>visibility to content</dfn>.
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: optional<url * boolean * boolean> (boolean is visibility to embedder)
+  :: null, or a struct containing a url (which is a string), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>container size</dfn>
-  :: optional<(width:X * height:X) * boolean * boolean>
+  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>content size</dfn>
-  :: optional<(width:X * height:X) * boolean * boolean>
+  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>interest group descriptor</dfn>
-  :: optional<(owner:string + name:string) * boolean * boolean>
+  :: null, or a struct containing an interest group descriptor (which is a struct containing an owner and a name), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: optional<sandbox flags * boolean * boolean>
+  :: null, or a struct containing a set of sandbox flags, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective permissions</dfn>
-  :: optional<permissions * boolean * boolean>
+  :: null, or a struct containing a set of permissions, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>fenced frame reporter</dfn>
-  :: optional<reporter * boolean * boolean>: TODO make sure reporters handles component ads correctly
+  :: null, or a struct containing a fenced frame reporter, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: optional<(origin * double * boolean) * boolean * boolean>
+  :: null, or a struct containing an exfiltration budget metadata, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
-  :: optional<(sequence of configs) * boolean * boolean>
+  :: null, or a struct containing a sequence of [=fenced frame configs=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: optional<string>
+  :: null, or an embedder shared storage context (which is a string)
 </dl>
 
 
@@ -364,37 +366,37 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
-  :: optional<url * boolean * boolean>
+  :: null, or a struct containing a url (which is a string), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>container size</dfn>
-  :: optional<(width:X * height:X) * boolean * boolean>
+  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>content size</dfn>
-  :: optional<(width:X * height:X) * boolean * boolean>
+  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>interest group descriptor</dfn>
-  :: optional<(owner:string + name:string) * boolean * boolean>
+  :: null, or a struct containing an interest group descriptor (which is a struct containing an owner and a name), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: optional<sandbox flags * boolean * boolean>
+  :: null, or a struct containing a set of sandbox flags, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective permissions</dfn>
-  :: optional<permissions * boolean * boolean>
+  :: null, or a struct containing a set of permissions, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
-  :: optional<reporter * boolean * boolean>
+  :: null, or a struct containing a fenced frame reporter, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: optional<(origin * double * boolean) * boolean * boolean>
+  :: null, or a struct containing an exfiltration budget metadata, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
-  :: optional<(sequence of urn config pairs) * boolean * boolean>
+  :: null, or a struct containing a sequence of pairs of [=urn uuids] and [=fenced frame configs=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>partition nonce</dfn>
-  :: partition nonce
+  :: a partition nonce
 
   : <dfn>embedder shared storage context</dfn>
-  :: optional<string>
+  :: null, or an embedder shared storage context (which is a string)
 </dl>
 
 <div algorithm=config instantiation>
@@ -421,6 +423,12 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   1. Initialize [=fenced frame config instance/partition nonce=] with a random TODO(ref):partition nonce.
 
   1. Initialize [=fenced frame config instance/embedder shared storage context=] with [=fenced frame config/embedder shared storage context=].
+</div>
+
+<div algorithm=redaction>
+  In order to redact a [=fenced frame config=], run these steps:
+
+  1. TODO
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
