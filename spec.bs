@@ -847,7 +847,7 @@ TODO: Enable this once we move the WPTs to the external repository.
        resource policy check=] with |navigable|'s [=navigable/unfenced container document=]'s
        [=Document/origin=], |navigable|'s [=navigable/unfenced container document=]'s [=relevant
        settings object=], <var ignore>request</var>'s [=request/destination=], |response|, and
-       **true** is blocked, then set |response| to a [=network error=] and [=iteration/break=].
+       true is **blocked**, then set |response| to a [=network error=] and [=iteration/break=].
 
        Note: Here we're running the [=cross-origin resource policy check=] against the
        [=navigable/unfenced parent|unfenced parent navigable=] rather than |navigable| itself. This
