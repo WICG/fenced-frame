@@ -82,6 +82,12 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: click focusable; url: click-focusable
       text: focusable area; url: focusable-area
       text: sequential focus navigation; url: sequential-focus-navigation
+      text: focus; url: dom-window-focus
+      text: focus chain; url: focus-chain
+      text: DOM anchor; url: dom-anchor
+      text: get the focusable area; url: get-the-focusable-area
+      text: currently focused area of a top-level traversable; url: currently-focused-area-of-a-top-level-traversable
+      text: focused area; url: focused-area-of-the-document
     urlPefix: infrastructure.html
       text: immediately; url: immediately
     urlPrefix: nav-history-apis.html
@@ -666,17 +672,48 @@ traversables</a> section.
   1. Return |navigables|.
 </div>
 
-<h3 id=focusing-steps-algorithm>Modifications to the focusing steps algorithm</h3>
+<h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
+
+  The [[HTML]] standard defines how to handle focusing elements, both by user gesture
+  and through script-based focus calls. Since fenced frames are designed to prevent
+  communication across a fenced frame boundary, we need to handle focusing carefully.
+  This is because, if focus is pulled across a fenced frame boundary, contexts on both
+  sides of the boundary can detect that change, which can be used to open a communication
+  channel between a fenced frame and its embedder.
+
+  The way we do this is by not allowing [=focusing steps=] to move focus across a fenced frame boundary if the focus
+  call is script-initiated.
+
+  <p class=example id=focus-user-initiated>When a user clicks on an element like a text area,
+  because this is a user-initiated action, [=focusing steps=] will be called and will allow
+  focus to move across a fenced frame boundary. Without allowing that, an element inside of a fenced
+  frame would never be able to get focus if the user clicks on it.</p>
+
+  <p class=example id=focus-script-initiated>If an element is focused using the [=focus=] method, an embedder
+  and its child fenced frame can use a sequence of focus calls and checking the focused element to send
+  arbitrary binary data across the fenced frame boundary. It is necessary for this to not be
+  allowed to happen. Therefore, in this case, we sacrifice some functionality for privacy.</p>
+
+  <h4 id=focusing-steps-changes>Changes to the [=focusing steps=] algorithm</h4>
 
   Modify the [=focusing steps=] algorithm to take a new optional [=boolean=]
   argument <dfn lt="focus-unfenced">unfenced</dfn> that defaults to false.
 
-  Add a new step after step 7 of the algorithm (that defines <var>old chain</var> and <var>new chain</var>) that reads:
+  Add a new step after step 3 of the algorithm (that changes new focus target) that reads:
 
-  8. If [=focus-unfenced|unfenced=] is set to false, <var>new chain</var>
+  4. If <var>new focus target</var> is a [=fenced navigable container=] with non-null
+     [=fenced navigable container/fenced navigable=], then set <var>new focus target</var> to the
+     [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].
+
+  Add a new step after step 8 (step 7 in the existing version) of the algorithm
+  (that defines <var>old chain</var> and <var>new chain</var>) that reads:
+
+  9. If [=focus-unfenced|unfenced=] is set to false, <var>new chain</var>
      contains an [=element=] <var>ele</var> whose [=node navigable=]'s
      [=traversable navigable=] is a [=fenced navigable container/fenced navigable=],
      and <var>old chain</var> does not also contain <var>ele</var>, then return.
+
+  <h4 id=focusing-steps-callers>Changes to the callers of the [=focusing steps=] algorithm</h4>
 
   Modify the user agent sentence after the algorithm steps to read:
 
@@ -736,6 +773,51 @@ traversables</a> section.
       should use their [=face validation anchor=] instead, for the purposes of these actions.</p>
     </li>
   </ul>
+
+  <h4 id=focus-chain-changes>Changes to the [=focus chain=] algorithm</h4>
+
+  Modify step 3 of the while loop in the [=focus chain=] algorithm to read:
+  <ol>
+    <li value="3">
+      <p>If <var>currentObject</var> is a [=focusable area=], then set
+      <var>currentObject</var> to <var>currentObject</var>'s [=DOM anchor=]'s 
+      [=Node/node document=].</p>
+
+      <p>Otherwise, if <var>currentObject</var> is a <code>Document</code> whose
+      [=node navigable=]'s [=navigable/parent=] is non-null, then set
+      <var>currentObject</var> to <var>currentObject</var>'s [=node navigable=]'s [=navigable/parent=].</p>
+
+      <p>Otherwise, if <var>currentObject</var> is a <code>Document</code> whose
+      [=node navigable=]'s [=traversable navigable/unfenced parent=] is non-null, then set
+      <var>currentObject</var> to <var>currentObject</var>'s [=node navigable=]'s [=traversable navigable/unfenced parent=].</p>
+
+      <p>Otherwise, <span>break</span>.</p>
+    </li>
+  </ol>
+
+  <h4 id=focusable-area-changes>Changes to the [=get the focusable area=] algorithm</h4>
+
+  Add a new case to the switch statement:
+
+  <dl class="switch">
+    <dt>If <var ignore=''>focus target</var> is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=]</dt>
+
+    <dd><p>Return the [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=]'s
+    [=navigable/active document=].</p></dd>
+  </dl>
+
+  <h4 id=currently-focused-area-changes>Changes to the [=currently focused area of a top-level traversable=] algorithm</h4>
+
+  Modify step 3 of the [=currently focused area of a top-level traversable=] algorithm to read:
+
+  <ol>
+    <li value="3"><p>While <var>candidate</var>'s [=focused area=] is either a [=navigable container=] with a non-null [=navigable container/content navigable=]
+    or a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=]:
+    set <var>candidate</var> to the [=navigable/active document=] of either that
+    [=navigable container=]'s [=navigable container/content navigable=] or
+    that [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=], whichever is non-null.</p></li>
+  </ol>
 
 <h3 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h3>
 
