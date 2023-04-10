@@ -292,8 +292,6 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
 mapping</dfn>, a [=map=] mapping [=urn uuids=] to [=fenced frame config=] [=structs=].
 
-TODO: Set up the mapping so that it can be removed from the spec when urn iframes are gone?
-
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
 uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <{iframe}> elements.
