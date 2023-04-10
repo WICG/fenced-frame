@@ -331,17 +331,21 @@ We now establish some preliminary types:
 
 A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>". There are two kinds of [=fencedframeconfig/visibility=]: <dfn export for=visibility>visibility to embedder</dfn> and <dfn export for=visibility>visibility to content</dfn>.
 
-An <dfn export for=fencedframeconfig>interest group descriptor</dfn> is TODO.
+A <dfn export for=fencedframetype>mapped url</dfn> is TODO.
 
-An <dfn export for=fencedframeconfig>exhaustive set of sandbox flags</dfn> is TODO.
+A <dfn export for=fencedframetype>size</dfn> is TODO.
 
-An <dfn export for=fencedframeconfig>exhaustive set of permissions</dfn> is TODO.
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is TODO.
 
-A <dfn export for=fencedframeconfig>fenced frame reporter</dfn> is TODO.
+An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is TODO.
 
-An <dfn export for=fencedframeconfig>exfiltration budget metadata</dfn> is TODO.
+An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is TODO.
 
-An <dfn export for=fencedframeconfig>embedder shared storage context</dfn> is TODO.
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is TODO.
+
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is TODO.
+
+An <dfn export for=fencedframetype>embedder shared storage context</dfn> is TODO.
 
 A <dfn export>partition nonce</dfn> is TODO.
 
@@ -349,34 +353,34 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: null, or a struct containing a url (which is a string), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/mapped url=] and a [=visibility/visibility to embedder=]
 
   : <dfn>container size</dfn>
-  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/size=] and a [=visibility/visibility to content=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/size=] and a [=visibility/visibility to embedder=]
 
   : <dfn>interest group descriptor</dfn>
-  :: null, or a struct containing an [=fencedframeconfig/interest group descriptor=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/interest group descriptor=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct containing an [=fencedframeconfig/exhaustive set of sandbox flags=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective permissions</dfn>
-  :: null, or a struct containing an [=fencedframeconfig/exhaustive set of permissions=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exhaustive set of permissions=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>fenced frame reporter</dfn>
-  :: null, or a struct containing a [=fencedframeconfig/fenced frame reporter=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/fenced frame reporter=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a struct containing an [=fencedframeconfig/exfiltration budget metadata=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
   :: null, or a struct containing a sequence of [=fenced frame configs=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an [=fencedframeconfig/embedder shared storage context=]
+  :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
 
@@ -384,13 +388,13 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
-  :: null, or a struct containing a url (which is a string), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a url (which is a string) and a [=visibility/visibility to embedder=]
 
   : <dfn>container size</dfn>
-  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a size (which is a width and a height) and a [=visibility/visibility to content=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct containing a size (which is a width and a height), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a size (which is a width and a height) and a [=visibility/visibility to embedder=]
 
   : <dfn>interest group descriptor</dfn>
   :: null, or a struct containing an interest group descriptor (which is a struct containing an owner and a name), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
