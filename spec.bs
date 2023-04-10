@@ -32,6 +32,9 @@ spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/p
 
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
+    urlPrefix: browsers.html
+      text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
+      text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -63,7 +66,12 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: parent; url: nav-parent
       for: traversable navigable
         text: session history entries; url: tn-session-history-entries
+      for: browsing context group
+        text: cross-origin isolation mode; url: bcg-cross-origin-isolation
+      for: cross-origin isolation mode
+        text: none; url:cross-origin-isolation-none
     urlPrefix: browsing-the-web.html
+      text: create navigation params by fetching; url: create-navigation-params-by-fetching
       text: document state; url: she-document-state
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
@@ -81,6 +89,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -574,6 +585,28 @@ Note: The [=traversable navigable/unfenced parent=] link is what gives a <{fence
 [=fenced navigable container/fenced navigable=] a link to its embedder, which is used carefully for
 things that need to be "*unfenced*", like some algorithms in the focus processing model.
 
+<div algorithm>
+  To get a [=navigable=] |navigable|'s <dfn for=navigable>unfenced parent</dfn>:
+
+    1. If |navigable| is a [=child navigable=], return |navigable|'s [=navigable/parent=].
+
+    1. [=Assert=]: |navigable| is a [=fenced navigable container/fenced navigable=].
+
+    1. Return |navigable|'s [=traversable navigable/unfenced parent=].
+
+    Note: This algorithm is different from the [=traversable navigable=]'s [=traversable
+    navigable/unfenced parent=] getter in that this algorithm first tries to get the [=navigable=]'s
+    *normal* [=navigable/parent=] if |navigable| is a normal [=child navigable=].
+</div>
+
+<div algorithm>
+  To get a [=navigable=] |navigable|'s <dfn for=navigable>unfenced container document</dfn>:
+
+    1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+    1. Return |parentNavigable|'s [=navigable/active document=].
+</div>
+
 <h4 id=nested-traversables-inner>Nested traversables</h4>
 
 In [[HTML]]'s <a
@@ -666,7 +699,7 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
 <br>
 
 <div algorithm>
-  To get the <dfn for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
+  To get the <dfn noexport for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
 
     1. Let |navigable| be |inputNavigable|.
 
@@ -761,6 +794,69 @@ is true, then:", insert a new step:
    then set <var ignore>failure</var> to true.
 
 </div>
+
+<h4 id=coop-coep>COOP, COEP, and cross-origin isolation</h4>
+
+Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Policy</code></a>\`
+header only <a
+href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:top-level-traversable-2>applies</a>
+to [=top-level traversables=] instead of all [=navigables=], and this specification continues this
+intention insofar as this header does not have an impact on [=fenced navigable container/fenced
+navigables=], nor is it inherited from its embedder. Consequently, the [=browsing context group=]
+hosted inside of a [=fenced navigable container/fenced navigable|fenced traversable navigable=] will
+always have its [=browsing context group/cross-origin isolation mode=] set to "<a for="cross-origin
+isolation mode">`none`</a>".
+
+Nevertheless, a [=fenced navigable container/fenced navigable=] respects its [=traversable
+navigable/unfenced parent=]'s [=policy container/embedder policy=], which is accomplished below:
+
+<div algorithm=coep-adherence-patch>
+  In the [=check a navigation response's adherence to its embedder policy=] algorithm, rewrite all
+  occurrences of:
+
+    * |navigable|'s [=navigable/container document=]
+
+  with:
+
+    * |navigable|'s [=navigable/unfenced container document=]
+</div>
+
+Note: This causes navigations inside of a <{fencedframe}> to fail if they are not served with a
+suitable \`<a http-header><code>Cross-Origin-Embedder-Policy</code></a>\` header, just as
+<{iframe}>s behave.
+
+Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
+inheritance violation=] algorithm, as leaving it unfenced may cause a privacy leak.
+
+<!--
+TODO: Enable this once we move the WPTs to the external repository.
+<wpt>
+/embedder-no-coep.https.html
+/embedder-coop-coep-blocked.https.html
+</wpt>
+-->
+
+<div algorithm=corp-patch>
+  Next, we modify how the [=cross-origin resource policy check=] <a
+  href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:cross-origin-resource-policy-check>applies
+  to navigation requests</a>. Rewrite step 19, substep 13 of the [=create navigation params by
+  fetching=] algorithm like so:
+
+    1. If |response| is not a [=network error=], |navigable| is a [=child navigable=] or [=fenced
+       navigable container/fenced navigable=], and the result of performing a [=cross-origin
+       resource policy check=] with |navigable|'s [=navigable/unfenced container document=]'s
+       [=Document/origin=], |navigable|'s [=navigable/unfenced container document=]'s [=relevant
+       settings object=], <var ignore>request</var>'s [=request/destination=], |response|, and
+       true is **blocked**, then set |response| to a [=network error=] and [=iteration/break=].
+
+       Note: Here we're running the [=cross-origin resource policy check=] against the
+       [=navigable/unfenced parent|unfenced parent navigable=] rather than |navigable| itself. This
+       is because we care about the same-originness of the embedded content against the embedder's
+       context (ignoring the "fence"), not the navigation source.
+</div>
+
+Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
+CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
 
 <h3 id=page-visibility>Page visibility</h3>
 
