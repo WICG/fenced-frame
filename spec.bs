@@ -666,7 +666,7 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
 <br>
 
 <div algorithm>
-  To get the <dfn for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
+  To get the <dfn noexport for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
 
     1. Let |navigable| be |inputNavigable|.
 
@@ -768,7 +768,7 @@ Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Po
 header only <a
 href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:top-level-traversable-2>applies</a>
 to [=top-level traversables=] instead of all [=navigables=], and this specification continues this
-intention insofar as this header does not have an impact on [=fenced content navigables/fenced
+intention insofar as this header does not have an impact on [=fenced navigable container/fenced
 navigables=].
 
 <h3 id=page-visibility>Page visibility</h3>
