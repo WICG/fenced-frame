@@ -102,6 +102,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: get the focusable area; url: get-the-focusable-area
       text: currently focused area of a top-level traversable; url: currently-focused-area-of-a-top-level-traversable
       text: focused area; url: focused-area-of-the-document
+      text: sequential navigation search algorithm; url: sequential-navigation-search-algorithm
+      text: has focus steps; url: has-focus-steps
     urlPefix: infrastructure.html
       text: immediately; url: immediately
     urlPrefix: nav-history-apis.html
@@ -860,13 +862,6 @@ move the focus to |candidate|.
   to "`click`" and [=focus-unfenced|unfenced=] set to true.
 </div>
 
-<div algorithm=sequential-focus-patch>
-  Modify step 6 of the [=sequential focus navigation=] algorithm to be:
-
-  6. If <var>candidate</var> is not null, then run the [=focusing steps=] for
-    <var>candidate</var> with [=focus-unfenced|unfenced=] set to true and return.
-</div>
-
 <div algorithm=hide-popover-patch>
   Modify step 10 of the [=hide popover algorithm=] to read:
 
@@ -903,6 +898,17 @@ move the focus to |candidate|.
     </li>
   </ul>
 </div>
+
+  <h4 id=has-focus-steps-changes>Changes to the [=has focus steps=] algorithm</h4>
+
+  Add a step after step 2 of the while loop that reads:
+
+  <ol>
+    <li value="3"><p>If the [=focused area=] of
+    <var>candidate</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=],
+    then set <var>candidate</var> to the [=navigable/active document=] of that
+    [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=].</p></li>
+  </ol>
 
   <h4 id=focus-chain-changes>Changes to the [=focus chain=] algorithm</h4>
 
@@ -947,6 +953,48 @@ move the focus to |candidate|.
     set <var>candidate</var> to the [=navigable/active document=] of either that
     [=navigable container=]'s [=navigable container/content navigable=] or
     that [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=], whichever is non-null.</p></li>
+  </ol>
+
+  <h4 id=sequential-focusing-changes>Changes to sequential focusing</h4>
+
+  Modify step 6 of the [=sequential focus navigation=] algorithm to read:
+
+  6. If <var>candidate</var> is not null, then run the [=focusing steps=] for
+    <var>candidate</var> with [=focus-unfenced|unfenced=] set to true and return.
+
+  Modify step 9 of the [=sequential focus navigation=] algorithm to read:
+
+  <ol>
+    <li value="9"><p>Otherwise, <var>starting point</var> is a [=focusable area=] in a
+    [=child navigable=] or [=fenced navigable container/fenced navigable=].
+    Set <var>starting point</var> to that
+    [=child navigable=] or [=fenced navigable container/fenced navigable=]'s
+    [=traversable navigable/unfenced parent=] and return to the step labeled <i>loop</i>.</p></li>
+  </ol>
+
+  Modify step 2 of the [=sequential navigation search algorithm=] to read:
+
+  <ol>
+    <li value="2">
+      <p>If <var>candidate</var> is a [=navigable container=] with a non-null [=navigable container/content navigable=],
+      then let <var>new candidate</var> be the result of running the
+      [=sequential navigation search algorithm=] with <var>candidate</var>'s [=navigable container/content navigable=]
+      as the first argument, <var ignore=''>direction</var> as the second, and
+      <i>sequential</i> <!-- shift-tab from the end in
+      https://software.hixie.ch/utilities/js/live-dom-viewer/?saved=2855 --> as the third.</p>
+
+      <p>If <var>candidate</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=],
+      then let <var>new candidate</var> be the result of running the
+      [=sequential navigation search algorithm=] with <var>candidate</var>'s [=fenced navigable container/fenced navigable=]
+      as the first argument, <var ignore=''>direction</var> as the second, and
+      <i>sequential</i> <!-- shift-tab from the end in
+      https://software.hixie.ch/utilities/js/live-dom-viewer/?saved=2855 --> as the third.</p>
+
+      <p>If <var>new candidate</var> is null, then let <var ignore=''>starting point</var>
+      be <var>candidate</var>, and return to the top of this algorithm. Otherwise, let
+      <var>candidate</var> be <var>new candidate</var>.</p>
+    </li>
+
   </ol>
 
 <h3 id=navigation-patch>Navigation</h3>
