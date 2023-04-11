@@ -826,9 +826,9 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   Add a new step after step 8 (step 7 in the existing version) of the algorithm (that defines |old
   chain| and |new chain|) that reads:
 
-  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] an element |element|
+  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a <code>Document</code> |document|
      whose [=node navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable
-     container/fenced navigable=], and |old chain| does not also [=list/contain=] |element|, then
+     container/fenced navigable=], and |old chain| does not also [=list/contain=] |document|, then
      return.
 
      Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
@@ -878,8 +878,8 @@ move the focus to |candidate|.
       <li><p>Set <var ignore=''>element</var>'s [=previously focused element=] to null.</p></li>
 
       <li><p>If <var ignore=''>focusPreviousElement</var> is true, then run the [=focusing steps=] for
-      <var>previouslyFocusedElement</var>; the viewport should not be scrolled by doing this
-      step.</p></li>
+      <var>previouslyFocusedElement</var> with [=focus-unfenced|unfenced=] set to true; the viewport
+      should not be scrolled by doing this step.</p></li>
       </ol>
     </li>
   </ol>
