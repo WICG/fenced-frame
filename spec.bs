@@ -421,7 +421,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
-<div algorithm=config instantiation>
+<div algorithm=configinstantiation>
   A [=fenced frame config instance=] is initialized from a [=fenced frame config=] as follows:
 
     : [=fenced frame config instance/mapped url=]
