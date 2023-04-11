@@ -89,6 +89,7 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
 spec: CSS; urlPrefix: https://www.w3.org/TR/cssom-view-1/
   type: dfn
     text: scroll a target into view; url: #scroll-an-element-into-view
+    text: run the scroll steps; url: document-run-the-scroll-steps
 </pre>
 
 <style>
@@ -794,6 +795,18 @@ The <a href=https://www.w3.org/TR/cssom-view-1>CSSOM View Module</a> defines scr
 through the [=scroll a target into view=] algorithm. Our specification modifies it to not allow
 scrolling a target into view if it is inside of a fenced frame.
 
-Modify the [=scroll a target into view=] algorithm to add a step after step 1 that reads:
+Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that reads:
 
-// PAHACER: add this
+2. If the <var ignore=''>target</var>-associated {{Document}}'s [=node navigable=]'s
+   [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=], terminate these steps.
+3. If the <var ignore=''>target</var>-associated {{Document}}'s [=Document/ancestor navigables=] contains
+   a [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
+   terminate these steps.
+
+Modify the [=run the scroll steps=] algorithm to add a check after step 1.1 that reads:
+
+2. If <var ignore=''>target</var> is a {{Document}} whose [=node navigable=]'s
+   [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
+   continue.
+
+Note: This ensures that scroll events do not affect fenced frames.
