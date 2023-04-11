@@ -86,6 +86,9 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+spec: CSS; urlPrefix: https://www.w3.org/TR/cssom-view-1/
+  type: dfn
+    text: scroll a target into view; url: #scroll-an-element-into-view
 </pre>
 
 <style>
@@ -784,3 +787,13 @@ specification adds another value for fenced frames:
 
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
+
+<h3 id=cssom-monkeypatch>CSSOM View</h3>
+
+The <a href=https://www.w3.org/TR/cssom-view-1>CSSOM View Module</a> defines scroll bubbling behavior
+through the [=scroll a target into view=] algorithm. Our specification modifies it to not allow
+scrolling a target into view if it is inside of a fenced frame.
+
+Modify the [=scroll a target into view=] algorithm to add a step after step 1 that reads:
+
+// PAHACER: add this
