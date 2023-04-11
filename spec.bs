@@ -345,7 +345,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is TODO.
 
 An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is TODO.
 
-An <dfn export for=fencedframetype>embedder shared storage context</dfn> is TODO.
+An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
 
 A <dfn export>partition nonce</dfn> is TODO.
 
@@ -365,7 +365,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or a struct containing an [=fencedframetype/interest group descriptor=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=] and a [=visibility/visibility to embedder=]
 
   : <dfn>effective permissions</dfn>
   :: null, or a struct containing an [=fencedframetype/exhaustive set of permissions=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
@@ -377,7 +377,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct containing a sequence of [=fenced frame configs=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a sequence of [=fenced frame configs=] and a [=visibility/visibility to embedder=]
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or an [=fencedframetype/embedder shared storage context=]
@@ -388,37 +388,37 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
-  :: null, or a struct containing a url (which is a string) and a [=visibility/visibility to embedder=]
+  :: null, or a struct containing a [=fencedframetype/mapped url=] and a [=visibility/visibility to embedder=]
 
   : <dfn>container size</dfn>
-  :: null, or a struct containing a size (which is a width and a height) and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/size=] and a [=visibility/visibility to content=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct containing a size (which is a width and a height) and a [=visibility/visibility to embedder=]
+  :: null, or a struct containing a [=fencedframetype/size=] and a [=visibility/visibility to embedder=]
 
   : <dfn>interest group descriptor</dfn>
-  :: null, or a struct containing an interest group descriptor (which is a struct containing an owner and a name), a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/interest group descriptor=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct containing a set of sandbox flags, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=] and a [=visibility/visibility to embedder=]
 
   : <dfn>effective permissions</dfn>
-  :: null, or a struct containing a set of permissions, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exhaustive set of permissions=] and a [=visibility/visibility to embedder=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
-  :: null, or a struct containing a fenced frame reporter, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a [=fencedframetype/fenced frame reporter=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a struct containing an exfiltration budget metadata, a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct containing a sequence of pairs of [=urn uuids] and [=fenced frame configs=], a [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct containing a sequence of pairs of [=urn uuids] and [=fenced frame configs=] and a [=visibility/visibility to embedder=]
 
   : <dfn>partition nonce</dfn>
-  :: a partition nonce
+  :: a [=partition nonce=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an embedder shared storage context (which is a string)
+  :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
 <div algorithm=config instantiation>
@@ -442,17 +442,17 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     : [=fenced frame config instance/effective permissions=]
     :: the [=fenced frame config=]'s [=fenced frame config/effective permissions=]
 
-    : TODO: fenced frame reporter
-    :: the [=fenced frame config=]'s
+    : [=fenced frame config instance/fenced frame reporter=]
+    :: the [=fenced frame config=]'s TODO
 
-    : TODO: budget metadata
-    :: the [=fenced frame config=]'s
+    : [=fenced frame config instance/exfiltration budget metadata=]
+    :: the [=fenced frame config=]'s TODO
 
     : [=fenced frame config instance/nested configs=]
     :: If the [=fenced frame config=]'s [=fenced frame config/nested configs=] is null, set to null. Otherwise, set the [=fenced frame config instance/nested configs=] to an [=ordered map=], where for each [=fenced frame config=] in [=fenced frame config/nested configs=], there is an entry where the key is a randomly sampled [=urn uuid=] and the value is the [=fenced frame config=]. Copy the [=visibility/visibility to embedder=] from the [=fenced frame config=]'s [=fenced frame config/nested configs=]'s [=visibility/visibility to embedder=], and the [=visibility/visibility to content=] from the [=fenced frame config=]'s [=fenced frame config/nested configs=]'s [=visibility/visibility to content=].
 
     : [=fenced frame config instance/partition nonce=]
-    :: a random [=partition nonce=]
+    :: a random [=partition nonce=] (TODO)
 
     : [=fenced frame config instance/embedder shared storage context=]
     :: the [=fenced frame config=]'s [=fenced frame config/embedder shared storage context=]
