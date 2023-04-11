@@ -822,19 +822,19 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   Add a new step after step 3 of the algorithm (that changes new focus target) that reads:
 
   4. If |new focus target| is a [=fenced navigable container=] with non-null
-     [=fenced navigable container/fenced navigable=], then set <var>new focus target</var> to the
-     [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].
+    [=fenced navigable container/fenced navigable=], then set |new focus target| to the
+    [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].
 
   Add a new step after step 8 (step 7 in the existing version) of the algorithm (that defines |old
   chain| and |new chain|) that reads:
 
-  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a <code>Document</code> |document|
-     whose [=node navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable
-     container/fenced navigable=], and |old chain| does not also [=list/contain=] |document|, then
-     return.
+  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a <code>Document</code>
+    |document| whose [=node navigable=]'s [=navigable/traversable navigable=] is a
+    [=fenced navigable container/fenced navigable=], and |old chain| does not also [=list/contain=]
+    |document|, then return.
 
-     Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
-     where focus is trying to cross the fence.
+    Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
+    where focus is trying to cross the fence.
 </div>
 
 <h4 id=focusing-steps-callers>Changes to the callers of the [=focusing steps=] algorithm</h4>
@@ -858,144 +858,123 @@ move the focus to |candidate|.
   to be:
 
   When a user [=activation|activates=] a [=click focusable=] [=focusable area=], the user agent must
-  run the [=focusing steps=] on the [=focusable area=] with <var ignore=''>focus trigger</var> set
+  run the [=focusing steps=] on the [=focusable area=] with <var ignore>focus trigger</var> set
   to "`click`" and [=focus-unfenced|unfenced=] set to true.
 </div>
 
 <div algorithm=hide-popover-patch>
   Modify step 10 of the [=hide popover algorithm=] to read:
 
-  <ol>
-    <li value="10">
-      <p>If <var>previouslyFocusedElement</var> is not null, then:</p>
+  10. If |previouslyFocusedElement| is not null, then:
+      1. Set <var ignore>element</var>'s [=previously focused element=] to null.
+      2. If <var ignore>focusPreviousElement</var> is true, then run the [=focusing steps=] for
+        |previouslyFocusedElement| with [=focus-unfenced|unfenced=] set to true; the viewport
+        should not be scrolled by doing this step.
 
-      <ol>
-      <li><p>Set <var ignore=''>element</var>'s [=previously focused element=] to null.</p></li>
-
-      <li><p>If <var ignore=''>focusPreviousElement</var> is true, then run the [=focusing steps=] for
-      <var>previouslyFocusedElement</var> with [=focus-unfenced|unfenced=] set to true; the viewport
-      should not be scrolled by doing this step.</p></li>
-      </ol>
-    </li>
-  </ol>
-
-  <p class="note">Although dismissing a popover manually is a user-initiated gesture, the
+  Note: Although dismissing a popover manually is a user-initiated gesture, the
   [=focusing steps=] will be called with [=focus-unfenced|unfenced=] set to false regardless
-  of whether this was called from user gesture or via a script call.</p>
+  of whether this was called from user gesture or via a script call.
 </div>
 
 <div algorithm=interactively-validate-patch>
-  Modify the first bullet point of step 3 of the [=interactively validate the constraints=] algorithm to read:
+  Modify the first bullet point of step 3 of the [=interactively validate the constraints=]
+  algorithm to read:
 
-  <ul>
-    <li>
-      <p>User agents may focus one of those elements in the process, by running the
-      [=focusing steps=] for that element, and may change the scrolling position of the
-      document, or perform some other action that brings the element to the user's attention.
-      If these steps were invoked by user gesture, [=focusing steps=] can be called with [=focus-unfenced|unfenced=] set to true.
-      For elements that are [=form-associated custom elements=], user agents
-      should use their [=face validation anchor=] instead, for the purposes of these actions.</p>
-    </li>
-  </ul>
+  * User agents may focus one of those elements in the process, by running the
+    [=focusing steps=] for that element, and may change the scrolling position of the
+    document, or perform some other action that brings the element to the user's attention.
+    If these steps were invoked by user gesture, [=focusing steps=] can be called with
+    [=focus-unfenced|unfenced=] set to true. For elements that are
+    [=form-associated custom elements=], user agents should use their [=face validation anchor=]
+    instead, for the purposes of these actions.
 </div>
 
   <h4 id=has-focus-steps-changes>Changes to the [=has focus steps=] algorithm</h4>
 
   Add a step after step 2 of the while loop that reads:
 
-  <ol>
-    <li value="3"><p>If the [=focused area=] of
-    <var>candidate</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=],
-    then set <var>candidate</var> to the [=navigable/active document=] of that
-    [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=].</p></li>
-  </ol>
+  3. If the [=focused area=] of
+    |candidate| is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=], then set |candidate| to the
+    [=navigable/active document=] of that [=fenced navigable container=]'s
+    [=fenced navigable container/fenced navigable=].
 
   <h4 id=focus-chain-changes>Changes to the [=focus chain=] algorithm</h4>
 
   Modify step 3 of the while loop in the [=focus chain=] algorithm to read:
-  <ol>
-    <li value="3">
-      <p>If <var>currentObject</var> is a [=focusable area=], then set
-      <var>currentObject</var> to <var>currentObject</var>'s [=DOM anchor=]'s 
-      [=Node/node document=].</p>
+  3. If |currentObject| is a [=focusable area=], then set
+    |currentObject| to |currentObject|'s [=DOM anchor=]'s 
+    [=Node/node document=].
 
-      <p>Otherwise, if <var>currentObject</var> is a <code>Document</code> whose
-      [=node navigable=]'s [=navigable/parent=] is non-null, then set
-      <var>currentObject</var> to <var>currentObject</var>'s [=node navigable=]'s [=navigable/parent=].</p>
+    Otherwise, if |currentObject| is a {{Document}} whose
+    [=node navigable=]'s [=navigable/parent=] is non-null, then set
+    |currentObject| to |currentObject|'s [=node navigable=]'s [=navigable/parent=].
 
-      <p>Otherwise, if <var>currentObject</var> is a <code>Document</code> whose
-      [=node navigable=]'s [=traversable navigable/unfenced parent=] is non-null, then set
-      <var>currentObject</var> to <var>currentObject</var>'s [=node navigable=]'s [=traversable navigable/unfenced parent=].</p>
+    Otherwise, if |currentObject| is a {{Document}} whose
+    [=node navigable=]'s [=traversable navigable/unfenced parent=] is non-null, then set
+    |currentObject| to |currentObject|'s [=node navigable=]'s
+    [=traversable navigable/unfenced parent=].
 
-      <p>Otherwise, <span>break</span>.</p>
-    </li>
-  </ol>
+    Otherwise, <span>break</span>.
 
   <h4 id=focusable-area-changes>Changes to the [=get the focusable area=] algorithm</h4>
 
   Add a new case to the switch statement:
 
   <dl class="switch">
-    <dt>If <var ignore=''>focus target</var> is a [=fenced navigable container=] with a non-null
+    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null
     [=fenced navigable container/fenced navigable=]</dt>
 
-    <dd><p>Return the [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=]'s
-    [=navigable/active document=].</p></dd>
+    <dd><p>Return the [=fenced navigable container=]'s
+    [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].</p></dd>
   </dl>
 
   <h4 id=currently-focused-area-changes>Changes to the [=currently focused area of a top-level traversable=] algorithm</h4>
 
   Modify step 3 of the [=currently focused area of a top-level traversable=] algorithm to read:
 
-  <ol>
-    <li value="3"><p>While <var>candidate</var>'s [=focused area=] is either a [=navigable container=] with a non-null [=navigable container/content navigable=]
-    or a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=]:
-    set <var>candidate</var> to the [=navigable/active document=] of either that
-    [=navigable container=]'s [=navigable container/content navigable=] or
-    that [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=], whichever is non-null.</p></li>
-  </ol>
+  3. While |candidate|'s [=focused area=] is either a [=navigable container=] with a non-null
+    [=navigable container/content navigable=] or a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=]: set |candidate| to the
+    [=navigable/active document=] of either that [=navigable container=]'s
+    [=navigable container/content navigable=] or that [=fenced navigable container=]'s
+    [=fenced navigable container/fenced navigable=], whichever is non-null.
 
   <h4 id=sequential-focusing-changes>Changes to sequential focusing</h4>
 
+<div algorithm=sequential-focus-navigation-patch>
   Modify step 6 of the [=sequential focus navigation=] algorithm to read:
 
-  6. If <var>candidate</var> is not null, then run the [=focusing steps=] for
-    <var>candidate</var> with [=focus-unfenced|unfenced=] set to true and return.
+  6. If |candidate| is not null, then run the [=focusing steps=] for
+    |candidate| with [=focus-unfenced|unfenced=] set to true and return.
 
   Modify step 9 of the [=sequential focus navigation=] algorithm to read:
 
-  <ol>
-    <li value="9"><p>Otherwise, <var>starting point</var> is a [=focusable area=] in a
-    [=child navigable=] or [=fenced navigable container/fenced navigable=].
-    Set <var>starting point</var> to that
+  9. Otherwise, |starting point| is a [=focusable area=] in a [=child navigable=] or
+    [=fenced navigable container/fenced navigable=]. Set |starting point| to that
     [=child navigable=] or [=fenced navigable container/fenced navigable=]'s
-    [=traversable navigable/unfenced parent=] and return to the step labeled <i>loop</i>.</p></li>
-  </ol>
+    [=traversable navigable/unfenced parent=] and return to the step labeled <i>loop</i>.
+</div>
 
+<div algorithm=sequential-navigation-search-patch>
   Modify step 2 of the [=sequential navigation search algorithm=] to read:
 
-  <ol>
-    <li value="2">
-      <p>If <var>candidate</var> is a [=navigable container=] with a non-null [=navigable container/content navigable=],
-      then let <var>new candidate</var> be the result of running the
-      [=sequential navigation search algorithm=] with <var>candidate</var>'s [=navigable container/content navigable=]
-      as the first argument, <var ignore=''>direction</var> as the second, and
-      <i>sequential</i> <!-- shift-tab from the end in
-      https://software.hixie.ch/utilities/js/live-dom-viewer/?saved=2855 --> as the third.</p>
+  2. If |candidate| is a [=navigable container=] with a non-null
+    [=navigable container/content navigable=], then let |new candidate| be the result of running the
+    [=sequential navigation search algorithm=] with |candidate|'s
+    [=navigable container/content navigable=] as the first argument, <var ignore>direction</var> as
+    the second, and <i>sequential</i> as the third.
 
-      <p>If <var>candidate</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=],
-      then let <var>new candidate</var> be the result of running the
-      [=sequential navigation search algorithm=] with <var>candidate</var>'s [=fenced navigable container/fenced navigable=]
-      as the first argument, <var ignore=''>direction</var> as the second, and
-      <i>sequential</i> <!-- shift-tab from the end in
-      https://software.hixie.ch/utilities/js/live-dom-viewer/?saved=2855 --> as the third.</p>
+    If |candidate| is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=], then let |new candidate| be the result of
+    running the [=sequential navigation search algorithm=] with |candidate|'s
+    [=fenced navigable container/fenced navigable=] as the first argument,
+    <var ignore>direction</var> as the second, and <i>sequential</i> as the third.
 
-      <p>If <var>new candidate</var> is null, then let <var ignore=''>starting point</var>
-      be <var>candidate</var>, and return to the top of this algorithm. Otherwise, let
-      <var>candidate</var> be <var>new candidate</var>.</p>
-    </li>
-
-  </ol>
+    If |new candidate| is null, then let <var ignore>starting point</var>
+    be |candidate|, and return to the top of this algorithm. Otherwise, let
+    |candidate| be |new candidate|.
+</div>
 
 <h3 id=navigation-patch>Navigation</h3>
 
