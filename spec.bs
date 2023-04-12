@@ -287,16 +287,49 @@ href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimensi
 attributes</a> section. This section will be updated to include <{fencedframe}> in the list of
 elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
 
-<h3 id=configuration-map>Configuration mapping</h3>
+<h3 id=fenced-frame-config-map>Fenced frame config mapping</h3>
 
 Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
-mapping</dfn>, a [=map=] mapping [=urn uuids=] to [=fenced frame config=] [=structs=].
+mapping</dfn>. At a high level, this object maps [=urn uuids=] to [=fenced frame config=]
+[=structs=].
 
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
 uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <{iframe}> elements.
 See for example, the <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
 href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
+
+Each [=traversable navigable/fenced frame config mapping=] has a
+<dfn for="fenced frame config mapping" export>maximum number of configs</dfn>, which is
+implementation-defined. The [=maximum number of configs=] may be a nonnegative number or infinity.
+
+Note: It is important to specify the behavior of [=maximum number of configs=] because its
+semantics can interact with config-generating APIs in a privacy sensitive way.
+
+The [=traversable navigable/fenced frame config mapping=] actually consists of two submappings:
+<dl export dfn-for="fenced frame config mapping">
+  : <dfn>pending fenced frame config mapping</dfn>
+  :: a [=map=] from [=urn uuids=] to tuples of [=fenced frame configs=] and TODO: callbacks
+
+  : <dfn>finalized fenced frame config mapping</dfn>
+  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
+</dl>
+
+At a high level, in order to store a config in the
+[=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
+then turn the pending config into a finalized config. Those procedures are as follows:
+
+<div algorithm="store pending config">
+  In order to store a [=fenced frame config=] into the [=pending fenced frame config mapping=], run these steps:
+
+  1. TODO
+</div>
+
+<div algorithm="store finalized config">
+  In order to store a [=fenced frame config=] into the [=finalized fenced frame config mapping=], run these steps:
+
+  1. TODO
+</div>
 
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
 
@@ -454,7 +487,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
-<div algorithm=configinstantiation>
+<div algorithm="config instantiation">
   A [=fenced frame config instance=] is initialized from a [=fenced frame config=] as follows:
 
     : [=fenced frame config instance/mapped url=]
