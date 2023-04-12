@@ -70,6 +70,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: cross-origin isolation mode; url: bcg-cross-origin-isolation
       for: cross-origin isolation mode
         text: none; url:cross-origin-isolation-none
+    urlPrefix: document-lifecycle.html
+      text: shared document creation infrastructure; url: shared-document-creation-infrastructure
     urlPrefix: browsing-the-web.html
       text: create navigation params by fetching; url: create-navigation-params-by-fetching
       text: document state; url: she-document-state
@@ -79,6 +81,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
+        text: origin; url: navigation-params-origin
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -97,6 +100,12 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
+  type: dfn
+    text: Create a Permissions Policy for a navigable; url: algo-create-for-navigable
+    text: Create a Permissions Policy for a navigable from response; url: algo-create-from-response
+    text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
+    text: features; url: policy-controlled-feature
 </pre>
 
 <style>
@@ -212,6 +221,7 @@ interface HTMLFencedFrameElement : HTMLElement {
   [CEReactions] attribute FencedFrameConfig? config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
+  [CEReactions] attribute DOMString allow;
 };
 </xmp>
 </dd>
@@ -279,6 +289,10 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 
   1. <span class=XXX>TODO</span>
 </div>
+
+The IDL attribute
+<dfn attribute for="fencedframe"><code data-x="dom-fencedframe-allow">allow</code></dfn>
+</dfn> must [=reflect=] the respective content attributes of the same name.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -511,8 +525,6 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
-
-Issue: Ensure we are doing the right thing for [=Document/permissions policy=].
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
@@ -880,3 +892,80 @@ specification adds another value for fenced frames:
 
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
+
+<h3 id=permissions-policy-changes>Permissions Policies</h3>
+Permissions are granted to fenced frames through the FencedFrameConfig object, which defines the
+required permissions for the fenced frame to load. The fenced frame is only allowed to navigate if
+all of the required permissions are present in the context loading the fenced frame. When a fenced
+frame loads, it is assumed that the permissions checks passed, and the fenced frame will load with
+the list of permissions that were specified in the config object.
+
+Modify the [=Create a Permissions Policy for a navigable=] algorithm:
+
+<div algorithm=create-permissions-policy>
+  Modify the definition of [=Create a Permissions Policy for a navigable=] to read:
+
+  Given null or an [=element=] (|container|), an
+  [=origin=] (<var ignore>origin</var>), and null or a
+  list of [=features=] (|required features|), this algorithm returns a new
+  [=Document/permissions policy=].
+
+  Rewrite step 1 of the algorithm to read:
+
+  1. Assert: if not null, |container| is either a [=navigable container=] or a
+    [=fenced navigable container=].
+
+  Add a new step after step 1 that reads:
+
+  2. Assert: if |container| is not a [=fenced navigable container=], |required features| is null.
+
+  Rewrite step 4 to read:
+
+  4. If |container| is a [=fenced navigable container=], then for each |feature| supported,
+
+      1. If |feature| exists in |required features|, set |inherited policy|[|feature|] to "`Enabled`".
+
+        Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
+
+    Otherwise, for each |feature| supported,
+
+      1. Let |isInherited| be the result of running [=Define an inherited policy for feature in
+        container at origin=] on |feature|, |container| and <var ignore>origin</var>.
+
+      2. Set |inherited policy|[|feature|] to |isInherited|.
+</div>
+
+<div algorithm=create-permissions-policy-response>
+  Modify the definition of [=Create a Permissions Policy for a navigable from response=] to read:
+
+  Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
+  [=origin=] (|origin|), a [=response=] (<var ignore>response</var>), and null or a
+  list of [=features=] (|required features|), this algorithm returns a new
+  [=Document/permissions policy=].
+
+  Modify step 1 of the algorithm to read:
+  1. Let <var ignore>policy</var> be the result of running
+    [=Create a Permissions Policy for a navigable=] given |container|, |origin|, and
+    |required features|.
+</div>
+
+<div algorithm=shared-document-creation-changes>
+  Modify step 3 of the [=shared document creation infrastructure=] algorithm to read:
+
+  3. Let <var ignore>permissionsPolicy</var> be the result of [=Create a Permissions Policy for a
+    navigable from response|creating a permissions policy from a response=] given
+    |navigationParams|'s [=navigable=]'s [=navigable container|container=], |navigationParams|'s
+    [=navigation params/origin=], |navigationParams|'s [=navigation params/response=], and
+    <span class=XXX>TODO: Populate this with the required permissions to load from the config in
+    the navigation params</span>. <ref spec="PERMISSIONSPOLICY">
+</div>
+
+<div algorithm=new-browsing-context-changes>
+  Modify step 7 of the [=create a new browsing context and document=] algorithm to read:
+
+  7. Let <var ignore>permissionsPolicy</var> be the result of [=Create a Permissions Policy for a
+    navigable|creating a permissions policy=] given <var ignore>embedder</var>,
+    <var ignore>origin</var>, and null. <ref spec="PERMISSIONSPOLICY">
+</div>
+
+<span class=XXX>TODO: Add gating for permissions policies to navigation algorithm - whatever the equivalent of NavigationRequest::CheckPermissionsPoliciesForFencedFrames is</span>
