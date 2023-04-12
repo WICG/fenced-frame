@@ -97,6 +97,15 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
+  type: dfn
+    text: directive value; url: directive-value
+    text: frame-src pre-request check; url: frame-src-pre-request
+    text: frame-src post-request check; url: frame-src-post-request
+spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
+  type: dfn
+    text: Is response to request blocked by context's required CSP?; url: process-response
+    text: required csp; url: browsing-context-required-csp
 </pre>
 
 <style>
@@ -864,6 +873,32 @@ The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> se
 modified such that the first step of the algorithm that runs when a user-agent changes a
 [=traversable navigable=]'s [=system visibility state=] calls the [=Document/inclusive descendant
 navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
+
+<h3 id=csp-integration>CSP Integration</h3>
+Fenced frames have a special relationship with Content Security Policies [[!CSP]]. They can only be
+created in secure contexts and require the embedder to give permissions to all sources (i.e.
+"`https:`", "`https://*:*`", or "`*`"). This is done to prevent using [[!CSP]] for cross-channel
+communication.
+
+Add a step after step 2 of the [=frame-src pre-request check=] that says:
+3. If |request| [=request/destination=] is fenced frame, and this directive's
+  [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
+  "`Blocked`".
+
+Add a step after step 2 of the [=frame-src post-request check=] that says:
+3. If |request| [=request/destination=] is "`fencedframe`", and this directive's
+  [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
+  "`Blocked`".
+
+Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies a
+[=required csp=], fenced frames will not load. This is done to prevent arbitrary data flow from the
+embedder to the fenced frame.
+
+Add a step after step 1 in the [=Is response to request blocked by context's required CSP?=]
+algorithm that reads:
+
+2. If <var ignore>context</var>'s [=required csp=] is not `null`, and |request|
+  [=request/destination=] is "`fencedframe`", return "`Blocked`".
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
