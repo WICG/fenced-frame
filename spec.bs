@@ -880,25 +880,39 @@ created in secure contexts and require the embedder to give permissions to all s
 "`https:`", "`https://*:*`", or "`*`"). This is done to prevent using [[!CSP]] for cross-channel
 communication.
 
-Add a step after step 2 of the [=frame-src pre-request check=] that says:
-3. If |request| [=request/destination=] is fenced frame, and this directive's
-  [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
-  "`Blocked`".
+<div algorithm=pre-request-check-csp>
 
-Add a step after step 2 of the [=frame-src post-request check=] that says:
-3. If |request| [=request/destination=] is "`fencedframe`", and this directive's
-  [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
-  "`Blocked`".
+  Add a step after step 2 of the [=frame-src pre-request check=] that says:
+
+  3. If <var ignore>request</var> [=request/destination=] is fenced frame, and this directive's
+    [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
+    "`Blocked`".
+
+</div>
+
+<div algorithm=post-request-check-csp>
+
+  Add a step after step 2 of the [=frame-src post-request check=] that says:
+
+  3. If <var ignore>request</var> [=request/destination=] is "`fencedframe`", and this directive's
+    [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
+    "`Blocked`".
+
+</div>
 
 Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies a
 [=required csp=], fenced frames will not load. This is done to prevent arbitrary data flow from the
 embedder to the fenced frame.
 
-Add a step after step 1 in the [=Is response to request blocked by context's required CSP?=]
-algorithm that reads:
+<div algorithm=cspee-changes>
 
-2. If <var ignore>context</var>'s [=required csp=] is not `null`, and |request|
-  [=request/destination=] is "`fencedframe`", return "`Blocked`".
+  Add a step after step 1 in the [=Is response to request blocked by context's required CSP?=]
+  algorithm that reads:
+
+  2. If <var ignore>context</var>'s [=required csp=] is not `null`, and <var ignore>request</var>
+    [=request/destination=] is "`fencedframe`", return "`Blocked`".
+
+</div>
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
