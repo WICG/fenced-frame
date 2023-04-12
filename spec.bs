@@ -508,7 +508,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
      [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct containing a sequence of pairs of [=urn uuids] and [=fenced frame configs=]
+  :: null, or a struct containing a sequence of pairs of [=urn uuids=] and [=fenced frame configs=]
      and a [=visibility/visibility to embedder=]
 
   : <dfn>partition nonce</dfn>
