@@ -321,9 +321,9 @@ At a high level, in order to store a [=fenced frame config=] in the
 [=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
 then turn the pending config into a finalized config. Those procedures are as follows:
 
-<div algorithm="store pending config">
-  In order to store a [=fenced frame config=] into the
-  [=fenced frame config mapping/pending fenced frame config mapping=], run these steps:
+<div algorithm>
+  In order to <dfn export>store a [=fenced frame config=] into the
+  [=fenced frame config mapping/pending fenced frame config mapping=]</dfn>, run these steps:
 
   1. If the size of the [=fenced frame config mapping/pending fenced frame config mapping=] + the
      size of the [=fenced frame config mapping/finalized fenced frame config mapping=] meets or
@@ -334,9 +334,9 @@ then turn the pending config into a finalized config. Those procedures are as fo
      [=fenced frame config=].
 </div>
 
-<div algorithm="store finalized config">
-  In order to store a pending [=fenced frame config=] at a [=urn uuid=] into the
-  [=fenced frame config mapping/finalized fenced frame config mapping=], run these steps:
+<div algorithm>
+  In order to <dfn export>store a pending [=fenced frame config=] at a [=urn uuid=] into the
+  [=fenced frame config mapping/finalized fenced frame config mapping=]</dfn>, run these steps:
 
   1. If the [=urn uuid=] is not present in the
      [=fenced frame config mapping/pending fenced frame config mapping=], return failure.
@@ -347,9 +347,9 @@ then turn the pending config into a finalized config. Those procedures are as fo
      [=urn uuid=] and the value [=fenced frame config=].
 </div>
 
-<div algorithm="look up config">
-  In order to look up a [=fenced frame config=] at a [=urn uuid=] in the
-  [=traversable navigable/fenced frame config mapping=] for navigation, run these steps:
+<div algorithm>
+  In order to <dfn export>look up a [=fenced frame config=] at a [=urn uuid=] in the
+  [=traversable navigable/fenced frame config mapping=] for navigation</dfn>, run these steps:
 
   1. If the [=urn uuid=] is present in the
      [=fenced frame config mapping/pending fenced frame config mapping=], wait until it is no
@@ -563,8 +563,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: the [=fenced frame config=]'s [=fenced frame config/embedder shared storage context=]
 </div>
 
-<div algorithm=redaction>
-  In order to redact a [=fenced frame config=], run these steps:
+<div algorithm>
+  In order to <dfn export>redact a [=fenced frame config=]</dfn>, run these steps:
 
   1. TODO
 </div>
