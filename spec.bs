@@ -301,34 +301,65 @@ href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
 
 Each [=traversable navigable/fenced frame config mapping=] has a
 <dfn for="fenced frame config mapping" export>maximum number of configs</dfn>, which is
-implementation-defined. The [=maximum number of configs=] may be a nonnegative number or infinity.
+implementation-defined. The [=fenced frame config mapping/maximum number of configs=] may be a
+nonnegative number or infinity.
 
-Note: It is important to specify the behavior of [=maximum number of configs=] because its
-semantics can interact with config-generating APIs in a privacy sensitive way.
+Note: It is important to specify the behavior of
+[=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
+config-generating APIs in a privacy sensitive way.
 
 The [=traversable navigable/fenced frame config mapping=] actually consists of two submappings:
 <dl export dfn-for="fenced frame config mapping">
   : <dfn>pending fenced frame config mapping</dfn>
-  :: a [=map=] from [=urn uuids=] to tuples of [=fenced frame configs=] and TODO: callbacks
+  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
 
   : <dfn>finalized fenced frame config mapping</dfn>
   :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
 </dl>
 
-At a high level, in order to store a config in the
+At a high level, in order to store a [=fenced frame config=] in the
 [=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
 then turn the pending config into a finalized config. Those procedures are as follows:
 
 <div algorithm="store pending config">
-  In order to store a [=fenced frame config=] into the [=pending fenced frame config mapping=], run these steps:
+  In order to store a [=fenced frame config=] into the
+  [=fenced frame config mapping/pending fenced frame config mapping=], run these steps:
 
-  1. TODO
+  1. If the size of the [=fenced frame config mapping/pending fenced frame config mapping=] + the
+     size of the [=fenced frame config mapping/finalized fenced frame config mapping=] meets or
+     exceeds the [=fenced frame config mapping/maximum number of configs=], return failure.
+
+  1. Randomly generate a [=urn uuid=], and insert into the [=fenced frame config mapping/pending
+     fenced frame config mapping=] an entry with the key [=urn uuid=] and the value
+     [=fenced frame config=].
 </div>
 
 <div algorithm="store finalized config">
-  In order to store a [=fenced frame config=] into the [=finalized fenced frame config mapping=], run these steps:
+  In order to store a pending [=fenced frame config=] at a [=urn uuid=] into the
+  [=fenced frame config mapping/finalized fenced frame config mapping=], run these steps:
 
-  1. TODO
+  1. If the [=urn uuid=] is not present in the
+     [=fenced frame config mapping/pending fenced frame config mapping=], return failure.
+
+  1. Remove the entry keyed by the [=urn uuid=] in the
+     [=fenced frame config mapping/pending fenced frame config mapping=], and insert into the
+     [=fenced frame config mapping/finalized fenced frame config mapping=] an entry with the key
+     [=urn uuid=] and the value [=fenced frame config=].
+</div>
+
+<div algorithm="look up config">
+  In order to look up a [=fenced frame config=] at a [=urn uuid=] in the
+  [=traversable navigable/fenced frame config mapping=] for navigation, run these steps:
+
+  1. If the [=urn uuid=] is present in the
+     [=fenced frame config mapping/pending fenced frame config mapping=], wait until it is no
+     longer present.
+
+  1. If the [=urn uuid=] is not present in the
+     [=fenced frame config mapping/finalized fenced frame config mapping=], return failure.
+
+  1. Return the value keyed by the [=urn uuid=] in the
+     [=fenced frame config mapping/finalized fenced frame config mapping=].
 </div>
 
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
