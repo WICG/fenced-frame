@@ -407,7 +407,7 @@ Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
   In order to <dfn export>lift a [=urn uuid=] and [=fenced frame config=] into a
   {{FencedFrameConfig}}</dfn>, run these steps:
 
-  1. TODO
+  1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
@@ -430,47 +430,51 @@ new "fenced frame config instance", which governs that particular context.
 
 We now establish some preliminary types:
 
-A <dfn export for=fencedframeconfig>visibility</dfn> is either
-"<dfn export for=visibility>`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
-There are two kinds of [=fencedframeconfig/visibility=]:
-<dfn export for=visibility>visibility to embedder</dfn> and
+A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>
+`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>". There are two kinds of
+[=fencedframeconfig/visibility=]: <dfn export for=visibility>visibility to embedder</dfn> and
 <dfn export for=visibility>visibility to content</dfn>.
 
-A <dfn export for=fencedframetype>mapped url</dfn> is TODO.
+A <dfn export for=fencedframetype>mapped url</dfn> is a [=url=]. <span class=XXX>TODO: Stipulate a
+url with particular schemes?</span>
 
-A <dfn export for=fencedframetype>size</dfn> is TODO.
+A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integer <dfn export for=
+"size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
+TODO: Maybe change the numeric type.</span>
 
-An <dfn export for=fencedframetype>interest group descriptor</dfn> is TODO.
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with <dfn export
+for="interest group descriptor">owner</dfn>, which is a string, and <dfn export for="interest group
+descriptor">name</dfn>, which is a string.
 
-An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is TODO.
+An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is TODO.
+An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
-A <dfn export for=fencedframetype>fenced frame reporter</dfn> is TODO.
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 <div algorithm>
   In order to <dfn export> report an event</dfn>, run these steps:
 
-  1. TODO
+  1. <span class=XXX>TODO: fill this in</span>
 </div>
 
 <div algorithm>
   In order to <dfn export> report a private aggregation event</dfn>, run these steps:
 
-  1. TODO
+  1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
 <div algorithm>
   In order to <dfn export> set automatic beacon data</dfn>, run these steps:
 
-  1. TODO
+  1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is TODO.
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
 
-A <dfn export>partition nonce</dfn> is TODO.
+A <dfn export>partition nonce</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
@@ -583,10 +587,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: the [=fenced frame config=]'s [=fenced frame config/effective permissions=]
 
     : [=fenced frame config instance/fenced frame reporter=]
-    :: the [=fenced frame config=]'s TODO
+    :: the [=fenced frame config=]'s <span class=XXX>TODO: Fill this in</span>
 
     : [=fenced frame config instance/exfiltration budget metadata=]
-    :: the [=fenced frame config=]'s TODO
+    :: the [=fenced frame config=]'s <span class=XXX>TODO: Fill this in</span>
 
     : [=fenced frame config instance/nested configs=]
     :: If the [=fenced frame config=]'s [=fenced frame config/nested configs=] is null, set to
@@ -600,7 +604,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
        [=fenced frame config/nested configs=]'s [=visibility/visibility to content=].
 
     : [=fenced frame config instance/partition nonce=]
-    :: a random [=partition nonce=] (TODO)
+    :: a random [=partition nonce=] <span class=XXX>TODO: Specify what this means</span>
 
     : [=fenced frame config instance/embedder shared storage context=]
     :: the [=fenced frame config=]'s [=fenced frame config/embedder shared storage context=]
@@ -609,7 +613,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 <div algorithm>
   In order to <dfn export>redact a [=fenced frame config=]</dfn>, run these steps:
 
-  1. TODO
+  1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
