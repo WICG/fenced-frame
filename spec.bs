@@ -470,7 +470,16 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX
   1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct containing an
+<dfn export for="exfiltration budget metadata">origin</dfn>, which is an [=origin=]; and an <dfn
+export for="exfiltration budget metadata">amount to debit</dfn>, which is a non-negative valid
+floating point number <span class=XXX>TODO: ref to float</span>.
+
+An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct
+containing an <dfn export for="exfiltration budget metadata reference">origin</dfn>, which is an
+[=origin=]; and an <dfn export for="exfiltration budget metadata reference">amount to debit
+reference</dfn>, which is a mutable reference to a non-negative valid floating point number.
+<span class=XXX>TODO: are mutable references a thing in spec?</span>
 
 An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
 
@@ -550,8 +559,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or a struct containing a [=fencedframetype/fenced frame reporter=], a
      [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
-  : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata=], a
+  : <dfn>exfiltration budget metadata reference</dfn>
+  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata reference=], a
      [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
 
   : <dfn>nested configs</dfn>
@@ -589,8 +598,19 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     : [=fenced frame config instance/fenced frame reporter=]
     :: the [=fenced frame config=]'s <span class=XXX>TODO: Fill this in</span>
 
-    : [=fenced frame config instance/exfiltration budget metadata=]
-    :: the [=fenced frame config=]'s <span class=XXX>TODO: Fill this in</span>
+    : [=fenced frame config instance/exfiltration budget metadata reference=]
+    :: If the [=fenced frame config=]'s [=fenced frame config/exfiltration budget metadata=] is
+       null, set to null. Otherwise, set the [=fenced frame config instance/exfiltration budget
+       metadata reference=] to an [=fencedframetype/exfiltration budget metadata reference=] where
+       the [=exfiltration budget metadata reference/origin=] is the [=fenced frame config=]'s
+       [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration budget metadata/
+       origin=], and the [=exfiltration budget metadata reference/amount to debit reference=] is
+       a reference to the [=fenced frame config=]'s [=fenced frame config/exfiltration budget
+       metadata=]'s [=exfiltration budget metadata/amount to debit=]. Copy the
+       [=visibility/visibility to embedder=] from the [=fenced frame config=]'s
+       [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to embedder=], and the
+       [=visibility/visibility to content=] from the [=fenced frame config=]'s
+       [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to content=].
 
     : [=fenced frame config instance/nested configs=]
     :: If the [=fenced frame config=]'s [=fenced frame config/nested configs=] is null, set to
