@@ -384,6 +384,13 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
+<div algorithm>
+  In order to <dfn export>lift a [=urn uuid=] and [=fenced frame config=] into a
+  {{FencedFrameConfig}}</dfn>, run these steps:
+
+  1. TODO
+</div>
+
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
 null. TODO: flesh out {{FencedFrameConfig}}
 
@@ -470,7 +477,6 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   : <dfn>embedder shared storage context</dfn>
   :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
-
 
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
 
@@ -643,7 +649,14 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   1. If this [=document=]'s [=origin=] and *instance*'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
-  1. <span class=XXX>Fill this out!</span>
+  1. Let *results* be a sequence of {{FencedFrameConfig}}s.
+
+  1. For each [=urn uuid=] *urn* and [=fenced frame config=] *config* in *instance*'s
+     [=fenced frame config instance/nested configs=]:
+     1. Redact *config* for the embedder (TODO:ref), into *redacted config*.
+     2. Lift *urn* and *redacted config* into a {{FencedFrameConfig}}, and append it to *results*.
+
+  1. Return *results*.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
