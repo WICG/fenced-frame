@@ -874,11 +874,28 @@ modified such that the first step of the algorithm that runs when a user-agent c
 [=traversable navigable=]'s [=system visibility state=] calls the [=Document/inclusive descendant
 navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
 
+<h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
+
+Due to the necessarily cross-cutting nature of the <{fencedframe}> element and its interactions with
+core concepts like [=navigable=] and [=browsing context group=], there are a number of
+specifications that rely on terms whose usages must be re-evaluated in light of this specification;
+this section houses the various changes that we propose to other specifications.
+
+<h3 id=prerendering-monkeypatch>Prerendering</h3>
+
+The <a href=https://wicg.github.io/nav-speculation/prerendering.html>Prerendering Revamped</a>
+specification defines [=navigable=]'s [=navigable/loading mode=] and the values it can take on. Our
+specification adds another value for fenced frames:
+
+: "`fencedframe`"
+:: This [=navigable=] is displaying a <{fencedframe}>'s content
+
 <h3 id=csp-integration>CSP Integration</h3>
+
 Fenced frames have a special relationship with Content Security Policies [[!CSP]]. They can only be
-created in secure contexts and require the embedder to give permissions to all sources (i.e.
-"`https:`", "`https://*:*`", or "`*`"). This is done to prevent using [[!CSP]] for cross-channel
-communication.
+created in [=secure contexts=] and require their [=fenced navigable container=]'s
+[=navigable/active document=] to to give permissions to all sources (i.e. "`https:`",
+"`https://*:*`", or "`*`"). This is done to prevent using [[!CSP]] for side-channel communication.
 
 <div algorithm=pre-request-check-csp>
 
@@ -913,19 +930,3 @@ embedder to the fenced frame.
     [=request/destination=] is "`fencedframe`", return "`Blocked`".
 
 </div>
-
-<h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
-
-Due to the necessarily cross-cutting nature of the <{fencedframe}> element and its interactions with
-core concepts like [=navigable=] and [=browsing context group=], there are a number of
-specifications that rely on terms whose usages must be re-evaluated in light of this specification;
-this section houses the various changes that we propose to other specifications.
-
-<h3 id=prerendering-monkeypatch>Prerendering</h3>
-
-The <a href=https://wicg.github.io/nav-speculation/prerendering.html>Prerendering Revamped</a>
-specification defines [=navigable=]'s [=navigable/loading mode=] and the values it can take on. Our
-specification adds another value for fenced frames:
-
-: "`fencedframe`"
-:: This [=navigable=] is displaying a <{fencedframe}>'s content
