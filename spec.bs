@@ -913,7 +913,7 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
 <div algorithm=create-permissions-policy>
   Modify the definition of [=Create a Permissions Policy for a navigable=] to read:
 
-  Given null or an [=element=] (|container|), an
+  Given null or an element (|container|), an
   [=origin=] (<var ignore>origin</var>), and null or a
   list of [=features=] (|required features|), this algorithm returns a new
   [=Document/permissions policy=].
