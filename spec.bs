@@ -308,12 +308,15 @@ Note: It is important to specify the behavior of
 [=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
 config-generating APIs in a privacy sensitive way.
 
-The [=traversable navigable/fenced frame config mapping=] actually consists of two submappings:
+The [=traversable navigable/fenced frame config mapping=] actually consists of three submappings:
 <dl export dfn-for="fenced frame config mapping">
-  : <dfn>pending fenced frame config mapping</dfn>
+  : <dfn>pending config mapping</dfn>
   :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
 
-  : <dfn>finalized fenced frame config mapping</dfn>
+  : <dfn>finalized config mapping</dfn>
+  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
+
+  : <dfn>nested config mapping</dfn>
   :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
 </dl>
 
@@ -323,43 +326,59 @@ then turn the pending config into a finalized config. Those procedures are as fo
 
 <div algorithm>
   In order to <dfn export>store a [=fenced frame config=] into the
-  [=fenced frame config mapping/pending fenced frame config mapping=]</dfn>, run these steps:
+  [=fenced frame config mapping/pending config mapping=]</dfn>, run these steps:
 
-  1. If the size of the [=fenced frame config mapping/pending fenced frame config mapping=] + the
-     size of the [=fenced frame config mapping/finalized fenced frame config mapping=] meets or
+  1. If the size of the [=fenced frame config mapping/pending config mapping=] + the
+     size of the [=fenced frame config mapping/finalized config mapping=] meets or
      exceeds the [=fenced frame config mapping/maximum number of configs=], return failure.
 
   1. Randomly generate a [=urn uuid=], and insert into the [=fenced frame config mapping/pending
-     fenced frame config mapping=] an entry with the key [=urn uuid=] and the value
+     config mapping=] an entry with the key [=urn uuid=] and the value
      [=fenced frame config=].
 </div>
 
 <div algorithm>
   In order to <dfn export>store a pending [=fenced frame config=] at a [=urn uuid=] into the
-  [=fenced frame config mapping/finalized fenced frame config mapping=]</dfn>, run these steps:
+  [=fenced frame config mapping/finalized config mapping=]</dfn>, run these steps:
 
   1. If the [=urn uuid=] is not present in the
-     [=fenced frame config mapping/pending fenced frame config mapping=], return failure.
+     [=fenced frame config mapping/pending config mapping=], return failure.
 
   1. Remove the entry keyed by the [=urn uuid=] in the
-     [=fenced frame config mapping/pending fenced frame config mapping=], and insert into the
-     [=fenced frame config mapping/finalized fenced frame config mapping=] an entry with the key
+     [=fenced frame config mapping/pending config mapping=], and insert into the
+     [=fenced frame config mapping/finalized config mapping=] an entry with the key
      [=urn uuid=] and the value [=fenced frame config=].
 </div>
+
+<div algorithm>
+  In order to <dfn export>store [=fenced frame config instance/nested configs=] into the
+  [=fenced frame config mapping/nested config mapping=]</dfn>, run these steps:
+
+  1. If [=fenced frame config instance/nested configs=] is null, return.
+
+  1. For each [=urn uuid=] *urn* and [=fenced frame config=] *config* in the
+     [=fenced frame config instance/nested configs=]:
+
+     1. Insert an entry into the [=fenced frame config mapping/nested config mapping=] with key
+        *urn* and value *config*.
+</div>
+
 
 <div algorithm>
   In order to <dfn export>look up a [=fenced frame config=] at a [=urn uuid=] in the
   [=traversable navigable/fenced frame config mapping=] for navigation</dfn>, run these steps:
 
   1. If the [=urn uuid=] is present in the
-     [=fenced frame config mapping/pending fenced frame config mapping=], wait until it is no
+     [=fenced frame config mapping/nested config mapping=], return its value.
+
+  1. If the [=urn uuid=] is present in the
+     [=fenced frame config mapping/pending config mapping=], wait until it is no
      longer present.
 
-  1. If the [=urn uuid=] is not present in the
-     [=fenced frame config mapping/finalized fenced frame config mapping=], return failure.
+  1. If the [=urn uuid=] is present in the
+     [=fenced frame config mapping/finalized config mapping=], return its value.
 
-  1. Return the value keyed by the [=urn uuid=] in the
-     [=fenced frame config mapping/finalized fenced frame config mapping=].
+  1. Return failure.
 </div>
 
 <h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
