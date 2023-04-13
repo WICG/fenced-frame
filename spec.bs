@@ -894,6 +894,12 @@ specification adds another value for fenced frames:
 
 <h3 id=local-network-access-monkeypatch>Local Network Access</h3>
 
+Local network access is a security feature that allows you to control which apps on your device can
+access your local network. Regular iframes inherit their policy container from the navigation
+initiator, while fenced frames explicitly do not. This results in a policy container being created
+that causes subresource requests to not do PNA checks. This section patches the PNA spec to have
+subresources be subject to those checks.
+
 <div algorithm=pna-html-changes>
   Modify the [=Integration with HTML=] section. Rewrite step 3 to read:
 
