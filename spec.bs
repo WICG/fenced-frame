@@ -658,6 +658,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If this [=document=]'s [=origin=] and *instance*'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
+  1. If *instance*'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
+
   1. If *event* is a `DOMString`, run [=report a private aggregation event=] with *event* and
      *instance*'s [=fenced frame config instance/fenced frame reporter=].
 
