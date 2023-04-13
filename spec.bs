@@ -35,6 +35,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
+      text: create a policy container from a fetch response; url: creating-a-policy-container-from-a-fetch-response
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -60,6 +61,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
       text: system visibility state; url: system-visibility-state
+      text: active document; url: active-document
       for: navigable
         text: active session history entry; url: nav-active-history-entry
         text: current session history entry; url: nav-current-history-entry
@@ -89,6 +91,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+    urlPrefix: webappapis.html
+      text: target browsing context; url:concept-environment-target-browsing-context
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -97,6 +101,13 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+spec: LNA; urlPrefix: https://wicg.github.io/local-network-access/
+  type: dfn
+    text: Integration with HTML; url: integration-html
+    text: IP address space; url: policy-container-ip-address-space
+    for: response
+      text: IP address space; url: response-ip-address-space
+    text: ip-address-space-public; url: ip-address-space-public
 </pre>
 
 <style>
@@ -880,3 +891,20 @@ specification adds another value for fenced frames:
 
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
+
+<h3 id=local-network-access-monkeypatch>Local Network Access</h3>
+
+<div algorithm=pna-html-changes>
+  Modify the [=Integration with HTML=] section. Rewrite step 3 to read:
+
+  3. An additional step is added to the [=create a policy container from a fetch response=]
+    algorithm:
+
+    1. If |environment| is not null, |environment|'s [=target browsing context=] is not null, and
+      |environment|'s [=target browsing context=]'s [=active document=]'s [=node navigable=]'s
+      [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=], then
+      set |result|'s [=IP address space=] to [=ip-address-space-public|public=].
+
+      Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
+      [=response/IP address space=].
+</div>
