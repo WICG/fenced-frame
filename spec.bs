@@ -391,7 +391,7 @@ A key feature of the <{fencedframe}> element is that web platform APIs can confi
 of the frame in a way that limits the ability of other execution contexts to modify or inspect this
 configuration, for security or privacy reasons. For example, the FLEDGE API (TODO:ref) performs
 on-device ad auctions over cross-site data, and it is important that the ad that wins the auction
-can be loaded into a frame, without the API caller knowing which ad won the auction or being able
+can be loaded into a frame, without the API caller knowing *which ad* won the auction or being able
 to manipulate the environment in which the ad loads.
 
 We achieve this using the concept of a "fenced frame config". A fenced frame config is a collection
@@ -601,17 +601,47 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 <div algorithm>
   The <dfn method for=Fence>reportEvent(<var ignore>event</var>)</dfn> method steps are:
 
+  1. Let *instance* be this [=traversable navigable=]'s [=fenced frame config instance=].
+
+  1. If *instance* is null, then return.
+
+  1. If *instance*'s [=fenced frame config instance/mapped url=] is null, then the behavior is
+     unspecified.
+
+  1. If this [=document=]'s [=origin=] and *instance*'s
+     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+
   1. <span class=XXX>Fill this out!</span>
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn> method steps are:
 
+  1. Let *instance* be this [=traversable navigable=]'s [=fenced frame config instance=].
+
+  1. If *instance* is null, then return.
+
+  1. If *instance*'s [=fenced frame config instance/mapped url=] is null, then the behavior is
+     unspecified.
+
+  1. If this [=document=]'s [=origin=] and *instance*'s
+     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+
   1. <span class=XXX>Fill this out!</span>
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
+
+  1. Let *instance* be this [=traversable navigable=]'s [=fenced frame config instance=].
+
+  1. If *instance* is null, then return.
+
+  1. If *instance*'s [=fenced frame config instance/mapped url=] is null, then the behavior is
+     unspecified.
+
+  1. If this [=document=]'s [=origin=] and *instance*'s
+     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
   1. <span class=XXX>Fill this out!</span>
 </div>
