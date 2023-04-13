@@ -448,6 +448,24 @@ An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is TODO.
 
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is TODO.
 
+<div algorithm>
+  In order to <dfn export> report an event</dfn>, run these steps:
+
+  1. TODO
+</div>
+
+<div algorithm>
+  In order to <dfn export> report a private aggregation event</dfn>, run these steps:
+
+  1. TODO
+</div>
+
+<div algorithm>
+  In order to <dfn export> set automatic beacon data</dfn>, run these steps:
+
+  1. TODO
+</div>
+
 An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is TODO.
 
 An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
@@ -636,7 +654,11 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   1. If this [=document=]'s [=origin=] and *instance*'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
-  1. <span class=XXX>Fill this out!</span>
+  1. If *event* is a `DOMString`, run [=report a private aggregation event=] with *event* and
+     *instance*'s [=fenced frame config instance/fenced frame reporter=].
+
+  1. If *event* is a `FenceEvent`, run [=report an event=] with *event* and *instance*'s
+     [=fenced frame config instance/fenced frame reporter=].
 </div>
 
 <div algorithm>
@@ -652,7 +674,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   1. If this [=document=]'s [=origin=] and *instance*'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
-  1. <span class=XXX>Fill this out!</span>
+  1. If *instance*'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
+
+  1. Run [=set automatic beacon data=] with *event* and *instance*'s
+     [=fenced frame config instance/fenced frame reporter=].
 </div>
 
 <div algorithm>
@@ -667,6 +692,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
   1. If this [=document=]'s [=origin=] and *instance*'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+
+  1. If *instance*'s [=fenced frame config instance/nested configs=] is null, then return.
 
   1. Let *results* be a sequence of {{FencedFrameConfig}}s.
 
