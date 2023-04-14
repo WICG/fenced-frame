@@ -343,8 +343,8 @@ then turn the pending config into a finalized config. Those procedures are as fo
 </div>
 
 <div algorithm>
-  To <dfn export>finalize a pending config</dfn> in a particular [=fenced frame config mapping=]
-  given a [=urn uuid=] |urn|, run these steps:
+  To <dfn for="fenced frame config mapping" export>finalize a pending config</dfn> in a particular
+  [=fenced frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
 
   1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
      associated [=fenced frame config mapping=].
@@ -362,8 +362,9 @@ then turn the pending config into a finalized config. Those procedures are as fo
 </div>
 
 <div algorithm>
-  To <dfn export>store nested configs</dfn> into a particular [=fenced frame config mapping=] given
-  a [=fenced frame config/nested configs=] |nestedConfigs|, run these steps:
+  To <dfn for="fenced frame config mapping" export>store nested configs</dfn> into a particular
+  [=fenced frame config mapping=] given a [=fenced frame config instance/nested configs=]
+  |nestedConfigs|, run these steps:
 
   1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
      associated [=fenced frame config mapping=].
@@ -372,23 +373,28 @@ then turn the pending config into a finalized config. Those procedures are as fo
 
   1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
 
-     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
+  1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
 </div>
 
-
 <div algorithm>
-  In order to <dfn export>look up a [=fenced frame config=] at a [=urn uuid=] in the
-  [=traversable navigable/fenced frame config mapping=] for navigation</dfn>, run these steps:
+  To <dfn for="fenced frame config mapping" export>find a config</dfn> in a particular [=fenced
+  frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
 
-  1. If the [=urn uuid=] is present in the
-     [=fenced frame config mapping/nested config mapping=], return its value.
+  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
+     associated [=fenced frame config mapping=].
 
-  1. If the [=urn uuid=] is present in the
-     [=fenced frame config mapping/pending config mapping=], wait until it is no
-     longer present.
+  1. If |nestedMapping|[|urn|] does [=map/exist=], return its value.
 
-  1. If the [=urn uuid=] is present in the
-     [=fenced frame config mapping/finalized config mapping=], return its value.
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If |pendingMapping|[|urn|] does [=map/exist=], wait until it does not [=map/exist=].
+     <span class="XXX">TODO: Formalize waiting?</span>
+
+  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of
+     the associated [=fenced frame config mapping=].
+
+  1. If |finalizedMapping|[|urn|] does [=map/exist=], return its value.
 
   1. Return failure.
 </div>
@@ -644,7 +650,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 </div>
 
 <div algorithm>
-  In order to <dfn export>redact a [=fenced frame config=]</dfn>, run these steps:
+  In order to <dfn export>redact a fenced frame config</dfn>, run these steps:
 
   1. <span class=XXX>TODO: Fill this in</span>
 </div>
@@ -715,7 +721,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. Run [=set automatic beacon data=] with |event| and |instance|'s
+  1. Run [=set automatic beacon data=] with <var ignore>event</var> and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
 </div>
 
