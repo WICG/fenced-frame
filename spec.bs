@@ -92,6 +92,12 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+    urlPrefix: webappapis.html
+      for: environment
+        text: target browsing context; url: concept-environment-target-browsing-context
+    urlPrefix: document-sequences.html
+      for: browsing context
+        text: active document; url: active-document
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -114,6 +120,12 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: Create a Permissions Policy for a navigable from response; url: algo-create-from-response
     text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
     text: features; url: policy-controlled-feature
+    text: default allowlist; url: policy-controlled-feature-default-allowlist
+    text: The allow attribute of the iframe element; url: iframe-allow-attribute
+    text: ASCII-serialized policy directive; url: serialized-policy-directive
+    text: inherited policy; url: inherited-policy
+    for: permissions
+      text: matches; url: matches
 </pre>
 
 <style>
@@ -943,6 +955,25 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
       2. Set |inherited policy|[|feature|] to |isInherited|.
 </div>
 
+<div algorithm=allow-attribute-fenced-frame>
+  Modify the [=The allow attribute of the iframe element=] section.
+
+  Rename it to "The allow attribute of the iframe and fencedframe element".
+
+  Rewrite the section to read:
+
+  &lt;iframe> and &lt;fencedframe> elements have an "allow" attribute, which contains an
+  [=ASCII-serialized policy directive=].
+
+  The allowlist for the features named in the attribute may be empty; in that case, the default
+  value for the allowlist is "`src`", which represents the origin of the URL in the iframe’s src
+  attribute, or the fencedframe's [=fenced frame config=].
+
+  When not empty, the "allow" attribute will result in adding an allowlist for each recognized
+  feature to the iframe element’s content navigable's container policy or the fencedframe element'same
+  [=fenced navigable container/fenced navigable=]'s container policy, when it is constructed.
+</div>
+
 <div algorithm=create-permissions-policy-response>
   Modify the definition of [=Create a Permissions Policy for a navigable from response=] to read:
 
@@ -977,22 +1008,37 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
 </div>
 
 <div algorithm=main-fetch-patches>
-  Modify the [=main fetch=] algorithm. Rewrite step 7 to read:
+  Modify the [=main fetch=] algorithm. Modify step 19 to add a new bullet point to the algorithm
+  list:
 
-  7. If [=should request be blocked due to a bad port=], [=should fetching request be blocked as
-    mixed content=], [=should request be blocked by Content Security Policy=], or [=should request
-    be blocked by Permissions Policy=] returns blocked, then set response to a network error.
+  * [=should response to request be blocked by Permissions Policy=]
 </div>
 
 <div algorithm=permissions-policy-block-request>
-  Create a new algorithm in the [[!permissions-policy]] spec, called <dfn export>should request be
-  blocked by Permissions Policy</dfn>.
+  Create a new algorithm in the [[!permissions-policy]] spec, called <dfn export>should response to
+  request be blocked by Permissions Policy</dfn>.
 
-  Given a [=request=] (|request|), this algorithm returns `Blocked` or `Allowed`.
-
-  <span class=XXX>Get document of embedder, then get document's permissionsPolicy.</span>
+  Given a [=response=] (|response|) and a [=request=] (|request|), this algorithm returns `Blocked`
+  or `Allowed`.
 
   1. If |request|'s [=request/destination=] is not "`fencedframe`", then return `Allowed`.
-</div>
 
-<span class=XXX>TODO: Add gating for permissions policies to navigation algorithm - whatever the equivalent of NavigationRequest::CheckPermissionsPoliciesForFencedFrames is</span>
+  2. Let |required permissions to load| be the list of <span class=XXX>TODO: Populate this with the
+    required permissions to load from the config in the navigation params</span>.
+
+  3. Let |inherited policy| be |request|'s [=request/client=]'s
+    [=environment/target browsing context=]'s [=browsing context/active document=]'s
+    [=Document/permissions policy=]'s [=inherited policy=].
+
+  4. Let |origin| be |response|'s [=response/url=]'s [=url/origin=].
+
+  5. For each |permission| in |required permissions to load|:
+
+    1. If |permission| does not exist in |inherited policy|, and |permission|'s
+      [=default allowlist=] is not "`*`", return "`Blocked`".
+      
+    2. Otherwise, if the allowlist at |inherited policy|[|permission|] does not
+      [=permissions/matches|match=] |origin|, return "`Blocked`".
+  
+  6. Return "`Allowed`."
+</div>
