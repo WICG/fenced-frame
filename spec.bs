@@ -965,7 +965,7 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
     |navigationParams|'s [=navigable=]'s [=navigable container|container=], |navigationParams|'s
     [=navigation params/origin=], |navigationParams|'s [=navigation params/response=], and
     <span class=XXX>TODO: Populate this with the required permissions to load from the config in
-    the navigation params</span>. <ref spec="PERMISSIONSPOLICY">
+    the navigation params</span>.
 </div>
 
 <div algorithm=new-browsing-context-changes>
@@ -973,7 +973,7 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
 
   7. Let <var ignore>permissionsPolicy</var> be the result of [=Create a Permissions Policy for a
     navigable|creating a permissions policy=] given <var ignore>embedder</var>,
-    <var ignore>origin</var>, and null. <ref spec="PERMISSIONSPOLICY">
+    <var ignore>origin</var>, and null.
 </div>
 
 <div algorithm=main-fetch-patches>
