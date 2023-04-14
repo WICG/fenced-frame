@@ -383,18 +383,18 @@ then turn the pending config into a finalized config. Those procedures are as fo
   1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
      associated [=fenced frame config mapping=].
 
-  1. If |nestedMapping|[|urn|] does [=map/exist=], return its value.
-
   1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
      associated [=fenced frame config mapping=].
-
-  1. If |pendingMapping|[|urn|] does [=map/exist=], wait until it does not [=map/exist=].
-     <span class="XXX">TODO: Formalize waiting?</span>
 
   1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of
      the associated [=fenced frame config mapping=].
 
-  1. If |finalizedMapping|[|urn|] does [=map/exist=], return its value.
+  1. If |nestedMapping|[|urn|] [=map/exists=], return its value.
+
+  1. If |pendingMapping|[|urn|] [=map/exists=], wait until it does not [=map/exist=].
+     <span class="XXX">TODO: Formalize waiting?</span>
+
+  1. If |finalizedMapping|[|urn|] [=map/exists=], return its value.
 
   1. Return failure.
 </div>
