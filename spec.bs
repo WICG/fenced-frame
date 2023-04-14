@@ -183,7 +183,7 @@ dl, dd {
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
 
-<h2 id=the-fencedframe-element>The <dfn element>fencedframe</dfn> element</h2>
+<h2 id=the-fencedframe-element>The <dfn element export>fencedframe</dfn> element</h2>
 
 <dl class="element">
  <dt>[=Categories=]:</dt>
