@@ -813,8 +813,6 @@ navigable=] could use a sequence of {{HTMLOrSVGElement/focus()}} calls to send a
 the fenced frame boundary, which is a privacy leak. To avoid this, we effectively "fence" the
 {{HTMLOrSVGElement/focus()}} method, which sacrifices some functionality for privacy.</p>
 
-<h4 id=focusing-steps-changes>Changes to the [=focusing steps=] algorithm</h4>
-
 <div algorithm=focusing-steps-patch>
   Modify the [=focusing steps=] to take a new optional [=boolean=] argument <dfn
   lt="focus-unfenced">unfenced</dfn> that defaults to false.
@@ -835,15 +833,13 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 
     Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
     where focus is trying to cross the fence.
+
+  Modify the user agent sentence after the algorithm steps in [=focusing steps=] to read:
+
+  User agents must [=immediately=] run the [=focusing steps=] for a [=focusable area=] or
+  [=navigable=] |candidate| with [=focus-unfenced|unfenced=] set to true whenever the user attempts to
+  move the focus to |candidate|.
 </div>
-
-<h4 id=focusing-steps-callers>Changes to the callers of the [=focusing steps=] algorithm</h4>
-
-Modify the user agent sentence after the algorithm steps to read:
-
-User agents must [=immediately=] run the [=focusing steps=] for a [=focusable area=] or
-[=navigable=] |candidate| with [=focus-unfenced|unfenced=] set to true whenever the user attempts to
-move the focus to |candidate|.
 
 <div algorithm=access-key-patch>
   Modify the action of the [=accesskey attribute command=] algorithm to be:
@@ -889,18 +885,17 @@ move the focus to |candidate|.
     instead, for the purposes of these actions.
 </div>
 
-  <h4 id=has-focus-steps-changes>Changes to the [=has focus steps=] algorithm</h4>
-
-  Add a step after step 2 of the while loop that reads:
+<div algorithm=has-focus-steps>
+  Add a step after step 2 of the while loop in the [=has focus steps=] algorithm that reads:
 
   3. If the [=focused area=] of
     |candidate| is a [=fenced navigable container=] with a non-null
     [=fenced navigable container/fenced navigable=], then set |candidate| to the
     [=navigable/active document=] of that [=fenced navigable container=]'s
     [=fenced navigable container/fenced navigable=].
+</div>
 
-  <h4 id=focus-chain-changes>Changes to the [=focus chain=] algorithm</h4>
-
+<div algorithm=focus-chain>
   Modify step 3 of the while loop in the [=focus chain=] algorithm to read:
   3. If |currentObject| is a [=focusable area=], then set
     |currentObject| to |currentObject|'s [=DOM anchor=]'s 
@@ -916,10 +911,10 @@ move the focus to |candidate|.
     [=traversable navigable/unfenced parent=].
 
     Otherwise, <span>break</span>.
-
-  <h4 id=focusable-area-changes>Changes to the [=get the focusable area=] algorithm</h4>
-
-  Add a new case to the switch statement:
+</div>
+  
+<div algorithm=get-the-focusable-area>
+  Modify the [=get the focusable area=] algorithm. Add a new case to the switch statement:
 
   <dl class="switch">
     <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null
@@ -928,9 +923,9 @@ move the focus to |candidate|.
     <dd><p>Return the [=fenced navigable container=]'s
     [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].</p></dd>
   </dl>
+</div>
 
-  <h4 id=currently-focused-area-changes>Changes to the [=currently focused area of a top-level traversable=] algorithm</h4>
-
+<div algorithm=currently-focused-area-of-a-top-level-traversable>
   Modify step 3 of the [=currently focused area of a top-level traversable=] algorithm to read:
 
   3. While |candidate|'s [=focused area=] is either a [=navigable container=] with a non-null
@@ -939,8 +934,7 @@ move the focus to |candidate|.
     [=navigable/active document=] of either that [=navigable container=]'s
     [=navigable container/content navigable=] or that [=fenced navigable container=]'s
     [=fenced navigable container/fenced navigable=], whichever is non-null.
-
-  <h4 id=sequential-focusing-changes>Changes to sequential focusing</h4>
+</div>
 
 <div algorithm=sequential-focus-navigation-patch>
   Modify step 6 of the [=sequential focus navigation=] algorithm to read:
