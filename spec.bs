@@ -290,8 +290,7 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 <h3 id=fenced-frame-config-map>Fenced frame config mapping</h3>
 
 Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
-mapping</dfn>. At a high level, this object maps [=urn uuids=] to [=fenced frame config=]
-[=structs=].
+mapping</dfn>, which is a new [=fenced frame config mapping=].
 
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
@@ -299,68 +298,78 @@ uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <
 See for example, the <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
 href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
 
-Each [=traversable navigable/fenced frame config mapping=] has a
-<dfn for="fenced frame config mapping" export>maximum number of configs</dfn>, which is
-implementation-defined. The [=fenced frame config mapping/maximum number of configs=] may be a
-nonnegative number or infinity.
+A <dfn>fenced frame config mapping</dfn> has three submappings:
+
+<dl export dfn-for="fenced frame config mapping">
+  : <dfn>pending config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+
+  : <dfn>finalized config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+
+  : <dfn>nested config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+</dl>
+
+Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping" export>maximum
+number of configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum
+number of configs=] may be a nonnegative number or infinity.
 
 Note: It is important to specify the behavior of
 [=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
 config-generating APIs in a privacy sensitive way.
-
-The [=traversable navigable/fenced frame config mapping=] actually consists of three submappings:
-<dl export dfn-for="fenced frame config mapping">
-  : <dfn>pending config mapping</dfn>
-  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
-
-  : <dfn>finalized config mapping</dfn>
-  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
-
-  : <dfn>nested config mapping</dfn>
-  :: a [=map=] from [=urn uuids=] to [=fenced frame configs=]
-</dl>
 
 At a high level, in order to store a [=fenced frame config=] in the
 [=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
 then turn the pending config into a finalized config. Those procedures are as follows:
 
 <div algorithm>
-  In order to <dfn export>store a [=fenced frame config=] into the
-  [=fenced frame config mapping/pending config mapping=]</dfn>, run these steps:
+  To <dfn for="fenced frame config mapping" export>store a pending config</dfn> into a particular
+  [=fenced frame config mapping=] given a [=fenced frame config=] |config|, run these steps:
 
-  1. If the size of the [=fenced frame config mapping/pending config mapping=] + the
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If the [=map/size=] of the [=fenced frame config mapping/pending config mapping=] + the
      size of the [=fenced frame config mapping/finalized config mapping=] meets or
      exceeds the [=fenced frame config mapping/maximum number of configs=], return failure.
 
-  1. Randomly generate a [=urn uuid=], and insert into the [=fenced frame config mapping/pending
-     config mapping=] an entry with the key [=urn uuid=] and the value
-     [=fenced frame config=].
+  1. Let |urn| be a randomly generated [=urn uuid=].
+
+  1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
 </div>
 
 <div algorithm>
-  In order to <dfn export>store a pending [=fenced frame config=] at a [=urn uuid=] into the
-  [=fenced frame config mapping/finalized config mapping=]</dfn>, run these steps:
+  To <dfn export>finalize a pending config</dfn> in a particular [=fenced frame config mapping=]
+  given a [=urn uuid=] |urn|, run these steps:
 
-  1. If the [=urn uuid=] is not present in the
-     [=fenced frame config mapping/pending config mapping=], return failure.
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
 
-  1. Remove the entry keyed by the [=urn uuid=] in the
-     [=fenced frame config mapping/pending config mapping=], and insert into the
-     [=fenced frame config mapping/finalized config mapping=] an entry with the key
-     [=urn uuid=] and the value [=fenced frame config=].
+  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If |pendingMapping|[|urn|] does not [=map/exist=], return failure.
+
+  1. Let |finalizedConfig| be |pendingMapping|[|urn|].
+
+  1. [=map/Remove=] |pendingMapping|[|urn|].
+
+  1. [=map/Set=] |finalizedMapping|[|urn|] be |finalizedConfig|.
 </div>
 
 <div algorithm>
-  In order to <dfn export>store [=fenced frame config instance/nested configs=] into the
-  [=fenced frame config mapping/nested config mapping=]</dfn>, run these steps:
+  To <dfn export>store nested configs</dfn> into a particular [=fenced frame config mapping=] given
+  a [=fenced frame config/nested configs=] |nestedConfigs|, run these steps:
 
-  1. If [=fenced frame config instance/nested configs=] is null, return.
+  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
+     associated [=fenced frame config mapping=].
 
-  1. For each [=urn uuid=] *urn* and [=fenced frame config=] *config* in the
-     [=fenced frame config instance/nested configs=]:
+  1. If |nestedConfigs| is null, return.
 
-     1. Insert an entry into the [=fenced frame config mapping/nested config mapping=] with key
-        *urn* and value *config*.
+  1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
+
+     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
 </div>
 
 
