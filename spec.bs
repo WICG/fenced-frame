@@ -300,20 +300,23 @@ href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
 
 A <dfn>fenced frame config mapping</dfn> has three submappings:
 
-<dl export dfn-for="fenced frame config mapping">
+<dl dfn-for="fenced frame config mapping">
   : <dfn>pending config mapping</dfn>
-  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
 
   : <dfn>finalized config mapping</dfn>
-  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
 
   : <dfn>nested config mapping</dfn>
-  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame configs=]
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
 </dl>
 
-Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping" export>maximum
-number of configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum
-number of configs=] may be a nonnegative number or infinity.
+Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
+configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
+configs=] may be a nonnegative number or infinity.
 
 Note: It is important to specify the behavior of
 [=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
