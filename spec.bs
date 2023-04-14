@@ -427,10 +427,11 @@ null. TODO: flesh out {{FencedFrameConfig}}
 
 A key feature of the <{fencedframe}> element is that web platform APIs can configure the behavior
 of the frame in a way that limits the ability of other execution contexts to modify or inspect this
-configuration, for security or privacy reasons. For example, the FLEDGE API (TODO:ref) performs
-on-device ad auctions over cross-site data, and it is important that the ad that wins the auction
-can be loaded into a frame, without the API caller knowing *which ad* won the auction or being able
-to manipulate the environment in which the ad loads.
+configuration, for security or privacy reasons. For example, the
+<a href=https://wicg.github.io/turtledove/>FLEDGE</a> API performs on-device ad auctions over
+cross-site data, and it is important that the ad that wins the auction can be loaded into a frame,
+without the API caller knowing *which ad* won the auction or being able to manipulate the
+environment in which the ad loads.
 
 We achieve this using the concept of a "fenced frame config". A fenced frame config is a collection
 of fields that can be loaded into <{fencedframe}> elements and that specifies the resulting
