@@ -650,9 +650,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 </div>
 
 <div algorithm>
-  In order to <dfn export>redact a fenced frame config</dfn>, run these steps:
+  To <dfn for="fenced frame config" export>redact a config</dfn> given a [=fenced frame config=] |config|, run these steps:
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. |config|<span class=XXX>TODO: Fill this in</span>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
