@@ -687,36 +687,38 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>reportEvent(<var ignore>event</var>)</dfn> method steps are:
 
-  1. Let |instance| be this [=traversable navigable=]'s [=fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
   1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
      unspecified.
 
-  1. If this [=document=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. If |event| is a `DOMString`, run [=report a private aggregation event=] with |event| and
+  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] with |event| and
      |instance|'s [=fenced frame config instance/fenced frame reporter=].
 
-  1. If |event| is a `FenceEvent`, run [=report an event=] with |event| and |instance|'s
+  1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn> method steps are:
 
-  1. Let |instance| be this [=traversable navigable=]'s [=fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
   1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
      unspecified.
 
-  1. If this [=document=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
@@ -728,14 +730,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
-  1. Let |instance| be this [=traversable navigable=]'s [=fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
   1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
      unspecified.
 
-  1. If this [=document=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
