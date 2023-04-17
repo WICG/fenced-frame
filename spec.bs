@@ -890,31 +890,27 @@ specification adds another value for fenced frames:
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
 
-<h3 id=csp-integration>CSP Integration</h3>
+<h3 id=csp-integration>Content Security Policy</h3>
 
 Fenced frames have a special relationship with Content Security Policies [[!CSP]]. They can only be
-created in [=secure contexts=] and require their [=fenced navigable container=]'s
-[=navigable/active document=] to to give permissions to all sources (i.e. "`https:`",
-"`https://*:*`", or "`*`"). This is done to prevent using [[!CSP]] for side-channel communication.
+created in [=secure contexts=] and require their [=fenced navigable container=]'s [=navigable/active
+document=] to give permissions to all sources (i.e. "`https:`", "`https://*:*`", or "`*`"). This is
+done to prevent using [[!CSP]] for side-channel communication.
 
 <div algorithm=pre-request-check-csp>
-
   Add a step after step 2 of the [=frame-src pre-request check=] that says:
 
   3. If <var ignore>request</var> [=request/destination=] is fenced frame, and this directive's
     [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
     "`Blocked`".
-
 </div>
 
 <div algorithm=post-request-check-csp>
-
   Add a step after step 2 of the [=frame-src post-request check=] that says:
 
   3. If <var ignore>request</var> [=request/destination=] is "`fencedframe`", and this directive's
     [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
     "`Blocked`".
-
 </div>
 
 Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies a
@@ -922,11 +918,9 @@ Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies
 embedder to the fenced frame.
 
 <div algorithm=cspee-changes>
-
   Add a step after step 1 in the [=Is response to request blocked by context's required CSP?=]
   algorithm that reads:
 
   2. If <var ignore>context</var>'s [=required csp=] is not `null`, and <var ignore>request</var>
     [=request/destination=] is "`fencedframe`", return "`Blocked`".
-
 </div>
