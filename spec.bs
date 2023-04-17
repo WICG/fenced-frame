@@ -103,7 +103,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: currently focused area of a top-level traversable; url: currently-focused-area-of-a-top-level-traversable
       text: focused area; url: focused-area-of-the-document
       text: sequential navigation search algorithm; url: sequential-navigation-search-algorithm
-      text: has focus steps; url: has-focus-steps
     urlPefix: infrastructure.html
       text: immediately; url: immediately
     urlPrefix: nav-history-apis.html
@@ -789,8 +788,6 @@ in the [[#nested-traversables-intro]].
 
 <h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
 
-*This section is non-normative*.
-
 The [[HTML]] standard defines how to handle focusing elements and {{Window}}s, both by user gesture
 and through script-initiated APIs. Since fenced frames are designed to prevent communication across
 a fenced frame boundary, we need to handle focusing carefully. This is because when focus is pulled
@@ -823,13 +820,12 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
     [=fenced navigable container/fenced navigable=], then set |new focus target| to the
     [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].
 
-  Add a new step after step 8 (step 7 in the existing version) of the algorithm (that defines |old
-  chain| and |new chain|) that reads:
+  Add a new step after the step that defines the |new chain| variable, that reads:
 
-  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a <code>Document</code>
+  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a {{Document}}
     |document| whose [=node navigable=]'s [=navigable/traversable navigable=] is a
-    [=fenced navigable container/fenced navigable=], and |old chain| does not also [=list/contain=]
-    |document|, then return.
+    [=fenced navigable container/fenced navigable=], and <var ignore>old chain</var> does not also
+    [=list/contain=] |document|, then return.
 
     Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
     where focus is trying to cross the fence.
@@ -888,41 +884,41 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 <div algorithm=has-focus-steps>
   Add a step after step 2 of the while loop in the [=has focus steps=] algorithm that reads:
 
-  3. If the [=focused area=] of
-    |candidate| is a [=fenced navigable container=] with a non-null
-    [=fenced navigable container/fenced navigable=], then set |candidate| to the
-    [=navigable/active document=] of that [=fenced navigable container=]'s
-    [=fenced navigable container/fenced navigable=].
+  3. If the [=focused area=] of |candidate| is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=], then set |candidate| to the [=navigable/active
+    document=] of that [=fenced navigable container=]'s [=fenced navigable container/fenced
+    navigable=].
 </div>
 
 <div algorithm=focus-chain>
   Modify step 3 of the while loop in the [=focus chain=] algorithm to read:
-  3. If |currentObject| is a [=focusable area=], then set
-    |currentObject| to |currentObject|'s [=DOM anchor=]'s 
-    [=Node/node document=].
+  3. If |currentObject| is a [=focusable area=], then set |currentObject| to |currentObject|'s [=DOM
+     anchor=]'s [=Node/node document=].
 
-    Otherwise, if |currentObject| is a {{Document}} whose
-    [=node navigable=]'s [=navigable/parent=] is non-null, then set
-    |currentObject| to |currentObject|'s [=node navigable=]'s [=navigable/parent=].
+     Otherwise, if |currentObject| is a {{Document}} whose [=node navigable=]'s [=navigable/parent=]
+     is non-null, then set |currentObject| to |currentObject|'s [=node navigable=]'s
+     [=navigable/parent=].
 
-    Otherwise, if |currentObject| is a {{Document}} whose
-    [=node navigable=]'s [=traversable navigable/unfenced parent=] is non-null, then set
-    |currentObject| to |currentObject|'s [=node navigable=]'s
-    [=traversable navigable/unfenced parent=].
+     Otherwise, if |currentObject| is a {{Document}} whose [=node navigable=] is a [=traversable
+     navigable=] whose [=traversable navigable/unfenced parent=] is non-null, then set
+     |currentObject| to |currentObject|'s [=node navigable=]'s [=traversable navigable/unfenced
+     parent=].
 
-    Otherwise, <span>break</span>.
+     Otherwise, [=iteration/break=].
 </div>
   
 <div algorithm=get-the-focusable-area>
   Modify the [=get the focusable area=] algorithm. Add a new case to the switch statement:
 
   <dl class="switch">
-    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null
-    [=fenced navigable container/fenced navigable=]</dt>
+    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=]</dt>
 
-    <dd><p>Return the [=fenced navigable container=]'s
-    [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].</p></dd>
+    <dd><p>Return the [=fenced navigable container=]'s [=fenced navigable container/fenced
+    navigable=]'s [=navigable/active document=].</p></dd>
   </dl>
+
+  Note: This algorithm can unconditionally "jump the fence" boundary because its return value always
+  feeds into an algorithm that _does_ carefully consider the fence boundary.
 </div>
 
 <div algorithm=currently-focused-area-of-a-top-level-traversable>
