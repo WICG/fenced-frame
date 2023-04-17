@@ -416,11 +416,11 @@ environment in which the ad loads.
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be constructed by web platform APIs, not
-initialized or modified arbitrarily. Their fields also contain "visibilities" for different
-entities, which dictate whether the field should be "redacted" when inspected by particular
-execution contexts. Config-generating APIs must specify values for all fields of their fenced frame
-configs in order to ensure that they have considered the privacy implications of each field, though
-they may choose to set the values to null.
+initialized or modified arbitrarily. Their fields also contain "[=visibilities=]", which dictate
+whether the field should be "redacted" when inspected through the {{FencedFrameConfig}} interface.
+Config-generating APIs must specify values for all fields of their fenced frame configs in order to
+ensure that they have considered the privacy implications of each field, though they may choose to
+set the values to null.
 
 Each time a fenced frame config is loaded into a <{fencedframe}> element, it is instantiated as a
 new [=fenced frame config instance=], which governs that particular context.
@@ -430,9 +430,7 @@ new [=fenced frame config instance=], which governs that particular context.
 We now establish some preliminary types:
 
 A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>
-`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>". There are two kinds of
-[=fencedframeconfig/visibility=]: <dfn export for=visibility>visibility to embedder</dfn> and
-<dfn export for=visibility>visibility to content</dfn>.
+`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
 
 A <dfn export for=fencedframetype>mapped url</dfn> is a [=url=]. <span class=XXX>TODO: Stipulate a
 url with particular schemes?</span>
@@ -488,40 +486,71 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: null, or a struct containing a [=fencedframetype/mapped url=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a struct with the following fields:
+    : <dfn for="mapped url">value</dfn>
+    :: a [=fencedframetype/mapped url=]
+
+    : <dfn for="mapped url">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>container size</dfn>
-  :: null, or a struct containing a [=fencedframetype/size=] and a
-     [=visibility/visibility to content=]
+  :: null, or a [=fencedframetype/size=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct containing a [=fencedframetype/size=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a struct with the following fields:
+    : <dfn for="content size">value</dfn>
+    :: a [=fencedframetype/size=]
+
+    : <dfn for="content size">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>interest group descriptor</dfn>
-  :: null, or a struct containing an [=fencedframetype/interest group descriptor=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct with the following fields:
+    : <dfn for="interest group descriptor">value</dfn>
+    :: an [=fencedframetype/interest group descriptor=]
+
+    : <dfn for="interest group descriptor">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a struct with the following fields:
+    : <dfn for="effective sandbox flags">value</dfn>
+    :: an [=fencedframetype/exhaustive set of sandbox flags=]
+
+    : <dfn for="effective sandbox flags">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>effective permissions</dfn>
-  :: null, or a struct containing an [=fencedframetype/exhaustive set of permissions=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct with the following fields:
+    : <dfn for="effective permissions">value</dfn>
+    :: an [=fencedframetype/exhaustive set of permissions=]
+
+    : <dfn for="effective permissions">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>fenced frame reporter</dfn>
-  :: null, or a struct containing a [=fencedframetype/fenced frame reporter=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct with the following fields:
+    : <dfn for="fenced frame reporter">value</dfn>
+    :: a [=fencedframetype/fenced frame reporter=]
+
+    : <dfn for="fenced frame reporter">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a struct with the following fields:
+    : <dfn for="exfiltration budget metadata">value</dfn>
+    :: an [=fencedframetype/exfiltration budget metadata=]
+
+    : <dfn for="exfiltration budget metadata">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct containing a sequence of [=fenced frame configs=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a struct with the following fields:
+    : <dfn for="nested configs">value</dfn>
+    :: a sequence of [=fenced frame configs=]
+
+    : <dfn for="nested configs">visibility</dfn>
+    :: a [=visibility=]
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or an [=fencedframetype/embedder shared storage context=]
@@ -533,40 +562,31 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
-  :: null, or a struct containing a [=fencedframetype/mapped url=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a [=fencedframetype/mapped url=]
 
   : <dfn>container size</dfn>
-  :: null, or a struct containing a [=fencedframetype/size=] and a
-     [=visibility/visibility to content=]
+  :: null, or a [=fencedframetype/size=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct containing a [=fencedframetype/size=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or a [=fencedframetype/size=]
 
   : <dfn>interest group descriptor</dfn>
-  :: null, or a struct containing an [=fencedframetype/interest group descriptor=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or an [=fencedframetype/interest group descriptor=]
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct containing an [=fencedframetype/exhaustive set of sandbox flags=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
   : <dfn>effective permissions</dfn>
-  :: null, or a struct containing an [=fencedframetype/exhaustive set of permissions=] and a
-     [=visibility/visibility to embedder=]
+  :: null, or an [=fencedframetype/exhaustive set of permissions=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
-  :: null, or a struct containing a [=fencedframetype/fenced frame reporter=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or a [=fencedframetype/fenced frame reporter=]
 
   : <dfn>exfiltration budget metadata reference</dfn>
-  :: null, or a struct containing an [=fencedframetype/exfiltration budget metadata reference=], a
-     [=visibility/visibility to embedder=], and a [=visibility/visibility to content=]
+  :: null, or an [=fencedframetype/exfiltration budget metadata reference=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct containing a sequence of pairs of [=urn uuids=] and [=fenced frame configs=]
-     and a [=visibility/visibility to embedder=]
+  :: null, or a sequence of pairs of [=urn uuids=] and [=fenced frame configs=]
 
   : <dfn>partition nonce</dfn>
   :: a [=partition nonce=]
@@ -580,50 +600,53 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   [=fenced frame config instance=] with the following members:
 
     : [=fenced frame config instance/mapped url=]
-    :: |config|'s [=fenced frame config/mapped url=]
+    :: |config|'s [=fenced frame config/mapped url=] if null, otherwise |config|'s [=fenced frame
+       config/mapped url=]'s [=mapped url/value=]
 
     : [=fenced frame config instance/container size=]
-    :: |config|'s [=fenced frame config/container size=]
+    :: |config|'s [=fenced frame config/container size=] if null
 
     : [=fenced frame config instance/content size=]
-    :: |config|'s [=fenced frame config/content size=]
+    :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
+       config/content size=]'s [=content size/value=]
 
     : [=fenced frame config instance/interest group descriptor=]
-    :: |config|'s [=fenced frame config/interest group descriptor=]
+    :: |config|'s [=fenced frame config/interest group descriptor=] if null, otherwise |config|'s
+       [=fenced frame config/interest group descriptor=]'s [=interest group descriptor/value=]
 
     : [=fenced frame config instance/effective sandbox flags=]
-    :: |config|'s [=fenced frame config/effective sandbox flags=]
+    :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
+       [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
 
     : [=fenced frame config instance/effective permissions=]
-    :: |config|'s [=fenced frame config/effective permissions=]
+    :: |config|'s [=fenced frame config/effective permissions=] if null, otherwise |config|'s
+       [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
     :: |config|'s <span class=XXX>TODO: Fill this in</span>
 
     : [=fenced frame config instance/exfiltration budget metadata reference=]
-    :: If |config|'s [=fenced frame config/exfiltration budget metadata=] is
-       null, set to null. Otherwise, set the [=fenced frame config instance/exfiltration budget
-       metadata reference=] to an [=fencedframetype/exfiltration budget metadata reference=] where
-       the [=exfiltration budget metadata reference/origin=] is |config|'s
-       [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration budget metadata/
-       origin=], and the [=exfiltration budget metadata reference/amount to debit reference=] is
-       a reference to |config|'s [=fenced frame config/exfiltration budget
-       metadata=]'s [=exfiltration budget metadata/amount to debit=]. Copy the
-       [=visibility/visibility to embedder=] from |config|'s
-       [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to embedder=], and the
-       [=visibility/visibility to content=] from |config|'s
-       [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to content=].
+    ::
+        1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
+
+        1. Otherwise, set to a [=fencedframetype/exfiltration budget metadata reference=]:
+            : [=exfiltration budget metadata reference/origin=]
+            :: |config|'s [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration
+               budget metadata/value=]'s [=exfiltration budget metadata/origin=]
+
+            : [=exfiltration budget metadata reference/amount to debit reference=]
+            :: a reference to |config|'s [=fenced frame config/exfiltration budget metadata=]'s
+               [=exfiltration budget metadata/value=]'s [=exfiltration budget metadata/amount to
+               debit=]
 
     : [=fenced frame config instance/nested configs=]
-    :: If |config|'s [=fenced frame config/nested configs=] is null, set to
-       null. Otherwise, set the [=fenced frame config instance/nested configs=] to an
-       [=ordered map=], where for each [=fenced frame config=] in
-       [=fenced frame config/nested configs=], there is an entry where the key is a randomly
-       sampled [=urn uuid=] and the value is the [=fenced frame config=]. Copy the
-       [=visibility/visibility to embedder=] from |config|'s
-       [=fenced frame config/nested configs=]'s [=visibility/visibility to embedder=], and the
-       [=visibility/visibility to content=] from |config|'s
-       [=fenced frame config/nested configs=]'s [=visibility/visibility to content=].
+    ::
+        1. If |config|'s [=fenced frame config/nested configs=] is null, set to null.
+
+        1. Otherwise, set to an [=ordered map=], where for each [=fenced frame config=] in
+           |config|'s [=fenced frame config/nested configs=]'s [=nested configs/value=], there is
+           an entry where the key is a randomly sampled [=urn uuid=] and the value is the [=fenced
+           frame config=]. <span class=XXX>TODO: Write this in the proper syntax</span>
 
     : [=fenced frame config instance/partition nonce=]
     :: a random [=partition nonce=] <span class=XXX>TODO: Specify what this means</span>
@@ -646,9 +669,12 @@ maps to an internal [=fenced frame config=] [=struct=].
   [Exposed=Window]
   interface FencedFrameConfig {
     constructor(USVString url);
+
     readonly attribute FencedFrameConfigURL? url;
     readonly attribute FencedFrameConfigSize? width;
     readonly attribute FencedFrameConfigSize? height;
+
+    undefined setSharedStorageContext(DOMString contextString);
   };
 </pre>
 
@@ -670,6 +696,12 @@ Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
 <div algorithm="height getter">
   The {{FencedFrameConfig/height}} IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
+
+<div algorithm>
+  The <dfn method for=FencedFrameConfig>setSharedStorageContext(contextString)</dfn> method steps are:
 
   1. <span class=XXX>TODO</span>
 </div>
