@@ -418,12 +418,14 @@ collection of fields that can be loaded into <{fencedframe}> elements and that s
 resulting environments. [=Fenced frame configs=] can only be constructed by web platform APIs, not
 initialized or modified arbitrarily. Their fields also contain "[=visibilities=]", which dictate
 whether the field should be "redacted" when inspected through the {{FencedFrameConfig}} interface.
-Config-generating APIs must specify values for all fields of their fenced frame configs in order to
-ensure that they have considered the privacy implications of each field, though they may choose to
-set the values to null.
+Config-generating APIs (like <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
+href=https://wicg.github.io/shared-storage/>Shared Storage</a>) must specify values for all fields
+of their fenced frame configs in order to ensure that they have considered the privacy implications
+of each field, though they may choose to set the values to null.
 
-Each time a fenced frame config is loaded into a <{fencedframe}> element, it is instantiated as a
-new [=fenced frame config instance=], which governs that particular context.
+Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
+[=fenced frame config instance=], which governs that particular context inside the [=fenced
+navigable container/fenced navigable=].
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
@@ -443,9 +445,11 @@ An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct w
 for="interest group descriptor">owner</dfn>, which is a string, and <dfn export for="interest group
 descriptor">name</dfn>, which is a string.
 
-An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
+set=].
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
+[=policy-controlled features=].
 
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
@@ -470,7 +474,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX
 An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct containing an
 <dfn export for="exfiltration budget metadata">origin</dfn>, which is an [=origin=]; and an <dfn
 export for="exfiltration budget metadata">amount to debit</dfn>, which is a non-negative valid
-floating point number <span class=XXX>TODO: ref to float</span>.
+floating point number.
 
 An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct
 containing an <dfn export for="exfiltration budget metadata reference">origin</dfn>, which is an
@@ -480,7 +484,10 @@ reference</dfn>, which is a mutable reference to a non-negative valid floating p
 
 An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
 
-A <dfn export>partition nonce</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+A <dfn export>partition nonce</dfn> is an [=implementation-defined=] value.
+
+Note: This is similar to the <a href=https://fetch.spec.whatwg.org/#network-partition-key>network
+partition key</a> used by <a href=https://fetch.spec.whatwg.org/>Fetch</a>.
 
 A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
 
@@ -650,7 +657,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
            frame config=]. <span class=XXX>TODO: Write this in the proper syntax</span>
 
     : [=fenced frame config instance/partition nonce=]
-    :: a random [=partition nonce=] <span class=XXX>TODO: Specify what this means</span>
+    :: a random, unique [=partition nonce=]
 
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
@@ -680,6 +687,9 @@ maps to an internal [=fenced frame config=] [=struct=].
 </pre>
 
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
+
+Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a [=URL=] or null,
+initially null.
 
 1. <span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
 
@@ -742,6 +752,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
      navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
 
+     <span class=XXX>This and the below references should point to an actual member on [=traversable
+     navigable=], not just the type.</span>
+
   1. If |instance| is null, then return.
 
   1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
@@ -760,7 +773,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm>
-  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn> method steps are:
+  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn>
+  method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
      navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
@@ -795,12 +809,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
 
-  1. Let |results| be a sequence of {{FencedFrameConfig}}s.
+  1. Let |results| be an empty [=list=] of {{FencedFrameConfig}}s.
 
-  1. For each [=urn uuid=] |urn| and [=fenced frame config=] |config| in |instance|'s
-     [=fenced frame config instance/nested configs=]:
+  1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
+     configs=]:
 
-     1. <span class="XXX"> construct a {{FencedFrameConfig}} from |config| and |urn|</span>.
+     1. <span class="XXX">TODO: construct a {{FencedFrameConfig}} from |config| and |urn|</span>.
 
   1. Return |results|.
 </div>
