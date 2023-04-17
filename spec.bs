@@ -334,8 +334,8 @@ then turn the pending config into a finalized config. Those procedures are as fo
      associated [=fenced frame config mapping=].
 
   1. If the [=map/size=] of the [=fenced frame config mapping/pending config mapping=] + the
-     size of the [=fenced frame config mapping/finalized config mapping=] meets or
-     exceeds the [=fenced frame config mapping/maximum number of configs=], return failure.
+     [=map/size=] of the [=fenced frame config mapping/finalized config mapping=] >= the [=fenced
+     frame config mapping/maximum number of configs=], return failure.
 
   1. Let |urn| be a randomly generated [=urn uuid=].
 
@@ -373,7 +373,7 @@ then turn the pending config into a finalized config. Those procedures are as fo
 
   1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
 
-  1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
+    1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
 </div>
 
 <div algorithm>
@@ -399,37 +399,11 @@ then turn the pending config into a finalized config. Those procedures are as fo
   1. Return failure.
 </div>
 
-<h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
+<h3 id=fenced-frame-config-section>Fenced frame configs</h3>
 
-One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
-maps to an internal [=fenced frame config=] [=struct=].
+<h4 id=fenced-frame-config-intro>Introduction</h4>
 
-<pre class=idl>
-  enum OpaqueProperty {"opaque"};
-
-  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
-
-  [Exposed=Window]
-  interface FencedFrameConfig {
-    constructor(USVString url);
-    readonly attribute FencedFrameConfigURL? url;
-    readonly attribute FencedFrameConfigSize? width;
-    readonly attribute FencedFrameConfigSize? height;
-  };
-</pre>
-
-Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
-
-<div algorithm>
-  In order to <dfn export>lift a [=urn uuid=] and [=fenced frame config=] into a
-  {{FencedFrameConfig}}</dfn>, run these steps:
-
-  1. <span class=XXX>TODO: Fill this in</span>
-</div>
-
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
-null. TODO: flesh out {{FencedFrameConfig}}
+*This section is non-normative.*
 
 A key feature of the <{fencedframe}> element is that web platform APIs can configure the behavior
 of the frame in a way that limits the ability of other execution contexts to modify or inspect this
@@ -439,13 +413,19 @@ cross-site data, and it is important that the ad that wins the auction can be lo
 without the API caller knowing *which ad* won the auction or being able to manipulate the
 environment in which the ad loads.
 
-We achieve this using the concept of a "fenced frame config". A fenced frame config is a collection
-of fields that can be loaded into <{fencedframe}> elements and that specifies the resulting
-environments. Fenced frame configs can only be constructed by web platform APIs, not initialized
-or modified arbitrarily. Their fields also contain "visibilities" for different entities, which
-dictate whether the field should be "redacted" when inspected by particular execution contexts.
+We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
+collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
+resulting environments. [=Fenced frame configs=] can only be constructed by web platform APIs, not
+initialized or modified arbitrarily. Their fields also contain "visibilities" for different
+entities, which dictate whether the field should be "redacted" when inspected by particular
+execution contexts. Config-generating APIs must specify values for all fields of their fenced frame
+configs in order to ensure that they have considered the privacy implications of each field, though
+they may choose to set the values to null.
+
 Each time a fenced frame config is loaded into a <{fencedframe}> element, it is instantiated as a
-new "fenced frame config instance", which governs that particular context.
+new [=fenced frame config instance=], which governs that particular context.
+
+<h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
 We now establish some preliminary types:
 
@@ -472,19 +452,19 @@ An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is <span 
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 <div algorithm>
-  In order to <dfn export> report an event</dfn>, run these steps:
+  In order to <dfn export>report an event</dfn>, run these steps:
 
   1. <span class=XXX>TODO: fill this in</span>
 </div>
 
 <div algorithm>
-  In order to <dfn export> report a private aggregation event</dfn>, run these steps:
+  In order to <dfn export>report a private aggregation event</dfn>, run these steps:
 
   1. <span class=XXX>TODO: Fill this in</span>
 </div>
 
 <div algorithm>
-  In order to <dfn export> set automatic beacon data</dfn>, run these steps:
+  In order to <dfn export>set automatic beacon data</dfn>, run these steps:
 
   1. <span class=XXX>TODO: Fill this in</span>
 </div>
@@ -547,6 +527,8 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
+<h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
+
 A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
 
 <dl export dfn-for="fenced frame config instance">
@@ -593,66 +575,103 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/embedder shared storage context=]
 </dl>
 
-<div algorithm="config instantiation">
-  A [=fenced frame config instance=] is initialized from a [=fenced frame config=] as follows:
+<div algorithm>
+  To <dfn export>instantiate a config</dfn> given a [=fenced frame config=] |config|, return a
+  [=fenced frame config instance=] with the following members:
 
     : [=fenced frame config instance/mapped url=]
-    :: the [=fenced frame config=]'s [=fenced frame config/mapped url=]
+    :: |config|'s [=fenced frame config/mapped url=]
 
     : [=fenced frame config instance/container size=]
-    :: the [=fenced frame config=]'s [=fenced frame config/container size=]
+    :: |config|'s [=fenced frame config/container size=]
 
     : [=fenced frame config instance/content size=]
-    :: the [=fenced frame config=]'s [=fenced frame config/content size=]
+    :: |config|'s [=fenced frame config/content size=]
 
     : [=fenced frame config instance/interest group descriptor=]
-    :: the [=fenced frame config=]'s [=fenced frame config/interest group descriptor=]
+    :: |config|'s [=fenced frame config/interest group descriptor=]
 
     : [=fenced frame config instance/effective sandbox flags=]
-    :: the [=fenced frame config=]'s [=fenced frame config/effective sandbox flags=]
+    :: |config|'s [=fenced frame config/effective sandbox flags=]
 
     : [=fenced frame config instance/effective permissions=]
-    :: the [=fenced frame config=]'s [=fenced frame config/effective permissions=]
+    :: |config|'s [=fenced frame config/effective permissions=]
 
     : [=fenced frame config instance/fenced frame reporter=]
-    :: the [=fenced frame config=]'s <span class=XXX>TODO: Fill this in</span>
+    :: |config|'s <span class=XXX>TODO: Fill this in</span>
 
     : [=fenced frame config instance/exfiltration budget metadata reference=]
-    :: If the [=fenced frame config=]'s [=fenced frame config/exfiltration budget metadata=] is
+    :: If |config|'s [=fenced frame config/exfiltration budget metadata=] is
        null, set to null. Otherwise, set the [=fenced frame config instance/exfiltration budget
        metadata reference=] to an [=fencedframetype/exfiltration budget metadata reference=] where
-       the [=exfiltration budget metadata reference/origin=] is the [=fenced frame config=]'s
+       the [=exfiltration budget metadata reference/origin=] is |config|'s
        [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration budget metadata/
        origin=], and the [=exfiltration budget metadata reference/amount to debit reference=] is
-       a reference to the [=fenced frame config=]'s [=fenced frame config/exfiltration budget
+       a reference to |config|'s [=fenced frame config/exfiltration budget
        metadata=]'s [=exfiltration budget metadata/amount to debit=]. Copy the
-       [=visibility/visibility to embedder=] from the [=fenced frame config=]'s
+       [=visibility/visibility to embedder=] from |config|'s
        [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to embedder=], and the
-       [=visibility/visibility to content=] from the [=fenced frame config=]'s
+       [=visibility/visibility to content=] from |config|'s
        [=fenced frame config/exfiltration budget metadata=]'s [=visibility/visibility to content=].
 
     : [=fenced frame config instance/nested configs=]
-    :: If the [=fenced frame config=]'s [=fenced frame config/nested configs=] is null, set to
+    :: If |config|'s [=fenced frame config/nested configs=] is null, set to
        null. Otherwise, set the [=fenced frame config instance/nested configs=] to an
        [=ordered map=], where for each [=fenced frame config=] in
        [=fenced frame config/nested configs=], there is an entry where the key is a randomly
        sampled [=urn uuid=] and the value is the [=fenced frame config=]. Copy the
-       [=visibility/visibility to embedder=] from the [=fenced frame config=]'s
+       [=visibility/visibility to embedder=] from |config|'s
        [=fenced frame config/nested configs=]'s [=visibility/visibility to embedder=], and the
-       [=visibility/visibility to content=] from the [=fenced frame config=]'s
+       [=visibility/visibility to content=] from |config|'s
        [=fenced frame config/nested configs=]'s [=visibility/visibility to content=].
 
     : [=fenced frame config instance/partition nonce=]
     :: a random [=partition nonce=] <span class=XXX>TODO: Specify what this means</span>
 
     : [=fenced frame config instance/embedder shared storage context=]
-    :: the [=fenced frame config=]'s [=fenced frame config/embedder shared storage context=]
+    :: |config|'s [=fenced frame config/embedder shared storage context=]
 </div>
 
-<div algorithm>
-  To <dfn for="fenced frame config" export>redact a config</dfn> given a [=fenced frame config=] |config|, run these steps:
+<h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
-  1. |config|<span class=XXX>TODO: Fill this in</span>
+One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
+maps to an internal [=fenced frame config=] [=struct=].
+
+<pre class=idl>
+  enum OpaqueProperty {"opaque"};
+
+  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
+  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
+
+  [Exposed=Window]
+  interface FencedFrameConfig {
+    constructor(USVString url);
+    readonly attribute FencedFrameConfigURL? url;
+    readonly attribute FencedFrameConfigSize? width;
+    readonly attribute FencedFrameConfigSize? height;
+  };
+</pre>
+
+Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
+
+1. <span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
+
+<div algorithm="url getter">
+  The {{FencedFrameConfig/url}} IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
+
+<div algorithm="width getter">
+  The {{FencedFrameConfig/width}} IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
+</div>
+
+<div algorithm="height getter">
+  The {{FencedFrameConfig/height}} IDL attribute getter steps are:
+
+  1. <span class=XXX>TODO</span>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -747,8 +766,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. For each [=urn uuid=] |urn| and [=fenced frame config=] |config| in |instance|'s
      [=fenced frame config instance/nested configs=]:
-     1. Redact |config| for the embedder (TODO:ref), into |redacted config|.
-     2. Lift |urn| and |redacted config| into a {{FencedFrameConfig}}, and append it to |results|.
+
+     1. <span class="XXX"> construct a {{FencedFrameConfig}} from |config| and |urn|</span>.
 
   1. Return |results|.
 </div>
