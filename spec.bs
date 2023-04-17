@@ -586,7 +586,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/exfiltration budget metadata reference=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a sequence of pairs of [=urn uuids=] and [=fenced frame configs=]
+  :: null, or an [=ordered map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are
+     [=fenced frame configs=]
 
   : <dfn>partition nonce</dfn>
   :: a [=partition nonce=]
