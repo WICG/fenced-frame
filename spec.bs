@@ -738,6 +738,9 @@ Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
 
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     container size=] is null, return null.
+
   1. Return the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
      container size=]'s [=size/width=].
 </div>
@@ -745,12 +748,18 @@ Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>
 <div algorithm="containerHeight getter">
   The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are:
 
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     container size=] is null, return null.
+
   1. Return the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
      container size=]'s [=size/height=].
 </div>
 
 <div algorithm="contentWidth getter">
   The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are:
+
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     content size=] is null, return null.
 
   1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/content
      size=]'s [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame
@@ -761,6 +770,9 @@ Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>
 
 <div algorithm="contentHeight getter">
   The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are:
+
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     content size=] is null, return null.
 
   1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/content
      size=]'s [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame
