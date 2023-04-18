@@ -285,12 +285,14 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   1. Let |url| be the [=URL record=] <code>about:blank</code>.
 
   1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
-     [=fencedframeconfig/url=] relative to |element|'s [=Node/node document=]. If this is
-     successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
+     [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
+     relative to |element|'s [=Node/node document=]. If this is successful, then set [=url=] to the
+     <a spec="HTML">resulting URL record</a>.
 
   1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |url| using
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
+     <span class="XXX">TODO: generate and store the config instance</span>
 </div>
 
 <div algorithm=destroy>
@@ -578,7 +580,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   : <dfn>nested configs</dfn>
   :: null, or a struct with the following fields:
     : <dfn for="nested configs">value</dfn>
-    :: a sequence of [=fenced frame configs=]
+    :: a [=list=] of [=fenced frame configs=]
 
     : <dfn for="nested configs">visibility</dfn>
     :: a [=visibility=]
@@ -674,10 +676,18 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     ::
         1. If |config|'s [=fenced frame config/nested configs=] is null, set to null.
 
-        1. Otherwise, set to an [=ordered map=], where for each [=fenced frame config=] in
-           |config|'s [=fenced frame config/nested configs=]'s [=nested configs/value=], there is
-           an entry where the key is a randomly sampled [=urn uuid=] and the value is the [=fenced
-           frame config=]. <span class=XXX>TODO: Write this in the proper syntax</span>
+        1. Otherwise:
+
+           1. Let |results| be an empty [=ordered map=].
+
+           1. [=list/For each=] |nested config| of |config|'s [=fenced frame config/nested
+             configs=]'s [=nested configs/value=]:
+
+               1. Let |urn| be a random, unique [=urn uuid=].
+
+               1. [=map/Set=] |results|[|urn|] to |nested config|.
+
+           1. Set [=fenced frame config instance/nested configs=] to |results|.
 
     : [=fenced frame config instance/partition nonce=]
     :: a random, unique [=partition nonce=]
@@ -691,7 +701,6 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
 maps to an internal [=fenced frame config=] [=struct=].
 
-<span class="XXX">TODO: Specify the "internal" fields in the right way.</span>
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
@@ -700,9 +709,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window]
   interface FencedFrameConfig {
-    readonly attribute USVString urn;
-    readonly attribute object config;
-
     readonly attribute FencedFrameConfigURL? url;
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
@@ -715,16 +721,14 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
-Each {{FencedFrameConfig}} has two internal members: {{FencedFrameConfig/urn}}, which is a [=urn uuid=], and {{FencedFrameConfig/config}}, which is a [=fenced frame config=].
+Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a [=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
 
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a [=URL=].
-
-1. <span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
+<span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
 
 <div algorithm="url getter">
   The {{FencedFrameConfig/url}} IDL attribute getter steps are:
 
-  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/mapped url=]'s
+  1. If {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s
      [=mapped url/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
      mapped url=]'s [=mapped url/value=].
 
@@ -734,21 +738,23 @@ Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
 
-  1. Return {{FencedFrameConfig/config}}'s [=fenced frame config/container size=]'s [=size/width=].
+  1. Return the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     container size=]'s [=size/width=].
 </div>
 
 <div algorithm="containerHeight getter">
   The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are:
 
-  1. Return {{FencedFrameConfig/config}}'s [=fenced frame config/container size=]'s [=size/height=].
+  1. Return the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/
+     container size=]'s [=size/height=].
 </div>
 
 <div algorithm="contentWidth getter">
   The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are:
 
-  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/content size=]'s
-     [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
-     content size=]'s [=content size/value=]'s [=size/width=].
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/content
+     size=]'s [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame
+     config/content size=]'s [=content size/value=]'s [=size/width=].
 
   1. Otherwise, return `"opaque"`.
 </div>
@@ -756,17 +762,19 @@ Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is 
 <div algorithm="contentHeight getter">
   The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are:
 
-  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/content size=]'s
-     [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
-     content size=]'s [=content size/value=]'s [=size/height=].
+  1. If the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/content
+     size=]'s [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame
+     config/content size=]'s [=content size/value=]'s [=size/height=].
 
   1. Otherwise, return `"opaque"`.
 </div>
 
 <div algorithm>
-  The <dfn method for=FencedFrameConfig>setSharedStorageContext(|contextString|)</dfn> method steps are:
+  The <dfn method for=FencedFrameConfig>setSharedStorageContext(|contextString|)</dfn> method steps
+  are:
 
-  1. Set {{FencedFrameConfig/config}}'s [=fenced frame config/embedder shared storage context=] to |contextString|.
+  1. Set the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/embedder
+     shared storage context=] to |contextString|.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -860,8 +868,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
      configs=]:
 
-     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where {{FencedFrameConfig/urn}} is
-        |urn| and {{FencedFrameConfig/config}} is |config|.
+     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where the {{FencedFrameConfig}}'s
+        [=fencedframeconfig/urn=] is |urn| and the {{FencedFrameConfig}}'s [=fencedframeconfig/
+        config=] is |config|.
         <span class="XXX">TODO: phrase the constructor correctly</span>.
 
   1. Return |results|.
