@@ -688,8 +688,7 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
 
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a [=URL=] or null,
-initially null.
+Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a [=URL=].
 
 1. <span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
 
@@ -757,8 +756,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
-     unspecified.
+  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
 
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
@@ -781,8 +779,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
-     unspecified.
+  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
 
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
@@ -801,8 +798,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If |instance|'s [=fenced frame config instance/mapped url=] is null, then the behavior is
-     unspecified.
+  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
 
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
