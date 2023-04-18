@@ -691,6 +691,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
 maps to an internal [=fenced frame config=] [=struct=].
 
+<span class="XXX">TODO: Specify the "internal" fields in the right way.</span>
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
@@ -699,17 +700,22 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window]
   interface FencedFrameConfig {
-    constructor(USVString url);
+    readonly attribute USVString urn;
+    readonly attribute object config;
 
     readonly attribute FencedFrameConfigURL? url;
-    readonly attribute FencedFrameConfigSize? width;
-    readonly attribute FencedFrameConfigSize? height;
+    readonly attribute FencedFrameConfigSize? containerWidth;
+    readonly attribute FencedFrameConfigSize? containerHeight;
+    readonly attribute FencedFrameConfigSize? contentWidth;
+    readonly attribute FencedFrameConfigSize? contentHeight;
 
     undefined setSharedStorageContext(DOMString contextString);
   };
 </pre>
 
 Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
+
+Each {{FencedFrameConfig}} has two internal members: {{FencedFrameConfig/urn}}, which is a [=urn uuid=], and {{FencedFrameConfig/config}}, which is a [=fenced frame config=].
 
 Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a [=URL=].
 
@@ -718,25 +724,49 @@ Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is 
 <div algorithm="url getter">
   The {{FencedFrameConfig/url}} IDL attribute getter steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/mapped url=]'s
+     [=mapped url/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
+     mapped url=]'s [=mapped url/value=].
+
+  1. Otherwise, return `"opaque"`.
 </div>
 
-<div algorithm="width getter">
-  The {{FencedFrameConfig/width}} IDL attribute getter steps are:
+<div algorithm="containerWidth getter">
+  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. Return {{FencedFrameConfig/config}}'s [=fenced frame config/container size=]'s [=size/width=].
 </div>
 
-<div algorithm="height getter">
-  The {{FencedFrameConfig/height}} IDL attribute getter steps are:
+<div algorithm="containerHeight getter">
+  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. Return {{FencedFrameConfig/config}}'s [=fenced frame config/container size=]'s [=size/height=].
+</div>
+
+<div algorithm="contentWidth getter">
+  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are:
+
+  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/content size=]'s
+     [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
+     content size=]'s [=content size/value=]'s [=size/width=].
+
+  1. Otherwise, return `"opaque"`.
+</div>
+
+<div algorithm="contentHeight getter">
+  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are:
+
+  1. If {{FencedFrameConfig/config}}'s [=fenced frame config/content size=]'s
+     [=content size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
+     content size=]'s [=content size/value=]'s [=size/height=].
+
+  1. Otherwise, return `"opaque"`.
 </div>
 
 <div algorithm>
-  The <dfn method for=FencedFrameConfig>setSharedStorageContext(contextString)</dfn> method steps are:
+  The <dfn method for=FencedFrameConfig>setSharedStorageContext(|contextString|)</dfn> method steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. Set {{FencedFrameConfig/config}}'s [=fenced frame config/embedder shared storage context=] to |contextString|.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -769,7 +799,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </pre>
 
 <div algorithm>
-  The <dfn method for=Fence>reportEvent(<var ignore>event</var>)</dfn> method steps are:
+  The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
      navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
@@ -793,7 +823,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm>
-  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn>
+  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
@@ -807,7 +837,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. Run [=set automatic beacon data=] with <var ignore>event</var> and |instance|'s
+  1. Run [=set automatic beacon data=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
 </div>
 
@@ -830,7 +860,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
      configs=]:
 
-     1. <span class="XXX">TODO: construct a {{FencedFrameConfig}} from |config| and |urn|</span>.
+     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where {{FencedFrameConfig/urn}} is
+        |urn| and {{FencedFrameConfig/config}} is |config|.
+        <span class="XXX">TODO: phrase the constructor correctly</span>.
 
   1. Return |results|.
 </div>
