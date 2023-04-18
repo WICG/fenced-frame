@@ -461,9 +461,6 @@ We now establish some preliminary types:
 A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>
 `opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
 
-A <dfn export for=fencedframetype>mapped url</dfn> is a [=url=]. <span class=XXX>TODO: Stipulate a
-url with particular schemes?</span>
-
 A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integer <dfn export for=
 "size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
 TODO: Maybe change the numeric type.</span>
@@ -520,9 +517,9 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: null, or a struct with the following fields:
+  :: a struct with the following fields:
     : <dfn for="mapped url">value</dfn>
-    :: a [=fencedframetype/mapped url=]
+    :: a [=URL=]
 
     : <dfn for="mapped url">visibility</dfn>
     :: a [=visibility=]
@@ -596,7 +593,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
-  :: null, or a [=fencedframetype/mapped url=]
+  :: a [=URL=]
 
   : <dfn>container size</dfn>
   :: null, or a [=fencedframetype/size=]
@@ -635,8 +632,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   [=fenced frame config instance=] with the following members:
 
     : [=fenced frame config instance/mapped url=]
-    :: |config|'s [=fenced frame config/mapped url=] if null, otherwise |config|'s [=fenced frame
-       config/mapped url=]'s [=mapped url/value=]
+    :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
 
     : [=fenced frame config instance/container size=]
     :: |config|'s [=fenced frame config/container size=] if null
@@ -783,10 +779,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
-
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
@@ -806,10 +801,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
-
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
@@ -825,10 +819,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. [=Assert=] |instance|'s [=fenced frame config instance/mapped url=] is not null.
-
   1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s origin are not [=same origin=], then return.
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
 
   1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
 
