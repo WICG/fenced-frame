@@ -467,9 +467,14 @@ A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integ
 "size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
 TODO: Maybe change the numeric type.</span>
 
-An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with <dfn export
-for="interest group descriptor">owner</dfn>, which is a string, and <dfn export for="interest group
-descriptor">name</dfn>, which is a string.
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="interest group descriptor">
+  : <dfn>owner</dfn>
+  :: a [=string=]
+
+  : <dfn>name</dfn>
+  :: a [=string=]
+</dl>
 
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
@@ -477,38 +482,104 @@ set=].
 An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
 [=policy-controlled features=].
 
-A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] whose [=map/keys=]
+are {{FenceReportingDestination}}s and whose [=map/values=] are either `"pending"`, or [=maps=]
+whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=].
+
+A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="fenced frame reporting metadata">
+  : <dfn>fenced frame reporting map</dfn>
+  :: a [=fencedframetype/fenced frame reporting map=]
+
+  : <dfn>direct seller is seller</dfn>
+  :: a boolean
+</dl>
 
 <div algorithm>
-  In order to <dfn export>report an event</dfn>, run these steps:
+  In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
+  [=map=] |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are
+  [=urls=], run these steps:
 
-  1. <span class=XXX>TODO: fill this in</span>
+  1. [=Assert=] that |reporting map|[|destination|] is `"pending"`.
+
+  1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
+</div>
+
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="fenced frame reporter">
+  : <dfn>fenced frame reporting map reference</dfn>
+  :: a reference to a [=fencedframetype/fenced frame reporting map=]
+     <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
+
+  : <dfn>direct seller is seller</dfn>
+  :: a boolean
+
+  : <dfn>automatic beacon data</dfn>
+  :: null, or a struct with the following [=struct/items=]:
+     <dl dfn-for="automatic beacon data">
+       : <dfn>eventData</dfn>
+       :: a [=string=]
+
+       : <dfn>destination</dfn>
+       :: a [=list=] of {{FenceReportingDestination}}s
+     </dl>
+</dl>
+
+<div algorithm>
+  In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
+  |reporter| with a {{FenceReportingDestination}} |destination|, [=string=] |eventType|, and
+  [=string=] |eventData|, run these steps:
+
+  1. If |destination| is `"direct-seller"`:
+
+     1. If |reporter|'s [=fenced frame reporter/direct seller is seller=] is true, set
+        |destination| to `"seller"`.
+
+     1. Otherwise, set |destination| to `"component-seller"`.
+
+  1. Let |reporting map| be |reporter|'s [=fenced frame reporter/fenced frame reporting map
+     reference=].
+
+  1. If |reporting map|[|destination|] does not [=map/exist=], return.
+
+  1. If |reporting map|[|destination|] is `"pending"`, return and asynchronously wait until it is
+     no longer pending.
+     <span class=XXX>TODO: Specify the waiting properly.
+
+  1. If |reporting map|[|destination|]|eventType| does not [=map/exist=], return.
+
+  1. Let |destination url| be |reporting map|[|destination|]|eventType|.
+
+  1. Send a beacon with |eventData| to |destination url|.
+     <span class=XXX>TODO: specify the beacon send</span>
 </div>
 
 <div algorithm>
-  In order to <dfn export>report a private aggregation event</dfn>, run these steps:
+  In order to <dfn>report a private aggregation event</dfn> using a [=fencedframetype/fenced frame reporter=]
+  |reporter| with a [=string=] |event|, run these steps:
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
-<div algorithm>
-  In order to <dfn export>set automatic beacon data</dfn>, run these steps:
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="exfiltration budget metadata">
+  : <dfn>origin</dfn>
+  :: an [=origin=]
 
-  1. <span class=XXX>TODO: Fill this in</span>
-</div>
+  : <dfn>amount to debit</dfn>
+  :: a non-negative valid floating point number
+</dl>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct containing an
-<dfn export for="exfiltration budget metadata">origin</dfn>, which is an [=origin=]; and an <dfn
-export for="exfiltration budget metadata">amount to debit</dfn>, which is a non-negative valid
-floating point number.
+An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="exfiltration budget metadata reference">
+  : <dfn>origin</dfn>
+  :: an [=origin=]
 
-An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct
-containing an <dfn export for="exfiltration budget metadata reference">origin</dfn>, which is an
-[=origin=]; and an <dfn export for="exfiltration budget metadata reference">amount to debit
-reference</dfn>, which is a mutable reference to a non-negative valid floating point number.
-<span class=XXX>TODO: are mutable references a thing in spec?</span>
-
-An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
+  : <dfn>amount to debit reference</dfn>
+  :: a mutable reference to a non-negative valid floating point number
+     <span class=XXX>TODO: Handle pointers/references in a more specy-y way</span>
+</dl>
 
 A <dfn export>partition nonce</dfn> is an [=implementation-defined=] value.
 
@@ -561,10 +632,10 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="effective permissions">visibility</dfn>
     :: a [=visibility=]
 
-  : <dfn>fenced frame reporter</dfn>
+  : <dfn>fenced frame reporting metadata</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="fenced frame reporter">value</dfn>
-    :: a [=fencedframetype/fenced frame reporter=]
+    : <dfn for="fenced frame reporting metadata">value</dfn>
+    :: a [=fencedframetype/fenced frame reporting metadata=]
 
     : <dfn for="fenced frame reporter">visibility</dfn>
     :: a [=visibility=]
@@ -586,7 +657,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an [=fencedframetype/embedder shared storage context=]
+  :: null, or a [=string=]
 </dl>
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
@@ -612,7 +683,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective permissions</dfn>
   :: null, or an [=fencedframetype/exhaustive set of permissions=]
 
-  : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
+  : <dfn>fenced frame reporter</dfn>
   :: null, or a [=fencedframetype/fenced frame reporter=]
 
   : <dfn>exfiltration budget metadata reference</dfn>
@@ -626,7 +697,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: a [=partition nonce=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an [=fencedframetype/embedder shared storage context=]
+  :: null, or a [=string=]
 </dl>
 
 <div algorithm>
@@ -656,13 +727,32 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
        [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
-    :: |config|'s <span class=XXX>TODO: Fill this in</span>
+    ::
+        1. If |config|'s [=fenced frame config/fenced frame reporting metadata=]'s [=fenced frame
+           reporting metadata/value=] is null, set to null.
+
+        1. Otherwise, set to a [=fencedframetype/fenced frame reporter=] with the following
+           members:
+
+            : [=fenced frame reporter/fenced frame reporting map reference=]
+            :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
+               [=fenced frame reporting metadata/value=]'s [=fenced frame reporting metadata/fenced
+               frame reporting map=]
+
+            : [=fenced frame reporter/direct seller is seller=]
+            :: |config|'s [=fenced frame config/fenced frame reporting metadata=]'s [=fenced frame
+               reporting metadata/value=]'s [=fenced frame reporting metadata/direct seller is
+               seller=]
+
+            : [=fenced frame reporter/automatic beacon data=]
+            :: null
 
     : [=fenced frame config instance/exfiltration budget metadata reference=]
     ::
         1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
 
         1. Otherwise, set to a [=fencedframetype/exfiltration budget metadata reference=]:
+
             : [=exfiltration budget metadata reference/origin=]
             :: |config|'s [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration
                budget metadata/value=]'s [=exfiltration budget metadata/origin=]
@@ -835,16 +925,21 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] with |event| and
-     |instance|'s [=fenced frame config instance/fenced frame reporter=].
+  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] using |instance|'s
+     [=fenced frame config instance/fenced frame reporter=] with |event|.
 
-  1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
-     [=fenced frame config instance/fenced frame reporter=].
+  1. If |event| is a {{FenceEvent}}, [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
+
+     1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+        reporter=] with |destination|, |event|'s {{FenceEvent/eventType}}, and |event|'s
+        {{FenceEvent/eventData}}.
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
+
+  1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
      navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
@@ -857,8 +952,14 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. Run [=set automatic beacon data=] with |event| and |instance|'s
-     [=fenced frame config instance/fenced frame reporter=].
+  1. Set |instance|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame
+     reporter/automatic beacon data=] to a struct with the following members:
+
+     : eventData
+     :: |event|'s {{FenceEvent/eventData}}
+
+     : destination
+     :: |event|'s {{FenceEvent/destination}}
 </div>
 
 <div algorithm>
