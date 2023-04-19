@@ -421,7 +421,6 @@ then turn the pending config into a finalized config. Those procedures are as fo
   1. If |nestedMapping|[|urn|] [=map/exists=], return its value.
 
   1. If |pendingMapping|[|urn|] [=map/exists=], wait until it does not [=map/exist=].
-     <span class="XXX">TODO: Formalize waiting?</span>
 
   1. If |finalizedMapping|[|urn|] [=map/exists=], return its value.
 
@@ -705,7 +704,7 @@ maps to an internal [=fenced frame config=] [=struct=].
   enum OpaqueProperty {"opaque"};
 
   typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
+  typedef USVString FencedFrameConfigURL;
 
   [Exposed=Window]
   interface FencedFrameConfig {
@@ -719,11 +718,8 @@ maps to an internal [=fenced frame config=] [=struct=].
   };
 </pre>
 
-Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
-
-Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a [=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
-
-<span class=XXX>TODO: add more fields to {{FencedFrameConfig}}</span>
+Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a
+[=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
 
 <div algorithm="url getter">
   The {{FencedFrameConfig/url}} IDL attribute getter steps are:
