@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="93245cf848ffc9ac5a12bb4701af0f6427f352e4" name="document-revision">
+  <meta content="af6b548efce0e7a9cc40e43336dd2ff7ad4b30e2" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -679,7 +679,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-18">18 April 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-19">19 April 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -850,10 +850,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>url</var> be the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL record</a> <code>about:blank</code>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url" id="ref-for-parse-a-url">Parse</a> <var>element</var>’s <a data-link-type="dfn" href="#fencedframe-config" id="ref-for-fencedframe-config①">config</a>'s <a data-link-type="dfn" href="#fencedframeconfig-url" id="ref-for-fencedframeconfig-url">url</a> relative to <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>. If this is
- successful, then set <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">url</a> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record" id="ref-for-resulting-url-record">resulting URL record</a>.</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url" id="ref-for-parse-a-url">Parse</a> <var>element</var>’s <a data-link-type="dfn" href="#fencedframe-config" id="ref-for-fencedframe-config①">config</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-mapped-url" id="ref-for-fenced-frame-config-mapped-url">mapped url</a>'s <a data-link-type="dfn" href="#mapped-url-value" id="ref-for-mapped-url-value">value</a> relative to <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>. If this is successful, then set <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">url</a> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record" id="ref-for-resulting-url-record">resulting URL record</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">Navigate</a> <var>element</var>’s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①">fenced navigable</a> to <var>url</var> using <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a>, with <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-hh" id="ref-for-navigation-hh">historyHandling</a> set to "<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#hh-replace" id="ref-for-hh-replace"><code>replace</code></a>" , and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-referrer-policy" id="ref-for-navigation-referrer-policy">referrerPolicy</a> set to <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"<code>no-referrer</code>"</a>.</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">Navigate</a> <var>element</var>’s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①">fenced navigable</a> to <var>url</var> using <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a>, with <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-hh" id="ref-for-navigation-hh">historyHandling</a> set to "<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#hh-replace" id="ref-for-hh-replace"><code>replace</code></a>" , and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-referrer-policy" id="ref-for-navigation-referrer-policy">referrerPolicy</a> set to <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"<code>no-referrer</code>"</a>. <span class="XXX">TODO: generate and store the config instance</span></p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="destroy">
@@ -995,8 +994,8 @@ of each field, though they may choose to set the values to null.</p>
    <p>Each time a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⓪">fencedframe</a></code> navigates to a <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config⑨">fenced frame config</a>, it is instantiated as a new <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance">fenced frame config instance</a>, which governs that particular context inside the <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable②">fenced navigable</a>.</p>
    <h4 class="heading settled" data-level="1.3.2" id="fenced-frame-config-struct"><span class="secno">1.3.2. </span><span class="content">The <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⓪">fenced frame config</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a></span><a class="self-link" href="#fenced-frame-config-struct"></a></h4>
    <p>We now establish some preliminary types:</p>
-   <p>A <dfn data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-export id="fencedframeconfig-visibility">visibility<a class="self-link" href="#fencedframeconfig-visibility"></a></dfn> is either "<dfn data-dfn-for="visibility" data-dfn-type="dfn" data-export data-lt="opaque" id="visibility-opaque"> <code>opaque</code><a class="self-link" href="#visibility-opaque"></a></dfn>" or "<dfn data-dfn-for="visibility" data-dfn-type="dfn" data-export id="visibility-transparent"><code>transparent</code><a class="self-link" href="#visibility-transparent"></a></dfn>".</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-size">size</dfn> is a struct with non-negative integer <dfn data-dfn-for="size" data-dfn-type="dfn" data-export id="size-width">width<a class="self-link" href="#size-width"></a></dfn> and non-negative integer <dfn data-dfn-for="size" data-dfn-type="dfn" data-export id="size-height">height<a class="self-link" href="#size-height"></a></dfn>. <span class="XXX"> TODO: Maybe change the numeric type.</span></p>
+   <p>A <dfn data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-export id="fencedframeconfig-visibility">visibility<a class="self-link" href="#fencedframeconfig-visibility"></a></dfn> is either "<dfn data-dfn-for="visibility" data-dfn-type="dfn" data-export data-lt="opaque" id="visibility-opaque"> <code>opaque</code><a class="self-link" href="#visibility-opaque"></a></dfn>" or "<dfn class="dfn-paneled" data-dfn-for="visibility" data-dfn-type="dfn" data-export id="visibility-transparent"><code>transparent</code></dfn>".</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-size">size</dfn> is a struct with non-negative integer <dfn class="dfn-paneled" data-dfn-for="size" data-dfn-type="dfn" data-export id="size-width">width</dfn> and non-negative integer <dfn class="dfn-paneled" data-dfn-for="size" data-dfn-type="dfn" data-export id="size-height">height</dfn>. <span class="XXX"> TODO: Maybe change the numeric type.</span></p>
    <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-interest-group-descriptor">interest group descriptor</dfn> is a struct with <dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-owner">owner<a class="self-link" href="#interest-group-descriptor-owner"></a></dfn>, which is a string, and <dfn data-dfn-for="interest group
 descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-name">name<a class="self-link" href="#interest-group-descriptor-name"></a></dfn>, which is a string.</p>
    <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exhaustive-set-of-sandbox-flags">exhaustive set of sandbox flags</dfn> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag
@@ -1042,7 +1041,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="mapped url" data-dfn-type="dfn" data-export id="mapped-url-value">value</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a></p>
-      <dt data-md><dfn data-dfn-for="mapped url" data-dfn-type="dfn" data-export id="mapped-url-visibility">visibility<a class="self-link" href="#mapped-url-visibility"></a></dfn>
+      <dt data-md><dfn class="dfn-paneled" data-dfn-for="mapped url" data-dfn-type="dfn" data-export id="mapped-url-visibility">visibility</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility①">visibility</a></p>
      </dl>
@@ -1056,7 +1055,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="content size" data-dfn-type="dfn" data-export id="content-size-value">value</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="#fencedframetype-size" id="ref-for-fencedframetype-size①">size</a></p>
-      <dt data-md><dfn data-dfn-for="content size" data-dfn-type="dfn" data-export id="content-size-visibility">visibility<a class="self-link" href="#content-size-visibility"></a></dfn>
+      <dt data-md><dfn class="dfn-paneled" data-dfn-for="content size" data-dfn-type="dfn" data-export id="content-size-visibility">visibility</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility②">visibility</a></p>
      </dl>
@@ -1121,7 +1120,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
      <dl>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="nested configs" data-dfn-type="dfn" data-export id="nested-configs-value">value</dfn>
       <dd data-md>
-       <p>a sequence of <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①①">fenced frame configs</a></p>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①①">fenced frame configs</a></p>
       <dt data-md><dfn data-dfn-for="nested configs" data-dfn-type="dfn" data-export id="nested-configs-visibility">visibility<a class="self-link" href="#nested-configs-visibility"></a></dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility⑧">visibility</a></p>
@@ -1172,7 +1171,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
     <dl>
      <dt data-md><a data-link-type="dfn" href="#fenced-frame-config-instance-mapped-url" id="ref-for-fenced-frame-config-instance-mapped-url">mapped url</a>
      <dd data-md>
-      <p><var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-mapped-url" id="ref-for-fenced-frame-config-mapped-url">mapped url</a>'s <a data-link-type="dfn" href="#mapped-url-value" id="ref-for-mapped-url-value">value</a></p>
+      <p><var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-mapped-url" id="ref-for-fenced-frame-config-mapped-url①">mapped url</a>'s <a data-link-type="dfn" href="#mapped-url-value" id="ref-for-mapped-url-value①">value</a></p>
      <dt data-md><a data-link-type="dfn" href="#fenced-frame-config-instance-container-size" id="ref-for-fenced-frame-config-instance-container-size">container size</a>
      <dd data-md>
       <p><var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-container-size" id="ref-for-fenced-frame-config-container-size">container size</a> if null</p>
@@ -1214,9 +1213,22 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
        <li data-md>
         <p>If <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-nested-configs" id="ref-for-fenced-frame-config-nested-configs">nested configs</a> is null, set to null.</p>
        <li data-md>
-        <p>Otherwise, set to an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">ordered map</a>, where for each <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①④">fenced frame config</a> in <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-nested-configs" id="ref-for-fenced-frame-config-nested-configs①">nested configs</a>'s <a data-link-type="dfn" href="#nested-configs-value" id="ref-for-nested-configs-value">value</a>, there is
- an entry where the key is a randomly sampled <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑧">urn uuid</a> and the value is the <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⑤">fenced
- frame config</a>. <span class="XXX">TODO: Write this in the proper syntax</span></p>
+        <p>Otherwise:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">ordered map</a>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>nested config</var> of <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-nested-configs" id="ref-for-fenced-frame-config-nested-configs①">nested
+ configs</a>'s <a data-link-type="dfn" href="#nested-configs-value" id="ref-for-nested-configs-value">value</a>:</p>
+          <ol>
+           <li data-md>
+            <p>Let <var>urn</var> be a random, unique <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑧">urn uuid</a>.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set③">Set</a> <var>results</var>[<var>urn</var>] to <var>nested config</var>.</p>
+          </ol>
+         <li data-md>
+          <p>Set <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs②">nested configs</a> to <var>results</var>.</p>
+        </ol>
       </ol>
      <dt data-md><a data-link-type="dfn" href="#fenced-frame-config-instance-partition-nonce" id="ref-for-fenced-frame-config-instance-partition-nonce">partition nonce</a>
      <dd data-md>
@@ -1228,7 +1240,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
    </div>
    <h4 class="heading settled" data-level="1.3.4" id="fenced-frame-config-interface"><span class="secno">1.3.4. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig③">FencedFrameConfig</a></code> interface</span><a class="self-link" href="#fenced-frame-config-interface"></a></h4>
    <p>One major input to the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①①">fencedframe</a></code> element is the <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig④">FencedFrameConfig</a></code> interface, which
-maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⑥">fenced frame config</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct②">struct</a>.</p>
+maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①④">fenced frame config</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct②">struct</a>.</p>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-opaqueproperty"><code><c- g>OpaqueProperty</c-></code></dfn> {<dfn class="idl-code" data-dfn-for="OpaqueProperty" data-dfn-type="enum-value" data-export id="dom-opaqueproperty-opaque"><code><c- s>"opaque"</c-></code><a class="self-link" href="#dom-opaqueproperty-opaque"></a></dfn>};
 
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#enumdef-opaqueproperty" id="ref-for-enumdef-opaqueproperty"><c- n>OpaqueProperty</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-fencedframeconfigsize"><code><c- g>FencedFrameConfigSize</c-></code></dfn>;
@@ -1236,47 +1248,80 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fencedframeconfig"><code><c- g>FencedFrameConfig</c-></code></dfn> {
-  <dfn class="idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="constructor" data-export data-lt="FencedFrameConfig(url)|constructor(url)" id="dom-fencedframeconfig-fencedframeconfig"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-fencedframeconfig-fencedframeconfig"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="FencedFrameConfig/FencedFrameConfig(url), FencedFrameConfig/constructor(url)" data-dfn-type="argument" data-export id="dom-fencedframeconfig-fencedframeconfig-url-url"><code><c- g>url</c-></code><a class="self-link" href="#dom-fencedframeconfig-fencedframeconfig-url-url"></a></dfn>);
-
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigurl" id="ref-for-typedefdef-fencedframeconfigurl"><c- n>FencedFrameConfigURL</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigURL?" id="dom-fencedframeconfig-url"><code><c- g>url</c-></code></dfn>;
-  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-width"><code><c- g>width</c-></code></dfn>;
-  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize①"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-height"><code><c- g>height</c-></code></dfn>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-containerwidth"><code><c- g>containerWidth</c-></code></dfn>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize①"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-containerheight"><code><c- g>containerHeight</c-></code></dfn>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize②"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-contentwidth"><code><c- g>contentWidth</c-></code></dfn>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize" id="ref-for-typedefdef-fencedframeconfigsize③"><c- n>FencedFrameConfigSize</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="attribute" data-export data-readonly data-type="FencedFrameConfigSize?" id="dom-fencedframeconfig-contentheight"><code><c- g>contentHeight</c-></code></dfn>;
 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fencedframeconfig-setsharedstoragecontext" id="ref-for-dom-fencedframeconfig-setsharedstoragecontext"><c- g>setSharedStorageContext</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="FencedFrameConfig/setSharedStorageContext(contextString)" data-dfn-type="argument" data-export id="dom-fencedframeconfig-setsharedstoragecontext-contextstring-contextstring"><code><c- g>contextString</c-></code><a class="self-link" href="#dom-fencedframeconfig-setsharedstoragecontext-contextstring-contextstring"></a></dfn>);
 };
 </pre>
    <p class="issue" id="issue-fd312a21"><a class="self-link" href="#issue-fd312a21"></a> Fix the "indistinguishable" IDL bug with the unions above.</p>
-   <p>Each <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑤">FencedFrameConfig</a></code> has a <dfn class="dfn-paneled" data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-noexport id="fencedframeconfig-url">url</dfn>, which is a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">URL</a>.</p>
-   <ol>
-    <li data-md>
-     <p><span class="XXX">TODO: add more fields to <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑥">FencedFrameConfig</a></code></span></p>
-   </ol>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑤">FencedFrameConfig</a></code> has two internal members: <dfn class="dfn-paneled" data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-noexport id="fencedframeconfig-urn">urn</dfn>, which is a <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑨">urn uuid</a>, and <dfn class="dfn-paneled" data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-noexport id="fencedframeconfig-config">config</dfn>, which is a <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⑤">fenced frame config</a>.</p>
+   <p><span class="XXX">TODO: add more fields to <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑥">FencedFrameConfig</a></code></span></p>
    <div class="algorithm" data-algorithm="url getter">
      The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-url" id="ref-for-dom-fencedframeconfig-url">url</a></code> IDL attribute getter steps are: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO</span></p>
+      <p>If <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑦">FencedFrameConfig</a></code>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config①">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-mapped-url" id="ref-for-fenced-frame-config-mapped-url②">mapped url</a>'s <a data-link-type="dfn" href="#mapped-url-visibility" id="ref-for-mapped-url-visibility">visibility</a> is <a data-link-type="dfn" href="#visibility-transparent" id="ref-for-visibility-transparent">transparent</a>, return the <a data-link-type="dfn" href="#fenced-frame-config-mapped-url" id="ref-for-fenced-frame-config-mapped-url③"> mapped url</a>'s <a data-link-type="dfn" href="#mapped-url-value" id="ref-for-mapped-url-value②">value</a>.</p>
+     <li data-md>
+      <p>Otherwise, return <code>"opaque"</code>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="width getter">
-     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-width" id="ref-for-dom-fencedframeconfig-width">width</a></code> IDL attribute getter steps are: 
+   <div class="algorithm" data-algorithm="containerWidth getter">
+     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-containerwidth" id="ref-for-dom-fencedframeconfig-containerwidth">containerWidth</a></code> IDL attribute getter steps are: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO</span></p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config②">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-container-size" id="ref-for-fenced-frame-config-container-size①">container size</a> is null,
+ return null.</p>
+     <li data-md>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config③">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-container-size" id="ref-for-fenced-frame-config-container-size②">container size</a>'s <a data-link-type="dfn" href="#size-width" id="ref-for-size-width">width</a>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="height getter">
-     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-height" id="ref-for-dom-fencedframeconfig-height">height</a></code> IDL attribute getter steps are: 
+   <div class="algorithm" data-algorithm="containerHeight getter">
+     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-containerheight" id="ref-for-dom-fencedframeconfig-containerheight">containerHeight</a></code> IDL attribute getter steps are: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO</span></p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config④">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-container-size" id="ref-for-fenced-frame-config-container-size③">container size</a> is null,
+ return null.</p>
+     <li data-md>
+      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config⑤">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-container-size" id="ref-for-fenced-frame-config-container-size④">container size</a>'s <a data-link-type="dfn" href="#size-height" id="ref-for-size-height">height</a>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="contentWidth getter">
+     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-contentwidth" id="ref-for-dom-fencedframeconfig-contentwidth">contentWidth</a></code> IDL attribute getter steps are: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config⑥">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size②">content size</a> is null,
+ return null.</p>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config⑦">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size③">content size</a>'s <a data-link-type="dfn" href="#content-size-visibility" id="ref-for-content-size-visibility">visibility</a> is <a data-link-type="dfn" href="#visibility-transparent" id="ref-for-visibility-transparent①">transparent</a>, return the <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size④">content
+ size</a>'s <a data-link-type="dfn" href="#content-size-value" id="ref-for-content-size-value①">value</a>'s <a data-link-type="dfn" href="#size-width" id="ref-for-size-width①">width</a>.</p>
+     <li data-md>
+      <p>Otherwise, return <code>"opaque"</code>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="contentHeight getter">
+     The <code class="idl"><a data-link-type="idl" href="#dom-fencedframeconfig-contentheight" id="ref-for-dom-fencedframeconfig-contentheight">contentHeight</a></code> IDL attribute getter steps are: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config⑧">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size⑤">content size</a> is null,
+ return null.</p>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config⑨">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size⑥">content size</a>'s <a data-link-type="dfn" href="#content-size-visibility" id="ref-for-content-size-visibility①">visibility</a> is <a data-link-type="dfn" href="#visibility-transparent" id="ref-for-visibility-transparent②">transparent</a>, return the <a data-link-type="dfn" href="#fenced-frame-config-content-size" id="ref-for-fenced-frame-config-content-size⑦">content
+ size</a>'s <a data-link-type="dfn" href="#content-size-value" id="ref-for-content-size-value②">value</a>'s <a data-link-type="dfn" href="#size-height" id="ref-for-size-height①">height</a>.</p>
+     <li data-md>
+      <p>Otherwise, return <code>"opaque"</code>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="setSharedStorageContext(contextString)" data-algorithm-for="FencedFrameConfig">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="method" data-export id="dom-fencedframeconfig-setsharedstoragecontext"><code>setSharedStorageContext(contextString)</code></dfn> method steps are: 
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="FencedFrameConfig" data-dfn-type="method" data-export id="dom-fencedframeconfig-setsharedstoragecontext"><code>setSharedStorageContext(<var>contextString</var>)</code></dfn> method steps
+  are: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO</span></p>
+      <p>Set <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config①⓪">config</a>'s <a data-link-type="dfn" href="#fenced-frame-config-embedder-shared-storage-context" id="ref-for-fenced-frame-config-embedder-shared-storage-context①">embedder shared storage
+ context</a> to <var>contextString</var>.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="1.4" id="fence-interface"><span class="secno">1.4. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#fence" id="ref-for-fence">Fence</a></code> interface</span><a class="self-link" href="#fence-interface"></a></h3>
@@ -1301,14 +1346,14 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="fence"><code><c- g>Fence</c-></code></dfn> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined①"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-reportevent" id="ref-for-dom-fence-reportevent"><c- g>reportEvent</c-></a>(<a data-link-type="idl-name" href="#typedefdef-reporteventtype" id="ref-for-typedefdef-reporteventtype"><c- n>ReportEventType</c-></a> <dfn class="idl-code" data-dfn-for="Fence/reportEvent(event)" data-dfn-type="argument" data-export id="dom-fence-reportevent-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-reportevent-event-event"></a></dfn>);
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined②"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fence-setreporteventdataforautomaticbeacons" id="ref-for-dom-fence-setreporteventdataforautomaticbeacons"><c- g>setReportEventDataForAutomaticBeacons</c-></a>(<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent①"><c- n>FenceEvent</c-></a> <dfn class="idl-code" data-dfn-for="Fence/setReportEventDataForAutomaticBeacons(event)" data-dfn-type="argument" data-export id="dom-fence-setreporteventdataforautomaticbeacons-event-event"><code><c- g>event</c-></code><a class="self-link" href="#dom-fence-setreporteventdataforautomaticbeacons-event-event"></a></dfn>);
-    <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑦"><c- n>FencedFrameConfig</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-fence-getnestedconfigs" id="ref-for-dom-fence-getnestedconfigs"><c- g>getNestedConfigs</c-></a>();
+    <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑧"><c- n>FencedFrameConfig</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-fence-getnestedconfigs" id="ref-for-dom-fence-getnestedconfigs"><c- g>getNestedConfigs</c-></a>();
 };
 </pre>
    <div class="algorithm" data-algorithm="reportEvent(event)" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-reportevent"><code>reportEvent(<var>event</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node
+      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node
  navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable" id="ref-for-nav-traversable">traversable navigable</a>'s <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance③">fenced frame config instance</a>.</p>
       <p><span class="XXX">This and the below references should point to an actual member on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①">traversable
  navigable</a>, not just the type.</span></p>
@@ -1329,7 +1374,7 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-setreporteventdataforautomaticbeacons"><code>setReportEventDataForAutomaticBeacons(<var>event</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window①">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable①">node
+      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window①">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable①">node
  navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable" id="ref-for-nav-traversable①">traversable navigable</a>'s <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance④">fenced frame config instance</a>.</p>
      <li data-md>
       <p>If <var>instance</var> is null, then return.</p>
@@ -1346,7 +1391,7 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-getnestedconfigs"><code>getNestedConfigs()</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window②">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable②">node
+      <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window②">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable②">node
  navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable" id="ref-for-nav-traversable②">traversable navigable</a>'s <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance⑤">fenced frame config instance</a>.</p>
      <li data-md>
       <p>If <var>instance</var> is null, then return.</p>
@@ -1354,15 +1399,15 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
       <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin④">origin</a> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-mapped-url" id="ref-for-fenced-frame-config-instance-mapped-url③">mapped url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin②">origin</a> are not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin②">same origin</a>, then
  return.</p>
      <li data-md>
-      <p>If <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs②">nested configs</a> is null, then return.</p>
+      <p>If <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs③">nested configs</a> is null, then return.</p>
      <li data-md>
-      <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑧">FencedFrameConfig</a></code>s.</p>
+      <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑨">FencedFrameConfig</a></code>s.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate①">For each</a> <var>urn</var> → <var>config</var> of <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs③">nested
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate①">For each</a> <var>urn</var> → <var>config</var> of <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs④">nested
  configs</a>:</p>
       <ol>
        <li data-md>
-        <p><span class="XXX">TODO: construct a <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑨">FencedFrameConfig</a></code> from <var>config</var> and <var>urn</var></span>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">Extend</a> <var>results</var> with a <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①⓪">FencedFrameConfig</a></code> where the <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①①">FencedFrameConfig</a></code>'s <a data-link-type="dfn" href="#fencedframeconfig-urn" id="ref-for-fencedframeconfig-urn">urn</a> is <var>urn</var> and the <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig①②">FencedFrameConfig</a></code>'s <a data-link-type="dfn" href="#fencedframeconfig-config" id="ref-for-fencedframeconfig-config①①"> config</a> is <var>config</var>. <span class="XXX">TODO: phrase the constructor correctly</span>.</p>
       </ol>
      <li data-md>
       <p>Return <var>results</var>.</p>
@@ -1441,8 +1486,8 @@ list</a>, in step 1, add a new entry to the list:</p>
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export id="dom-window-fence"><code>fence</code></dfn> getter steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable">navigable</a>'s <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance⑥">fenced frame config instance</a> is not null, then
- return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="#window-fence" id="ref-for-window-fence">fence</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable">navigable</a>'s <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance⑥">fenced frame config instance</a> is not null, then
+ return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①④">this</a>'s <a data-link-type="dfn" href="#window-fence" id="ref-for-window-fence">fence</a>.</p>
      <li data-md>
       <p>Return null.</p>
     </ol>
@@ -1622,7 +1667,7 @@ in the <a href="#nested-traversables-intro">§ 2.3.1 Introduction</a>.</p>
     <p>Further rewrite step 2 of this algorithm to:</p>
     <ol start="2">
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">Extend</a> <var>navigables</var> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#descendant-navigables" id="ref-for-descendant-navigables②">descendant navigables</a> with <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced">unfenced</a> set to <a data-link-type="dfn" href="#inclusive-dn-unfenced" id="ref-for-inclusive-dn-unfenced">unfenced</a>.</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend①">Extend</a> <var>navigables</var> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#descendant-navigables" id="ref-for-descendant-navigables②">descendant navigables</a> with <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced">unfenced</a> set to <a data-link-type="dfn" href="#inclusive-dn-unfenced" id="ref-for-inclusive-dn-unfenced">unfenced</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="descendant-navigables-patch">
@@ -1630,11 +1675,11 @@ in the <a href="#nested-traversables-intro">§ 2.3.1 Introduction</a>.</p>
   like so: 
     <ol>
      <li data-md>
-      <p>Let <var>navigables</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a>.</p>
+      <p>Let <var>navigables</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
      <li data-md>
-      <p>Let <var>navigableContainers</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a> of all <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-descendant" id="ref-for-concept-shadow-including-descendant">shadow-including descendants</a> of <var>document</var> that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container②">navigable containers</a> (or <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①">fenced navigable containers</a>, if <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced①">unfenced</a> us true), in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-tree-order" id="ref-for-concept-shadow-including-tree-order">shadow-including tree order</a>.</p>
+      <p>Let <var>navigableContainers</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a> of all <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-descendant" id="ref-for-concept-shadow-including-descendant">shadow-including descendants</a> of <var>document</var> that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container②">navigable containers</a> (or <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①">fenced navigable containers</a>, if <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced①">unfenced</a> us true), in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-tree-order" id="ref-for-concept-shadow-including-tree-order">shadow-including tree order</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>navigableContainer</var> of <var>navigableContainers</var>:</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>navigableContainer</var> of <var>navigableContainers</var>:</p>
       <ol>
        <li data-md>
         <p>If <var>navigableContainer</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#content-navigable" id="ref-for-content-navigable①">content navigable</a> and <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①⑦">fenced navigable</a> are both null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</p>
@@ -1642,7 +1687,7 @@ in the <a href="#nested-traversables-intro">§ 2.3.1 Introduction</a>.</p>
         <p>Let <var>descendantNavigable</var> be either <var>navigableContainer</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#content-navigable" id="ref-for-content-navigable②">content
  navigable</a> or <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①⑧">fenced navigable</a>, whichever is non-null.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend①">Extend</a> <var>navigables</var> with <var>descendantNavigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document①">active document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#inclusive-descendant-navigables" id="ref-for-inclusive-descendant-navigables①">inclusive descendant navigables</a> with <a data-link-type="dfn" href="#inclusive-dn-unfenced" id="ref-for-inclusive-dn-unfenced①">unfenced</a> set to <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced②">dn-unfenced</a>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend②">Extend</a> <var>navigables</var> with <var>descendantNavigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document①">active document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#inclusive-descendant-navigables" id="ref-for-inclusive-descendant-navigables①">inclusive descendant navigables</a> with <a data-link-type="dfn" href="#inclusive-dn-unfenced" id="ref-for-inclusive-dn-unfenced①">unfenced</a> set to <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced②">dn-unfenced</a>.</p>
       </ol>
      <li data-md>
       <p>Return <var>navigables</var>.</p>
@@ -1885,21 +1930,25 @@ specification adds another value for fenced frames:</p>
     <ul>
      <li><a href="#dom-htmlfencedframeelement-config">attribute for HTMLFencedFrameElement</a><span>, in § 1</span>
      <li><a href="#fencedframe-config">dfn for fencedframe</a><span>, in § 1</span>
+     <li><a href="#fencedframeconfig-config">dfn for fencedframeconfig</a><span>, in § 1.3.4</span>
     </ul>
    <li><a href="#dom-htmlfencedframeelement-htmlfencedframeelement">constructor()</a><span>, in § 1</span>
-   <li><a href="#dom-fencedframeconfig-fencedframeconfig">constructor(url)</a><span>, in § 1.3.4</span>
+   <li><a href="#dom-fencedframeconfig-containerheight">containerHeight</a><span>, in § 1.3.4</span>
    <li>
     container size
     <ul>
      <li><a href="#fenced-frame-config-container-size">dfn for fenced frame config</a><span>, in § 1.3.2</span>
      <li><a href="#fenced-frame-config-instance-container-size">dfn for fenced frame config instance</a><span>, in § 1.3.3</span>
     </ul>
+   <li><a href="#dom-fencedframeconfig-containerwidth">containerWidth</a><span>, in § 1.3.4</span>
+   <li><a href="#dom-fencedframeconfig-contentheight">contentHeight</a><span>, in § 1.3.4</span>
    <li>
     content size
     <ul>
      <li><a href="#fenced-frame-config-content-size">dfn for fenced frame config</a><span>, in § 1.3.2</span>
      <li><a href="#fenced-frame-config-instance-content-size">dfn for fenced frame config instance</a><span>, in § 1.3.3</span>
     </ul>
+   <li><a href="#dom-fencedframeconfig-contentwidth">contentWidth</a><span>, in § 1.3.4</span>
    <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 2.3.3</span>
    <li><a href="#dom-fenceevent-destination">destination</a><span>, in § 1.4</span>
    <li><a href="#dom-fencereportingdestination-direct-seller">"direct-seller"</a><span>, in § 1.4</span>
@@ -1958,7 +2007,6 @@ specification adds another value for fenced frames:</p>
      <li><a href="#traversable-navigable-fenced-frame-config-mapping">dfn for traversable navigable</a><span>, in § 1.2</span>
     </ul>
    <li><a href="#typedefdef-fencedframeconfigsize">FencedFrameConfigSize</a><span>, in § 1.3.4</span>
-   <li><a href="#dom-fencedframeconfig-fencedframeconfig">FencedFrameConfig(url)</a><span>, in § 1.3.4</span>
    <li><a href="#typedefdef-fencedframeconfigurl">FencedFrameConfigURL</a><span>, in § 1.3.4</span>
    <li>
     fenced frame reporter
@@ -1980,7 +2028,6 @@ specification adds another value for fenced frames:</p>
    <li>
     height
     <ul>
-     <li><a href="#dom-fencedframeconfig-height">attribute for FencedFrameConfig</a><span>, in § 1.3.4</span>
      <li><a href="#dom-htmlfencedframeelement-height">attribute for HTMLFencedFrameElement</a><span>, in § 1</span>
      <li><a href="#size-height">dfn for size</a><span>, in § 1.3.2</span>
     </ul>
@@ -2056,12 +2103,8 @@ specification adds another value for fenced frames:</p>
      <li><a href="#navigable-unfenced-parent">dfn for navigable</a><span>, in § 2.3.2</span>
      <li><a href="#traversable-navigable-unfenced-parent">dfn for traversable navigable</a><span>, in § 2.3.2</span>
     </ul>
-   <li>
-    url
-    <ul>
-     <li><a href="#dom-fencedframeconfig-url">attribute for FencedFrameConfig</a><span>, in § 1.3.4</span>
-     <li><a href="#fencedframeconfig-url">dfn for fencedframeconfig</a><span>, in § 1.3.4</span>
-    </ul>
+   <li><a href="#dom-fencedframeconfig-url">url</a><span>, in § 1.3.4</span>
+   <li><a href="#fencedframeconfig-urn">urn</a><span>, in § 1.3.4</span>
    <li>
     value
     <ul>
@@ -2090,7 +2133,6 @@ specification adds another value for fenced frames:</p>
    <li>
     width
     <ul>
-     <li><a href="#dom-fencedframeconfig-width">attribute for FencedFrameConfig</a><span>, in § 1.3.4</span>
      <li><a href="#dom-htmlfencedframeelement-width">attribute for HTMLFencedFrameElement</a><span>, in § 1</span>
      <li><a href="#size-width">dfn for size</a><span>, in § 1.3.2</span>
     </ul>
@@ -2100,6 +2142,7 @@ specification adds another value for fenced frames:</p>
    <ul>
     <li><a href="#ref-for-urn-uuid">1.2. Fenced frame config mapping</a> <a href="#ref-for-urn-uuid①">(2)</a> <a href="#ref-for-urn-uuid②">(3)</a> <a href="#ref-for-urn-uuid③">(4)</a> <a href="#ref-for-urn-uuid④">(5)</a> <a href="#ref-for-urn-uuid⑤">(6)</a> <a href="#ref-for-urn-uuid⑥">(7)</a>
     <li><a href="#ref-for-urn-uuid⑦">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-urn-uuid⑧">(2)</a>
+    <li><a href="#ref-for-urn-uuid⑨">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-0767ca6dc5cfbe33bf18821344833543" class="dfn-panel" data-for="0767ca6dc5cfbe33bf18821344833543" id="infopanel-for-0767ca6dc5cfbe33bf18821344833543">
@@ -3018,13 +3061,15 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-36deff0843569301f4a70c34db646a95" class="dfn-panel" data-for="36deff0843569301f4a70c34db646a95" id="infopanel-for-36deff0843569301f4a70c34db646a95">
    <span id="infopaneltitle-for-36deff0843569301f4a70c34db646a95" style="display:none">Info about the 'extend' external reference.</span><a href="https://infra.spec.whatwg.org/#list-extend">https://infra.spec.whatwg.org/#list-extend</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-extend">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-list-extend①">(2)</a>
+    <li><a href="#ref-for-list-extend">1.4. The Fence interface</a>
+    <li><a href="#ref-for-list-extend①">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-list-extend②">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-8b9e78ceedde26e69095bd6f6cce47bf" class="dfn-panel" data-for="8b9e78ceedde26e69095bd6f6cce47bf" id="infopanel-for-8b9e78ceedde26e69095bd6f6cce47bf">
    <span id="infopaneltitle-for-8b9e78ceedde26e69095bd6f6cce47bf" style="display:none">Info about the 'for each (for list)' external reference.</span><a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-iterate">2.4. Modifications to navigable-traversing algorithms</a>
+    <li><a href="#ref-for-list-iterate">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-list-iterate①">2.4. Modifications to navigable-traversing algorithms</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fa396dfe2ff99ebb3815418bc73c40fb" class="dfn-panel" data-for="fa396dfe2ff99ebb3815418bc73c40fb" id="infopanel-for-fa396dfe2ff99ebb3815418bc73c40fb">
@@ -3064,9 +3109,9 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" class="dfn-panel" data-for="fafd38d2108e357bcc9a6fd7f3cd04a7" id="infopanel-for-fafd38d2108e357bcc9a6fd7f3cd04a7">
    <span id="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" style="display:none">Info about the 'list' external reference.</span><a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list">1.3.2. The fenced frame config struct</a>
-    <li><a href="#ref-for-list①">1.4. The Fence interface</a>
-    <li><a href="#ref-for-list②">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-list③">(2)</a>
+    <li><a href="#ref-for-list">1.3.2. The fenced frame config struct</a> <a href="#ref-for-list①">(2)</a>
+    <li><a href="#ref-for-list②">1.4. The Fence interface</a>
+    <li><a href="#ref-for-list③">2.4. Modifications to navigable-traversing algorithms</a> <a href="#ref-for-list④">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-4bf12d0cddf322a1e2a9fb52f4d85843" class="dfn-panel" data-for="4bf12d0cddf322a1e2a9fb52f4d85843" id="infopanel-for-4bf12d0cddf322a1e2a9fb52f4d85843">
@@ -3093,6 +3138,7 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-5c3d3462610d78bc92b91000cc511bc4" style="display:none">Info about the 'set' external reference.</span><a href="https://infra.spec.whatwg.org/#map-set">https://infra.spec.whatwg.org/#map-set</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-map-set">1.2. Fenced frame config mapping</a> <a href="#ref-for-map-set①">(2)</a> <a href="#ref-for-map-set②">(3)</a>
+    <li><a href="#ref-for-map-set③">1.3.3. The fenced frame config instance struct</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-cb6090a4148c3b79aef250d4d6625e39" class="dfn-panel" data-for="cb6090a4148c3b79aef250d4d6625e39" id="infopanel-for-cb6090a4148c3b79aef250d4d6625e39">
@@ -3177,7 +3223,6 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-concept-url">1. The fencedframe element</a> <a href="#ref-for-concept-url①">(2)</a>
     <li><a href="#ref-for-concept-url②">1.3.2. The fenced frame config struct</a>
     <li><a href="#ref-for-concept-url③">1.3.3. The fenced frame config instance struct</a>
-    <li><a href="#ref-for-concept-url④">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-d2e147380fb69adb69e29104be252de4" class="dfn-panel" data-for="d2e147380fb69adb69e29104be252de4" id="infopanel-for-d2e147380fb69adb69e29104be252de4">
@@ -3186,7 +3231,6 @@ specification adds another value for fenced frames:</p>
     <li><a href="#ref-for-concept-url">1. The fencedframe element</a> <a href="#ref-for-concept-url①">(2)</a>
     <li><a href="#ref-for-concept-url②">1.3.2. The fenced frame config struct</a>
     <li><a href="#ref-for-concept-url③">1.3.3. The fenced frame config instance struct</a>
-    <li><a href="#ref-for-concept-url④">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" class="dfn-panel" data-for="d0f238a61de9310f1738a214749fab18" id="infopanel-for-d0f238a61de9310f1738a214749fab18">
@@ -3208,7 +3252,7 @@ specification adds another value for fenced frames:</p>
   <aside aria-labelledby="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" class="dfn-panel" data-for="e270bcd7cdb4abe27bc3bb16a1975937" id="infopanel-for-e270bcd7cdb4abe27bc3bb16a1975937">
    <span id="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" style="display:none">Info about the 'USVString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-USVString">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-idl-USVString①">(2)</a>
+    <li><a href="#ref-for-idl-USVString">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" class="dfn-panel" data-for="38ab7db52e46bed36993204c29f67202" id="infopanel-for-38ab7db52e46bed36993204c29f67202">
@@ -3221,8 +3265,9 @@ specification adds another value for fenced frames:</p>
    <span id="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" style="display:none">Info about the 'this' external reference.</span><a href="https://webidl.spec.whatwg.org/#this">https://webidl.spec.whatwg.org/#this</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-this">1. The fencedframe element</a>
-    <li><a href="#ref-for-this①">1.4. The Fence interface</a> <a href="#ref-for-this②">(2)</a> <a href="#ref-for-this③">(3)</a>
-    <li><a href="#ref-for-this④">2.1. Extensions to the Window interface</a> <a href="#ref-for-this⑤">(2)</a>
+    <li><a href="#ref-for-this①">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-this②">(2)</a> <a href="#ref-for-this③">(3)</a> <a href="#ref-for-this④">(4)</a> <a href="#ref-for-this⑤">(5)</a> <a href="#ref-for-this⑥">(6)</a> <a href="#ref-for-this⑦">(7)</a> <a href="#ref-for-this⑧">(8)</a> <a href="#ref-for-this⑨">(9)</a>
+    <li><a href="#ref-for-this①⓪">1.4. The Fence interface</a> <a href="#ref-for-this①①">(2)</a> <a href="#ref-for-this①②">(3)</a>
+    <li><a href="#ref-for-this①③">2.1. Extensions to the Window interface</a> <a href="#ref-for-this①④">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
@@ -3514,11 +3559,11 @@ specification adds another value for fenced frames:</p>
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#fencedframeconfig"><code><c- g>FencedFrameConfig</c-></code></a> {
-  <a href="#dom-fencedframeconfig-fencedframeconfig"><code><c- g>constructor</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a href="#dom-fencedframeconfig-fencedframeconfig-url-url"><code><c- g>url</c-></code></a>);
-
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigurl"><c- n>FencedFrameConfigURL</c-></a>? <a data-readonly data-type="FencedFrameConfigURL?" href="#dom-fencedframeconfig-url"><code><c- g>url</c-></code></a>;
-  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-width"><code><c- g>width</c-></code></a>;
-  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-height"><code><c- g>height</c-></code></a>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-containerwidth"><code><c- g>containerWidth</c-></code></a>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-containerheight"><code><c- g>containerHeight</c-></code></a>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-contentwidth"><code><c- g>contentWidth</c-></code></a>;
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-fencedframeconfigsize"><c- n>FencedFrameConfigSize</c-></a>? <a data-readonly data-type="FencedFrameConfigSize?" href="#dom-fencedframeconfig-contentheight"><code><c- g>contentHeight</c-></code></a>;
 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-fencedframeconfig-setsharedstoragecontext"><c- g>setSharedStorageContext</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-fencedframeconfig-setsharedstoragecontext-contextstring-contextstring"><code><c- g>contextString</c-></code></a>);
 };
@@ -3648,11 +3693,29 @@ configs' definition.</span><b><a href="#fenced-frame-config-mapping-maximum-numb
     <li><a href="#ref-for-fenced-frame-config-mapping-maximum-number-of-configs">1.2. Fenced frame config mapping</a> <a href="#ref-for-fenced-frame-config-mapping-maximum-number-of-configs①">(2)</a> <a href="#ref-for-fenced-frame-config-mapping-maximum-number-of-configs②">(3)</a>
    </ul>
   </aside>
+  <aside aria-labelledby="infopaneltitle-for-visibility-transparent" class="dfn-panel" data-for="visibility-transparent" id="infopanel-for-visibility-transparent">
+   <span id="infopaneltitle-for-visibility-transparent" style="display:none">Info about the 'transparent' definition.</span><b><a href="#visibility-transparent">#visibility-transparent</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-visibility-transparent">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-visibility-transparent①">(2)</a> <a href="#ref-for-visibility-transparent②">(3)</a>
+   </ul>
+  </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframetype-size" class="dfn-panel" data-for="fencedframetype-size" id="infopanel-for-fencedframetype-size">
    <span id="infopaneltitle-for-fencedframetype-size" style="display:none">Info about the 'size' definition.</span><b><a href="#fencedframetype-size">#fencedframetype-size</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fencedframetype-size">1.3.2. The fenced frame config struct</a> <a href="#ref-for-fencedframetype-size①">(2)</a>
     <li><a href="#ref-for-fencedframetype-size②">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-fencedframetype-size③">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-size-width" class="dfn-panel" data-for="size-width" id="infopanel-for-size-width">
+   <span id="infopaneltitle-for-size-width" style="display:none">Info about the 'width' definition.</span><b><a href="#size-width">#size-width</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-size-width">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-size-width①">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-size-height" class="dfn-panel" data-for="size-height" id="infopanel-for-size-height">
+   <span id="infopaneltitle-for-size-height" style="display:none">Info about the 'height' definition.</span><b><a href="#size-height">#size-height</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-size-height">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-size-height①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fencedframetype-interest-group-descriptor" class="dfn-panel" data-for="fencedframetype-interest-group-descriptor" id="infopanel-for-fencedframetype-interest-group-descriptor">
@@ -3757,38 +3820,57 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
     <li><a href="#ref-for-fenced-frame-config">1.2. Fenced frame config mapping</a> <a href="#ref-for-fenced-frame-config①">(2)</a> <a href="#ref-for-fenced-frame-config②">(3)</a> <a href="#ref-for-fenced-frame-config③">(4)</a> <a href="#ref-for-fenced-frame-config④">(5)</a> <a href="#ref-for-fenced-frame-config⑤">(6)</a>
     <li><a href="#ref-for-fenced-frame-config⑥">1.3.1. Introduction</a> <a href="#ref-for-fenced-frame-config⑦">(2)</a> <a href="#ref-for-fenced-frame-config⑧">(3)</a> <a href="#ref-for-fenced-frame-config⑨">(4)</a>
     <li><a href="#ref-for-fenced-frame-config①⓪">1.3.2. The fenced frame config struct</a> <a href="#ref-for-fenced-frame-config①①">(2)</a>
-    <li><a href="#ref-for-fenced-frame-config①②">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-fenced-frame-config①③">(2)</a> <a href="#ref-for-fenced-frame-config①④">(3)</a> <a href="#ref-for-fenced-frame-config①⑤">(4)</a>
-    <li><a href="#ref-for-fenced-frame-config①⑥">1.3.4. The FencedFrameConfig interface</a>
+    <li><a href="#ref-for-fenced-frame-config①②">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-fenced-frame-config①③">(2)</a>
+    <li><a href="#ref-for-fenced-frame-config①④">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fenced-frame-config①⑤">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-mapped-url" class="dfn-panel" data-for="fenced-frame-config-mapped-url" id="infopanel-for-fenced-frame-config-mapped-url">
    <span id="infopaneltitle-for-fenced-frame-config-mapped-url" style="display:none">Info about the 'mapped url' definition.</span><b><a href="#fenced-frame-config-mapped-url">#fenced-frame-config-mapped-url</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fenced-frame-config-mapped-url">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-fenced-frame-config-mapped-url">1. The fencedframe element</a>
+    <li><a href="#ref-for-fenced-frame-config-mapped-url①">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-fenced-frame-config-mapped-url②">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fenced-frame-config-mapped-url③">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-mapped-url-value" class="dfn-panel" data-for="mapped-url-value" id="infopanel-for-mapped-url-value">
    <span id="infopaneltitle-for-mapped-url-value" style="display:none">Info about the 'value' definition.</span><b><a href="#mapped-url-value">#mapped-url-value</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-mapped-url-value">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-mapped-url-value">1. The fencedframe element</a>
+    <li><a href="#ref-for-mapped-url-value①">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-mapped-url-value②">1.3.4. The FencedFrameConfig interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-mapped-url-visibility" class="dfn-panel" data-for="mapped-url-visibility" id="infopanel-for-mapped-url-visibility">
+   <span id="infopaneltitle-for-mapped-url-visibility" style="display:none">Info about the 'visibility' definition.</span><b><a href="#mapped-url-visibility">#mapped-url-visibility</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-mapped-url-visibility">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-container-size" class="dfn-panel" data-for="fenced-frame-config-container-size" id="infopanel-for-fenced-frame-config-container-size">
    <span id="infopaneltitle-for-fenced-frame-config-container-size" style="display:none">Info about the 'container size' definition.</span><b><a href="#fenced-frame-config-container-size">#fenced-frame-config-container-size</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fenced-frame-config-container-size">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-fenced-frame-config-container-size①">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fenced-frame-config-container-size②">(2)</a> <a href="#ref-for-fenced-frame-config-container-size③">(3)</a> <a href="#ref-for-fenced-frame-config-container-size④">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-content-size" class="dfn-panel" data-for="fenced-frame-config-content-size" id="infopanel-for-fenced-frame-config-content-size">
    <span id="infopaneltitle-for-fenced-frame-config-content-size" style="display:none">Info about the 'content size' definition.</span><b><a href="#fenced-frame-config-content-size">#fenced-frame-config-content-size</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fenced-frame-config-content-size">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-fenced-frame-config-content-size①">(2)</a>
+    <li><a href="#ref-for-fenced-frame-config-content-size②">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fenced-frame-config-content-size③">(2)</a> <a href="#ref-for-fenced-frame-config-content-size④">(3)</a> <a href="#ref-for-fenced-frame-config-content-size⑤">(4)</a> <a href="#ref-for-fenced-frame-config-content-size⑥">(5)</a> <a href="#ref-for-fenced-frame-config-content-size⑦">(6)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-content-size-value" class="dfn-panel" data-for="content-size-value" id="infopanel-for-content-size-value">
    <span id="infopaneltitle-for-content-size-value" style="display:none">Info about the 'value' definition.</span><b><a href="#content-size-value">#content-size-value</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-content-size-value">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-content-size-value①">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-content-size-value②">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-content-size-visibility" class="dfn-panel" data-for="content-size-visibility" id="infopanel-for-content-size-visibility">
+   <span id="infopaneltitle-for-content-size-visibility" style="display:none">Info about the 'visibility' definition.</span><b><a href="#content-size-visibility">#content-size-visibility</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-content-size-visibility">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-content-size-visibility①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-interest-group-descriptor" class="dfn-panel" data-for="fenced-frame-config-interest-group-descriptor" id="infopanel-for-fenced-frame-config-interest-group-descriptor">
@@ -3855,6 +3937,7 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
    <span id="infopaneltitle-for-fenced-frame-config-embedder-shared-storage-context" style="display:none">Info about the 'embedder shared storage context' definition.</span><b><a href="#fenced-frame-config-embedder-shared-storage-context">#fenced-frame-config-embedder-shared-storage-context</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fenced-frame-config-embedder-shared-storage-context">1.3.3. The fenced frame config instance struct</a>
+    <li><a href="#ref-for-fenced-frame-config-embedder-shared-storage-context①">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-instance" class="dfn-panel" data-for="fenced-frame-config-instance" id="infopanel-for-fenced-frame-config-instance">
@@ -3920,8 +4003,8 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
    <span id="infopaneltitle-for-fenced-frame-config-instance-nested-configs" style="display:none">Info about the 'nested configs' definition.</span><b><a href="#fenced-frame-config-instance-nested-configs">#fenced-frame-config-instance-nested-configs</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fenced-frame-config-instance-nested-configs">1.2. Fenced frame config mapping</a>
-    <li><a href="#ref-for-fenced-frame-config-instance-nested-configs①">1.3.3. The fenced frame config instance struct</a>
-    <li><a href="#ref-for-fenced-frame-config-instance-nested-configs②">1.4. The Fence interface</a> <a href="#ref-for-fenced-frame-config-instance-nested-configs③">(2)</a>
+    <li><a href="#ref-for-fenced-frame-config-instance-nested-configs①">1.3.3. The fenced frame config instance struct</a> <a href="#ref-for-fenced-frame-config-instance-nested-configs②">(2)</a>
+    <li><a href="#ref-for-fenced-frame-config-instance-nested-configs③">1.4. The Fence interface</a> <a href="#ref-for-fenced-frame-config-instance-nested-configs④">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fenced-frame-config-instance-partition-nonce" class="dfn-panel" data-for="fenced-frame-config-instance-partition-nonce" id="infopanel-for-fenced-frame-config-instance-partition-nonce">
@@ -3945,7 +4028,7 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
   <aside aria-labelledby="infopaneltitle-for-typedefdef-fencedframeconfigsize" class="dfn-panel" data-for="typedefdef-fencedframeconfigsize" id="infopanel-for-typedefdef-fencedframeconfigsize">
    <span id="infopaneltitle-for-typedefdef-fencedframeconfigsize" style="display:none">Info about the 'FencedFrameConfigSize' definition.</span><b><a href="#typedefdef-fencedframeconfigsize">#typedefdef-fencedframeconfigsize</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-fencedframeconfigsize">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-typedefdef-fencedframeconfigsize①">(2)</a>
+    <li><a href="#ref-for-typedefdef-fencedframeconfigsize">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-typedefdef-fencedframeconfigsize①">(2)</a> <a href="#ref-for-typedefdef-fencedframeconfigsize②">(3)</a> <a href="#ref-for-typedefdef-fencedframeconfigsize③">(4)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-typedefdef-fencedframeconfigurl" class="dfn-panel" data-for="typedefdef-fencedframeconfigurl" id="infopanel-for-typedefdef-fencedframeconfigurl">
@@ -3959,8 +4042,8 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
    <ul>
     <li><a href="#ref-for-fencedframeconfig">1. The fencedframe element</a> <a href="#ref-for-fencedframeconfig①">(2)</a>
     <li><a href="#ref-for-fencedframeconfig②">1.3.1. Introduction</a>
-    <li><a href="#ref-for-fencedframeconfig③">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig④">(2)</a> <a href="#ref-for-fencedframeconfig⑤">(3)</a> <a href="#ref-for-fencedframeconfig⑥">(4)</a>
-    <li><a href="#ref-for-fencedframeconfig⑦">1.4. The Fence interface</a> <a href="#ref-for-fencedframeconfig⑧">(2)</a> <a href="#ref-for-fencedframeconfig⑨">(3)</a>
+    <li><a href="#ref-for-fencedframeconfig③">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig④">(2)</a> <a href="#ref-for-fencedframeconfig⑤">(3)</a> <a href="#ref-for-fencedframeconfig⑥">(4)</a> <a href="#ref-for-fencedframeconfig⑦">(5)</a>
+    <li><a href="#ref-for-fencedframeconfig⑧">1.4. The Fence interface</a> <a href="#ref-for-fencedframeconfig⑨">(2)</a> <a href="#ref-for-fencedframeconfig①⓪">(3)</a> <a href="#ref-for-fencedframeconfig①①">(4)</a> <a href="#ref-for-fencedframeconfig①②">(5)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-url" class="dfn-panel" data-for="dom-fencedframeconfig-url" id="infopanel-for-dom-fencedframeconfig-url">
@@ -3969,22 +4052,42 @@ reference' definition.</span><b><a href="#exfiltration-budget-metadata-reference
     <li><a href="#ref-for-dom-fencedframeconfig-url">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-width" class="dfn-panel" data-for="dom-fencedframeconfig-width" id="infopanel-for-dom-fencedframeconfig-width">
-   <span id="infopaneltitle-for-dom-fencedframeconfig-width" style="display:none">Info about the 'width' definition.</span><b><a href="#dom-fencedframeconfig-width">#dom-fencedframeconfig-width</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-containerwidth" class="dfn-panel" data-for="dom-fencedframeconfig-containerwidth" id="infopanel-for-dom-fencedframeconfig-containerwidth">
+   <span id="infopaneltitle-for-dom-fencedframeconfig-containerwidth" style="display:none">Info about the 'containerWidth' definition.</span><b><a href="#dom-fencedframeconfig-containerwidth">#dom-fencedframeconfig-containerwidth</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fencedframeconfig-width">1.3.4. The FencedFrameConfig interface</a>
+    <li><a href="#ref-for-dom-fencedframeconfig-containerwidth">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-height" class="dfn-panel" data-for="dom-fencedframeconfig-height" id="infopanel-for-dom-fencedframeconfig-height">
-   <span id="infopaneltitle-for-dom-fencedframeconfig-height" style="display:none">Info about the 'height' definition.</span><b><a href="#dom-fencedframeconfig-height">#dom-fencedframeconfig-height</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-containerheight" class="dfn-panel" data-for="dom-fencedframeconfig-containerheight" id="infopanel-for-dom-fencedframeconfig-containerheight">
+   <span id="infopaneltitle-for-dom-fencedframeconfig-containerheight" style="display:none">Info about the 'containerHeight' definition.</span><b><a href="#dom-fencedframeconfig-containerheight">#dom-fencedframeconfig-containerheight</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fencedframeconfig-height">1.3.4. The FencedFrameConfig interface</a>
+    <li><a href="#ref-for-dom-fencedframeconfig-containerheight">1.3.4. The FencedFrameConfig interface</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-fencedframeconfig-url" class="dfn-panel" data-for="fencedframeconfig-url" id="infopanel-for-fencedframeconfig-url">
-   <span id="infopaneltitle-for-fencedframeconfig-url" style="display:none">Info about the 'url' definition.</span><b><a href="#fencedframeconfig-url">#fencedframeconfig-url</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-contentwidth" class="dfn-panel" data-for="dom-fencedframeconfig-contentwidth" id="infopanel-for-dom-fencedframeconfig-contentwidth">
+   <span id="infopaneltitle-for-dom-fencedframeconfig-contentwidth" style="display:none">Info about the 'contentWidth' definition.</span><b><a href="#dom-fencedframeconfig-contentwidth">#dom-fencedframeconfig-contentwidth</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-fencedframeconfig-url">1. The fencedframe element</a>
+    <li><a href="#ref-for-dom-fencedframeconfig-contentwidth">1.3.4. The FencedFrameConfig interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-contentheight" class="dfn-panel" data-for="dom-fencedframeconfig-contentheight" id="infopanel-for-dom-fencedframeconfig-contentheight">
+   <span id="infopaneltitle-for-dom-fencedframeconfig-contentheight" style="display:none">Info about the 'contentHeight' definition.</span><b><a href="#dom-fencedframeconfig-contentheight">#dom-fencedframeconfig-contentheight</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-fencedframeconfig-contentheight">1.3.4. The FencedFrameConfig interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-fencedframeconfig-urn" class="dfn-panel" data-for="fencedframeconfig-urn" id="infopanel-for-fencedframeconfig-urn">
+   <span id="infopaneltitle-for-fencedframeconfig-urn" style="display:none">Info about the 'urn' definition.</span><b><a href="#fencedframeconfig-urn">#fencedframeconfig-urn</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fencedframeconfig-urn">1.4. The Fence interface</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-fencedframeconfig-config" class="dfn-panel" data-for="fencedframeconfig-config" id="infopanel-for-fencedframeconfig-config">
+   <span id="infopaneltitle-for-fencedframeconfig-config" style="display:none">Info about the 'config' definition.</span><b><a href="#fencedframeconfig-config">#fencedframeconfig-config</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fencedframeconfig-config">1. The fencedframe element</a>
+    <li><a href="#ref-for-fencedframeconfig-config①">1.3.4. The FencedFrameConfig interface</a> <a href="#ref-for-fencedframeconfig-config②">(2)</a> <a href="#ref-for-fencedframeconfig-config③">(3)</a> <a href="#ref-for-fencedframeconfig-config④">(4)</a> <a href="#ref-for-fencedframeconfig-config⑤">(5)</a> <a href="#ref-for-fencedframeconfig-config⑥">(6)</a> <a href="#ref-for-fencedframeconfig-config⑦">(7)</a> <a href="#ref-for-fencedframeconfig-config⑧">(8)</a> <a href="#ref-for-fencedframeconfig-config⑨">(9)</a> <a href="#ref-for-fencedframeconfig-config①⓪">(10)</a>
+    <li><a href="#ref-for-fencedframeconfig-config①①">1.4. The Fence interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dom-fencedframeconfig-setsharedstoragecontext" class="dfn-panel" data-for="dom-fencedframeconfig-setsharedstoragecontext" id="infopanel-for-dom-fencedframeconfig-setsharedstoragecontext">
