@@ -1539,7 +1539,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <wpt>
   /fenced-frame/embedder-coop-coep-blocked.https.html
-  /fenced-frame/embedder-no-coep.https.html
 </wpt>
 
 <h3 id=page-visibility>Page visibility</h3>
