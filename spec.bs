@@ -1537,6 +1537,11 @@ TODO: Enable this once we move the WPTs to the external repository.
 Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
 CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
 
+<wpt>
+  /fenced-frame/embedder-coop-coep-blocked.https.html
+  /fenced-frame/embedder-no-coep.https.html
+</wpt>
+
 <h3 id=page-visibility>Page visibility</h3>
 
 The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
