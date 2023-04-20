@@ -467,7 +467,9 @@ A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integ
 "size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
 TODO: Maybe change the numeric type.</span>
 
-An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with the following [=struct/items=]:
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with the following
+[=struct/items=]:
+
 <dl export dfn-for="interest group descriptor">
   : <dfn>owner</dfn>
   :: a [=string=]
@@ -486,7 +488,9 @@ A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] 
 are {{FenceReportingDestination}}s and whose [=map/values=] are either `"pending"`, or [=maps=]
 whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=].
 
-A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the following [=struct/items=]:
+A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the
+following [=struct/items=]:
+
 <dl export dfn-for="fenced frame reporting metadata">
   : <dfn>fenced frame reporting map</dfn>
   :: a [=fencedframetype/fenced frame reporting map=]
@@ -506,7 +510,9 @@ A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a str
   1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
 </div>
 
-A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following [=struct/items=]:
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following
+[=struct/items=]:
+
 <dl export dfn-for="fenced frame reporter">
   : <dfn>fenced frame reporting map reference</dfn>
   :: a reference to a [=fencedframetype/fenced frame reporting map=]
