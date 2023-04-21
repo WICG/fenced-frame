@@ -824,17 +824,34 @@ specification adds another value for fenced frames:
 
 <h3 id=csp-integration>Content Security Policy</h3>
 
-Fenced frames have a special relationship with Content Security Policies [[!CSP]]. They can only be
-created in [=secure contexts=] and require their [=fenced navigable container=]'s [=navigable/active
-document=] to give permissions to all sources (i.e. "`https:`", "`https://*:*`", or "`*`"). This is
-done to prevent using [[!CSP]] for side-channel communication.
+<h4 id=csp-intro>Intro</h4>
+
+*This section is non-normative*.
+
+Content Security Policy [[!CSP]] can ordinarily be used by web content associated with a
+{{Document}} that hosts a [=navigable container=] to limit the source of navigations in a [=child
+navigable=].
+
+In order to prevent [[!CSP]] from being used a communication side-channel exposing the [=URL=] of
+navigations inside a <{fencedframe}> to the site operating its embedder, the only [=source
+expressions=] that can influence a <{fencedframe}> navigation are:
+
+ * The <a grammar>scheme-source</a> "`https:`"
+ * The <a grammar>host-source</a> "`https://*:*`"
+ * The [=string=] "`*`"
+
+See our <a
+href=https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md#proposal---scheme-source-matching>CSP
+explainer</a> that describes this.
+
+<h4 id=csp-algorithms>Algorithms</h4>
 
 <div algorithm=pre-request-check-csp>
   Add a step after step 2 of the [=frame-src pre-request check=] that says:
 
-  3. If <var ignore>request</var> [=request/destination=] is fenced frame, and this directive's
-    [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
-    "`Blocked`".
+  3. If <var ignore>request</var>'s [=request/destination=] is "`fencedframe`", and this directive's
+     [=directive value|value=] does not [=set/contain=] either "`https:`", "`https://*:*`", or
+     "`*`", return "`Blocked`".
 </div>
 
 <div algorithm=post-request-check-csp>
