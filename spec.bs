@@ -30,6 +30,9 @@ spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/p
     for: navigable
       text: loading mode; url: #navigable-loading-mode
 
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
@@ -89,6 +92,22 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
+      text: activation; url: activation
+      text: click focusable; url: click-focusable
+      text: focusable area; url: focusable-area
+      text: sequential focus navigation; url: sequential-focus-navigation
+      text: focus; url: dom-window-focus
+      text: focus chain; url: focus-chain
+      text: focus update steps; url: focus-update-steps
+      text: focused; url: focused
+      text: gain focus; url: gains-focus
+      text: DOM anchor; url: dom-anchor
+      text: get the focusable area; url: get-the-focusable-area
+      text: currently focused area of a top-level traversable; url: currently-focused-area-of-a-top-level-traversable
+      text: focused area; url: focused-area-of-the-document
+      text: sequential navigation search algorithm; url: sequential-navigation-search-algorithm
+    urlPefix: infrastructure.html
+      text: immediately; url: immediately
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
@@ -109,6 +128,17 @@ spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
 spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
   type: dfn
     text: should request be blocked by Content Security Policy; url: should-block-request
+    urlPrefix: interactive-elements.html
+      text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
+      text: previously focused element; url: previously-focused-element
+    urlPrefix: popover.html
+      text: hide popover algorithm; url: hide-popover-algorithm
+    urlPrefix: form-control-infrastructure.html
+      text: interactively validate the constraints; url: interactively-validate-the-constraints
+    urlPrefix: custom-elements.html
+      text: face validation anchor; url: face-validation-anchor
+    urlPrefix: webappapis.html
+      text: fire a click event; url: fire-a-click-event
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -212,7 +242,7 @@ dl, dd {
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
 
-<h2 id=the-fencedframe-element>The <dfn element>fencedframe</dfn> element</h2>
+<h2 id=the-fencedframe-element>The <dfn element export>fencedframe</dfn> element</h2>
 
 <dl class="element">
  <dt>[=Categories=]:</dt>
@@ -288,12 +318,14 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   1. Let |url| be the [=URL record=] <code>about:blank</code>.
 
   1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
-     [=fencedframeconfig/url=] relative to |element|'s [=Node/node document=]. If this is
-     successful, then set [=url=] to the <a spec="HTML">resulting URL record</a>.
+     [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
+     relative to |element|'s [=Node/node document=]. If this is successful, then set [=url=] to the
+     <a spec="HTML">resulting URL record</a>.
 
   1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |url| using
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
+     <span class="XXX">TODO: generate and store the config instance</span>
 </div>
 
 <div algorithm=destroy>
@@ -321,10 +353,10 @@ href="https://html.spec.whatwg.org/multipage/embedded-content-other.html#dimensi
 attributes</a> section. This section will be updated to include <{fencedframe}> in the list of
 elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension attributes apply to.
 
-<h3 id=configuration-map>Configuration mapping</h3>
+<h3 id=fenced-frame-config-map>Fenced frame config mapping</h3>
 
-Each [=traversable navigable=] has a <dfn for="traversable navigable" export>urn configuration
-mapping</dfn>, a [=map=] mapping [=urn uuids=] to [=fenced frame config=] [=structs=].
+Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
+mapping</dfn>, which is a new [=fenced frame config mapping=].
 
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
@@ -332,7 +364,375 @@ uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <
 See for example, the <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
 href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
 
-<h3 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h3>
+A <dfn>fenced frame config mapping</dfn> has three submappings:
+
+<dl dfn-for="fenced frame config mapping">
+  : <dfn>pending config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
+
+  : <dfn>finalized config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
+
+  : <dfn>nested config mapping</dfn>
+  :: a [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced frame
+     configs=]
+</dl>
+
+Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
+configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
+configs=] may be a nonnegative number or infinity.
+
+Note: It is important to specify the behavior of
+[=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
+config-generating APIs in a privacy sensitive way.
+
+At a high level, in order to store a [=fenced frame config=] in the
+[=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
+then turn the pending config into a finalized config. Those procedures are as follows:
+
+<div algorithm>
+  To <dfn for="fenced frame config mapping" export>store a pending config</dfn> into a particular
+  [=fenced frame config mapping=] given a [=fenced frame config=] |config|, run these steps:
+
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If the [=map/size=] of the [=fenced frame config mapping/pending config mapping=] + the
+     [=map/size=] of the [=fenced frame config mapping/finalized config mapping=] >= the [=fenced
+     frame config mapping/maximum number of configs=], return failure.
+
+  1. Let |urn| be a randomly generated [=urn uuid=].
+
+  1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
+</div>
+
+<div algorithm>
+  To <dfn for="fenced frame config mapping" export>finalize a pending config</dfn> in a particular
+  [=fenced frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
+
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If |pendingMapping|[|urn|] does not [=map/exist=], return failure.
+
+  1. Let |finalizedConfig| be |pendingMapping|[|urn|].
+
+  1. [=map/Remove=] |pendingMapping|[|urn|].
+
+  1. [=map/Set=] |finalizedMapping|[|urn|] be |finalizedConfig|.
+</div>
+
+<div algorithm>
+  To <dfn for="fenced frame config mapping" export>store nested configs</dfn> into a particular
+  [=fenced frame config mapping=] given a [=fenced frame config instance/nested configs=]
+  |nestedConfigs|, run these steps:
+
+  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. If |nestedConfigs| is null, return.
+
+  1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
+
+    1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
+</div>
+
+<div algorithm>
+  To <dfn for="fenced frame config mapping" export>find a config</dfn> in a particular [=fenced
+  frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
+
+  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
+     associated [=fenced frame config mapping=].
+
+  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of
+     the associated [=fenced frame config mapping=].
+
+  1. If |nestedMapping|[|urn|] [=map/exists=], return its value.
+
+  1. If |pendingMapping|[|urn|] [=map/exists=], wait until it does not [=map/exist=].
+
+  1. If |finalizedMapping|[|urn|] [=map/exists=], return its value.
+
+  1. Return failure.
+</div>
+
+<h3 id=fenced-frame-config-section>Fenced frame configs</h3>
+
+<h4 id=fenced-frame-config-intro>Introduction</h4>
+
+*This section is non-normative.*
+
+A key feature of the <{fencedframe}> element is that web platform APIs can configure the behavior
+of the frame in a way that limits the ability of other execution contexts to modify or inspect this
+configuration, for security or privacy reasons. For example, the
+<a href=https://wicg.github.io/turtledove/>FLEDGE</a> API performs on-device ad auctions over
+cross-site data, and it is important that the ad that wins the auction can be loaded into a frame,
+without the API caller knowing *which ad* won the auction or being able to manipulate the
+environment in which the ad loads.
+
+We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
+collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
+resulting environments. [=Fenced frame configs=] can only be constructed by web platform APIs, not
+initialized or modified arbitrarily. Their fields also contain "[=visibilities=]", which dictate
+whether the field should be "redacted" when inspected through the {{FencedFrameConfig}} interface.
+Config-generating APIs (like <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
+href=https://wicg.github.io/shared-storage/>Shared Storage</a>) must specify values for all fields
+of their fenced frame configs in order to ensure that they have considered the privacy implications
+of each field, though they may choose to set the values to null.
+
+Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
+[=fenced frame config instance=], which governs that particular context inside the [=fenced
+navigable container/fenced navigable=].
+
+<h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
+
+We now establish some preliminary types:
+
+A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>
+`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
+
+A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integer <dfn export for=
+"size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
+TODO: Maybe change the numeric type.</span>
+
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with <dfn export
+for="interest group descriptor">owner</dfn>, which is a string, and <dfn export for="interest group
+descriptor">name</dfn>, which is a string.
+
+An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
+set=].
+
+An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
+[=policy-controlled features=].
+
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+
+<div algorithm>
+  In order to <dfn export>report an event</dfn>, run these steps:
+
+  1. <span class=XXX>TODO: fill this in</span>
+</div>
+
+<div algorithm>
+  In order to <dfn export>report a private aggregation event</dfn>, run these steps:
+
+  1. <span class=XXX>TODO: Fill this in</span>
+</div>
+
+<div algorithm>
+  In order to <dfn export>set automatic beacon data</dfn>, run these steps:
+
+  1. <span class=XXX>TODO: Fill this in</span>
+</div>
+
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct containing an
+<dfn export for="exfiltration budget metadata">origin</dfn>, which is an [=origin=]; and an <dfn
+export for="exfiltration budget metadata">amount to debit</dfn>, which is a non-negative valid
+floating point number.
+
+An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct
+containing an <dfn export for="exfiltration budget metadata reference">origin</dfn>, which is an
+[=origin=]; and an <dfn export for="exfiltration budget metadata reference">amount to debit
+reference</dfn>, which is a mutable reference to a non-negative valid floating point number.
+<span class=XXX>TODO: are mutable references a thing in spec?</span>
+
+An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
+
+A <dfn export>partition nonce</dfn> is an [=implementation-defined=] value.
+
+Note: This is similar to the <a href=https://fetch.spec.whatwg.org/#network-partition-key>network
+partition key</a> used by <a href=https://fetch.spec.whatwg.org/>Fetch</a>.
+
+A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
+
+<dl export dfn-for="fenced frame config">
+  : <dfn>mapped url</dfn>
+  :: a struct with the following fields:
+    : <dfn for="mapped url">value</dfn>
+    :: a [=URL=]
+
+    : <dfn for="mapped url">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>container size</dfn>
+  :: null, or a [=fencedframetype/size=]
+
+  : <dfn>content size</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="content size">value</dfn>
+    :: a [=fencedframetype/size=]
+
+    : <dfn for="content size">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>interest group descriptor</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="interest group descriptor">value</dfn>
+    :: an [=fencedframetype/interest group descriptor=]
+
+    : <dfn for="interest group descriptor">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>effective sandbox flags</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="effective sandbox flags">value</dfn>
+    :: an [=fencedframetype/exhaustive set of sandbox flags=]
+
+    : <dfn for="effective sandbox flags">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>effective permissions</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="effective permissions">value</dfn>
+    :: an [=fencedframetype/exhaustive set of permissions=]
+
+    : <dfn for="effective permissions">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>fenced frame reporter</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="fenced frame reporter">value</dfn>
+    :: a [=fencedframetype/fenced frame reporter=]
+
+    : <dfn for="fenced frame reporter">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>exfiltration budget metadata</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="exfiltration budget metadata">value</dfn>
+    :: an [=fencedframetype/exfiltration budget metadata=]
+
+    : <dfn for="exfiltration budget metadata">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>nested configs</dfn>
+  :: null, or a struct with the following fields:
+    : <dfn for="nested configs">value</dfn>
+    :: a [=list=] of [=fenced frame configs=]
+
+    : <dfn for="nested configs">visibility</dfn>
+    :: a [=visibility=]
+
+  : <dfn>embedder shared storage context</dfn>
+  :: null, or an [=fencedframetype/embedder shared storage context=]
+</dl>
+
+<h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
+
+A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
+
+<dl export dfn-for="fenced frame config instance">
+  : <dfn>mapped url</dfn>
+  :: a [=URL=]
+
+  : <dfn>container size</dfn>
+  :: null, or a [=fencedframetype/size=]
+
+  : <dfn>content size</dfn>
+  :: null, or a [=fencedframetype/size=]
+
+  : <dfn>interest group descriptor</dfn>
+  :: null, or an [=fencedframetype/interest group descriptor=]
+
+  : <dfn>effective sandbox flags</dfn>
+  :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
+
+  : <dfn>effective permissions</dfn>
+  :: null, or an [=fencedframetype/exhaustive set of permissions=]
+
+  : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
+  :: null, or a [=fencedframetype/fenced frame reporter=]
+
+  : <dfn>exfiltration budget metadata reference</dfn>
+  :: null, or an [=fencedframetype/exfiltration budget metadata reference=]
+
+  : <dfn>nested configs</dfn>
+  :: null, or an [=ordered map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are
+     [=fenced frame configs=]
+
+  : <dfn>partition nonce</dfn>
+  :: a [=partition nonce=]
+
+  : <dfn>embedder shared storage context</dfn>
+  :: null, or an [=fencedframetype/embedder shared storage context=]
+</dl>
+
+<div algorithm>
+  To <dfn export>instantiate a config</dfn> given a [=fenced frame config=] |config|, return a
+  [=fenced frame config instance=] with the following members:
+
+    : [=fenced frame config instance/mapped url=]
+    :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
+
+    : [=fenced frame config instance/container size=]
+    :: |config|'s [=fenced frame config/container size=] if null
+
+    : [=fenced frame config instance/content size=]
+    :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
+       config/content size=]'s [=content size/value=]
+
+    : [=fenced frame config instance/interest group descriptor=]
+    :: |config|'s [=fenced frame config/interest group descriptor=] if null, otherwise |config|'s
+       [=fenced frame config/interest group descriptor=]'s [=interest group descriptor/value=]
+
+    : [=fenced frame config instance/effective sandbox flags=]
+    :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
+       [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
+
+    : [=fenced frame config instance/effective permissions=]
+    :: |config|'s [=fenced frame config/effective permissions=] if null, otherwise |config|'s
+       [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
+
+    : [=fenced frame config instance/fenced frame reporter=]
+    :: |config|'s <span class=XXX>TODO: Fill this in</span>
+
+    : [=fenced frame config instance/exfiltration budget metadata reference=]
+    ::
+        1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
+
+        1. Otherwise, set to a [=fencedframetype/exfiltration budget metadata reference=]:
+            : [=exfiltration budget metadata reference/origin=]
+            :: |config|'s [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration
+               budget metadata/value=]'s [=exfiltration budget metadata/origin=]
+
+            : [=exfiltration budget metadata reference/amount to debit reference=]
+            :: a reference to |config|'s [=fenced frame config/exfiltration budget metadata=]'s
+               [=exfiltration budget metadata/value=]'s [=exfiltration budget metadata/amount to
+               debit=]
+
+    : [=fenced frame config instance/nested configs=]
+    ::
+        1. If |config|'s [=fenced frame config/nested configs=] is null, set to null.
+
+        1. Otherwise:
+
+           1. Let |results| be an empty [=ordered map=].
+
+           1. [=list/For each=] |nested config| of |config|'s [=fenced frame config/nested
+             configs=]'s [=nested configs/value=]:
+
+               1. Let |urn| be a random, unique [=urn uuid=].
+
+               1. [=map/Set=] |results|[|urn|] to |nested config|.
+
+           1. Set [=fenced frame config instance/nested configs=] to |results|.
+
+    : [=fenced frame config instance/partition nonce=]
+    :: a random, unique [=partition nonce=]
+
+    : [=fenced frame config instance/embedder shared storage context=]
+    :: |config|'s [=fenced frame config/embedder shared storage context=]
+</div>
+
+<h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
 One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
 maps to an internal [=fenced frame config=] [=struct=].
@@ -341,39 +741,90 @@ maps to an internal [=fenced frame config=] [=struct=].
   enum OpaqueProperty {"opaque"};
 
   typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef (USVString or OpaqueProperty) FencedFrameConfigURL;
+  typedef USVString FencedFrameConfigURL;
 
   [Exposed=Window]
   interface FencedFrameConfig {
-    constructor(USVString url);
     readonly attribute FencedFrameConfigURL? url;
-    readonly attribute FencedFrameConfigSize? width;
-    readonly attribute FencedFrameConfigSize? height;
+    readonly attribute FencedFrameConfigSize? containerWidth;
+    readonly attribute FencedFrameConfigSize? containerHeight;
+    readonly attribute FencedFrameConfigSize? contentWidth;
+    readonly attribute FencedFrameConfigSize? contentHeight;
+
+    undefined setSharedStorageContext(DOMString contextString);
   };
 </pre>
 
-Issue: Fix the "indistinguishable" IDL bug with the unions above.</span>
+Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a
+[=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
 
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>url</dfn>, which is a string, initially
-null.
+<div algorithm="url getter">
+  The {{FencedFrameConfig/url}} IDL attribute getter steps are:
 
-Each {{FencedFrameConfig}} has a <dfn for=fencedframeconfig>urn uuid</dfn>, which is a [=urn uuid=]
-string, initially null.
+  1. If {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s
+     [=mapped url/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
+     mapped url=]'s [=mapped url/value=].
 
-Note: A {{FencedFrameConfig}}'s [=fencedframeconfig/urn uuid=] is a non-web-exposed unique ID that
-serves as the key to the <{fencedframe}> element's [=fenced navigable container/fenced navigable=]'s
-<span class=XXX>URN config mapping</span>, which maps [=urn uuids=] to [=fenced frame config=]
-[=structs=] (that represent the web-exposed {{FencedFrameConfig}} object).
+  1. Otherwise, return `"opaque"`.
+</div>
 
-A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
+<div algorithm="containerWidth getter">
+  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
 
-* An <dfn for="fenced frame config">urn uuid</dfn>, a [=urn uuid=] string
-* <span class=XXX>TODO: Specify the other members</span>
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=] is null,
+     return null.
 
+  1. Return [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=]'s
+     [=size/width=].
+</div>
+
+<div algorithm="containerHeight getter">
+  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are:
+
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=] is null,
+     return null.
+
+  1. Return [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=]'s
+     [=size/height=].
+</div>
+
+<div algorithm="contentWidth getter">
+  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are:
+
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=] is null,
+     return null.
+
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
+     size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/content
+     size=]'s [=content size/value=]'s [=size/width=].
+
+  1. Otherwise, return `"opaque"`.
+</div>
+
+<div algorithm="contentHeight getter">
+  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are:
+
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=] is null,
+     return null.
+
+  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
+     size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/content
+     size=]'s [=content size/value=]'s [=size/height=].
+
+  1. Otherwise, return `"opaque"`.
+</div>
+
+<div algorithm>
+  The <dfn method for=FencedFrameConfig>setSharedStorageContext(|contextString|)</dfn> method steps
+  are:
+
+  1. Set [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/embedder shared storage
+     context=] to |contextString|.
+</div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
 
-<span class=XXX>Describe this infrastructure in detail.</span>
+Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
 <pre class=idl>
   enum FenceReportingDestination {
@@ -401,21 +852,73 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 </pre>
 
 <div algorithm>
-  The <dfn method for=Fence>reportEvent(<var ignore>event</var>)</dfn> method steps are:
+  The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
-  1. <span class=XXX>Fill this out!</span>
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+
+     <span class=XXX>This and the below references should point to an actual member on [=traversable
+     navigable=], not just the type.</span>
+
+  1. If |instance| is null, then return.
+
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
+
+  1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
+
+  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] with |event| and
+     |instance|'s [=fenced frame config instance/fenced frame reporter=].
+
+  1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
+     [=fenced frame config instance/fenced frame reporter=].
 </div>
 
 <div algorithm>
-  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(<var ignore>event</var>)</dfn> method steps are:
+  The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
+  method steps are:
 
-  1. <span class=XXX>Fill this out!</span>
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+
+  1. If |instance| is null, then return.
+
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
+
+  1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
+
+  1. Run [=set automatic beacon data=] with |event| and |instance|'s
+     [=fenced frame config instance/fenced frame reporter=].
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
-  1. <span class=XXX>Fill this out!</span>
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
+     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+
+  1. If |instance| is null, then return.
+
+  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
+
+  1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
+
+  1. Let |results| be an empty [=list=] of {{FencedFrameConfig}}s.
+
+  1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
+     configs=]:
+
+     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where the {{FencedFrameConfig}}'s
+        [=fencedframeconfig/urn=] is |urn| and the {{FencedFrameConfig}}'s [=fencedframeconfig/
+        config=] is |config|.
+        <span class="XXX">TODO: phrase the constructor correctly</span>.
+
+  1. Return |results|.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -523,8 +1026,8 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
 <div algorithm>
   The <dfn attribute for=Window>fence</dfn> getter steps are:
-    1. If [=this=]'s [=Window/navigable=]'s [=navigable/loading mode=] is "`fencedframe`", return
-       [=this=]'s [=Window/fence=].
+    1. If [=this=]'s [=Window/navigable=]'s [=fenced frame config instance=] is not null, then
+       return [=this=]'s [=Window/fence=].
 
     1. Return null.
 </div>
@@ -791,6 +1294,185 @@ in the [[#nested-traversables-intro]].
   1. Return |navigables|.
 </div>
 
+<h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
+
+The [[HTML]] standard defines how to handle focusing elements and {{Window}}s, both by user gesture
+and through script-initiated APIs. Since fenced frames are designed to prevent communication across
+a fenced frame boundary, we need to handle focusing carefully. This is because when focus is pulled
+across a fenced frame boundary, contexts on both sides of the boundary can detect that change, which
+can be used to open a communication channel between a <{fencedframe}> and its embedder.
+
+We do this is by not allowing the [=focusing steps=] to move script-initiated focus across a fenced
+frame boundary.
+
+<p class=example id=user-initiated-focus>When a user clicks on an element like a <{button}> inside a
+<{fencedframe}> while another element *outside* of the <{fencedframe}> is [=focused=], because this
+is a user-initiated action, the [=focusing steps=] will allow the <{button}> to [=gain focus=].
+Without allowing that, no element inside of a <{fencedframe}> would never be able [=gain
+focus=].</p>
+
+<p class=example id=script-initiated-focus>If we were to continue blindly allowing all elements to
+be [=focused=] via the {{HTMLOrSVGElement/focus()}} method as is the status quo before this
+specification, a [=fenced navigable container=] and its [=fenced navigable container/fenced
+navigable=] could use a sequence of {{HTMLOrSVGElement/focus()}} calls to send arbitrary data across
+the fenced frame boundary, which is a privacy leak. To avoid this, we effectively "fence" the
+{{HTMLOrSVGElement/focus()}} method, which sacrifices some functionality for privacy.</p>
+
+<div algorithm=focusing-steps-patch>
+  Modify the [=focusing steps=] to take a new optional [=boolean=] argument <dfn
+  lt="focus-unfenced">unfenced</dfn> that defaults to false.
+
+  Add a new step after step 3 of the algorithm (that changes new focus target) that reads:
+
+  4. If |new focus target| is a [=fenced navigable container=] with non-null
+    [=fenced navigable container/fenced navigable=], then set |new focus target| to the
+    [=fenced navigable container/fenced navigable=]'s [=navigable/active document=].
+
+  Add a new step after the step that defines the |new chain| variable, that reads:
+
+  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a {{Document}}
+    |document| whose [=node navigable=]'s [=navigable/traversable navigable=] is a
+    [=fenced navigable container/fenced navigable=], and <var ignore>old chain</var> does not also
+    [=list/contain=] |document|, then return.
+
+    Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
+    where focus is trying to cross the fence.
+
+  Modify the user agent sentence after the algorithm steps in [=focusing steps=] to read:
+
+  User agents must [=immediately=] run the [=focusing steps=] for a [=focusable area=] or
+  [=navigable=] |candidate| with [=focus-unfenced|unfenced=] set to true whenever the user attempts to
+  move the focus to |candidate|.
+</div>
+
+<div algorithm=access-key-patch>
+  Modify the action of the [=accesskey attribute command=] algorithm to be:
+
+  1. Run the [=focusing steps=] for the element with [=focus-unfenced|unfenced=] set to true.
+
+  1. <a>Fire a `click` event</a> at the element.
+</div>
+
+<div algorithm=activation-patch>
+  Modify the behavior when a user [=activation|activates=] a [=click focusable=] [=focusable area=]
+  to be:
+
+  When a user [=activation|activates=] a [=click focusable=] [=focusable area=], the user agent must
+  run the [=focusing steps=] on the [=focusable area=] with <var ignore>focus trigger</var> set
+  to "`click`" and [=focus-unfenced|unfenced=] set to true.
+</div>
+
+<div algorithm=hide-popover-patch>
+  Modify step 10 of the [=hide popover algorithm=] to read:
+
+  10. If |previouslyFocusedElement| is not null, then:
+      1. Set <var ignore>element</var>'s [=previously focused element=] to null.
+      2. If <var ignore>focusPreviousElement</var> is true, then run the [=focusing steps=] for
+        |previouslyFocusedElement| with [=focus-unfenced|unfenced=] set to true; the viewport
+        should not be scrolled by doing this step.
+
+  Note: Although dismissing a popover manually is a user-initiated gesture, the
+  [=focusing steps=] will be called with [=focus-unfenced|unfenced=] set to false regardless
+  of whether this was called from user gesture or via a script call.
+</div>
+
+<div algorithm=interactively-validate-patch>
+  Modify the first bullet point of step 3 of the [=interactively validate the constraints=]
+  algorithm to read:
+
+  * User agents may focus one of those elements in the process, by running the
+    [=focusing steps=] for that element, and may change the scrolling position of the
+    document, or perform some other action that brings the element to the user's attention.
+    If these steps were invoked by user gesture, [=focusing steps=] can be called with
+    [=focus-unfenced|unfenced=] set to true. For elements that are
+    [=form-associated custom elements=], user agents should use their [=face validation anchor=]
+    instead, for the purposes of these actions.
+</div>
+
+<div algorithm=has-focus-steps>
+  Add a step after step 2 of the while loop in the [=has focus steps=] algorithm that reads:
+
+  3. If the [=focused area=] of |candidate| is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=], then set |candidate| to the [=navigable/active
+    document=] of that [=fenced navigable container=]'s [=fenced navigable container/fenced
+    navigable=].
+</div>
+
+<div algorithm=focus-chain>
+  Modify step 3 of the while loop in the [=focus chain=] algorithm to read:
+  3. If |currentObject| is a [=focusable area=], then set |currentObject| to |currentObject|'s [=DOM
+     anchor=]'s [=Node/node document=].
+
+     Otherwise, if |currentObject| is a {{Document}} whose [=node navigable=]'s [=navigable/parent=]
+     is non-null, then set |currentObject| to |currentObject|'s [=node navigable=]'s
+     [=navigable/parent=].
+
+     Otherwise, if |currentObject| is a {{Document}} whose [=node navigable=] is a [=traversable
+     navigable=] whose [=traversable navigable/unfenced parent=] is non-null, then set
+     |currentObject| to |currentObject|'s [=node navigable=]'s [=traversable navigable/unfenced
+     parent=].
+
+     Otherwise, [=iteration/break=].
+</div>
+  
+<div algorithm=get-the-focusable-area>
+  Modify the [=get the focusable area=] algorithm. Add a new case to the switch statement:
+
+  <dl class="switch">
+    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=]</dt>
+
+    <dd><p>Return the [=fenced navigable container=]'s [=fenced navigable container/fenced
+    navigable=]'s [=navigable/active document=].</p></dd>
+  </dl>
+
+  Note: This algorithm can unconditionally "jump the fence" boundary because its return value always
+  feeds into an algorithm that _does_ carefully consider the fence boundary.
+</div>
+
+<div algorithm=currently-focused-area-of-a-top-level-traversable>
+  Modify step 3 of the [=currently focused area of a top-level traversable=] algorithm to read:
+
+  3. While |candidate|'s [=focused area=] is either a [=navigable container=] with a non-null
+    [=navigable container/content navigable=] or a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=]: set |candidate| to the
+    [=navigable/active document=] of either that [=navigable container=]'s
+    [=navigable container/content navigable=] or that [=fenced navigable container=]'s
+    [=fenced navigable container/fenced navigable=], whichever is non-null.
+</div>
+
+<div algorithm=sequential-focus-navigation-patch>
+  Modify step 6 of the [=sequential focus navigation=] algorithm to read:
+
+  6. If |candidate| is not null, then run the [=focusing steps=] for
+    |candidate| with [=focus-unfenced|unfenced=] set to true and return.
+
+  Modify step 9 of the [=sequential focus navigation=] algorithm to read:
+
+  9. Otherwise, |starting point| is a [=focusable area=] in a [=child navigable=] or
+    [=fenced navigable container/fenced navigable=]. Set |starting point| to that
+    [=child navigable=] or [=fenced navigable container/fenced navigable=]'s
+    [=traversable navigable/unfenced parent=] and return to the step labeled <i>loop</i>.
+</div>
+
+<div algorithm=sequential-navigation-search-patch>
+  Modify step 2 of the [=sequential navigation search algorithm=] to read:
+
+  2. If |candidate| is a [=navigable container=] with a non-null
+    [=navigable container/content navigable=], then let |new candidate| be the result of running the
+    [=sequential navigation search algorithm=] with |candidate|'s
+    [=navigable container/content navigable=] as the first argument, <var ignore>direction</var> as
+    the second, and <i>sequential</i> as the third.
+
+    If |candidate| is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=], then let |new candidate| be the result of
+    running the [=sequential navigation search algorithm=] with |candidate|'s
+    [=fenced navigable container/fenced navigable=] as the first argument,
+    <var ignore>direction</var> as the second, and <i>sequential</i> as the third.
+
+    If |new candidate| is null, then let <var ignore>starting point</var>
+    be |candidate|, and return to the top of this algorithm. Otherwise, let
+    |candidate| be |new candidate|.
+</div>
 
 <h3 id=navigation-patch>Navigation</h3>
 
@@ -889,6 +1571,10 @@ TODO: Enable this once we move the WPTs to the external repository.
 
 Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
 CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
+
+<wpt>
+  /fenced-frame/embedder-coop-coep-blocked.https.html
+</wpt>
 
 <h3 id=page-visibility>Page visibility</h3>
 
