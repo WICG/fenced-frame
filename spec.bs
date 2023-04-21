@@ -415,74 +415,6 @@ In the [=fetch=] algorithm, step 13.2, where it says:
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".
 
-<h3 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h3>
-
-Fenced frames are a different element from an iframe. Therefore, using the
-<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
-Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
-specification is printed below:
-
-<h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
-
-The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
-<{fencedframe}>'s [=fenced navigable container/fenced navigable=]. The syntax for the directive's
-name and value is described by the following ABNF:
-
-<pre>
-  directive-name  = "fenced-frame-src"
-  directive-value = <a grammar>serialized-source-list</a>
-</pre>
-
-<div id="fenced-frame-src-example" class="example">
-  Given a page with the following Content Security Policy:
-  <pre>
-    <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
-  </pre>
-
-  Fetches for the following code will return a [=network error=], as the URL provided does not match
-  `fenced-frame-src`'s <a>source list</a>:
-
-  <pre highlight="html">
-    &lt;fencedframe src="https://example.org/"&gt;
-    &lt;/fencedframe&gt;
-  </pre>
-</div>
-
-The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and
-<a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
-the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s
-check.
-
-<h4 id="default-src-amendment">Amending [=default-src=]</h4>
-
-The [=default-src=] directive's Example 7 and Example 8 will be amended. Where it says:
-
-<pre>
-  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>worker-src</a> <a grammar>'self'</a>
-</pre>
-
-It will now say:
-
-<pre>
-  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>fenced-frame-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>worker-src</a> <a grammar>'self'</a>
-</pre>
-
-<h4 id="fallback-list-amendment"> Amending The Directive Fallback List</h4>
-
-In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
-list</a>, in step 1, add a new entry to the list:
-
-: "`fenced-frame-src`"
-::
-  1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
-
-
 <h2 id=html-integration>HTML Integration</h2>
 
 <h3 id=window-extension>Extensions to the {{Window}} interface</h3>
@@ -923,4 +855,71 @@ embedder to the fenced frame.
 
   2. If <var ignore>context</var>'s [=required csp=] is not `null`, and <var ignore>request</var>
     [=request/destination=] is "`fencedframe`", return "`Blocked`".
+</div>
+
+<h4 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h4>
+
+Fenced frames are a different element from an iframe. Therefore, using the
+<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
+Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
+specification is printed below:
+
+<div algorithm=fenced-frame-src>
+  The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
+  <{fencedframe}>'s [=fenced navigable container/fenced navigable=]. The syntax for the directive's
+  name and value is described by the following ABNF:
+
+  <pre>
+    directive-name  = "fenced-frame-src"
+    directive-value = <a grammar>serialized-source-list</a>
+  </pre>
+
+  <div id="fenced-frame-src-example" class="example">
+    Given a page with the following Content Security Policy:
+    <pre>
+      <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
+    </pre>
+
+    Fetches for the following code will return a [=network error=], as the URL provided does not
+    match `fenced-frame-src`'s <a>source list</a>:
+
+    <pre highlight="html">
+      &lt;fencedframe src="https://example.org/"&gt;
+      &lt;/fencedframe&gt;
+    </pre>
+  </div>
+
+  The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and
+  <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will
+  be the same as the
+  <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s check.
+</div>
+
+<div algorithm=default-src-amendment>
+  The [=default-src=] directive's Example 7 and Example 8 will be amended. Where it says:
+
+  <pre>
+    <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>worker-src</a> <a grammar>'self'</a>
+  </pre>
+
+  It will now say:
+
+  <pre>
+    <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>fenced-frame-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>worker-src</a> <a grammar>'self'</a>
+  </pre>
+</div>
+
+<div algorithm=directive-fallback-list>
+  In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
+  list</a>, in step 1, add a new entry to the list:
+
+  : "`fenced-frame-src`"
+  ::
+    1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
 </div>
