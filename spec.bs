@@ -102,6 +102,7 @@ spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
     text: directive value; url: directive-value
     text: frame-src pre-request check; url: frame-src-pre-request
     text: frame-src post-request check; url: frame-src-post-request
+    text: Get the effective directive for request; url: effective-directive-for-a-request
 spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
   type: dfn
     text: Is response to request blocked by context's required CSP?; url: process-response
@@ -939,4 +940,13 @@ specification is printed below:
   : "`fenced-frame-src`"
   ::
     1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
+</div>
+
+<div algorithm=effective-directive-switch-patch>
+  Modify the switch on step 3 of the [=Get the effective directive for request=] algorithm to
+  include the following case:
+
+  : "`fencedframe`"
+  ::
+    1.  Return `fenced-frame-src`.
 </div>
