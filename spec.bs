@@ -117,6 +117,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
+    urlPrefix: iframe-embed-object.html
+      for: iframe
+        text: allow; url: attr-iframe-allow
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -127,7 +130,6 @@ spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
     text: should fetching request be blocked as mixed content; url: should-block-fetch
 spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
   type: dfn
-    text: should request be blocked by Content Security Policy; url: should-block-request
     urlPrefix: interactive-elements.html
       text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
       text: previously focused element; url: previously-focused-element
@@ -156,6 +158,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: inherited policy; url: inherited-policy
     for: permissions
       text: matches; url: matches
+      text: permissions policy; url: permissions-policy
 </pre>
 
 <style>
@@ -259,6 +262,7 @@ dl, dd {
  <dd>[=Global attributes=]</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
+ <dd><code>[=iframe/allow=]</code> — [=permissions/permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
@@ -1572,9 +1576,12 @@ TODO: Enable this once we move the WPTs to the external repository.
 Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
 CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
 
+<!--
+TODO: Enable this once we move the WPTs to the external repository.
 <wpt>
   /fenced-frame/embedder-coop-coep-blocked.https.html
 </wpt>
+-->
 
 <h3 id=page-visibility>Page visibility</h3>
 
@@ -1605,8 +1612,6 @@ required permissions for the fenced frame to load. The fenced frame is only allo
 all of the required permissions are present in the context loading the fenced frame. When a fenced
 frame loads, it is assumed that the permissions checks passed, and the fenced frame will load with
 the list of permissions that were specified in the config object.
-
-Modify the [=Create a Permissions Policy for a navigable=] algorithm:
 
 <div algorithm=create-permissions-policy>
   Modify the definition of [=Create a Permissions Policy for a navigable=] to read:
@@ -1648,16 +1653,17 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
 
   Rewrite the section to read:
 
-  &lt;iframe> and &lt;fencedframe> elements have an "allow" attribute, which contains an
+  <{iframe}> and <{fencedframe}> elements have an [=iframe/allow=] attribute, which contains an
   [=ASCII-serialized policy directive=].
 
   The allowlist for the features named in the attribute may be empty; in that case, the default
   value for the allowlist is "`src`", which represents the origin of the URL in the iframe’s src
   attribute, or the fencedframe's [=fenced frame config=].
 
-  When not empty, the "allow" attribute will result in adding an allowlist for each recognized
-  feature to the iframe element’s content navigable's container policy or the fencedframe element'same
-  [=fenced navigable container/fenced navigable=]'s container policy, when it is constructed.
+  When not empty, the [=iframe/allow=] attribute will result in adding an allowlist for each
+  recognized feature to the iframe element’s content navigable's container policy or the fencedframe
+  element's [=fenced navigable container/fenced navigable=]'s container policy, when it is
+  constructed.
 </div>
 
 <div algorithm=create-permissions-policy-response>
@@ -1691,6 +1697,9 @@ Modify the [=Create a Permissions Policy for a navigable=] algorithm:
   7. Let <var ignore>permissionsPolicy</var> be the result of [=Create a Permissions Policy for a
     navigable|creating a permissions policy=] given <var ignore>embedder</var>,
     <var ignore>origin</var>, and null.
+
+  Note: This change is made in addition to the changes to [=create a new browsing context and
+  document=] outlined in [[#creating-browsing-contexts-patch]].
 </div>
 
 <div algorithm=main-fetch-patches>
