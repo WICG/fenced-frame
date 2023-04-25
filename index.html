@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version bf22245b8, updated Tue Apr 18 15:53:37 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="ced573856f3e6f587deedb0dafe85e60ff08edf2" name="document-revision">
+  <meta content="5bead21d225e54dcbd1ef398c9544968b6409095" name="document-revision">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -999,6 +999,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">Navigate</a> <var>element</var>’s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①">fenced navigable</a> to <var>url</var> using <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a>, with <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-hh" id="ref-for-navigation-hh">historyHandling</a> set to "<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#hh-replace" id="ref-for-hh-replace"><code>replace</code></a>" , and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-referrer-policy" id="ref-for-navigation-referrer-policy">referrerPolicy</a> set to <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"<code>no-referrer</code>"</a>. <span class="XXX">TODO: generate and store the config instance</span></p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/header-referrer.https.html" title="fenced-frame/header-referrer.https.html">header-referrer.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/header-referrer.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/header-referrer.https.html"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="destroy">
      When a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤">fencedframe</a></code> element is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#remove-an-element-from-a-document" id="ref-for-remove-an-element-from-a-document">removed from a document</a>, the user agent 
@@ -1512,6 +1518,12 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>If <var>event</var> is a <code class="idl"><a data-link-type="idl" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent②">FenceEvent</a></code>, run <a data-link-type="dfn" href="#report-an-event" id="ref-for-report-an-event">report an event</a> with <var>event</var> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter③">fenced frame reporter</a>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/fence-report-event.https.html" title="fenced-frame/fence-report-event.https.html">fence-report-event.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/fence-report-event.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/fence-report-event.https.html"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="setReportEventDataForAutomaticBeacons(event)" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-setreporteventdataforautomaticbeacons"><code>setReportEventDataForAutomaticBeacons(<var>event</var>)</code></dfn> method steps are: 
@@ -1529,6 +1541,12 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>Run <a data-link-type="dfn" href="#set-automatic-beacon-data" id="ref-for-set-automatic-beacon-data">set automatic beacon data</a> with <var>event</var> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑤">fenced frame reporter</a>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/set-automatic-beacon.https.html" title="fenced-frame/set-automatic-beacon.https.html">set-automatic-beacon.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/set-automatic-beacon.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/set-automatic-beacon.https.html"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="getNestedConfigs()" data-algorithm-for="Fence">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-getnestedconfigs"><code>getNestedConfigs()</code></dfn> method steps are: 
@@ -1566,6 +1584,12 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>Return <var>results</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/get-nested-configs.https.html" title="fenced-frame/get-nested-configs.https.html">get-nested-configs.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/get-nested-configs.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/get-nested-configs.https.html"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <h3 class="heading settled" data-level="1.5" id="new-request-destination"><span class="secno">1.5. </span><span class="content">New <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination">destination</a></span><a class="self-link" href="#new-request-destination"></a></h3>
    <p>Every distinct element should have its own request destination to allow for special handling when
@@ -1582,6 +1606,12 @@ request</a> list.</p>
    </blockquote>
    <p>Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".</p>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/header-secFetchDest.https.html" title="fenced-frame/header-secFetchDest.https.html">header-secFetchDest.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/header-secFetchDest.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/header-secFetchDest.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <h2 class="heading settled" data-level="2" id="html-integration"><span class="secno">2. </span><span class="content">HTML Integration</span><a class="self-link" href="#html-integration"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="window-extension"><span class="secno">2.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> interface</span><a class="self-link" href="#window-extension"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①"><c- g>Window</c-></a> {
@@ -1599,6 +1629,12 @@ request</a> list.</p>
      <li data-md>
       <p>Return null.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/fence-api.https.html" title="fenced-frame/fence-api.https.html">fence-api.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/fence-api.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/fence-api.https.html"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <h3 class="heading settled" data-level="2.2" id="creating-browsing-contexts-patch"><span class="secno">2.2. </span><span class="content">Modifications to creating browsing contexts</span><a class="self-link" href="#creating-browsing-contexts-patch"></a></h3>
    <div class="algorithm" data-algorithm="creating a new browsing context and document patch">
@@ -1635,6 +1671,12 @@ and because <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage
 vector between these two parties, for the purpose of user activation a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable③">fenced navigable</a> cannot not be considered a descendant of its
 embedder, nor can its embedder be considered an ancestor of the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable④">fenced navigable</a>, in the way that the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation" id="ref-for-tracking-user-activation②">user activation</a> algorithms currently use those
 terms. In other words, we consider user activation to be "fenced" to denote that it never crosses the <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable⑤">fenced navigable</a> boundary.</p>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/consume-user-activation.https.html" title="fenced-frame/consume-user-activation.https.html">consume-user-activation.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/consume-user-activation.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/consume-user-activation.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <p class="example" id="unfenced-sandbox-inheritance"><a class="self-link" href="#unfenced-sandbox-inheritance"></a>On the other hand, when a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑥">fencedframe</a></code>'s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable⑥">fenced navigable</a> gets <a data-link-type="dfn" href="#create-a-new-nested-traversable" id="ref-for-create-a-new-nested-traversable①">created</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate②">navigated</a>, it <span class="allow-2119">must</span> <a href="https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3">inherit</a> its embedder <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set" id="ref-for-active-sandboxing-flag-set">active sandboxing flag set</a> as is standard for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code>s in normal <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable③">child navigables</a>. If we did not do this, then the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑦">fencedframe</a></code> element would be a trivial
 sandbox bypass.</p>
    <p>To provide the isolation mentioned above, and its conditional relaxation, this specification defines
@@ -1689,6 +1731,12 @@ the user. These elements are called <dfn class="dfn-paneled" data-dfn-type="dfn"
    <p>A <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers">fenced navigable container</a> has a <dfn class="dfn-paneled" data-dfn-for="fenced navigable container" data-dfn-type="dfn" data-noexport id="fenced-navigable-container-fenced-navigable">fenced navigable</dfn>,
 which is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable⑧">traversable navigable</a> with a non-null <a data-link-type="dfn" href="#traversable-navigable-unfenced-parent" id="ref-for-traversable-navigable-unfenced-parent⑤">unfenced
 parent</a>, or null. It is initially null.</p>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/window-frameElement.https.html" title="fenced-frame/window-frameElement.https.html">window-frameElement.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/window-frameElement.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/window-frameElement.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <div class="algorithm" data-algorithm="initialize the nested traversable">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-the-nested-traversable">initialize the nested traversable</dfn> <var>traversable</var> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state" id="ref-for-she-document-state">document state</a> <var>documentState</var> and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable⑦">navigable</a> <var>parent</var>: 
     <ol>
@@ -1939,6 +1987,14 @@ running the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage
       <p>If <var>new candidate</var> is null, then let <var>starting point</var> be <var>candidate</var>, and return to the top of this algorithm. Otherwise, let <var>candidate</var> be <var>new candidate</var>.</p>
     </ol>
    </div>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/anchor-focus.https.html" title="fenced-frame/anchor-focus.https.html">anchor-focus.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/anchor-focus.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/anchor-focus.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/autofocus-denied.https.html" title="fenced-frame/autofocus-denied.https.html">autofocus-denied.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/autofocus-denied.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/autofocus-denied.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/script-focus.https.html" title="fenced-frame/script-focus.https.html">script-focus.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/script-focus.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/script-focus.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <h3 class="heading settled" data-level="2.6" id="navigation-patch"><span class="secno">2.6. </span><span class="content">Navigation</span><a class="self-link" href="#navigation-patch"></a></h3>
    <p>This section describes how the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe②⑦">fencedframe</a></code> element interacts with the ever-complicated process
 of navigation, which includes integration with various headers, isolation mechanisms, and policies.</p>
@@ -2010,8 +2066,9 @@ CORP violation report</a> algorithm, as leaving it unfenced may cause a privacy 
    <details class="wpt-tests-block" dir="ltr" lang="en" open>
     <summary>Tests</summary>
     <ul class="wpt-tests-list">
-     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/embedder-no-coep.https.html" title="fenced-frame/embedder-no-coep.https.html">embedder-no-coep.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/embedder-no-coep.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/embedder-no-coep.https.html"><small>(source)</small></a>
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/embedder-coop-coep-blocked.https.html" title="fenced-frame/embedder-coop-coep-blocked.https.html">embedder-coop-coep-blocked.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/embedder-coop-coep-blocked.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/embedder-coop-coep-blocked.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/embedder-no-coep.https.html" title="fenced-frame/embedder-no-coep.https.html">embedder-no-coep.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/embedder-no-coep.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/embedder-no-coep.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/embedder-require-corp.https.html" title="fenced-frame/embedder-require-corp.https.html">embedder-require-corp.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/embedder-require-corp.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/embedder-require-corp.https.html"><small>(source)</small></a>
     </ul>
    </details>
    <h3 class="heading settled" data-level="2.7" id="page-visibility"><span class="secno">2.7. </span><span class="content">Page visibility</span><a class="self-link" href="#page-visibility"></a></h3>
@@ -2031,6 +2088,13 @@ specification adds another value for fenced frames:</p>
     <dd data-md>
      <p>This <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable①③">navigable</a> is displaying a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③⓪">fencedframe</a></code>'s content</p>
    </dl>
+   <p class="issue" id="issue-d22ed66a"><a class="self-link" href="#issue-d22ed66a"></a> Specify the behavior that leads to the following:</p>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/prerender.https.html" title="fenced-frame/prerender.https.html">prerender.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/prerender.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/prerender.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <h3 class="heading settled" data-level="3.2" id="csp-integration"><span class="secno">3.2. </span><span class="content">Content Security Policy</span><a class="self-link" href="#csp-integration"></a></h3>
    <h4 class="heading settled" data-level="3.2.1" id="csp-intro"><span class="secno">3.2.1. </span><span class="content">Intro</span><a class="self-link" href="#csp-intro"></a></h4>
    <p><em>This section is non-normative</em>.</p>
@@ -2136,6 +2200,22 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
       </ol>
     </dl>
    </div>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/ancestor-throttle.https.html" title="fenced-frame/ancestor-throttle.https.html">ancestor-throttle.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/ancestor-throttle.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/ancestor-throttle.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-allowed.https.html" title="fenced-frame/csp-allowed.https.html">csp-allowed.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-allowed.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-allowed.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-blocked.https.html" title="fenced-frame/csp-blocked.https.html">csp-blocked.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-blocked.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-blocked.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-fenced-frame-src-allowed.https.html" title="fenced-frame/csp-fenced-frame-src-allowed.https.html">csp-fenced-frame-src-allowed.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-fenced-frame-src-allowed.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-fenced-frame-src-allowed.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-fenced-frame-src-blocked.https.html" title="fenced-frame/csp-fenced-frame-src-blocked.https.html">csp-fenced-frame-src-blocked.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-fenced-frame-src-blocked.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-fenced-frame-src-blocked.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-frame-src-allowed.https.html" title="fenced-frame/csp-frame-src-allowed.https.html">csp-frame-src-allowed.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-frame-src-allowed.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-frame-src-allowed.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-frame-src-blocked.https.html" title="fenced-frame/csp-frame-src-blocked.https.html">csp-frame-src-blocked.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-frame-src-blocked.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-frame-src-blocked.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp-transparent-url.https.html" title="fenced-frame/csp-transparent-url.https.html">csp-transparent-url.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp-transparent-url.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp-transparent-url.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/csp.https.html" title="fenced-frame/csp.https.html">csp.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/csp.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/csp.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/cspee.https.html" title="fenced-frame/cspee.https.html">cspee.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/cspee.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/cspee.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/embedder-csp-not-propagate.https.html" title="fenced-frame/embedder-csp-not-propagate.https.html">embedder-csp-not-propagate.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/embedder-csp-not-propagate.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/embedder-csp-not-propagate.https.html"><small>(source)</small></a>
+    </ul>
+   </details>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -2700,6 +2780,7 @@ directive-value = <a data-link-type="grammar" href="https://w3c.github.io/webapp
 inheritance violation</a> algorithm, as leaving it unfenced may cause a privacy leak. <a class="issue-return" href="#issue-3fa4bcc3" title="Jump to section">↵</a></div>
    <div class="issue"> Determine if we need to fence or unfence the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#queue-a-cross-origin-embedder-policy-corp-violation-report">queue a cross-origin embedder policy
 CORP violation report</a> algorithm, as leaving it unfenced may cause a privacy leak. <a class="issue-return" href="#issue-0714cdd7" title="Jump to section">↵</a></div>
+   <div class="issue"> Specify the behavior that leads to the following: <a class="issue-return" href="#issue-d22ed66a" title="Jump to section">↵</a></div>
   </div>
 <script>/* script-dfn-panel */
 "use strict";
