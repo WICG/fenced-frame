@@ -941,8 +941,8 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
 <div algorithm>
   The <dfn attribute for=Window>fence</dfn> getter steps are:
-    1. If [=this=]'s [=Window/navigable=]'s [=fenced frame config instance=] is not null, then
-       return [=this=]'s [=Window/fence=].
+    1. If [=this=]'s [=Window/navigable=]'s [=navigable/fenced frame config instance=] is not null,
+       then return [=this=]'s [=Window/fence=].
 
     1. Return null.
 </div>
