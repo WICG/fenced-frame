@@ -304,6 +304,10 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
      <span class="XXX">TODO: generate and store the config instance</span>
+
+  <wpt>
+    /fenced-frame/header-referrer.https.html
+  </wpt>
 </div>
 
 <div algorithm=destroy>
@@ -847,6 +851,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
+
+  <wpt>
+    /fenced-frame/fence-report-event.https.html
+  </wpt>
 </div>
 
 <div algorithm>
@@ -866,6 +874,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Run [=set automatic beacon data=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
+
+  <wpt>
+    /fenced-frame/set-automatic-beacon.https.html
+  </wpt>
 </div>
 
 <div algorithm>
@@ -899,6 +911,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. [=list/Append=] |newConfig| to |results|.
 
   1. Return |results|.
+
+  <wpt>
+    /fenced-frame/get-nested-configs.https.html
+  </wpt>
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -923,6 +939,10 @@ In the [=fetch=] algorithm, step 13.2, where it says:
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".
 
+<wpt>
+  /fenced-frame/header-secFetchDest.https.html
+</wpt>
+
 <h2 id=html-integration>HTML Integration</h2>
 
 <h3 id=window-extension>Extensions to the {{Window}} interface</h3>
@@ -942,6 +962,10 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
        return [=this=]'s [=Window/fence=].
 
     1. Return null.
+
+  <wpt>
+    /fenced-frame/fence-api.https.html
+  </wpt>
 </div>
 
 <h3 id=creating-browsing-contexts-patch>Modifications to creating browsing contexts</h3>
@@ -994,6 +1018,10 @@ embedder, nor can its embedder be considered an ancestor of the <{fencedframe}>'
 container/fenced navigable=], in the way that the [=user activation=] algorithms currently use those
 terms. In other words, we consider user activation to be "fenced" to denote that it never crosses the
 [=fenced navigable container/fenced navigable=] boundary.</p>
+
+<wpt>
+  /fenced-frame/consume-user-activation.https.html
+</wpt>
 
 <p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
 [=fenced navigable container/fenced navigable=] gets [=created a new nested traversable|created=] or
@@ -1070,6 +1098,10 @@ the user. These elements are called <dfn>fenced navigable containers</dfn>.
 A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
 which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
 parent=], or null. It is initially null.
+
+<wpt>
+  /fenced-frame/window-frameElement.https.html
+</wpt>
 
 <div algorithm>
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
@@ -1388,6 +1420,12 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
     |candidate| be |new candidate|.
 </div>
 
+<wpt>
+  /fenced-frame/anchor-focus.https.html
+  /fenced-frame/autofocus-denied.https.html
+  /fenced-frame/script-focus.https.html
+</wpt>
+
 <h3 id=navigation-patch>Navigation</h3>
 
 This section describes how the <{fencedframe}> element interacts with the ever-complicated process
@@ -1479,8 +1517,9 @@ Issue: Determine if we need to fence or unfence the [=queue a cross-origin embed
 CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
 
 <wpt>
-  /fenced-frame/embedder-no-coep.https.html
   /fenced-frame/embedder-coop-coep-blocked.https.html
+  /fenced-frame/embedder-no-coep.https.html
+  /fenced-frame/embedder-require-corp.https.html
 </wpt>
 
 <h3 id=page-visibility>Page visibility</h3>
@@ -1505,6 +1544,12 @@ specification adds another value for fenced frames:
 
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
+
+Issue: Specify the behavior that leads to the following:
+
+<wpt>
+  /fenced-frame/prerender.https.html
+</wpt>
 
 <h3 id=csp-integration>Content Security Policy</h3>
 
@@ -1633,3 +1678,17 @@ specification is printed below:
   ::
     1.  Return `fenced-frame-src`.
 </div>
+
+<wpt>
+  /fenced-frame/ancestor-throttle.https.html
+  /fenced-frame/csp-allowed.https.html
+  /fenced-frame/csp-blocked.https.html
+  /fenced-frame/csp-fenced-frame-src-allowed.https.html
+  /fenced-frame/csp-fenced-frame-src-blocked.https.html
+  /fenced-frame/csp-frame-src-allowed.https.html
+  /fenced-frame/csp-frame-src-blocked.https.html
+  /fenced-frame/csp-transparent-url.https.html
+  /fenced-frame/csp.https.html
+  /fenced-frame/cspee.https.html
+  /fenced-frame/embedder-csp-not-propagate.https.html
+</wpt>
