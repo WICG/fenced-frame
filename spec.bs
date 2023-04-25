@@ -887,10 +887,16 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
      configs=]:
 
-     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where the {{FencedFrameConfig}}'s
-        [=fencedframeconfig/urn=] is |urn| and the {{FencedFrameConfig}}'s [=fencedframeconfig/
-        config=] is |config|.
-        <span class="XXX">TODO: phrase the constructor correctly</span>.
+     1. Let |newConfig| be a [=new=] {{FencedFrameConfig}} object created in [=this=]'s [=relevant
+        realm=], with the following:
+
+        : [=fencedframeconfig/urn=]
+        :: |urn|
+
+        : [=fencedframeconfig/config=]
+        :: |config|
+
+     1. [=list/Append=] |newConfig| to |results|.
 
   1. Return |results|.
 </div>
