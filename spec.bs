@@ -706,6 +706,18 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/embedder shared storage context=]
 </div>
 
+Each [=navigable=] has a <dfn for=navigable>fenced frame config instance</dfn>, which is a [=fenced
+frame config instance=] or null, initially null.
+
+Advisement: This [=navigable/fenced frame config instance=] should really exist on [=traversable
+navigable=], specifically a [=fenced navigable container/fenced navigable=], however until
+third-party cookies are <a
+href=https://w3ctag.github.io/web-without-3p-cookies/#introduction>deprecated</a>, this
+specification supports many of the <{fencedframe}> constructs on the <{iframe}> element. This
+requires that for the short term, a normal [=navigable container/content navigable=] be able to load
+a [=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced
+frame config instance=].
+
 <h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
 One major input to the <{fencedframe}> element is the {{FencedFrameConfig}} interface, which
@@ -829,10 +841,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
-
-     <span class=XXX>This and the below references should point to an actual member on [=traversable
-     navigable=], not just the type.</span>
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -854,7 +863,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -872,7 +881,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
