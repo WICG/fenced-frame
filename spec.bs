@@ -17,6 +17,7 @@ Indent: 2
 Default Biblio Status: current
 Markup Shorthands: markdown yes
 Assume Explicit For: yes
+WPT Display: open
 </pre>
 
 <pre class="link-defaults">
@@ -1449,14 +1450,6 @@ suitable \`<a http-header><code>Cross-Origin-Embedder-Policy</code></a>\` header
 Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
 inheritance violation=] algorithm, as leaving it unfenced may cause a privacy leak.
 
-<!--
-TODO: Enable this once we move the WPTs to the external repository.
-<wpt>
-/embedder-no-coep.https.html
-/embedder-coop-coep-blocked.https.html
-</wpt>
--->
-
 <div algorithm=corp-patch>
   Next, we modify how the [=cross-origin resource policy check=] <a
   href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:cross-origin-resource-policy-check>applies
@@ -1480,6 +1473,7 @@ Issue: Determine if we need to fence or unfence the [=queue a cross-origin embed
 CORP violation report=] algorithm, as leaving it unfenced may cause a privacy leak.
 
 <wpt>
+  /fenced-frame/embedder-no-coep.https.html
   /fenced-frame/embedder-coop-coep-blocked.https.html
 </wpt>
 
