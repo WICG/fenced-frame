@@ -359,7 +359,7 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, determines the [=fenced
 container policy=] that will be used when the [=Document/permissions policy=] for a {{Document}} in
 the <{fencedframe}>'s [=fenced navigable container/fenced navigable=] is initialized. Its value must
-be a [=serialized permissions policy=].
+be a [=serialized permissions policy=]. [[!PERMISSIONS-POLICY]]
 
 The IDL attribute <dfn attribute for=HTMLFencedFrameElement>allow</dfn> must [=reflect=] the
 respective content attribute of the same name.
