@@ -151,7 +151,6 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: Create a Permissions Policy for a navigable; url: algo-create-for-navigable
     text: Create a Permissions Policy for a navigable from response; url: algo-create-from-response
     text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
-    text: features; url: policy-controlled-feature
     text: default allowlist; url: policy-controlled-feature-default-allowlist
     text: The allow attribute of the iframe element; url: iframe-allow-attribute
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -272,7 +271,7 @@ dl, dd {
  <dd>[=Global attributes=]</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
- <dd><code>[=iframe/allow=]</code> — [=permissions/permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
+ <dd><code>[=iframe/allow=]</code> — [=permissions/Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
@@ -362,7 +361,7 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 
 The IDL attribute
 <dfn attribute for="fencedframe"><code data-x="dom-fencedframe-allow">allow</code></dfn>
-</dfn> must [=reflect=] the respective content attributes of the same name.
+must [=reflect=] the respective content attribute of the same name.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -643,7 +642,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or an [=fencedframetype/embedder shared storage context=]
 
   : <dfn>required permissions to load</dfn>
-  :: a [=list=] of [=features=]
+  :: a [=list=] of [=policy-controlled features=]
 </dl>
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
@@ -686,7 +685,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/embedder shared storage context=]
 
   : <dfn>required permissions to load</dfn>
-  :: a [=list=] of [=features=]
+  :: a [=list=] of [=policy-controlled features=]
 </dl>
 
 <div algorithm>
@@ -1750,34 +1749,36 @@ specification is printed below:
 </wpt>
 
 <h3 id=permissions-policy-changes>Permissions Policies</h3>
-Permissions are granted to fenced frames through the FencedFrameConfig object, which defines the
-required permissions for the fenced frame to load. The fenced frame is only allowed to navigate if
-all of the required permissions are present in the context loading the fenced frame. When a fenced
-frame loads, it is assumed that the permissions checks passed, and the fenced frame will load with
-the list of permissions that were specified in the config object.
+
+Permissions are granted to {{Document}} inside of <{fencedframe}>s through the
+{{FencedFrameConfig}} object and its associated internal [=fencedframeconfig/config=], which defines
+the permissions [=fenced frame config/required permissions to load|required=] for a <{fencedframe}>
+to navigate successfully. Specifically, a {{Document}} inside of a <{fencedframe}> can only load if
+it has opted into all of the [=fenced frame config/required permissions to load=].
 
 <div algorithm=create-permissions-policy>
   Modify the definition of [=Create a Permissions Policy for a navigable=] to read:
 
-  Given null or an element (|container|), an
-  [=origin=] (<var ignore>origin</var>), and null or a
-  [=list=] of [=features=] (|required features|), this algorithm returns a new
+  Given null or an element (|container|), an [=origin=] (<var ignore>origin</var>), and an optional
+  [=list=] of [=policy-controlled features=] (|required features|), this algorithm returns a new
   [=Document/permissions policy=].
 
   Rewrite step 1 of the algorithm to read:
 
-  1. Assert: if not null, |container| is either a [=navigable container=] or a
-    [=fenced navigable container=].
+  1. [=Assert=]: if not null, |container| is either a [=navigable container=] or a [=fenced
+     navigable container=].
 
   Add a new step after step 1 that reads:
 
-  2. Assert: if |container| is not a [=fenced navigable container=], |required features| is null.
+  2. [=Assert=]: if |container| is not a [=fenced navigable container=], |required features| is not
+     given.
 
   Rewrite step 4 to read:
 
-  4. If |container| is a [=fenced navigable container=], then for each |feature| supported,
+  4. If |container| is a [=fenced navigable container=], then for each |feature| supported:
 
-      1. If |feature| exists in |required features|, set |inherited policy|[|feature|] to "`Enabled`".
+      1. If |feature| [=list/exists=] in |required features|, set |inherited policy|[|feature|] to
+         "`Enabled`".
 
         Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
 
