@@ -168,6 +168,22 @@ spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
 </pre>
 
 <style>
+/* Put nice boxes around each algorithm. */
+[data-algorithm]:not(.heading) {
+  padding: .5em;
+  border: thin solid #ddd; border-radius: .5em;
+  margin: .5em calc(-0.5em - 1px);
+}
+[data-algorithm]:not(.heading) > :first-child {
+  margin-top: 0;
+}
+[data-algorithm]:not(.heading) > :last-child {
+  margin-bottom: 0;
+}
+[data-algorithm] [data-algorithm] {
+  margin: 1em 0;
+}
+
 .selected-text-file-an-issue {
   position: fixed;
   bottom: 0;
