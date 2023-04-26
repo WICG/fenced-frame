@@ -118,9 +118,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
-    urlPrefix: iframe-embed-object.html
-      for: iframe
-        text: allow; url: attr-iframe-allow
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -152,9 +149,9 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: Create a Permissions Policy for a navigable from response; url: algo-create-from-response
     text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
     text: default allowlist; url: policy-controlled-feature-default-allowlist
-    text: The allow attribute of the iframe element; url: iframe-allow-attribute
     text: ASCII-serialized policy directive; url: serialized-policy-directive
     text: inherited policy; url: inherited-policy
+    text: serialized permissions policy; url: serialized-permissions-policy
     for: permissions
       text: matches; url: matches
       text: permissions policy; url: permissions-policy
@@ -271,7 +268,7 @@ dl, dd {
  <dd>[=Global attributes=]</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
- <dd><code>[=iframe/allow=]</code> — [=permissions/Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
+ <dd><code><{fencedframe/allow}></code> — [=permissions/Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
@@ -359,9 +356,13 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
   1. <span class=XXX>TODO</span>
 </div>
 
-The IDL attribute
-<dfn attribute for="fencedframe"><code data-x="dom-fencedframe-allow">allow</code></dfn>
-must [=reflect=] the respective content attribute of the same name.
+The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, determines the [=fenced
+container policy=] that will be used when the [=Document/permissions policy=] for a {{Document}} in
+the <{fencedframe}>'s [=fenced navigable container/fenced navigable=] is initialized. Its value must
+be a [=serialized permissions policy=].
+
+The IDL attribute <dfn attribute for=HTMLFencedFrameElement>allow</dfn> must [=reflect=] the
+respective content attribute of the same name.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -1756,6 +1757,13 @@ the permissions [=fenced frame config/required permissions to load|required=] fo
 to navigate successfully. Specifically, a {{Document}} inside of a <{fencedframe}> can only load if
 it has opted into all of the [=fenced frame config/required permissions to load=].
 
+<h4 id=fenced-container-policies>Fenced container policies</h4>
+
+TODO: define <dfn>fenced container policy</dfn> here, which is current referenced by
+<{fencedframe/allow}>.
+
+<h4 id=permissions-policy-patches>Algorithm patches</h4>
+
 <div algorithm=create-permissions-policy>
   Modify the definition of [=Create a Permissions Policy for a navigable=] to read:
 
@@ -1777,34 +1785,33 @@ it has opted into all of the [=fenced frame config/required permissions to load=
 
   4. If |container| is a [=fenced navigable container=], then for each |feature| supported:
 
-      1. If |feature| [=list/exists=] in |required features|, set |inherited policy|[|feature|] to
-         "`Enabled`".
+       1. If |feature| [=list/exists=] in |required features|, set |inherited policy|[|feature|] to
+          "`Enabled`".
 
-        Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
+          Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
 
-    Otherwise, for each |feature| supported,
+     Otherwise, for each |feature| supported,
 
-      1. Let |isInherited| be the result of running [=Define an inherited policy for feature in
-        container at origin=] on |feature|, |container| and <var ignore>origin</var>.
+       1. Let |isInherited| be the result of running [=Define an inherited policy for feature in
+          container at origin=] on |feature|, |container| and <var ignore>origin</var>.
 
-      2. Set |inherited policy|[|feature|] to |isInherited|.
+       2. Set |inherited policy|[|feature|] to |isInherited|.
 </div>
 
 <div algorithm=allow-attribute-fenced-frame>
-  Modify the [=The allow attribute of the iframe element=] section.
+  Rename the <a href=https://w3c.github.io/webappsec-permissions-policy/#iframe-allow-attribute>The
+  `allow` attribute of the `iframe` element</a> section to "The `allow` attribute of the `iframe`
+  and `fencedframe` element", and rewrite the section to read:
 
-  Rename it to "The allow attribute of the iframe and fencedframe element".
-
-  Rewrite the section to read:
-
-  <{iframe}> and <{fencedframe}> elements have an [=iframe/allow=] attribute, which contains an
-  [=ASCII-serialized policy directive=].
+  <{iframe}> and <{fencedframe}> elements have an respective `allow` attributes (<{iframe}>:
+  <{iframe/allow}>; <{fencedframe}>: <{fencedframe/allow}>), which contain an [=ASCII-serialized
+  policy directive=].
 
   The allowlist for the features named in the attribute may be empty; in that case, the default
   value for the allowlist is "`src`", which represents the origin of the URL in the iframe’s src
   attribute, or the fencedframe's [=fenced frame config=].
 
-  When not empty, the [=iframe/allow=] attribute will result in adding an allowlist for each
+  When not empty, the <{iframe/allow}> attribute will result in adding an allowlist for each
   recognized feature to the iframe element’s content navigable's container policy or the fencedframe
   element's [=fenced navigable container/fenced navigable=]'s container policy, when it is
   constructed.
