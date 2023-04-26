@@ -1881,30 +1881,30 @@ TODO: define <dfn>fenced container policy</dfn> here, which is current reference
 </div>
 
 <div algorithm=permissions-policy-block-request>
-  Create a new algorithm in the [[!permissions-policy]] spec, called <dfn export>Should navigation
-  response to navigation request be blocked by Permissions Policy?</dfn>.
+  Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
+  Permissions Policy?</dfn> in [[!HTML]].
 
   Given a [=response=] (|response|), a [=request=] (|request|), and a [=navigable=] (|navigable|),
-  this algorithm returns `Blocked` or `Allowed`.
+  this algorithm returns `Blocked` or `Allowed`:
 
   1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return `Allowed`.
 
-  2. Let |required permissions to load| be the |navigable|'s [=fenced frame config instance=]'s
-    [=fenced frame config instance/required permissions to load=].
+  2. Let |required permissions to load| be the |navigable|'s [=navigable/fenced frame config
+     instance=]'s [=fenced frame config instance/required permissions to load=].
 
   3. Let |inherited policy| be |request|'s [=request/client=]'s
-    [=environment/target browsing context=]'s [=browsing context/active document=]'s
-    [=Document/permissions policy=]'s [=inherited policy=].
+     [=environment/target browsing context=]'s [=browsing context/active document=]'s
+     [=Document/permissions policy=]'s [=inherited policy=].
 
   4. Let |origin| be |response|'s [=response/url=]'s [=url/origin=].
 
-  5. For each |permission| in |required permissions to load|:
+  5. [=list/For each=] |permission| of |required permissions to load|:
 
     1. If |permission| does not exist in |inherited policy|, and |permission|'s
-      [=default allowlist=] is not "`*`", return "`Blocked`".
+       [=default allowlist=] is not "`*`", return "`Blocked`".
       
     2. Otherwise, if the allowlist at |inherited policy|[|permission|] does not
-      [=permissions/matches|match=] |origin|, return "`Blocked`".
+       [=permissions/matches|match=] |origin|, return "`Blocked`".
   
   6. Return "`Allowed`."
 </div>
