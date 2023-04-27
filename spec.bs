@@ -1786,7 +1786,7 @@ can only load if it has opted into all of the [=fenced frame config/effective en
 <div algorithm=create-permissions-policy>
   Modify the definition of [=Create a Permissions Policy for a navigable=]:
 
-  Given null or an [=element=] (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
+  Given null or an element (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
   |fenced| that defaults to false, this algorithm returns a new Permissions Policy.
 
   Rewrite step 1 to read:
