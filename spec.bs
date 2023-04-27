@@ -82,6 +82,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
+      text: navigation params; url: navigation-params
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
@@ -1777,9 +1778,9 @@ it has opted into all of the [=fenced frame config/effective permissions=].
   Create a new algorithm called <dfn>Create a Permissions Policy for a fenced navigable</dfn> in
   [[!PERMISSIONS-POLICY]].
 
-  Given null or an element (|container|), an [=origin=] (<var ignore>origin</var>), and an optional
-  [=fencedframetype/exhaustive set of permissions=] (|effective permissions|), this algorithm
-  returns a new [=Document/permissions policy=].
+  Given null or an element (|container|) and an optional [=fencedframetype/exhaustive set of
+  permissions=] (|effective permissions|), this algorithm returns a new [=Document/permissions
+  policy=].
 
   1. [=Assert=]: if not null, |container| is a [=fenced navigable container=].
 
@@ -1834,7 +1835,7 @@ it has opted into all of the [=fenced frame config/effective permissions=].
   Modify step 1 of the algorithm to read:
   1. If |container| is a [=fenced navigable container=], then let <var ignore>policy</var> be the
      result of running
-     [=Create a Permissions Policy for a fenced navigable=] given |container|, |origin|, and
+     [=Create a Permissions Policy for a fenced navigable=] given |container| and
      |effective permissions|.
   
      Otherwise, let <var ignore>policy</var> be the result of running [=Create a Permissions Policy
@@ -1858,11 +1859,11 @@ it has opted into all of the [=fenced frame config/effective permissions=].
   7. If <var ignore>navigationParams</var>'s [=navigable=]'s [=navigable/traversable navigable=] is
      a [=fenced navigable container/fenced navigable=], let |permissionsPolicy| be the result of
      [=Create a Permissions Policy for a fenced navigable|creating a permissions policy for a fenced
-     navigable=] given |embedder|, |origin|, and null.
+     navigable=] given |embedder| and null.
 
      Otherwise, let |permissionsPolicy| be the result of [=Create a Permissions Policy for a
      navigable|creating a permissions policy=] given |embedder| and
-     |origin|.
+     <var ignore>origin</var>.
 
   Note: This change is made in addition to the changes to [=create a new browsing context and
   document=] outlined in [[#creating-browsing-contexts-patch]].
@@ -1874,20 +1875,20 @@ it has opted into all of the [=fenced frame config/effective permissions=].
   |failure| is true, then:" that reads:
 
   8. Otherwise, if the result of [=Should navigation response to navigation request be blocked by
-    Permissions Policy?=] given <var ignore>navigationParams</var>'s [=response=], and <var
-    ignore>navigable</var> is "`Blocked`", then set |failure| to true.
+    Permissions Policy?=] given <var ignore>navigationParams</var> and <var ignore>navigable</var>
+    is "`Blocked`", then set |failure| to true.
 </div>
 
 <div algorithm=permissions-policy-block-request>
   Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
   Permissions Policy?</dfn> in [[!HTML]].
 
-  Given a [=response=] (|response|) and a [=navigable=] (|navigable|), this algorithm returns
+  Given a [=navigation params=] (|navigationParams|) and a [=navigable=] (|navigable|), this algorithm returns
   `Blocked` or `Allowed`:
 
   1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return `Allowed`.
 
-  2. Let |origin| be |response|'s [=response/url=]'s [=url/origin=].
+  2. Let |origin| be |navigationParams|'s [=navigation params/origin=].
 
   3. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
      [=fenced frame config instance/effective permissions=].
