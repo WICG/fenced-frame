@@ -74,8 +74,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: cross-origin isolation mode; url: bcg-cross-origin-isolation
       for: cross-origin isolation mode
         text: none; url:cross-origin-isolation-none
-    urlPrefix: document-lifecycle.html
-      text: create and initialize a Document object; url: initialise-the-document-object
     urlPrefix: browsing-the-web.html
       text: create navigation params by fetching; url: create-navigation-params-by-fetching
       text: document state; url: she-document-state
@@ -153,6 +151,10 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: ASCII-serialized policy directive; url: serialized-policy-directive
     text: serialized permissions policy; url: serialized-permissions-policy
     text: supported features; url: supported-features
+    text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
+    text: Is feature enabled in document for origin?; url: is-feature-enabled
+    text: declared policy; url: declared-policy
+    text: allowlist; url: allowlist
     for: permissions
       text: matches; url: matches
       text: permissions policy; url: permissions-policy
@@ -1782,42 +1784,24 @@ can only load if it has opted into all of the [=fenced frame config/effective en
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
 <div algorithm=create-permissions-policy>
-  Rewrite step 1 of the [=Create a Permissions Policy for a navigable=] algorithm to read:
+  Modify the definition of [=Create a Permissions Policy for a navigable=]:
+
+  Given null or an [=element=] (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
+  |fenced| that defaults to false, this algorithm returns a new Permissions Policy.
+
+  Rewrite step 1 to read:
 
   1. [=Assert=]: if not null, <var ignore>container</var> is either a [=navigable container=] or a
      [=fenced navigable container=].
-</div>
 
-<div algorithm=create-fenced-permissions-policy>
-  Create a new algorithm called <dfn>Create a Permissions Policy for a fenced navigable</dfn> in
-  [[!PERMISSIONS-POLICY]].
+  Rewrite step 4 to read:
 
-  Given null or an element (|container|) and an optional [=fencedframetype/exhaustive set of
-  permissions=] (|effective permissions|), this algorithm returns a new [=Document/permissions
-  policy=].
+  4. For each |feature| supported:
 
-  1. [=Assert=]: if not null, |container| is a [=fenced navigable container=].
+     1. Let |isInherited| be the result of running [=Define an inherited policy for feature in
+        container at origin=] on |feature|, |container|, |origin|, and |fenced|.
 
-  2. Let |inherited policy| be a new [=ordered map=].
-
-  4. If |effective permissions| is given, then [=list/For each=] |supported feature| of the UA's
-     [=supported features=]:
-
-       1. If |supported feature| [=list/exists=] in |effective permissions|, then set |inherited
-          policy|[|supported feature|] to "`Enabled`".
-
-          Otherwise, set |inherited policy|[|supported feature|] to "`Disabled`".
-
-  5. Let |policy| be a new [=permissions/Permissions policy=], with [=permissions policy/inherited
-     policy=] |inherited policy| and declared policy a new [=ordered map=].
-
-  6. Return |policy|.
-
-  Note: It is safe to naively set the frame's permissions to the |effective permissions|. By this
-  point, the [=Should navigation response to navigation request be blocked by Permissions Policy?=]
-  check will have verified that the fenced frame is not trying to get extra permissions that the
-  embedder didn't delegate.
-
+     2. Set <var ignore>inherited policy</var>[|feature|] to |isInherited|.
 </div>
 
 <div algorithm=allow-attribute-fenced-frame>
@@ -1843,45 +1827,18 @@ can only load if it has opted into all of the [=fenced frame config/effective en
   Modify the definition of [=Create a Permissions Policy for a navigable from response=] to read:
 
   Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
-  [=origin=] (|origin|), a [=response=] (<var ignore>response</var>), and null or an
-  [=fenced frame config instance/effective enabled permissions=] (|effective permissions|), this
-  algorithm returns a new [=Document/permissions policy=].
+  [=origin=] (|origin|), and a [=response=] (<var ignore>response</var>), this algorithm returns a
+  new [=Document/permissions policy=].
 
-  Modify step 1 of the algorithm to read:
-  1. If |container| is a [=fenced navigable container=], then let <var ignore>policy</var> be the
-     result of running
-     [=Create a Permissions Policy for a fenced navigable=] given |container| and
-     |effective permissions|.
-  
-     Otherwise, let <var ignore>policy</var> be the result of running [=Create a Permissions Policy
-     for a navigable=] given |container| and |origin|.
-</div>
+  Add a step before step 1 that reads:
 
-<div algorithm=shared-document-creation-changes>
-  Modify the [=create and initialize a Document object=] algorithm. Rewrite step 3 to read:
+  1. If |container| is a [=fenced navigable container=], let |fenced| be true.
 
-  3. Let <var ignore>permissionsPolicy</var> be the result of [=Create a Permissions Policy for a
-     navigable from response|creating a permissions policy from a response=] given
-     |navigationParams|'s [=navigable=]'s [=navigable container|container=], |navigationParams|'s
-     [=navigation params/origin=], |navigationParams|'s [=navigation params/response=], and
-     |navigationParams|'s [=navigable=]'s [=fenced frame config instance=]'s [=fenced frame config
-     instance/effective enabled permissions=].
-</div>
+     Otherwise, let |fenced| be false.
 
-<div algorithm=new-browsing-context-changes>
-  Modify the [=create a new browsing context and document=] algorithm. Rewrite step 7 to read:
-
-  7. If <var ignore>navigationParams</var>'s [=navigable=]'s [=navigable/traversable navigable=] is
-     a [=fenced navigable container/fenced navigable=], let |permissionsPolicy| be the result of
-     [=Create a Permissions Policy for a fenced navigable|creating a permissions policy for a fenced
-     navigable=] given |embedder| and null.
-
-     Otherwise, let |permissionsPolicy| be the result of [=Create a Permissions Policy for a
-     navigable|creating a permissions policy=] given |embedder| and
-     <var ignore>origin</var>.
-
-  Note: This change is made in addition to the changes to [=create a new browsing context and
-  document=] outlined in [[#creating-browsing-contexts-patch]].
+  Modify the now step 2 of the algorithm to read:
+  2. Let <var ignore>policy</var> be the result of running [=Create a Permissions Policy
+     for a navigable=] given |container|, |origin|, and |fenced|.
 </div>
 
 <div algorithm=attempt-populate-history-patches>
@@ -1898,19 +1855,19 @@ can only load if it has opted into all of the [=fenced frame config/effective en
   Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
   Permissions Policy?</dfn> in [[!HTML]].
 
-  Given a [=navigation params=] (|navigationParams|) and a [=navigable=] (|navigable|), this algorithm returns
-  `Blocked` or `Allowed`:
+  Given a [=navigation params=] (|navigationParams|) and a [=navigable=] (|navigable|), this
+  algorithm returns `Blocked` or `Allowed`:
 
   1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return `Allowed`.
 
   2. Let |origin| be |navigationParams|'s [=navigation params/origin=].
 
   3. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
-     [=fenced frame config instance/effective permissions=].
+     [=fenced frame config instance/effective enabled permissions=].
 
   4. Let |permissions policy| be the result of [=Create a Permissions Policy for a navigable|
-     creating a permissions policy=] given |navigable|'s [=navigable container|container=] and
-     |origin|.
+     creating a permissions policy=] given |navigable|'s [=navigable container|container=],
+     |origin|, and <var ignore>fenced</var> set to true.
 
   5. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
 
@@ -1918,15 +1875,58 @@ can only load if it has opted into all of the [=fenced frame config/effective en
 
     1. If |inherited policy|[|feature|] is "Disabled", return "`Blocked`".
 
-    Issue: This deviates from the implementation. By relying on creating a permissions policy, we
-    are squashing information about why a feature is enabled/disabled. We don't know if it's enabled
-    by default or explicitly enabled, which the implementation relies on to make its decision about
-    whether to allow or disallow a fenced frame load.
-  
   7. Return "`Allowed`."
+</div>
 
-  Note: After this point, the [=Create a Permissions Policy for a fenced navigable=] algorithm will
-  give the frame the permissions listed in |effective permissions|. This is done to have the
-  list of allowed permissions be the tightest union between the container policy and the permissions
-  needed to load the fenced frame.
+<div algorithm=define-inherited-policy-in-container-patches>
+  Modify the definition of the [=Define an inherited policy for feature in container at origin=]
+  algorithm to read:
+
+  Given a feature (|feature|), null or a [=navigable container=] (|container|), an [=origin=] for a
+  document in that container (|origin|), and an optional [=boolean=] |fenced| that defaults to
+  false, this algorithm returns the [=permissions policy/inherited policy=] for that feature.
+  
+  Rewrite step 3 to read:
+
+  3. If the result of executing [=Is feature enabled in document for origin?=] on |feature|,
+     |container|'s [=Node/node document=], |origin|, and |fenced| is "Disabled", return
+     "Disabled".
+
+  Rewrite step 7 to read:
+
+  7. If |fenced| is false, |feature|’s [=default allowlist=] is `'self'`, and |origin| is [=same
+     origin=] with |container|’s [=Node/node document=]’s origin, return `"Enabled"`.
+</div>
+
+<div algorithm=allowed-origins>
+  Define a new constant, <dfn>allowed origins for fenced permissions policies</dfn>, that is set
+  to the following list:
+  
+  ["`https://*`", "`https://*:*`", "`*`"]
+</div>
+
+<div algorithm=is-feature-enabled-patches>
+  Modify the definition of the [=Is feature enabled in document for origin?=] to read:
+
+  Given a feature (|feature|), a {{Document}} object (|document|), an [=url/origin=] (|origin|), and
+  an optional [=boolean=] |fenced| that defaults to false, this algorithm returns "`Disabled`" if
+  |feature| should be considered disabled, and "`Enabled`" otherwise.
+
+  Rewrite step 3 to read:
+
+  3. If |feature| is present in |policy|'s [=declared policy=],
+
+    1. If |fenced| is set to false, and the [=allowlist=] for |feature| in |policy|'s [=declared
+       policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
+
+    2. Otherwise, if |fenced| is set to true, and the [=allowlist=] for |feature| in |policy|'s
+      [=declared policy=] [=permissions/matches=] one of the origins in [=allowed origins for fenced
+       permissions policies=], then return "`Enabled`".
+
+    3. Otherwise, return "`Disabled`".
+
+  Rewrite step 5 to read:
+
+  5. If |fenced| is set to false, |feature|’s [=default allowlist=] is `'self'`, and |origin| is
+     [=same origin=] with |document|’s origin, return "Enabled".
 </div>
