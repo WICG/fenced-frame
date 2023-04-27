@@ -151,8 +151,8 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
     text: default allowlist; url: policy-controlled-feature-default-allowlist
     text: ASCII-serialized policy directive; url: serialized-policy-directive
-    text: inherited policy; url: inherited-policy
     text: serialized permissions policy; url: serialized-permissions-policy
+    text: supported features; url: supported-features
     for: permissions
       text: matches; url: matches
       text: permissions policy; url: permissions-policy
@@ -166,6 +166,10 @@ spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
   type: dfn
     text: Is response to request blocked by context's required CSP?; url: process-response
     text: required csp; url: browsing-context-required-csp
+spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
+  type: dfn
+    for: permissions policy
+      text: inherited policy; url: inherited-policy
 </pre>
 
 <style>
@@ -545,9 +549,6 @@ descriptor">name</dfn>, which is a string.
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
-[=policy-controlled features=].
-
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 <div algorithm>
@@ -624,13 +625,25 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="effective sandbox flags">visibility</dfn>
     :: a [=visibility=]
 
-  : <dfn>effective permissions</dfn>
+  : <dfn>effective enabled permissions</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="effective permissions">value</dfn>
-    :: an [=fencedframetype/exhaustive set of permissions=]
+    : <dfn for="effective enabled permissions">value</dfn>
+    :: a [=list=] of [=policy-controlled features=]
 
-    : <dfn for="effective permissions">visibility</dfn>
+    : <dfn for="effective enabled permissions">visibility</dfn>
     :: a [=visibility=]
+
+    Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
+    this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
+    this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
+    enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
+    [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
+    this config for the navigation to succeed. The features in this list are not force-enabled, but
+    rather are used to check that the embedder environment that influences the aforementioned
+    [=permissions policy/inherited policy=] is relaxed enough to support these essential features.
+    If the [=inherited policy for a feature|inherited policy value=] for any of these features is
+    "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
+    in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
   : <dfn>fenced frame reporter</dfn>
   :: null, or a struct with the following fields:
@@ -680,8 +693,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
-  : <dfn>effective permissions</dfn>
-  :: null, or an [=fencedframetype/exhaustive set of permissions=]
+  : <dfn>effective enabled permissions</dfn>
+  :: null, or a [=list=] of [=policy-controlled features=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
   :: null, or a [=fencedframetype/fenced frame reporter=]
@@ -722,9 +735,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
        [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
 
-    : [=fenced frame config instance/effective permissions=]
-    :: |config|'s [=fenced frame config/effective permissions=] if null, otherwise |config|'s
-       [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
+    : [=fenced frame config instance/effective enabled permissions=]
+    :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
+       |config|'s [=fenced frame config/effective enabled permissions=]'s [=effective enabled
+       permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
     :: |config|'s <span class=XXX>TODO: Fill this in</span>
@@ -1761,9 +1775,9 @@ specification is printed below:
 
 Permissions are granted to {{Document}} inside of <{fencedframe}>s through the
 {{FencedFrameConfig}} object and its associated internal [=fencedframeconfig/config=], which defines
-the permissions [=fenced frame config/effective permissions|required=] for a <{fencedframe}>
-to navigate successfully. Specifically, a {{Document}} inside of a <{fencedframe}> can only load if
-it has opted into all of the [=fenced frame config/effective permissions=].
+the permissions [=fenced frame config/effective enabled permissions|exclusively required=] for a
+<{fencedframe}> to navigate successfully. Specifically, a {{Document}} inside of a <{fencedframe}>
+can only load if it has opted into all of the [=fenced frame config/effective enabled permissions=].
 
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
@@ -1784,17 +1798,18 @@ it has opted into all of the [=fenced frame config/effective permissions=].
 
   1. [=Assert=]: if not null, |container| is a [=fenced navigable container=].
 
-  2. Let |inherited policy| be a new ordered map.
+  2. Let |inherited policy| be a new [=ordered map=].
 
-  3. Let |declared policy| be a new ordered map.
+  4. If |effective permissions| is given, then [=list/For each=] |supported feature| of the UA's
+     [=supported features=]:
 
-  4. If |effective permissions| is not null and |feature| [=list/exists=] in |effective
-     permissions|, set |inherited policy|[|feature|] to "`Enabled`".
+       1. If |supported feature| [=list/exists=] in |effective permissions|, then set |inherited
+          policy|[|supported feature|] to "`Enabled`".
 
-     Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
+          Otherwise, set |inherited policy|[|supported feature|] to "`Disabled`".
 
-  5. Let |policy| be a new [=permissions/Permissions policy=], with inherited policy |inherited
-     policy| and declared policy |declared policy|.
+  5. Let |policy| be a new [=permissions/Permissions policy=], with [=permissions policy/inherited
+     policy=] |inherited policy| and declared policy a new [=ordered map=].
 
   6. Return |policy|.
 
@@ -1829,8 +1844,8 @@ it has opted into all of the [=fenced frame config/effective permissions=].
 
   Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
   [=origin=] (|origin|), a [=response=] (<var ignore>response</var>), and null or an
-  [=fencedframetype/exhaustive set of permissions=] (|effective permissions|), this algorithm
-  returns a new [=Document/permissions policy=].
+  [=fenced frame config instance/effective enabled permissions=] (|effective permissions|), this
+  algorithm returns a new [=Document/permissions policy=].
 
   Modify step 1 of the algorithm to read:
   1. If |container| is a [=fenced navigable container=], then let <var ignore>policy</var> be the
@@ -1850,7 +1865,7 @@ it has opted into all of the [=fenced frame config/effective permissions=].
      |navigationParams|'s [=navigable=]'s [=navigable container|container=], |navigationParams|'s
      [=navigation params/origin=], |navigationParams|'s [=navigation params/response=], and
      |navigationParams|'s [=navigable=]'s [=fenced frame config instance=]'s [=fenced frame config
-     instance/effective permissions=].
+     instance/effective enabled permissions=].
 </div>
 
 <div algorithm=new-browsing-context-changes>
@@ -1897,7 +1912,7 @@ it has opted into all of the [=fenced frame config/effective permissions=].
      creating a permissions policy=] given |navigable|'s [=navigable container|container=] and
      |origin|.
 
-  5. Let |inherited policy| be |permissions policy|'s [=inherited policy=].
+  5. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
 
   6. [=list/For each=] |feature| of |effective permissions|:
 
