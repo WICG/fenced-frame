@@ -165,6 +165,10 @@ spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
   type: dfn
     text: Is response to request blocked by context's required CSP?; url: process-response
     text: required csp; url: browsing-context-required-csp
+spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
+  type: dfn
+    for: permissions policy
+      text: inherited policy; url: inherited-policy
 </pre>
 
 <style>
@@ -544,9 +548,6 @@ descriptor">name</dfn>, which is a string.
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
-[=policy-controlled features=].
-
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 <div algorithm>
@@ -623,13 +624,25 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="effective sandbox flags">visibility</dfn>
     :: a [=visibility=]
 
-  : <dfn>effective permissions</dfn>
+  : <dfn>effective enabled permissions</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="effective permissions">value</dfn>
-    :: an [=fencedframetype/exhaustive set of permissions=]
+    : <dfn for="effective enabled permissions">value</dfn>
+    :: a [=list=] of [=policy-controlled features=]
 
-    : <dfn for="effective permissions">visibility</dfn>
+    : <dfn for="effective enabled permissions">visibility</dfn>
     :: a [=visibility=]
+
+    Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
+    this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
+    this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
+    enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
+    [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
+    this config for the navigation to succeed. The features in this list are not force-enabled, but
+    rather are used to check that the embedder environment that influences the aforementioned
+    [=permissions policy/inherited policy=] is relaxed enough to support these essential features.
+    If the [=inherited policy for a feature|inherited policy value=] for any of these features is
+    "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
+    in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
   : <dfn>fenced frame reporter</dfn>
   :: null, or a struct with the following fields:
@@ -679,8 +692,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
-  : <dfn>effective permissions</dfn>
-  :: null, or an [=fencedframetype/exhaustive set of permissions=]
+  : <dfn>effective enabled permissions</dfn>
+  :: null, or a [=list=] of [=policy-controlled features=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
   :: null, or a [=fencedframetype/fenced frame reporter=]
@@ -721,9 +734,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
        [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
 
-    : [=fenced frame config instance/effective permissions=]
-    :: |config|'s [=fenced frame config/effective permissions=] if null, otherwise |config|'s
-       [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
+    : [=fenced frame config instance/effective enabled permissions=]
+    :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
+       |config|'s [=fenced frame config/effective enabled permissions=]'s [=effective enabled
+       permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
     :: |config|'s <span class=XXX>TODO: Fill this in</span>
