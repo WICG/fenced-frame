@@ -584,24 +584,25 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="effective sandbox flags">visibility</dfn>
     :: a [=visibility=]
 
-  : <dfn>required permissions</dfn>
+  : <dfn>effective enabled permissions</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="required permissions">value</dfn>
+    : <dfn for="effective enabled permissions">value</dfn>
     :: a [=list=] of [=policy-controlled features=]
 
-    : <dfn for="required permissions">visibility</dfn>
+    : <dfn for="effective enabled permissions">visibility</dfn>
     :: a [=visibility=]
 
     Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
-    this config relies on being enabled inside the <{fencedframe}> that navigates to this config.
-    Specifically, each feature in this list <span class=allow-2119>must</span> be enabled by the
-    <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s [=Document/permissions
-    policy=]'s [=permissions policy/inherited policy=] when navigating to this config. The
-    features in this list are not force-enabled, but rather are used to check that the embedder
-    environment that influences the aforementioned [=permissions policy/inherited policy=] is
-    relaxed enough to support these essential features. If the [=inherited policy for a
-    feature|inherited policy value=] for any of these features is "`Disabled`", the navigation to
-    this config will fail.
+    this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
+    this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
+    enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
+    [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
+    this config for the navigation to succeed. The features in this list are not force-enabled, but
+    rather are used to check that the embedder environment that influences the aforementioned
+    [=permissions policy/inherited policy=] is relaxed enough to support these essential features.
+    If the [=inherited policy for a feature|inherited policy value=] for any of these features is
+    "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
+    in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
   : <dfn>fenced frame reporter</dfn>
   :: null, or a struct with the following fields:
@@ -651,7 +652,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
-  : <dfn>required permissions</dfn>
+  : <dfn>effective enabled permissions</dfn>
   :: null, or a [=list=] of [=policy-controlled features=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
@@ -693,9 +694,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
        [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
 
-    : [=fenced frame config instance/required permissions=]
-    :: |config|'s [=fenced frame config/required permissions=] if null, otherwise |config|'s
-       [=fenced frame config/required permissions=]'s [=required permissions/value=]
+    : [=fenced frame config instance/effective enabled permissions=]
+    :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
+       |config|'s [=fenced frame config/effective enabled permissions=]'s [=effective enabled
+       permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
     :: |config|'s <span class=XXX>TODO: Fill this in</span>
