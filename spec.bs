@@ -1783,17 +1783,15 @@ it has opted into all of the [=fenced frame config/effective permissions=].
 
   1. [=Assert=]: if not null, |container| is a [=fenced navigable container=].
 
-  2. Let |inherited policy| be a new ordered map.
+  2. Let |inherited policy| be a new [=ordered map=].
 
-  3. Let |declared policy| be a new ordered map.
-
-  4. If |effective permissions| is not null and |feature| [=list/exists=] in |effective
-     permissions|, set |inherited policy|[|feature|] to "`Enabled`".
+  4. If |effective permissions| is given, then [=list/For each=] |feature| |effective permissions|,
+     set |inherited policy|[|feature|] to "`Enabled`".
 
      Otherwise, set |inherited policy|[|feature|] to "`Disabled`".
 
   5. Let |policy| be a new [=permissions/Permissions policy=], with inherited policy |inherited
-     policy| and declared policy |declared policy|.
+     policy| and declared policy a new [=ordered map=].
 
   6. Return |policy|.
 
