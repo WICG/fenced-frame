@@ -592,14 +592,16 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="required permissions">visibility</dfn>
     :: a [=visibility=]
 
-    Note: When non-null, this [=list=] of [=policy-controlled features=] <span
-    class=allow-2119>must</span> be enabled by the <{fencedframe}>'s [=fenced navigable
-    container/fenced navigable=]'s [=Document/permissions policy=]'s [=permissions policy/inherited
-    policy=] upon creation, when navigating to this config. The [=policy-controlled features=] in
-    this list are not force-enabled, but rather are used to check that the embedder environment that
-    influences the aforementioned [=permissions policy/inherited policy=] is relaxed enough to
-    support these features. If the [=inherited policy for a feature|inherited policy value=] for any
-    of these features is "`Disabled`", the <{fencedframe}> navigation will fail.
+    Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
+    this config relies on being enabled inside the <{fencedframe}> that navigates to this config.
+    Specifically, each feature in this list <span class=allow-2119>must</span> be enabled by the
+    <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s [=Document/permissions
+    policy=]'s [=permissions policy/inherited policy=] when navigating to this config. The
+    features in this list are not force-enabled, but rather are used to check that the embedder
+    environment that influences the aforementioned [=permissions policy/inherited policy=] is
+    relaxed enough to support these essential features. If the [=inherited policy for a
+    feature|inherited policy value=] for any of these features is "`Disabled`", the navigation to
+    this config will fail.
 
   : <dfn>fenced frame reporter</dfn>
   :: null, or a struct with the following fields:
