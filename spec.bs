@@ -1800,7 +1800,8 @@ in the <{fencedframe}>'s based on that navigation's [=navigation params/origin=]
 is derived from cross-site data), this specification modifies various [[PERMISSIONS-POLICY]]
 algorithms such that a <{fencedframe}> {{Document}}'s [=permissions policy/inherited policy=] is
 computed without consideration of whether its [=navigation params/origin=] is [=same origin=] with
-its embedder's.
+its embedder's. Therefore a feature can only be enabled inside of a <{fencedframe}> if its embedder
+*explicitly* delegates it via [=the special value *=] [=allowlist=].
 
 Considering all of the above, we get the following interesting implications:
 
