@@ -155,6 +155,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: Is feature enabled in document for origin?; url: is-feature-enabled
     text: declared policy; url: declared-policy
     text: allowlist; url: allowlist
+    text: the special value *; url: the-special-value
     for: permissions
       text: matches; url: matches
       text: permissions policy; url: permissions-policy
@@ -1898,13 +1899,6 @@ can only load if it has opted into all of the [=fenced frame config/effective en
      origin=] with |container|’s [=Node/node document=]’s origin, return `"Enabled"`.
 </div>
 
-<div algorithm=allowed-origins>
-  Define a new constant, <dfn>allowed origins for fenced permissions policies</dfn>, that is set
-  to the following list:
-  
-  ["`https://*`", "`https://*:*`", "`*`"]
-</div>
-
 <div algorithm=is-feature-enabled-patches>
   Modify the definition of the [=Is feature enabled in document for origin?=] to read:
 
@@ -1920,8 +1914,7 @@ can only load if it has opted into all of the [=fenced frame config/effective en
        policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
 
     2. Otherwise, if |fenced| is set to true, and the [=allowlist=] for |feature| in |policy|'s
-      [=declared policy=] [=permissions/matches=] one of the origins in [=allowed origins for fenced
-       permissions policies=], then return "`Enabled`".
+      [=declared policy=] is [=the special value *=], then return "`Enabled`".
 
     3. Otherwise, return "`Disabled`".
 
