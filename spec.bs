@@ -1776,11 +1776,69 @@ specification is printed below:
 
 <h3 id=permissions-policy-changes>Permissions Policies</h3>
 
-Permissions are granted to {{Document}} inside of <{fencedframe}>s through the
-{{FencedFrameConfig}} object and its associated internal [=fencedframeconfig/config=], which defines
-the permissions [=fenced frame config/effective enabled permissions|exclusively required=] for a
-<{fencedframe}> to navigate successfully. Specifically, a {{Document}} inside of a <{fencedframe}>
-can only load if it has opted into all of the [=fenced frame config/effective enabled permissions=].
+*This introductory sub-section is non-normative.*
+
+The [=policy-controlled features=] available to {{Document}}s inside of a <{fencedframe}> are
+determined exclusively by the {{FencedFrameConfig}} that the <{fencedframe}> navigates to.
+Specifically, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame
+config/effective enabled permissions=] defines the exclusive list of [=policy-controlled features=]
+that will be enabled in the {{Document}} (all others will be disabled).
+
+During navigation, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=] [=instantiate a
+config|instantiates=] a [=navigable/fenced frame config instance=] that is stored on the [=fenced
+navigable container/fenced navigable=]. This navigable's [=navigable/fenced frame config
+instance=]'s [=fenced frame config instance/effective enabled permissions=] is consulted [=Should
+navigation response to navigation request be blocked by Permissions Policy?|during navigation=]. A
+<{fencedframe}> navigation can only succeed if the [=Document/permissions policy=] for the
+navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that the
+[=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
+[=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
+is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
+
+At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
+in the <{fencedframe}>'s based on that navigation's [=navigation params/origin=] (since the origin
+is derived from cross-site data), this specification modifies various [[PERMISSIONS-POLICY]]
+algorithms such that a <{fencedframe}> {{Document}}'s [=permissions policy/inherited policy=] is
+computed without consideration of whether its [=navigation params/origin=] is [=same origin=] with
+its embedder's.
+
+Considering all of the above, we get the following interesting implications:
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=default allowlist=] of [=the special value *=],
+   and no \`<a http-header>`Permissions-Policy`</a>\` header is served on the <{fencedframe}>
+   embedder, and the <{fencedframe/allow}> attribute is empty, the navigation inside the
+   <{fencedframe}> will succeed, and the resulting {{Document}} will be [=allowed to use=] the
+   [=policy-controlled feature|feature=] (i.e., it will be enabled).
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=default allowlist=] of <a for="default
+   allowlist">`'self'`</a>, and no \`<a http-header>`Permissions-Policy`</a>\` header is served on
+   the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is empty, the navigation
+   inside the <{fencedframe}> will be blocked.
+
+   Note: This is because ordinarily this [=policy-controlled feature|feature=] would only be enabled
+   if the subframe's {{Document}} was [=same origin=] with its embedder, a check this specification
+   avoids for fenced frames, since the <{fencedframe}>s {{Document}}'s [=Document/origin=] is
+   derived from cross-site data. Therefore, we simply "fail close".
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=default allowlist=] of <a for="default
+   allowlist">`'self'`</a> but either the \`<a http-header>`Permissions-Policy`</a>\` header served
+   on the <{fencedframe}>'s embedder *OR* the <{fencedframe/allow}> attribute sets that
+   [=policy-controlled feature|feature=]'s [=allowlist=] to [=the special value *=], then the
+   navigation inside the <{fencedframe}> will succeed, and the resulting {Document}} is [=allowed to
+   use=] the [=policy-controlled feature|feature=].
+
+ * If a navigation inside a <{fencedframe}> would otherwise succeed, but the [=response=] on the
+   navigation inside the <{fencedframe}> is served with a \`<a
+   http-header>`Permissions-Policy`</a>\` header that sets the [=allowlist=] to "`none`" or an
+   otherwise incompatible [=origin=] for a feature in the [=fenced frame config/effective enabled
+   permissions=], the navigation still succeeds, but the {{Document}} in the <{fencedframe}> is
+   **not** [=allowed to use=] the feature.
+
+   Note: This is OK because it is the <{fencedframe}>'s content *itself* that is making the decision
+   to disable a particular feature, not its embedder environment.
 
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
