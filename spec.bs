@@ -144,21 +144,14 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
       text: token; url: name-tokens
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
-    text: Create a Permissions Policy for a navigable; url: algo-create-for-navigable
-    text: Create a Permissions Policy for a navigable from response; url: algo-create-from-response
-    text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
-    text: default allowlist; url: policy-controlled-feature-default-allowlist
     text: ASCII-serialized policy directive; url: serialized-policy-directive
     text: serialized permissions policy; url: serialized-permissions-policy
     text: supported features; url: supported-features
-    text: Define an inherited policy for feature in container at origin; url: define-inherited-policy-in-container
-    text: Is feature enabled in document for origin?; url: is-feature-enabled
     text: declared policy; url: declared-policy
-    text: allowlist; url: allowlist
     text: the special value *; url: the-special-value
+    text: permissions policy; url: permissions-policy
     for: permissions
       text: matches; url: matches
-      text: permissions policy; url: permissions-policy
 spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
   type: dfn
     text: directive value; url: directive-value
@@ -292,7 +285,7 @@ dl, dd {
  <dd>[=Global attributes=]</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
- <dd><code><{fencedframe/allow}></code> — [=permissions/Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
+ <dd><code><{fencedframe/allow}></code> — [=Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
@@ -1806,17 +1799,17 @@ delegates it via [=the special value *=] [=allowlist=].
 Considering all of the above, we get the following interesting implications:
 
  * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
-   config/effective enabled permissions=] has a [=default allowlist=] of [=the special value *=],
-   and no \`<a http-header>`Permissions-Policy`</a>\` header is served on the <{fencedframe}>
-   embedder, and the <{fencedframe/allow}> attribute is empty, the navigation inside the
-   <{fencedframe}> will succeed, and the resulting {{Document}} will be [=allowed to use=] the
-   [=policy-controlled feature|feature=] (i.e., it will be enabled).
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   [=the special value *=], and no \`<a http-header>`Permissions-Policy`</a>\` header is served on
+   the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is empty, the navigation
+   inside the <{fencedframe}> will succeed, and the resulting {{Document}} will be [=allowed to
+   use=] the [=policy-controlled feature|feature=] (i.e., it will be enabled).
 
  * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
-   config/effective enabled permissions=] has a [=default allowlist=] of <a for="default
-   allowlist">`'self'`</a>, and no \`<a http-header>`Permissions-Policy`</a>\` header is served on
-   the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is empty, the navigation
-   inside the <{fencedframe}> will be blocked.
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a>, and no \`<a http-header>`Permissions-Policy`</a>\`
+   header is served on the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is
+   empty, the navigation inside the <{fencedframe}> will be blocked.
 
    Note: This is because ordinarily this [=policy-controlled feature|feature=] would only be enabled
    if the subframe's {{Document}} was [=same origin=] with its embedder, a check this specification
@@ -1824,12 +1817,21 @@ Considering all of the above, we get the following interesting implications:
    derived from cross-site data. Therefore, we simply "fail close".
 
  * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
-   config/effective enabled permissions=] has a [=default allowlist=] of <a for="default
-   allowlist">`'self'`</a> but either the \`<a http-header>`Permissions-Policy`</a>\` header served
-   on the <{fencedframe}>'s embedder *OR* the <{fencedframe/allow}> attribute sets that
-   [=policy-controlled feature|feature=]'s [=allowlist=] to [=the special value *=], then the
-   navigation inside the <{fencedframe}> will succeed, and the resulting {{Document}} is [=allowed
-   to use=] the [=policy-controlled feature|feature=].
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a>, and the <{fencedframe}>'s <{fencedframe/allow}>
+   attribute contains the [=policy-controlled feature|feature=] but no [=allowlist=], the rules
+   described in <a href=allow-attribute-fenced-frame>The `allow` attribute section</a>, the default
+   [=allowlist=] for the feature will be `'src'` which is meant to represent the embedder-supplied
+   navigation [=URL=], for which there is none when navigating a <{fencedframe}>, as the navigation
+   [=URL=] is determined by the [=fenced frame config=]. The navigation will be blocked.
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a> but either the \`<a
+   http-header>`Permissions-Policy`</a>\` header served on the <{fencedframe}>'s embedder *OR* the
+   <{fencedframe/allow}> attribute sets that [=policy-controlled feature|feature=]'s [=allowlist=]
+   to [=the special value *=], then the navigation inside the <{fencedframe}> will succeed, and the
+   resulting {{Document}} is [=allowed to use=] the [=policy-controlled feature|feature=].
 
  * If a navigation inside a <{fencedframe}> would otherwise succeed, but the [=response=] on the
    navigation inside the <{fencedframe}> is served with a \`<a
@@ -1841,10 +1843,31 @@ Considering all of the above, we get the following interesting implications:
    Note: This is OK because it is the <{fencedframe}>'s content *itself* that is making the decision
    to disable a particular feature, not its embedder environment.
 
+The patches in the below section "fence" the appropriate [[PERMISSIONS-POLICY]] algorithms to
+achieve the outcomes described in the above explanatory content.
+
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
+<div id=allow-attribute-fenced-frame algorithm=allow-attribute-fenced-frame>
+  Rename the <a href=https://w3c.github.io/webappsec-permissions-policy/#iframe-allow-attribute>The
+  `allow` attribute of the `iframe` element</a> section to "The `allow` attribute of the `iframe`
+  and `fencedframe` element", and rewrite the section to read:
+
+  <{iframe}> and <{fencedframe}> elements have an respective `allow` attributes (<{iframe}>:
+  <{iframe/allow}>; <{fencedframe}>: <{fencedframe/allow}>), which contain an [=ASCII-serialized
+  policy directive=].
+
+  The allowlist for the features named in the attribute may be empty; in that case, the default
+  value for the [=allowlist=] is "`src`", which represents the origin of the URL in the iframe's
+  <{iframe/src}> attribute, or the fencedframe's [=fenced frame config=].
+
+  When not empty, the <{iframe}>'s <{iframe/allow}> or <{fencedframe}>'s <{fencedframe/allow}>
+  attribute will result in adding an [=allowlist=] for each [=supported feature=] to the <{iframe}>
+  or <{fencedframe}>'s [=container policy=].
+</div>
+
 <div algorithm=create-permissions-policy>
-  Modify the definition of [=Create a Permissions Policy for a navigable=]:
+  Modify the [$Create a Permissions Policy for a navigable$] algorithm:
 
   Given null or an element (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
   |fenced| that defaults to false, this algorithm returns a new Permissions Policy.
@@ -1858,33 +1881,14 @@ Considering all of the above, we get the following interesting implications:
 
   4. For each |feature| supported:
 
-     1. Let |isInherited| be the result of running [=Define an inherited policy for feature in
-        container at origin=] on |feature|, |container|, |origin|, and |fenced|.
+     1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
+        container at origin$] on |feature|, |container|, |origin|, and |fenced|.
 
      2. Set <var ignore>inherited policy</var>[|feature|] to |isInherited|.
 </div>
 
-<div algorithm=allow-attribute-fenced-frame>
-  Rename the <a href=https://w3c.github.io/webappsec-permissions-policy/#iframe-allow-attribute>The
-  `allow` attribute of the `iframe` element</a> section to "The `allow` attribute of the `iframe`
-  and `fencedframe` element", and rewrite the section to read:
-
-  <{iframe}> and <{fencedframe}> elements have an respective `allow` attributes (<{iframe}>:
-  <{iframe/allow}>; <{fencedframe}>: <{fencedframe/allow}>), which contain an [=ASCII-serialized
-  policy directive=].
-
-  The allowlist for the features named in the attribute may be empty; in that case, the default
-  value for the allowlist is "`src`", which represents the origin of the URL in the iframe’s src
-  attribute, or the fencedframe's [=fenced frame config=].
-
-  When not empty, the <{iframe}>'s <{iframe/allow}> or <{fencedframe}>'s <{fencedframe/allow}>
-  attribute will result in adding an allowlist for each recognized feature to the iframe element’s
-  content navigable's container policy or the fencedframe element's [=fenced navigable container/
-  fenced navigable=]'s container policy, when it is constructed.
-</div>
-
 <div algorithm=create-permissions-policy-response>
-  Modify the definition of [=Create a Permissions Policy for a navigable from response=] to read:
+  Modify the [$Create a Permissions Policy for a navigable from response$] algorithm to read:
 
   Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
   [=origin=] (|origin|), and a [=response=] (<var ignore>response</var>), this algorithm returns a
@@ -1892,13 +1896,12 @@ Considering all of the above, we get the following interesting implications:
 
   Add a step before step 1 that reads:
 
-  1. If |container| is a [=fenced navigable container=], let |fenced| be true.
+  1. Let |fenced| be true if |container| is a [=fenced navigable container=], and false otherwise.
 
-     Otherwise, let |fenced| be false.
+  Modify what is *now* step 2 of the algorithm to read:
 
-  Modify the now step 2 of the algorithm to read:
-  2. Let <var ignore>policy</var> be the result of running [=Create a Permissions Policy
-     for a navigable=] given |container|, |origin|, and |fenced|.
+  2. Let <var ignore>policy</var> be the result of running [$Create a Permissions Policy
+     for a navigable$] given |container|, |origin|, and |fenced|.
 </div>
 
 <div algorithm=attempt-populate-history-patches>
@@ -1907,40 +1910,52 @@ Considering all of the above, we get the following interesting implications:
   |failure| is true, then:" that reads:
 
   8. Otherwise, if the result of [=Should navigation response to navigation request be blocked by
-    Permissions Policy?=] given <var ignore>navigationParams</var> and <var ignore>navigable</var>
-    is "`Blocked`", then set |failure| to true.
+    Permissions Policy?=] given <var ignore>navigationParams</var> is "`Blocked`", then set 
+    |failure| to true.
+
+  Note: If this algorithm returns "`Blocked`", the pre-existing {{Document}} in the <{fencedframe}>
+  does not stick around; an error page will be loaded.
 </div>
 
 <div algorithm=permissions-policy-block-request>
   Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
   Permissions Policy?</dfn> in [[!HTML]].
 
-  Given a [=navigation params=] (|navigationParams|) and a [=navigable=] (|navigable|), this
-  algorithm returns `Blocked` or `Allowed`:
+  Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
+  "`Allowed`":
 
-  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return `Allowed`.
+  1. Let |navigable| be |navigationParams|'s [=navigation params/navigable=].
 
-  2. Let |origin| be |navigationParams|'s [=navigation params/origin=].
+  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return
+     "`Allowed`".
 
-  3. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
+  1. Let |origin| be |navigationParams|'s [=navigation params/origin=].
+
+  1. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
      [=fenced frame config instance/effective enabled permissions=].
 
-  4. Let |permissions policy| be the result of [=Create a Permissions Policy for a navigable|
-     creating a permissions policy=] given |navigable|'s [=navigable container|container=],
-     |origin|, and <var ignore>fenced</var> set to true.
+  1. Let |permissions policy| be the result of [$Create a Permissions Policy for a navigable|
+     creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
+     and <var ignore>fenced</var> set to true.
 
-  5. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
+     Note: This is identical to the [=Document/permissions policy=] that will be created when the
+     navigation constructs the ultimate {{Document}} for this pending navigation. We create it now
+     and run tests on it since this is the appropriate time to determine if a navigation will fail,
+     and then throw it away. If the navigation succeeds, it will be recreated identically and
+     unconditionally installed on the {{Document}}.
 
-  6. [=list/For each=] |feature| of |effective permissions|:
+  1. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
 
-    1. If |inherited policy|[|feature|] is "Disabled", return "`Blocked`".
+  1. [=list/For each=] |effective permission| of |effective permissions|:
 
-  7. Return "`Allowed`."
+    1. If |inherited policy|[|effective permission|] is "Disabled", return "`Blocked`".
+
+  1. Return "`Allowed`."
 </div>
 
 <div algorithm=define-inherited-policy-in-container-patches>
-  Modify the definition of the [=Define an inherited policy for feature in container at origin=]
-  algorithm to read:
+  Modify the [$Define an inherited policy for feature in container at origin$] algorithm to
+  read:
 
   Given a feature (|feature|), null or a [=navigable container=] (|container|), an [=origin=] for a
   document in that container (|origin|), and an optional [=boolean=] |fenced| that defaults to
@@ -1948,18 +1963,19 @@ Considering all of the above, we get the following interesting implications:
   
   Rewrite step 3 to read:
 
-  3. If the result of executing [=Is feature enabled in document for origin?=] on |feature|,
+  3. If the result of executing [$Is feature enabled in document for origin?$] on |feature|,
      |container|'s [=Node/node document=], |origin|, and |fenced| is "Disabled", return
      "Disabled".
 
   Rewrite step 7 to read:
 
-  7. If |fenced| is false, |feature|’s [=default allowlist=] is `'self'`, and |origin| is [=same
-     origin=] with |container|’s [=Node/node document=]’s origin, return `"Enabled"`.
+  7. If |fenced| is false, |feature|’s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |container|’s [=Node/node document=]’s
+     origin, return `"Enabled"`.
 </div>
 
 <div algorithm=is-feature-enabled-patches>
-  Modify the definition of the [=Is feature enabled in document for origin?=] to read:
+  Modify the [$Is feature enabled in document for origin?$] algorithm to read:
 
   Given a feature (|feature|), a {{Document}} object (|document|), an [=url/origin=] (|origin|), and
   an optional [=boolean=] |fenced| that defaults to false, this algorithm returns "`Disabled`" if
@@ -1979,6 +1995,6 @@ Considering all of the above, we get the following interesting implications:
 
   Rewrite step 5 to read:
 
-  5. If |fenced| is set to false, |feature|’s [=default allowlist=] is `'self'`, and |origin| is
-     [=same origin=] with |document|’s origin, return "Enabled".
+  5. If |fenced| is set to false, |feature|’s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |document|’s origin, return "Enabled".
 </div>
