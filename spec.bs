@@ -1009,7 +1009,7 @@ Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
 
 In the [=fetch=] algorithm, step 13.2, where it says:
 
-> A user agent should set value to the first matching statement, if any, switching on request’s
+> A user agent should set value to the first matching statement, if any, switching on request's
 [=request/destination=]:
 
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
@@ -2002,3 +2002,19 @@ achieve the outcomes described in the above explanatory content.
   5. If |fenced| is set to false, |feature|'s [=policy-controlled feature/default allowlist=] is
      `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
+
+<wpt>
+  /fenced-frame/default-enabled-features-allow-all.https.html
+  /fenced-frame/default-enabled-features-allow-none.https.html
+  /fenced-frame/default-enabled-features-allow-self.https.html
+  /fenced-frame/default-enabled-features-attribute-allow.https.html
+  /fenced-frame/default-enabled-features-attribute-change.https.html
+  /fenced-frame/default-enabled-features-attribute-disallow.https.html
+  /fenced-frame/default-enabled-features-attribution-disabled.https.html
+  /fenced-frame/default-enabled-features-subframe.https.html
+  /fenced-frame/default-enabled-features-unset.https.html
+  /fenced-frame/permission-api-denied-non-standard.https.html
+  /fenced-frame/permission-api-denied.https.html
+  /fenced-frame/permission-geolocation.https.html
+  /fenced-frame/permission-notification.https.html
+</wpt>
