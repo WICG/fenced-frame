@@ -1967,10 +1967,14 @@ achieve the outcomes described in the above explanatory content.
      |container|'s [=Node/node document=], |origin|, and |fenced| is "Disabled", return
      "Disabled".
 
+  Note: We don't have to rewrite step 2, which also delegates to the same algorithm, to pass in the
+  |fenced| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
+  |container|'s [=Node/node document=], not the {{Document}} hosted *inside* |container|.
+
   Rewrite step 7 to read:
 
-  7. If |fenced| is false, |feature|’s [=policy-controlled feature/default allowlist=] is
-     `'self'`, and |origin| is [=same origin=] with |container|’s [=Node/node document=]’s
+  7. If |fenced| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |container|'s [=Node/node document=]'s
      origin, return `"Enabled"`.
 </div>
 
@@ -1995,6 +1999,6 @@ achieve the outcomes described in the above explanatory content.
 
   Rewrite step 5 to read:
 
-  5. If |fenced| is set to false, |feature|’s [=policy-controlled feature/default allowlist=] is
-     `'self'`, and |origin| is [=same origin=] with |document|’s origin, return "Enabled".
+  5. If |fenced| is set to false, |feature|'s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
