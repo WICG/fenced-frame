@@ -1627,9 +1627,7 @@ Issue: Specify the behavior that leads to the following:
 
 <h3 id=csp-integration>Content Security Policy</h3>
 
-<h4 id=csp-intro>Intro</h4>
-
-*This section is non-normative*.
+*This introductory section is non-normative*.
 
 Content Security Policy [[!CSP]] can ordinarily be used by web content associated with a
 {{Document}} that hosts a [=navigable container=] to limit the source of navigations in a [=child
