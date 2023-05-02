@@ -17,6 +17,7 @@ Indent: 2
 Default Biblio Status: current
 Markup Shorthands: markdown yes
 Assume Explicit For: yes
+WPT Display: open
 </pre>
 
 <pre class="link-defaults">
@@ -81,9 +82,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
+      text: navigation params; url: navigation-params
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
+        text: origin; url: navigation-params-origin
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -110,6 +113,21 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+    urlPrefix: webappapis.html
+      for: environment
+        text: target browsing context; url: concept-environment-target-browsing-context
+    urlPrefix: document-sequences.html
+      for: browsing context
+        text: active document; url: active-document
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
+    text: should request be blocked due to a bad port; url: block-bad-port
+spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
+  type: dfn
+    text: should fetching request be blocked as mixed content; url: should-block-fetch
+spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
+  type: dfn
     urlPrefix: interactive-elements.html
       text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
       text: previously focused element; url: previously-focused-element
@@ -137,9 +155,49 @@ spec: LNA; urlPrefix: https://wicg.github.io/local-network-access/
     for: response
       text: IP address space; url: response-ip-address-space
     text: ip-address-space-public; url: ip-address-space-public
+spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
+  type: dfn
+    text: ASCII-serialized policy directive; url: serialized-policy-directive
+    text: serialized permissions policy; url: serialized-permissions-policy
+    text: supported features; url: supported-features
+    text: declared policy; url: declared-policy
+    text: the special value *; url: the-special-value
+    text: permissions policy; url: permissions-policy
+    for: permissions
+      text: matches; url: matches
+spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
+  type: dfn
+    text: directive value; url: directive-value
+    text: frame-src pre-request check; url: frame-src-pre-request
+    text: frame-src post-request check; url: frame-src-post-request
+    text: Get the effective directive for request; url: effective-directive-for-a-request
+spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
+  type: dfn
+    text: Is response to request blocked by context's required CSP?; url: process-response
+    text: required csp; url: browsing-context-required-csp
+spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
+  type: dfn
+    for: permissions policy
+      text: inherited policy; url: inherited-policy
 </pre>
 
 <style>
+/* Put nice boxes around each algorithm. */
+[data-algorithm]:not(.heading) {
+  padding: .5em;
+  border: thin solid #ddd; border-radius: .5em;
+  margin: .5em calc(-0.5em - 1px);
+}
+[data-algorithm]:not(.heading) > :first-child {
+  margin-top: 0;
+}
+[data-algorithm]:not(.heading) > :last-child {
+  margin-bottom: 0;
+}
+[data-algorithm] [data-algorithm] {
+  margin: 1em 0;
+}
+
 .selected-text-file-an-issue {
   position: fixed;
   bottom: 0;
@@ -240,6 +298,7 @@ dl, dd {
  <dd>[=Global attributes=]</dd>
  <dd><code>[=width=]</code> — Horizontal dimension</dd>
  <dd><code>[=height=]</code> — Vertical dimension</dd>
+ <dd><code><{fencedframe/allow}></code> — [=Permissions policy=] to be applied to the <{fencedframe}>'s contents</dd>
  <dt>[=Accessibility considerations=]:</dt>
  <dd><p class=XXX>TODO</p></dd>
  <dt>[=DOM interface=]:</dt>
@@ -252,6 +311,7 @@ interface HTMLFencedFrameElement : HTMLElement {
   [CEReactions] attribute FencedFrameConfig? config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
+  [CEReactions] attribute DOMString allow;
 };
 </xmp>
 </dd>
@@ -306,6 +366,10 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
      <span class="XXX">TODO: generate and store the config instance</span>
+
+  <wpt>
+    /fenced-frame/header-referrer.https.html
+  </wpt>
 </div>
 
 <div algorithm=destroy>
@@ -321,6 +385,14 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 
   1. <span class=XXX>TODO</span>
 </div>
+
+The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, determines the
+[=container policy=] that will be used when the [=Document/permissions policy=] for a {{Document}}
+in the <{fencedframe}>'s [=fenced navigable container/fenced navigable=] is initialized. Its value
+must be a [=serialized permissions policy=]. [[!PERMISSIONS-POLICY]]
+
+The IDL attribute <dfn attribute for=HTMLFencedFrameElement>allow</dfn> must [=reflect=] the
+respective content attribute of the same name.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -486,9 +558,6 @@ descriptor">name</dfn>, which is a string.
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
-[=policy-controlled features=].
-
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
 
 <div algorithm>
@@ -565,13 +634,25 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="effective sandbox flags">visibility</dfn>
     :: a [=visibility=]
 
-  : <dfn>effective permissions</dfn>
+  : <dfn>effective enabled permissions</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="effective permissions">value</dfn>
-    :: an [=fencedframetype/exhaustive set of permissions=]
+    : <dfn for="effective enabled permissions">value</dfn>
+    :: a [=list=] of [=policy-controlled features=]
 
-    : <dfn for="effective permissions">visibility</dfn>
+    : <dfn for="effective enabled permissions">visibility</dfn>
     :: a [=visibility=]
+
+    Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
+    this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
+    this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
+    enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
+    [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
+    this config for the navigation to succeed. The features in this list are not force-enabled, but
+    rather are used to check that the embedder environment that influences the aforementioned
+    [=permissions policy/inherited policy=] is relaxed enough to support these essential features.
+    If the [=inherited policy for a feature|inherited policy value=] for any of these features is
+    "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
+    in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
   : <dfn>fenced frame reporter</dfn>
   :: null, or a struct with the following fields:
@@ -621,8 +702,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
-  : <dfn>effective permissions</dfn>
-  :: null, or an [=fencedframetype/exhaustive set of permissions=]
+  : <dfn>effective enabled permissions</dfn>
+  :: null, or a [=list=] of [=policy-controlled features=]
 
   : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
   :: null, or a [=fencedframetype/fenced frame reporter=]
@@ -663,9 +744,10 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
        [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
 
-    : [=fenced frame config instance/effective permissions=]
-    :: |config|'s [=fenced frame config/effective permissions=] if null, otherwise |config|'s
-       [=fenced frame config/effective permissions=]'s [=effective permissions/value=]
+    : [=fenced frame config instance/effective enabled permissions=]
+    :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
+       |config|'s [=fenced frame config/effective enabled permissions=]'s [=effective enabled
+       permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
     :: |config|'s <span class=XXX>TODO: Fill this in</span>
@@ -707,6 +789,18 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
 </div>
+
+Each [=navigable=] has a <dfn for=navigable>fenced frame config instance</dfn>, which is a [=fenced
+frame config instance=] or null, initially null.
+
+Advisement: This [=navigable/fenced frame config instance=] should really exist on [=traversable
+navigable=], specifically a [=fenced navigable container/fenced navigable=], however until
+third-party cookies are <a
+href=https://w3ctag.github.io/web-without-3p-cookies/#introduction>deprecated</a>, this
+specification supports many of the <{fencedframe}> constructs on the <{iframe}> element. This
+requires that for the short term, a normal [=navigable container/content navigable=] be able to load
+a [=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced
+frame config instance=].
 
 <h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
@@ -831,10 +925,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
-
-     <span class=XXX>This and the below references should point to an actual member on [=traversable
-     navigable=], not just the type.</span>
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -849,6 +940,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
+
+  <wpt>
+    /fenced-frame/fence-report-event.https.html
+  </wpt>
 </div>
 
 <div algorithm>
@@ -856,7 +951,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -868,13 +963,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Run [=set automatic beacon data=] with |event| and |instance|'s
      [=fenced frame config instance/fenced frame reporter=].
+
+  <wpt>
+    /fenced-frame/set-automatic-beacon.https.html
+  </wpt>
 </div>
 
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=fenced frame config instance=].
+     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -889,12 +988,22 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
      configs=]:
 
-     1. [=list/Extend=] |results| with a {{FencedFrameConfig}} where the {{FencedFrameConfig}}'s
-        [=fencedframeconfig/urn=] is |urn| and the {{FencedFrameConfig}}'s [=fencedframeconfig/
-        config=] is |config|.
-        <span class="XXX">TODO: phrase the constructor correctly</span>.
+     1. Let |newConfig| be a [=new=] {{FencedFrameConfig}} object created in [=this=]'s [=relevant
+        realm=], with the following:
+
+        : [=fencedframeconfig/urn=]
+        :: |urn|
+
+        : [=fencedframeconfig/config=]
+        :: |config|
+
+     1. [=list/Append=] |newConfig| to |results|.
 
   1. Return |results|.
+
+  <wpt>
+    /fenced-frame/get-nested-configs.https.html
+  </wpt>
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -913,79 +1022,15 @@ Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
 
 In the [=fetch=] algorithm, step 13.2, where it says:
 
-> A user agent should set value to the first matching statement, if any, switching on request’s
+> A user agent should set value to the first matching statement, if any, switching on request's
 [=request/destination=]:
 
 Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
 "<code>frame</code>", and "<code>iframe</code>".
 
-<h3 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h3>
-
-Fenced frames are a different element from an iframe. Therefore, using the
-<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
-Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
-specification is printed below:
-
-<h4 id="directive-fenced-frame-src">`fenced-frame-src`</h4>
-
-The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
-<{fencedframe}>'s [=fenced navigable container/fenced navigable=]. The syntax for the directive's
-name and value is described by the following ABNF:
-
-<pre>
-  directive-name  = "fenced-frame-src"
-  directive-value = <a grammar>serialized-source-list</a>
-</pre>
-
-<div id="fenced-frame-src-example" class="example">
-  Given a page with the following Content Security Policy:
-  <pre>
-    <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
-  </pre>
-
-  Fetches for the following code will return a [=network error=], as the URL provided does not match
-  `fenced-frame-src`'s <a>source list</a>:
-
-  <pre highlight="html">
-    &lt;fencedframe src="https://example.org/"&gt;
-    &lt;/fencedframe&gt;
-  </pre>
-</div>
-
-The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and
-<a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will be
-the same as the <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s
-check.
-
-<h4 id="default-src-amendment">Amending [=default-src=]</h4>
-
-The [=default-src=] directive's Example 7 and Example 8 will be amended. Where it says:
-
-<pre>
-  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>worker-src</a> <a grammar>'self'</a>
-</pre>
-
-It will now say:
-
-<pre>
-  <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>fenced-frame-src</a> <a grammar>'self'</a>;
-                           ...
-                           <a>worker-src</a> <a grammar>'self'</a>
-</pre>
-
-<h4 id="fallback-list-amendment"> Amending The Directive Fallback List</h4>
-
-In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
-list</a>, in step 1, add a new entry to the list:
-
-: "`fenced-frame-src`"
-::
-  1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
-
+<wpt>
+  /fenced-frame/header-secFetchDest.https.html
+</wpt>
 
 <h2 id=html-integration>HTML Integration</h2>
 
@@ -1002,10 +1047,14 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
 <div algorithm>
   The <dfn attribute for=Window>fence</dfn> getter steps are:
-    1. If [=this=]'s [=Window/navigable=]'s [=fenced frame config instance=] is not null, then
-       return [=this=]'s [=Window/fence=].
+    1. If [=this=]'s [=Window/navigable=]'s [=navigable/fenced frame config instance=] is not null,
+       then return [=this=]'s [=Window/fence=].
 
     1. Return null.
+
+  <wpt>
+    /fenced-frame/fence-api.https.html
+  </wpt>
 </div>
 
 <h3 id=creating-browsing-contexts-patch>Modifications to creating browsing contexts</h3>
@@ -1024,8 +1073,6 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
-
-Issue: Ensure we are doing the right thing for [=Document/permissions policy=].
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
@@ -1058,6 +1105,10 @@ embedder, nor can its embedder be considered an ancestor of the <{fencedframe}>'
 container/fenced navigable=], in the way that the [=user activation=] algorithms currently use those
 terms. In other words, we consider user activation to be "fenced" to denote that it never crosses the
 [=fenced navigable container/fenced navigable=] boundary.</p>
+
+<wpt>
+  /fenced-frame/consume-user-activation.https.html
+</wpt>
 
 <p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
 [=fenced navigable container/fenced navigable=] gets [=created a new nested traversable|created=] or
@@ -1134,6 +1185,10 @@ the user. These elements are called <dfn>fenced navigable containers</dfn>.
 A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
 which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
 parent=], or null. It is initially null.
+
+<wpt>
+  /fenced-frame/window-frameElement.https.html
+</wpt>
 
 <div algorithm>
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
@@ -1452,6 +1507,12 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
     |candidate| be |new candidate|.
 </div>
 
+<wpt>
+  /fenced-frame/anchor-focus.https.html
+  /fenced-frame/autofocus-denied.https.html
+  /fenced-frame/script-focus.https.html
+</wpt>
+
 <h3 id=navigation-patch>Navigation</h3>
 
 This section describes how the <{fencedframe}> element interacts with the ever-complicated process
@@ -1520,14 +1581,6 @@ suitable \`<a http-header><code>Cross-Origin-Embedder-Policy</code></a>\` header
 Issue: Determine if we need to fence or unfence the [=queue a cross-origin embedder policy
 inheritance violation=] algorithm, as leaving it unfenced may cause a privacy leak.
 
-<!--
-TODO: Enable this once we move the WPTs to the external repository.
-<wpt>
-/embedder-no-coep.https.html
-/embedder-coop-coep-blocked.https.html
-</wpt>
--->
-
 <div algorithm=corp-patch>
   Next, we modify how the [=cross-origin resource policy check=] <a
   href=https://html.spec.whatwg.org/C#populating-a-session-history-entry:cross-origin-resource-policy-check>applies
@@ -1552,6 +1605,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <wpt>
   /fenced-frame/embedder-coop-coep-blocked.https.html
+  /fenced-frame/embedder-no-coep.https.html
+  /fenced-frame/embedder-require-corp.https.html
 </wpt>
 
 <h3 id=page-visibility>Page visibility</h3>
@@ -1576,6 +1631,404 @@ specification adds another value for fenced frames:
 
 : "`fencedframe`"
 :: This [=navigable=] is displaying a <{fencedframe}>'s content
+
+Issue: Specify the behavior that leads to the following:
+
+<wpt>
+  /fenced-frame/prerender.https.html
+</wpt>
+
+<h3 id=csp-integration>Content Security Policy</h3>
+
+*This introductory section is non-normative*.
+
+Content Security Policy [[!CSP]] can ordinarily be used by web content associated with a
+{{Document}} that hosts a [=navigable container=] to limit the source of navigations in a [=child
+navigable=].
+
+In order to prevent [[!CSP]] from being used a communication side-channel exposing the [=URL=] of
+navigations inside a <{fencedframe}> to the site operating its embedder, the only [=source
+expressions=] that can influence a <{fencedframe}> navigation are:
+
+ * The <a grammar>scheme-source</a> "`https:`"
+ * The <a grammar>host-source</a> "`https://*:*`"
+ * The [=string=] "`*`"
+
+See our <a
+href=https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md#proposal---scheme-source-matching>CSP
+explainer</a> that describes this.
+
+<h4 id=csp-algorithms>Algorithms</h4>
+
+<div algorithm=pre-request-check-csp>
+  Add a step after step 2 of the [=frame-src pre-request check=] that says:
+
+  3. If <var ignore>request</var>'s [=request/destination=] is "`fencedframe`", and this directive's
+     [=directive value|value=] does not [=set/contain=] either "`https:`", "`https://*:*`", or
+     "`*`", return "`Blocked`".
+</div>
+
+<div algorithm=post-request-check-csp>
+  Add a step after step 2 of the [=frame-src post-request check=] that says:
+
+  3. If <var ignore>request</var> [=request/destination=] is "`fencedframe`", and this directive's
+    [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
+    "`Blocked`".
+</div>
+
+Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies a
+[=required csp=], fenced frames will not load. This is done to prevent arbitrary data flow from the
+embedder to the fenced frame.
+
+<div algorithm=cspee-changes>
+  Add a step after step 1 in the [=Is response to request blocked by context's required CSP?=]
+  algorithm that reads:
+
+  2. If <var ignore>context</var>'s [=required csp=] is not `null`, and <var ignore>request</var>
+    [=request/destination=] is "`fencedframe`", return "`Blocked`".
+</div>
+
+<h4 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h4>
+
+Fenced frames are a different element from an iframe. Therefore, using the
+<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
+Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
+specification is printed below:
+
+<div algorithm=fenced-frame-src>
+  The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
+  <{fencedframe}>'s [=fenced navigable container/fenced navigable=]. The syntax for the directive's
+  name and value is described by the following ABNF:
+
+  <pre>
+    directive-name  = "fenced-frame-src"
+    directive-value = <a grammar>serialized-source-list</a>
+  </pre>
+
+  <div id="fenced-frame-src-example" class="example">
+    Given a page with the following Content Security Policy:
+    <pre>
+      <a http-header>Content-Security-Policy</a>: <a>fenced-frame-src</a> https://example.com/
+    </pre>
+
+    Fetches for the following code will return a [=network error=], as the URL provided does not
+    match `fenced-frame-src`'s <a>source list</a>:
+
+    <pre highlight="html">
+      &lt;fencedframe src="https://example.org/"&gt;
+      &lt;/fencedframe&gt;
+    </pre>
+  </div>
+
+  The <a href="https://w3c.github.io/webappsec-csp/#frame-src-pre-request">Pre-request check</a> and
+  <a href="https://w3c.github.io/webappsec-csp/#frame-src-post-request">Post-request check</a> will
+  be the same as the
+  <a href="https://w3c.github.io/webappsec-csp/#directive-frame-src">frame-src</a>'s check.
+</div>
+
+<div algorithm=default-src-amendment>
+  The [=default-src=] directive's Example 7 and Example 8 will be amended. Where it says:
+
+  <pre>
+    <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>worker-src</a> <a grammar>'self'</a>
+  </pre>
+
+  It will now say:
+
+  <pre>
+    <a http-header>Content-Security-Policy</a>: <a>connect-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>fenced-frame-src</a> <a grammar>'self'</a>;
+                            ...
+                            <a>worker-src</a> <a grammar>'self'</a>
+  </pre>
+</div>
+
+<div algorithm=directive-fallback-list>
+  In the <a href="https://w3c.github.io/webappsec-csp/#directive-fallback-list">directive fallback
+  list</a>, in step 1, add a new entry to the list:
+
+  : "`fenced-frame-src`"
+  ::
+    1.  Return `<< "fenced-frame-src", "frame-src", "child-src", "default-src" >>`.
+</div>
+
+<div algorithm=effective-directive-switch-patch>
+  Modify the switch on step 3 of the [=Get the effective directive for request=] algorithm to
+  include the following case:
+
+  : "`fencedframe`"
+  ::
+    1.  Return `fenced-frame-src`.
+</div>
+
+<wpt>
+  /fenced-frame/ancestor-throttle.https.html
+  /fenced-frame/csp-allowed.https.html
+  /fenced-frame/csp-blocked.https.html
+  /fenced-frame/csp-fenced-frame-src-allowed.https.html
+  /fenced-frame/csp-fenced-frame-src-blocked.https.html
+  /fenced-frame/csp-frame-src-allowed.https.html
+  /fenced-frame/csp-frame-src-blocked.https.html
+  /fenced-frame/csp-transparent-url.https.html
+  /fenced-frame/csp.https.html
+  /fenced-frame/cspee.https.html
+  /fenced-frame/embedder-csp-not-propagate.https.html
+</wpt>
+
+<h3 id=permissions-policy-changes>Permissions Policies</h3>
+
+*This introductory sub-section is non-normative.*
+
+The [=policy-controlled features=] available to {{Document}}s inside of a <{fencedframe}> are
+determined exclusively by the {{FencedFrameConfig}} that the <{fencedframe}> navigates to.
+Specifically, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame
+config/effective enabled permissions=] defines the exclusive list of [=policy-controlled features=]
+that will be enabled in the {{Document}} (all others will be disabled).
+
+During navigation, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=] [=instantiate a
+config|instantiates=] a [=navigable/fenced frame config instance=] that is stored on the [=fenced
+navigable container/fenced navigable=]. This navigable's [=navigable/fenced frame config
+instance=]'s [=fenced frame config instance/effective enabled permissions=] is consulted [=Should
+navigation response to navigation request be blocked by Permissions Policy?|during navigation=]. A
+<{fencedframe}> navigation can only succeed if the [=Document/permissions policy=] for the
+navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that the
+[=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
+[=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
+is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
+
+At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
+in the frame based on that navigation's [=navigation params/origin=] (since the origin is derived
+from cross-site data), this specification modifies various [[PERMISSIONS-POLICY]] algorithms such
+that a <{fencedframe}> {{Document}}'s [=permissions policy/inherited policy=] is computed without
+consideration of whether its [=navigation params/origin=] is [=same origin=] with its embedder's.
+Therefore a feature can only be enabled inside of a <{fencedframe}> if its embedder *explicitly*
+delegates it via [=the special value *=] [=allowlist=].
+
+Considering all of the above, we get the following interesting implications:
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   [=the special value *=], and no \`<a http-header>`Permissions-Policy`</a>\` header is served on
+   the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is empty, the navigation
+   inside the <{fencedframe}> will succeed, and the resulting {{Document}} will be [=allowed to
+   use=] the [=policy-controlled feature|feature=] (i.e., it will be enabled).
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a>, and no \`<a http-header>`Permissions-Policy`</a>\`
+   header is served on the <{fencedframe}> embedder, and the <{fencedframe/allow}> attribute is
+   empty, the navigation inside the <{fencedframe}> will be blocked.
+
+   Note: This is because ordinarily this [=policy-controlled feature|feature=] would only be enabled
+   if the subframe's {{Document}} was [=same origin=] with its embedder, a check this specification
+   avoids for fenced frames, since the <{fencedframe}>s {{Document}}'s [=Document/origin=] is
+   derived from cross-site data. Therefore, we simply "fail close".
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a>, and the <{fencedframe}>'s <{fencedframe/allow}>
+   attribute contains the [=policy-controlled feature|feature=] but no [=allowlist=], the rules
+   described in <a href=allow-attribute-fenced-frame>The `allow` attribute section</a>, the default
+   [=allowlist=] for the feature will be `'src'` which is meant to represent the embedder-supplied
+   navigation [=URL=], for which there is none when navigating a <{fencedframe}>, as the navigation
+   [=URL=] is determined by the [=fenced frame config=]. The navigation will be blocked.
+
+ * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
+   config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
+   <a for="default allowlist">`'self'`</a> but either the \`<a
+   http-header>`Permissions-Policy`</a>\` header served on the <{fencedframe}>'s embedder *OR* the
+   <{fencedframe/allow}> attribute sets that [=policy-controlled feature|feature=]'s [=allowlist=]
+   to [=the special value *=], then the navigation inside the <{fencedframe}> will succeed, and the
+   resulting {{Document}} is [=allowed to use=] the [=policy-controlled feature|feature=].
+
+ * If a navigation inside a <{fencedframe}> would otherwise succeed, but the [=response=] on the
+   navigation inside the <{fencedframe}> is served with a \`<a
+   http-header>`Permissions-Policy`</a>\` header that sets the [=allowlist=] to "`none`" or an
+   otherwise incompatible [=origin=] for a feature in the [=fenced frame config/effective enabled
+   permissions=], the navigation still succeeds, but the {{Document}} in the <{fencedframe}> is
+   **not** [=allowed to use=] the feature.
+
+   Note: This is OK because it is the <{fencedframe}>'s content *itself* that is making the decision
+   to disable a particular feature, not its embedder environment.
+
+The patches in the below section "fence" the appropriate [[PERMISSIONS-POLICY]] algorithms to
+achieve the outcomes described in the above explanatory content.
+
+<h4 id=permissions-policy-patches>Algorithm patches</h4>
+
+<div id=allow-attribute-fenced-frame algorithm=allow-attribute-fenced-frame>
+  Rename the <a href=https://w3c.github.io/webappsec-permissions-policy/#iframe-allow-attribute>The
+  `allow` attribute of the `iframe` element</a> section to "The `allow` attribute of the `iframe`
+  and `fencedframe` element", and rewrite the section to read:
+
+  <{iframe}> and <{fencedframe}> elements have an respective `allow` attributes (<{iframe}>:
+  <{iframe/allow}>; <{fencedframe}>: <{fencedframe/allow}>), which contain an [=ASCII-serialized
+  policy directive=].
+
+  The allowlist for the features named in the attribute may be empty; in that case, the default
+  value for the [=allowlist=] is "`src`", which represents the origin of the URL in the iframe's
+  <{iframe/src}> attribute, or the fencedframe's [=fenced frame config=].
+
+  When not empty, the <{iframe}>'s <{iframe/allow}> or <{fencedframe}>'s <{fencedframe/allow}>
+  attribute will result in adding an [=allowlist=] for each [=supported feature=] to the <{iframe}>
+  or <{fencedframe}>'s [=container policy=].
+</div>
+
+<div algorithm=create-permissions-policy>
+  Modify the [$Create a Permissions Policy for a navigable$] algorithm:
+
+  Given null or an element (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
+  |fenced| that defaults to false, this algorithm returns a new Permissions Policy.
+
+  Rewrite step 1 to read:
+
+  1. [=Assert=]: if not null, <var ignore>container</var> is either a [=navigable container=] or a
+     [=fenced navigable container=].
+
+  Rewrite step 4 to read:
+
+  4. For each |feature| supported:
+
+     1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
+        container at origin$] on |feature|, |container|, |origin|, and |fenced|.
+
+     2. Set <var ignore>inherited policy</var>[|feature|] to |isInherited|.
+</div>
+
+<div algorithm=create-permissions-policy-response>
+  Modify the [$Create a Permissions Policy for a navigable from response$] algorithm to read:
+
+  Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
+  [=origin=] (|origin|), and a [=response=] (<var ignore>response</var>), this algorithm returns a
+  new [=Document/permissions policy=].
+
+  Add a step before step 1 that reads:
+
+  1. Let |fenced| be true if |container| is a [=fenced navigable container=], and false otherwise.
+
+  Modify what is *now* step 2 of the algorithm to read:
+
+  2. Let <var ignore>policy</var> be the result of running [$Create a Permissions Policy
+     for a navigable$] given |container|, |origin|, and |fenced|.
+</div>
+
+<div algorithm=attempt-populate-history-patches>
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
+  before the step inside the [=queue a task|queued task=] starting with "If
+  |failure| is true, then:" that reads:
+
+  8. Otherwise, if the result of [=Should navigation response to navigation request be blocked by
+    Permissions Policy?=] given <var ignore>navigationParams</var> is "`Blocked`", then set 
+    |failure| to true.
+
+  Note: If this algorithm returns "`Blocked`", the pre-existing {{Document}} in the <{fencedframe}>
+  does not stick around; an error page will be loaded.
+</div>
+
+<div algorithm=permissions-policy-block-request>
+  Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
+  Permissions Policy?</dfn> in [[!HTML]].
+
+  Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
+  "`Allowed`":
+
+  1. Let |navigable| be |navigationParams|'s [=navigation params/navigable=].
+
+  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return
+     "`Allowed`".
+
+  1. Let |origin| be |navigationParams|'s [=navigation params/origin=].
+
+  1. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
+     [=fenced frame config instance/effective enabled permissions=].
+
+  1. Let |permissions policy| be the result of [$Create a Permissions Policy for a navigable|
+     creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
+     and <var ignore>fenced</var> set to true.
+
+     Note: This is identical to the [=Document/permissions policy=] that will be created when the
+     navigation constructs the ultimate {{Document}} for this pending navigation. We create it now
+     and run tests on it since this is the appropriate time to determine if a navigation will fail,
+     and then throw it away. If the navigation succeeds, it will be recreated identically and
+     unconditionally installed on the {{Document}}.
+
+  1. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
+
+  1. [=list/For each=] |effective permission| of |effective permissions|:
+
+    1. If |inherited policy|[|effective permission|] is "Disabled", return "`Blocked`".
+
+  1. Return "`Allowed`."
+</div>
+
+<div algorithm=define-inherited-policy-in-container-patches>
+  Modify the [$Define an inherited policy for feature in container at origin$] algorithm to
+  read:
+
+  Given a feature (|feature|), null or a [=navigable container=] (|container|), an [=origin=] for a
+  document in that container (|origin|), and an optional [=boolean=] |fenced| that defaults to
+  false, this algorithm returns the [=permissions policy/inherited policy=] for that feature.
+  
+  Rewrite step 3 to read:
+
+  3. If the result of executing [$Is feature enabled in document for origin?$] on |feature|,
+     |container|'s [=Node/node document=], |origin|, and |fenced| is "Disabled", return
+     "Disabled".
+
+  Note: We don't have to rewrite step 2, which also delegates to the same algorithm, to pass in the
+  |fenced| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
+  |container|'s [=Node/node document=], not the {{Document}} hosted *inside* |container|.
+
+  Rewrite step 7 to read:
+
+  7. If |fenced| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |container|'s [=Node/node document=]'s
+     origin, return `"Enabled"`.
+</div>
+
+<div algorithm=is-feature-enabled-patches>
+  Modify the [$Is feature enabled in document for origin?$] algorithm to read:
+
+  Given a feature (|feature|), a {{Document}} object (|document|), an [=url/origin=] (|origin|), and
+  an optional [=boolean=] |fenced| that defaults to false, this algorithm returns "`Disabled`" if
+  |feature| should be considered disabled, and "`Enabled`" otherwise.
+
+  Rewrite step 3 to read:
+
+  3. If |feature| is present in |policy|'s [=declared policy=],
+
+    1. If |fenced| is set to false, and the [=allowlist=] for |feature| in |policy|'s [=declared
+       policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
+
+    2. Otherwise, if |fenced| is set to true, and the [=allowlist=] for |feature| in |policy|'s
+      [=declared policy=] is [=the special value *=], then return "`Enabled`".
+
+    3. Otherwise, return "`Disabled`".
+
+  Rewrite step 5 to read:
+
+  5. If |fenced| is set to false, |feature|'s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
+</div>
+
+<wpt>
+  /fenced-frame/default-enabled-features-allow-all.https.html
+  /fenced-frame/default-enabled-features-allow-none.https.html
+  /fenced-frame/default-enabled-features-allow-self.https.html
+  /fenced-frame/default-enabled-features-attribute-allow.https.html
+  /fenced-frame/default-enabled-features-attribute-change.https.html
+  /fenced-frame/default-enabled-features-attribute-disallow.https.html
+  /fenced-frame/default-enabled-features-attribution-disabled.https.html
+  /fenced-frame/default-enabled-features-subframe.https.html
+  /fenced-frame/default-enabled-features-unset.https.html
+  /fenced-frame/permission-api-denied-non-standard.https.html
+  /fenced-frame/permission-api-denied.https.html
+  /fenced-frame/permission-geolocation.https.html
+  /fenced-frame/permission-notification.https.html
+</wpt>
 
 <h3 id=local-network-access-monkeypatch>Local Network Access</h3>
 
