@@ -148,13 +148,9 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
-spec: LNA; urlPrefix: https://wicg.github.io/local-network-access/
+spec: local-network-access; urlPrefix: https://wicg.github.io/local-network-access/
   type: dfn
     text: Integration with HTML; url: integration-html
-    text: IP address space; url: policy-container-ip-address-space
-    for: response
-      text: IP address space; url: response-ip-address-space
-    text: ip-address-space-public; url: ip-address-space-public
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -2033,10 +2029,11 @@ achieve the outcomes described in the above explanatory content.
 <h3 id=local-network-access-monkeypatch>Local Network Access</h3>
 
 Local network access is a security feature that allows you to control which apps on your device can
-access your local network. Regular iframes inherit their policy container from the navigation
-initiator, while fenced frames explicitly do not. This results in a policy container being created
-that causes subresource requests to not do PNA checks. This section patches the PNA spec to have
-subresources be subject to those checks.
+access your local network. On creation, regular iframes inherit their policy container from the
+navigation initiator, while fenced frames explicitly do not. While this prevents information from
+leaking from an embedder to a fenced frame, this results in a policy container being created that
+causes subresource requests to not do local network access checks. This section patches the local
+network access spec to have subresources be subject to those checks.
 
 <div algorithm=pna-html-changes>
   Modify the [=Integration with HTML=] section. Rewrite step 3 to read:
@@ -2047,7 +2044,7 @@ subresources be subject to those checks.
     1. If |environment| is not null, |environment|'s [=target browsing context=] is not null, and
       |environment|'s [=target browsing context=]'s [=active document=]'s [=node navigable=]'s
       [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=], then
-      set |result|'s [=IP address space=] to [=ip-address-space-public|public=].
+      set |result|'s [=IP address space=] to [=IP address space/public|public=].
 
       Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
       [=response/IP address space=].
