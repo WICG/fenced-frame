@@ -11,7 +11,7 @@ Boilerplate: omit conformance, omit feedback-header
 Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com, https://domfarolino.com
 Abstract: The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together.
 !Participate: <a href="https://github.com/WICG/fenced-frame">GitHub WICG/fenced-frame</a> (<a href="https://github.com/WICG/fenced-frame/issues/new">new issue</a>, <a href="https://github.com/WICG/fenced-frame/issues?state=open">open issues</a>)
-!Commits: <a href="https://github.com/WICG/fenced-frame/commits/main/spec.bs">GitHub spec.bs commits</a>
+!Commits: <a href="https://github.com/WICG/fenced-frame/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Default Biblio Status: current
