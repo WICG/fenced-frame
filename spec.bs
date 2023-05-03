@@ -39,7 +39,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
-      text: create a policy container from a fetch response; url: creating-a-policy-container-from-a-fetch-response
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -65,7 +64,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
       text: system visibility state; url: system-visibility-state
-      text: active document; url: active-document
       for: navigable
         text: active session history entry; url: nav-active-history-entry
         text: current session history entry; url: nav-current-history-entry
@@ -2042,9 +2040,9 @@ network access spec to have subresources be subject to those checks.
     algorithm:
 
     1. If |environment| is not null, |environment|'s [=target browsing context=] is not null, and
-      |environment|'s [=target browsing context=]'s [=active document=]'s [=node navigable=]'s
-      [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=], then
-      set |result|'s [=IP address space=] to [=IP address space/public|public=].
+      |environment|'s [=target browsing context=]'s [=browsing context/active document=]'s [=node
+      navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+      navigable=], then set |result|'s [=IP address space=] to [=IP address space/public|public=].
 
       Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
       [=response/IP address space=].
