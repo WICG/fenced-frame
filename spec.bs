@@ -552,9 +552,6 @@ An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct w
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
-[=policy-controlled features=].
-
 A <dfn export for=fencedframetype>pending event</dfn> is a struct with the following [=struct/items=]:
 <dl export dfn-for="pending event">
   : <dfn>destination</dfn>
