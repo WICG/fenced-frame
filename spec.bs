@@ -484,9 +484,43 @@ set=].
 An <dfn export for=fencedframetype>exhaustive set of permissions</dfn> is a [=list=] of
 [=policy-controlled features=].
 
+A <dfn export for=fencedframetype>pending event</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="pending event">
+  : <dfn>destination</dfn>
+  :: a {{FenceReportingDestination}}
+
+  : <dfn>eventType</dfn>
+  :: a [=string=]
+
+  : <dfn>eventData</dfn>
+  :: a [=string=]
+</dl>
+
 A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] whose [=map/keys=]
-are {{FenceReportingDestination}}s and whose [=map/values=] are either `"pending"`, or [=maps=]
-whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=].
+are {{FenceReportingDestination}}s and whose [=map/values=] are either [=lists=] of
+[=fencedframetype/pending events=] (which are used to represent events that need to be reported
+asynchronously, because the metadata has not been finalized yet), or [=maps=] whose [=map/keys=]
+are [=strings=] and whose [=map/values=] are [=urls=] (which are used to represent the actual
+metadata once it is finalized).
+
+<div algorithm>
+  In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
+  [=map=] |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are
+  [=urls=], run these steps:
+
+  1. [=Assert=] that |reporting map|[|destination|] is a [=list=] (i.e. that |destination|'s
+     metadata has not yet been finalized.
+
+  1. Let |pending event list| be |reporting map|[|destination|].
+
+  1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
+
+  1. [=list/For each=] |pending event| of |pending event list|:
+
+     1. [=Send a beacon=] with |destination map|, |pending event|'s [=pending event/eventType=],
+        and |pending event|'s [=pending event/eventData=].
+</div>
 
 A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the
 following [=struct/items=]:
@@ -499,27 +533,12 @@ following [=struct/items=]:
   :: a boolean
 </dl>
 
-<div algorithm>
-  In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
-  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
-  [=map=] |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are
-  [=urls=], run these steps:
-
-  1. [=Assert=] that |reporting map|[|destination|] is `"pending"`.
-
-  1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
-</div>
-
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following
 [=struct/items=]:
-
 <dl export dfn-for="fenced frame reporter">
-  : <dfn>fenced frame reporting map reference</dfn>
-  :: a reference to a [=fencedframetype/fenced frame reporting map=]
+  : <dfn>fenced frame reporting metadata reference</dfn>
+  :: a mutable reference to a [=fencedframetype/fenced frame reporting metadata=]
      <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
-
-  : <dfn>direct seller is seller</dfn>
-  :: a boolean
 
   : <dfn>automatic beacon data</dfn>
   :: null, or a struct with the following [=struct/items=]:
@@ -533,32 +552,49 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with t
 </dl>
 
 <div algorithm>
+  In order to <dfn>send a beacon</dfn> with a [=map=] |destination map| whose [=map/keys=] are
+  [=strings=] and whose [=map/values=] are [=urls=], a [=string=] |eventType|, and a [=string=]
+  |eventData|, run these steps:
+
+  1. If |destination map|[|eventType|] does not [=map/exist=], return.
+
+  1. Let |destination url| be |destination map|[|eventType|].
+
+  1. Send a beacon with |eventData| to |destination url|.
+     <span class=XXX>TODO: specify the beacon send</span>
+</div>
+
+<div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
   |reporter| with a {{FenceReportingDestination}} |destination|, [=string=] |eventType|, and
   [=string=] |eventData|, run these steps:
 
   1. If |destination| is `"direct-seller"`:
 
-     1. If |reporter|'s [=fenced frame reporter/direct seller is seller=] is true, set
-        |destination| to `"seller"`.
+     1. If |reporter|'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
+        [=fenced frame reporting metadata/direct seller is seller=] is true, set |destination| to
+        `"seller"`.
 
      1. Otherwise, set |destination| to `"component-seller"`.
 
-  1. Let |reporting map| be |reporter|'s [=fenced frame reporter/fenced frame reporting map
-     reference=].
+  1. Let |reporting map| be a mutable reference to |reporter|'s [=fenced frame reporter/fenced
+     frame reporting metadata reference=]'s [=fenced frame reporting metadata/fenced frame
+     reporting map=].
 
   1. If |reporting map|[|destination|] does not [=map/exist=], return.
 
-  1. If |reporting map|[|destination|] is `"pending"`, return and asynchronously wait until it is
-     no longer pending.
-     <span class=XXX>TODO: Specify the waiting properly.
+  1. If |reporting map|[|destination|] is a [=list=]:
 
-  1. If |reporting map|[|destination|]|eventType| does not [=map/exist=], return.
+     1. [=list/Extend=] |reporting map|[|destination|] with a [=fencedframetype/pending event=]
+        whose [=pending event/destination=] is |destination|, [=pending event/eventType=] is
+        |eventType|, and [=pending event/eventData=] is |eventData|.
 
-  1. Let |destination url| be |reporting map|[|destination|]|eventType|.
+     1. Return. (The pending event will be sent asynchronously.)
 
-  1. Send a beacon with |eventData| to |destination url|.
-     <span class=XXX>TODO: specify the beacon send</span>
+  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
+     metadata has been finalized).
+
+  1. [=Send a beacon=] with |reporting map|[|destination|], |eventType|, and |eventData|.
 </div>
 
 <div algorithm>
@@ -740,15 +776,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
         1. Otherwise, set to a [=fencedframetype/fenced frame reporter=] with the following
            members:
 
-            : [=fenced frame reporter/fenced frame reporting map reference=]
+            : [=fenced frame reporter/fenced frame reporting metadata reference=]
             :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
-               [=fenced frame reporting metadata/value=]'s [=fenced frame reporting metadata/fenced
-               frame reporting map=]
-
-            : [=fenced frame reporter/direct seller is seller=]
-            :: |config|'s [=fenced frame config/fenced frame reporting metadata=]'s [=fenced frame
-               reporting metadata/value=]'s [=fenced frame reporting metadata/direct seller is
-               seller=]
+               [=fenced frame reporting metadata/value=]
 
             : [=fenced frame reporter/automatic beacon data=]
             :: null
