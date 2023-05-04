@@ -1596,6 +1596,33 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   /fenced-frame/embedder-require-corp.https.html
 </wpt>
 
+<h4 id=navigation-changes>Actual navigation changes</h4>
+
+<div algorithm=navigate>
+  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
+
+    * |navigable| is a [=fenced navigable container/fenced navigable=];
+
+    Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
+    for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
+
+  Modify step 8 of the same algorithm to include the following condition:
+
+    * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
+      while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
+
+    Note: This ensures that embedder-initiated navigations can *never* trigger a fragment navigation
+    inside of a <{fencedframe}>.
+
+  <wpt>
+    /fenced-frame/fragment-navigation.https.html
+    /fenced-frame/frame-navigation.https.html
+    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
+    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
+    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+  </wpt>
+</div>
+
 <h3 id=page-visibility>Page visibility</h3>
 
 The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
