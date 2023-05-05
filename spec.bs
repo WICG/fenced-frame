@@ -571,6 +571,18 @@ are {{FenceReportingDestination}}s and whose [=map/values=] are either:
  * [=maps=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=] (which are used
    to represent the actual metadata once it is finalized).
 
+Note: This representation is meant to allow config-generating APIs to reduce latency by resolving
+the values of reporting destinations asynchronously, after they've already constructed and returned
+the fenced frame config (and even after the config has been loaded, and event reports have been
+generated inside the fenced frame). When the config-generating API declares the [=fencedframetype/
+fenced frame reporting map=], they can mark certain destinations as pending using an empty
+[=list=], and then maintain a reference to the map for later. If the fenced frame attempts to
+[=report an event=] to a destination while it is still pending, it stores the event in this
+[=list=] for later handling. When the config-generating API or its callback eventually [=finalizes
+a reporting destination=] through the reference it kept, it will handle all of the pending events
+stored in the [=list=]. If the destination is never finalized, then the pending events will never
+be sent.
+
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
   frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
