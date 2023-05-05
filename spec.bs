@@ -306,6 +306,8 @@ interface HTMLFencedFrameElement : HTMLElement {
 
 The <{fencedframe}> element [=represents=] its [=fenced navigable container/fenced navigable=].
 
+Descendants of <{fencedframe}> elements represent nothing.
+
 Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
 
