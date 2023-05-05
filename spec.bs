@@ -1800,10 +1800,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          [=URL=] whose [=url/scheme=] is "`https`".
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
-      1. Let |config instance| be the result of [=instantiate a config|instantiating=] |config|.
-
-      1. Set |navigable|'s [=navigable/fenced frame config instance=] to |config instance|.
-
   <wpt>
     /fenced-frame/frame-navigation.https.html
   </wpt>
