@@ -68,6 +68,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: active session history entry; url: nav-active-history-entry
         text: current session history entry; url: nav-current-history-entry
         text: parent; url: nav-parent
+        text: ongoing navigation
       for: traversable navigable
         text: session history entries; url: tn-session-history-entries
       for: browsing context group
@@ -89,6 +90,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: replace; url: hh-replace
       for: document state
         text: document; url: document-state-document
+      text: checking if unloading is user-canceled
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -322,15 +324,6 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 
   1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
 
-  1. [=Process the fencedframe attributes=] with |element| and [=initialInsertion=] set to true.
-</div>
-
-<div algorithm=process-the-fencedframe-attributes>
-  To <dfn>process the <{fencedframe}> attributes</dfn> given a <{fencedframe}> element |element| and
-  a boolean <dfn><var>initialInsertion</var></dfn>, run these steps:
-
-  1. [=Assert=]: |element| is [=connected=].
-
   Issue: It's not necessary to call the <a
   href=https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps>URL
   and history update steps</a> as we do during usual <a
@@ -341,24 +334,6 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   {{History}}.{{History/length}} in the new navigable. This is an existing issue in the HTML
   Standard: <a
   href=https://github.com/whatwg/html/issues/9030>https://github.com/whatwg/html/issues/9030</a>.
-
-  1. If |element|'s [=fencedframe/config=] is null and |initialInsertion| is true, then return.
-
-  1. Let |url| be the [=URL record=] <code>about:blank</code>.
-
-  1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
-     [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
-     relative to |element|'s [=Node/node document=]. If this is successful, then set [=url=] to the
-     <a spec="HTML">resulting URL record</a>.
-
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |url| using
-     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
-     <span class="XXX">TODO: generate and store the config instance</span>
-
-  <wpt>
-    /fenced-frame/header-referrer.https.html
-  </wpt>
 </div>
 
 <div algorithm=destroy>
@@ -372,7 +347,25 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 <div algorithm=config-setter>
   The {{HTMLFencedFrameElement/config}} IDL attribute setter steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. If [=this=] is not [=connected=]:
+
+    1. [=Assert=]: [=this=]'s [=fenced navigable container/fenced navigable=] is null.
+
+       Note: This holds because when the element has been removed from the DOM, its removal steps
+       immediately destroy the [=fenced navigable container/fenced navigable=].
+
+  1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
+     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
+     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
+
+     Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
+     navigation flow.
+
+  <wpt>
+    /fenced-frame/header-referrer.https.html
+  </wpt>
 </div>
 
 The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, determines the
@@ -1769,23 +1762,58 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
     * |navigable| is a [=fenced navigable container/fenced navigable=];
 
-    Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
-    for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
+      Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
+      for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
+
+  <wpt>
+    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
+    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
+    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+  </wpt>
 
   Modify step 8 of the same algorithm to include the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
 
-    Note: This ensures that embedder-initiated navigations can *never* trigger a fragment navigation
-    inside of a <{fencedframe}>.
+      Note: This ensures that embedder-initiated navigations can *never* trigger a fragment
+      navigation inside of a <{fencedframe}>.
 
   <wpt>
     /fenced-frame/fragment-navigation.https.html
+  </wpt>
+
+  Insert these steps immediately after step 16, the step that goes [=in parallel=]:
+
+    1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
+       navigable=]:
+
+      1. Let |config| be the result of [=fenced frame config mapping/finding a
+         config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
+         navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+         Note: This might "wait" for an arbitrary period of time for the |config| associated with
+         the [=urn uuid=] |url| to be "finalized" in the [=traversable navigable/fenced frame config
+         mapping=]. This is why this step runs [=in parallel=]. This navigation will be canceled by
+         any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
+         occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
+
+      1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
+         [=URL=] whose [=url/scheme=] is "`https`".
+      1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+  <wpt>
     /fenced-frame/frame-navigation.https.html
-    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
-    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
-    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+  </wpt>
+
+  Rewrite the step starting with "Let |unloadPromptCanceled| be the result of" to:
+
+    1. Let |unloadPromptCanceled| be false if |navigable| is a [=fenced navigable container/fenced
+       navigable=], and the result of [=checking if unloading is user-canceled=] for |navigable|'s
+       [=navigable/active document=]'s [=Document/inclusive descendant navigables=].
+
+  <wpt>
+    /fenced-frame/before-unload.https.html
   </wpt>
 </div>
 
