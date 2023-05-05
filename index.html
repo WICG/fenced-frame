@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 3383f409d, updated Fri Apr 28 15:49:22 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="2aad9c71e9623209ac21b578f1f745ef99dbf4a6" name="document-revision">
+  <meta content="5af7b1a04efd9eed8f8adbc61fed95bab4e0104c" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -838,7 +838,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-04">4 May 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-05">5 May 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1174,42 +1174,181 @@ of each field, though they may choose to set the values to null.</p>
    <p>We now establish some preliminary types:</p>
    <p>A <dfn data-dfn-for="fencedframeconfig" data-dfn-type="dfn" data-export id="fencedframeconfig-visibility">visibility<a class="self-link" href="#fencedframeconfig-visibility"></a></dfn> is either "<dfn data-dfn-for="visibility" data-dfn-type="dfn" data-export data-lt="opaque" id="visibility-opaque"> <code>opaque</code><a class="self-link" href="#visibility-opaque"></a></dfn>" or "<dfn class="dfn-paneled" data-dfn-for="visibility" data-dfn-type="dfn" data-export id="visibility-transparent"><code>transparent</code></dfn>".</p>
    <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-size">size</dfn> is a struct with non-negative integer <dfn class="dfn-paneled" data-dfn-for="size" data-dfn-type="dfn" data-export id="size-width">width</dfn> and non-negative integer <dfn class="dfn-paneled" data-dfn-for="size" data-dfn-type="dfn" data-export id="size-height">height</dfn>. <span class="XXX"> TODO: Maybe change the numeric type.</span></p>
-   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-interest-group-descriptor">interest group descriptor</dfn> is a struct with <dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-owner">owner<a class="self-link" href="#interest-group-descriptor-owner"></a></dfn>, which is a string, and <dfn data-dfn-for="interest group
-descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-name">name<a class="self-link" href="#interest-group-descriptor-name"></a></dfn>, which is a string.</p>
+   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-interest-group-descriptor">interest group descriptor</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
+   <dl>
+    <dt data-md><dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-owner">owner<a class="self-link" href="#interest-group-descriptor-owner"></a></dfn>
+    <dd data-md>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a></p>
+    <dt data-md><dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-name">name<a class="self-link" href="#interest-group-descriptor-name"></a></dfn>
+    <dd data-md>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a></p>
+   </dl>
    <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exhaustive-set-of-sandbox-flags">exhaustive set of sandbox flags</dfn> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag
 set</a>.</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-fenced-frame-reporter">fenced frame reporter</dfn> is <span class="XXX">TODO: Specify the type for this.</span></p>
-   <div class="algorithm" data-algorithm="report an event">
-     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="report-an-event">report an event</dfn>, run these steps: 
+   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-pending-event">pending event</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①">items</a>:</p>
+   <dl>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="pending event" data-dfn-type="dfn" data-export id="pending-event-destination">destination</dfn>
+    <dd data-md>
+     <p>a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination">FenceReportingDestination</a></code></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="pending event" data-dfn-type="dfn" data-export id="pending-event-eventtype">eventType</dfn>
+    <dd data-md>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="pending event" data-dfn-type="dfn" data-export id="pending-event-eventdata">eventData</dfn>
+    <dd data-md>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a></p>
+   </dl>
+   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-fenced-frame-reporting-map">fenced frame reporting map</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys③">keys</a> are <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination①">FenceReportingDestination</a></code>s and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values③">values</a> are either:</p>
+   <ul>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">lists</a> of <a data-link-type="dfn" href="#fencedframetype-pending-event" id="ref-for-fencedframetype-pending-event">pending events</a> (which are used to represent events that need to
+ be reported asynchronously, because the metadata has not been finalized yet); or</p>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">maps</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys④">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values④">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">urls</a> (which are used
+ to represent the actual metadata once it is finalized).</p>
+   </ul>
+   <p class="note" role="note"><span class="marker">Note:</span> This representation is meant to allow config-generating APIs to reduce latency by resolving
+the values of reporting destinations asynchronously, after they’ve already constructed and returned
+the fenced frame config (and even after the config has been loaded, and event reports have been
+generated inside the fenced frame). When the config-generating API declares the <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-map" id="ref-for-fencedframetype-fenced-frame-reporting-map"> fenced frame reporting map</a>, they can mark certain destinations as pending using an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a>, and then maintain a reference to the map for later. If the fenced frame attempts to <a data-link-type="dfn" href="#report-an-event" id="ref-for-report-an-event">report an event</a> to a destination while it is still pending, it stores the event in this <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> for later handling. When the config-generating API or its callback eventually <a data-link-type="dfn" href="#finalize-a-reporting-destination" id="ref-for-finalize-a-reporting-destination">finalizes
+a reporting destination</a> through the reference it kept, it will handle all of the pending events
+stored in the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>. If the destination is never finalized, then the pending events will never
+be sent.</p>
+   <div class="algorithm" data-algorithm="finalize a reporting destination">
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="finalize-a-reporting-destination">finalize a reporting destination</dfn>, given a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-map" id="ref-for-fencedframetype-fenced-frame-reporting-map①">fenced
+  frame reporting map</a> <var>reporting map</var>, a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination②">FenceReportingDestination</a></code> <var>destination</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑤">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑤">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑤">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑤">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">urls</a>, run these steps: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO: fill this in</span></p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①">Assert</a> that <var>reporting map</var>[<var>destination</var>] is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a> (i.e., that <var>destination</var>’s
+ metadata has not yet been finalized).</p>
+     <li data-md>
+      <p>Let <var>pending event list</var> be <var>reporting map</var>[<var>destination</var>].</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set③">Set</a> <var>reporting map</var>[<var>destination</var>] to <var>destination map</var>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>pending event</var> of <var>pending event list</var>:</p>
+      <ol>
+       <li data-md>
+        <p><a data-link-type="dfn" href="#send-a-beacon" id="ref-for-send-a-beacon">Send a beacon</a> with <var>destination map</var>, <var>pending event</var>’s <a data-link-type="dfn" href="#pending-event-eventtype" id="ref-for-pending-event-eventtype">eventType</a>,
+  and <var>pending event</var>’s <a data-link-type="dfn" href="#pending-event-eventdata" id="ref-for-pending-event-eventdata">eventData</a>.</p>
+      </ol>
+    </ol>
+   </div>
+   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-fenced-frame-reporting-metadata">fenced frame reporting metadata</dfn> is a struct with the
+following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item②">items</a>:</p>
+   <dl>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame reporting metadata" data-dfn-type="dfn" data-export id="fenced-frame-reporting-metadata-fenced-frame-reporting-map">fenced frame reporting map</dfn>
+    <dd data-md>
+     <p>a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-map" id="ref-for-fencedframetype-fenced-frame-reporting-map②">fenced frame reporting map</a></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame reporting metadata" data-dfn-type="dfn" data-export id="fenced-frame-reporting-metadata-direct-seller-is-seller">direct seller is seller</dfn>
+    <dd data-md>
+     <p>a boolean</p>
+   </dl>
+   <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-fenced-frame-reporter">fenced frame reporter</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item③">items</a>:</p>
+   <dl>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame reporter" data-dfn-type="dfn" data-export id="fenced-frame-reporter-fenced-frame-reporting-metadata-reference">fenced frame reporting metadata reference</dfn>
+    <dd data-md>
+     <p>a mutable reference to a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-metadata" id="ref-for-fencedframetype-fenced-frame-reporting-metadata">fenced frame reporting metadata</a> <span class="XXX">TODO: Handle pointers/references in a more spec-y way</span></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame reporter" data-dfn-type="dfn" data-export id="fenced-frame-reporter-automatic-beacon-data">automatic beacon data</dfn>
+    <dd data-md>
+     <p>null, or a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item④">items</a>:</p>
+     <dl>
+      <dt data-md><dfn data-dfn-for="automatic beacon data" data-dfn-type="dfn" data-export id="automatic-beacon-data-eventdata">eventData<a class="self-link" href="#automatic-beacon-data-eventdata"></a></dfn>
+      <dd data-md>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">string</a></p>
+      <dt data-md><dfn data-dfn-for="automatic beacon data" data-dfn-type="dfn" data-export id="automatic-beacon-data-destination">destination<a class="self-link" href="#automatic-beacon-data-destination"></a></dfn>
+      <dd data-md>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination③">FenceReportingDestination</a></code>s</p>
+     </dl>
+   </dl>
+   <div class="algorithm" data-algorithm="send a beacon">
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="send-a-beacon">send a beacon</dfn> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑥">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑥">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑥">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">urls</a>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a> <var>eventType</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑨">string</a> <var>eventData</var>, run these steps: 
+    <ol>
+     <li data-md>
+      <p>If <var>destination map</var>[<var>eventType</var>] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exist</a>, return.</p>
+     <li data-md>
+      <p>Let <var>destination url</var> be <var>destination map</var>[<var>eventType</var>].</p>
+     <li data-md>
+      <p>Send a beacon with <var>eventData</var> to <var>destination url</var>.</p>
+      <p class="issue" id="issue-c137ca33"><a class="self-link" href="#issue-c137ca33"></a> Specify the <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[FETCH]</a> integration for sending this request.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="report an event">
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="report-an-event">report an event</dfn> using a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter">fenced frame reporter</a> <var>reporter</var> with a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination④">FenceReportingDestination</a></code> <var>destination</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⓪">string</a> <var>eventType</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①①">string</a> <var>eventData</var>, run these steps: 
+    <ol>
+     <li data-md>
+      <p>If <var>destination</var> is <code>"direct-seller"</code>:</p>
+      <ol>
+       <li data-md>
+        <p>If <var>reporter</var>’s <a data-link-type="dfn" href="#fenced-frame-reporter-fenced-frame-reporting-metadata-reference" id="ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference">fenced frame reporting metadata reference</a>'s <a data-link-type="dfn" href="#fenced-frame-reporting-metadata-direct-seller-is-seller" id="ref-for-fenced-frame-reporting-metadata-direct-seller-is-seller">direct seller is seller</a> is true, set <var>destination</var> to <code>"seller"</code>.</p>
+       <li data-md>
+        <p>Otherwise, set <var>destination</var> to <code>"component-seller"</code>.</p>
+      </ol>
+     <li data-md>
+      <p>Let <var>reporting map</var> be a reference to <var>reporter</var>’s <a data-link-type="dfn" href="#fenced-frame-reporter-fenced-frame-reporting-metadata-reference" id="ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference①">fenced frame
+ reporting metadata reference</a>'s <a data-link-type="dfn" href="#fenced-frame-reporting-metadata-fenced-frame-reporting-map" id="ref-for-fenced-frame-reporting-metadata-fenced-frame-reporting-map">fenced frame reporting
+ map</a>.</p>
+     <li data-md>
+      <p>If <var>reporting map</var>[<var>destination</var>] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exist</a>, return.</p>
+     <li data-md>
+      <p>If <var>reporting map</var>[<var>destination</var>] is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>:</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>newEvent</var> be a new <a data-link-type="dfn" href="#fencedframetype-pending-event" id="ref-for-fencedframetype-pending-event①">pending event</a> with the following:</p>
+        <dl>
+         <dt data-md><a data-link-type="dfn" href="#pending-event-destination" id="ref-for-pending-event-destination">destination</a>
+         <dd data-md>
+          <p><var>destination</var></p>
+         <dt data-md><a data-link-type="dfn" href="#pending-event-eventtype" id="ref-for-pending-event-eventtype①">eventType</a>
+         <dd data-md>
+          <p><var>eventType</var></p>
+         <dt data-md><a data-link-type="dfn" href="#pending-event-eventdata" id="ref-for-pending-event-eventdata①">eventData</a>
+         <dd data-md>
+          <p><var>eventData</var></p>
+        </dl>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>newEvent</var> to <var>reporting map</var>[<var>destination</var>].</p>
+       <li data-md>
+        <p>Return.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> The pending event will be sent asynchronously.</p>
+      </ol>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a> that <var>reporting map</var>[<var>destination</var>] is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑦">map</a> (i.e. that <var>destination</var>’s
+ metadata has been finalized).</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#send-a-beacon" id="ref-for-send-a-beacon①">Send a beacon</a> with <var>reporting map</var>[<var>destination</var>], <var>eventType</var>, and <var>eventData</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="report a private aggregation event">
-     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="report-a-private-aggregation-event">report a private aggregation event</dfn>, run these steps: 
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="report-a-private-aggregation-event">report a private aggregation event</dfn> using a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter①">fenced frame
+  reporter</a> <var>reporter</var> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①②">string</a> <var>event</var>, run these steps: 
     <ol>
      <li data-md>
-      <p><span class="XXX">TODO: Fill this in</span></p>
+      <p><var>reporter</var> <var>event</var> <span class="XXX">TODO: Fill this in</span></p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="set automatic beacon data">
-     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="set-automatic-beacon-data">set automatic beacon data</dfn>, run these steps: 
-    <ol>
-     <li data-md>
-      <p><span class="XXX">TODO: Fill this in</span></p>
-    </ol>
-   </div>
-   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exfiltration-budget-metadata">exfiltration budget metadata</dfn> is a struct containing an <dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-origin">origin</dfn>, which is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin">origin</a>; and an <dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-amount-to-debit">amount to debit</dfn>, which is a non-negative valid
-floating point number.</p>
-   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exfiltration-budget-metadata-reference">exfiltration budget metadata reference</dfn> is a struct
-containing an <dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-reference-origin">origin</dfn>, which is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a>; and an <dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export data-lt="amount to debit reference" id="exfiltration-budget-metadata-reference-amount-to-debit-reference">amount to debit
-reference</dfn>, which is a mutable reference to a non-negative valid floating point number. <span class="XXX">TODO: are mutable references a thing in spec?</span></p>
-   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-embedder-shared-storage-context">embedder shared storage context</dfn> is a string.</p>
+   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exfiltration-budget-metadata">exfiltration budget metadata</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item⑤">items</a>:</p>
+   <dl>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-origin">origin</dfn>
+    <dd data-md>
+     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin">origin</a></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-amount-to-debit">amount to debit</dfn>
+    <dd data-md>
+     <p>a non-negative valid floating point number</p>
+   </dl>
+   <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exfiltration-budget-metadata-reference">exfiltration budget metadata reference</dfn> is a struct with the
+following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item⑥">items</a>:</p>
+   <dl>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-reference-origin">origin</dfn>
+    <dd data-md>
+     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-reference-amount-to-debit-reference">amount to debit reference</dfn>
+    <dd data-md>
+     <p>a mutable reference to a non-negative valid floating point number <span class="XXX">TODO: Handle pointers/references in a more specy-y way</span></p>
+   </dl>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="partition-nonce">partition nonce</dfn> is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> value.</p>
    <p class="note" role="note"><span class="marker">Note:</span> This is similar to the <a href="https://fetch.spec.whatwg.org/#network-partition-key">network
 partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="fenced-frame-config">fenced frame config</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="fenced-frame-config">fenced frame config</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item⑦">items</a>:</p>
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config" data-dfn-type="dfn" data-export id="fenced-frame-config-mapped-url">mapped url</dfn>
     <dd data-md>
@@ -1217,7 +1356,7 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
      <dl>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="mapped url" data-dfn-type="dfn" data-export id="mapped-url-value">value</dfn>
       <dd data-md>
-       <p>a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a></p>
+       <p>a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑤">URL</a></p>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="mapped url" data-dfn-type="dfn" data-export id="mapped-url-visibility">visibility</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility①">visibility</a></p>
@@ -1264,12 +1403,12 @@ partition key</a> used by <a href="https://fetch.spec.whatwg.org/">Fetch</a>.</p
      <dl>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="effective enabled permissions" data-dfn-type="dfn" data-export id="effective-enabled-permissions-value">value</dfn>
       <dd data-md>
-       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature">policy-controlled features</a></p>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature">policy-controlled features</a></p>
       <dt data-md><dfn data-dfn-for="effective enabled permissions" data-dfn-type="dfn" data-export id="effective-enabled-permissions-visibility">visibility<a class="self-link" href="#effective-enabled-permissions-visibility"></a></dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility⑤">visibility</a></p>
      </dl>
-     <p class="note" role="note"><span class="marker">Note:</span> When non-null, this is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①">policy-controlled features</a> that the generator of
+     <p class="note" role="note"><span class="marker">Note:</span> When non-null, this is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①">policy-controlled features</a> that the generator of
 this config relies on exclusively being enabled inside the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①③">fencedframe</a></code> that navigates to
 this config. Specifically, each feature in this list <span class="allow-2119">must</span> be
 enabled by the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①④">fencedframe</a></code>'s <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable④">fenced navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy" id="ref-for-concept-document-permissions-policy①">permissions policy</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#inherited-policy" id="ref-for-inherited-policy">inherited policy</a> when navigating to
@@ -1277,13 +1416,13 @@ this config for the navigation to succeed. The features in this list are not for
 rather are used to check that the embedder environment that influences the aforementioned <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#inherited-policy" id="ref-for-inherited-policy①">inherited policy</a> is relaxed enough to support these essential features.
 If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#inherited-policy-for-a-feature" id="ref-for-inherited-policy-for-a-feature">inherited policy value</a> for any of these features is
 "<code>Disabled</code>", the navigation to this config will fail. Any <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature②">policy-controlled feature</a> <em>not</em> in this list will not be "<code>Disabled</code>" in the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe①⑤">fencedframe</a></code> that navigates to this config.</p>
-    <dt data-md><dfn data-dfn-for="fenced frame config" data-dfn-type="dfn" data-export id="fenced-frame-config-fenced-frame-reporter">fenced frame reporter<a class="self-link" href="#fenced-frame-config-fenced-frame-reporter"></a></dfn>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config" data-dfn-type="dfn" data-export id="fenced-frame-config-fenced-frame-reporting-metadata">fenced frame reporting metadata</dfn>
     <dd data-md>
      <p>null, or a struct with the following fields:</p>
      <dl>
-      <dt data-md><dfn data-dfn-for="fenced frame reporter" data-dfn-type="dfn" data-export id="fenced-frame-reporter-value">value<a class="self-link" href="#fenced-frame-reporter-value"></a></dfn>
+      <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame reporting metadata" data-dfn-type="dfn" data-export id="fenced-frame-reporting-metadata-value">value</dfn>
       <dd data-md>
-       <p>a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter">fenced frame reporter</a></p>
+       <p>a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-metadata" id="ref-for-fencedframetype-fenced-frame-reporting-metadata①">fenced frame reporting metadata</a></p>
       <dt data-md><dfn data-dfn-for="fenced frame reporter" data-dfn-type="dfn" data-export id="fenced-frame-reporter-visibility">visibility<a class="self-link" href="#fenced-frame-reporter-visibility"></a></dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility⑥">visibility</a></p>
@@ -1305,21 +1444,21 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
      <dl>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="nested configs" data-dfn-type="dfn" data-export id="nested-configs-value">value</dfn>
       <dd data-md>
-       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①①">fenced frame configs</a></p>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a> of <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①①">fenced frame configs</a></p>
       <dt data-md><dfn data-dfn-for="nested configs" data-dfn-type="dfn" data-export id="nested-configs-visibility">visibility<a class="self-link" href="#nested-configs-visibility"></a></dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility" id="ref-for-propdef-visibility⑧">visibility</a></p>
      </dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config" data-dfn-type="dfn" data-export id="fenced-frame-config-embedder-shared-storage-context">embedder shared storage context</dfn>
     <dd data-md>
-     <p>null, or an <a data-link-type="dfn" href="#fencedframetype-embedder-shared-storage-context" id="ref-for-fencedframetype-embedder-shared-storage-context">embedder shared storage context</a></p>
+     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①③">string</a></p>
    </dl>
    <h4 class="heading settled" data-level="1.3.3" id="fenced-frame-config-instance-struct"><span class="secno">1.3.3. </span><span class="content">The <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance①">fenced frame config instance</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①">struct</a></span><a class="self-link" href="#fenced-frame-config-instance-struct"></a></h4>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="fenced-frame-config-instance">fenced frame config instance</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①">items</a>:</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="fenced-frame-config-instance">fenced frame config instance</dfn> is a struct with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item⑧">items</a>:</p>
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-mapped-url">mapped url</dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a></p>
+     <p>a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑥">URL</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-container-size">container size</dfn>
     <dd data-md>
      <p>null, or a <a data-link-type="dfn" href="#fencedframetype-size" id="ref-for-fencedframetype-size②">size</a></p>
@@ -1334,22 +1473,22 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
      <p>null, or an <a data-link-type="dfn" href="#fencedframetype-exhaustive-set-of-sandbox-flags" id="ref-for-fencedframetype-exhaustive-set-of-sandbox-flags①">exhaustive set of sandbox flags</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-effective-enabled-permissions">effective enabled permissions</dfn>
     <dd data-md>
-     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature③">policy-controlled features</a></p>
-    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-fenced-frame-reporter">fenced frame reporter</dfn> TODO: including automatic beacon info
+     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature③">policy-controlled features</a></p>
+    <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-fenced-frame-reporter">fenced frame reporter</dfn>
     <dd data-md>
-     <p>null, or a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter①">fenced frame reporter</a></p>
+     <p>null, or a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter②">fenced frame reporter</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-exfiltration-budget-metadata-reference">exfiltration budget metadata reference</dfn>
     <dd data-md>
      <p>null, or an <a data-link-type="dfn" href="#fencedframetype-exfiltration-budget-metadata-reference" id="ref-for-fencedframetype-exfiltration-budget-metadata-reference">exfiltration budget metadata reference</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-nested-configs">nested configs</dfn>
     <dd data-md>
-     <p>null, or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">ordered map</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys③">keys</a> are <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑦">urn uuids</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values③">values</a> are <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①②">fenced frame configs</a></p>
+     <p>null, or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑧">ordered map</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑦">keys</a> are <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑦">urn uuids</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑦">values</a> are <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①②">fenced frame configs</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-partition-nonce">partition nonce</dfn>
     <dd data-md>
      <p>a <a data-link-type="dfn" href="#partition-nonce" id="ref-for-partition-nonce">partition nonce</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-embedder-shared-storage-context">embedder shared storage context</dfn>
     <dd data-md>
-     <p>null, or an <a data-link-type="dfn" href="#fencedframetype-embedder-shared-storage-context" id="ref-for-fencedframetype-embedder-shared-storage-context①">embedder shared storage context</a></p>
+     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①④">string</a></p>
    </dl>
    <div class="algorithm" data-algorithm="instantiate a config">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="instantiate-a-config">instantiate a config</dfn> given a <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①③">fenced frame config</a> <var>config</var>, return a <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance②">fenced frame config instance</a> with the following members: 
@@ -1374,7 +1513,21 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
       <p><var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions">effective enabled permissions</a> if null, otherwise <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions①">effective enabled permissions</a>'s <a data-link-type="dfn" href="#effective-enabled-permissions-value" id="ref-for-effective-enabled-permissions-value">value</a></p>
      <dt data-md><a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter">fenced frame reporter</a>
      <dd data-md>
-      <p><var>config</var>’s <span class="XXX">TODO: Fill this in</span></p>
+      <ol>
+       <li data-md>
+        <p>If <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-fenced-frame-reporting-metadata" id="ref-for-fenced-frame-config-fenced-frame-reporting-metadata">fenced frame reporting metadata</a>'s <a data-link-type="dfn" href="#fenced-frame-reporting-metadata-value" id="ref-for-fenced-frame-reporting-metadata-value">value</a> is null, set to null.</p>
+       <li data-md>
+        <p>Otherwise, set to a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter③">fenced frame reporter</a> with the following
+ members:</p>
+        <dl>
+         <dt data-md><a data-link-type="dfn" href="#fenced-frame-reporter-fenced-frame-reporting-metadata-reference" id="ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference②">fenced frame reporting metadata reference</a>
+         <dd data-md>
+          <p>a reference to <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-fenced-frame-reporting-metadata" id="ref-for-fenced-frame-config-fenced-frame-reporting-metadata①">fenced frame reporting metadata</a>'s <a data-link-type="dfn" href="#fenced-frame-reporting-metadata-value" id="ref-for-fenced-frame-reporting-metadata-value①">value</a></p>
+         <dt data-md><a data-link-type="dfn" href="#fenced-frame-reporter-automatic-beacon-data" id="ref-for-fenced-frame-reporter-automatic-beacon-data">automatic beacon data</a>
+         <dd data-md>
+          <p>null</p>
+        </dl>
+      </ol>
      <dt data-md><a data-link-type="dfn" href="#fenced-frame-config-instance-exfiltration-budget-metadata-reference" id="ref-for-fenced-frame-config-instance-exfiltration-budget-metadata-reference">exfiltration budget metadata reference</a>
      <dd data-md>
       <ol>
@@ -1401,15 +1554,15 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
         <p>Otherwise:</p>
         <ol>
          <li data-md>
-          <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">ordered map</a>.</p>
+          <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑨">ordered map</a>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">For each</a> <var>nested config</var> of <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-nested-configs" id="ref-for-fenced-frame-config-nested-configs①">nested
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>nested config</var> of <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-nested-configs" id="ref-for-fenced-frame-config-nested-configs①">nested
  configs</a>'s <a data-link-type="dfn" href="#nested-configs-value" id="ref-for-nested-configs-value">value</a>:</p>
           <ol>
            <li data-md>
             <p>Let <var>urn</var> be a random, unique <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid⑧">urn uuid</a>.</p>
            <li data-md>
-            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set③">Set</a> <var>results</var>[<var>urn</var>] to <var>nested config</var>.</p>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set④">Set</a> <var>results</var>[<var>urn</var>] to <var>nested config</var>.</p>
           </ol>
          <li data-md>
           <p>Set <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs②">nested configs</a> to <var>results</var>.</p>
@@ -1527,9 +1680,9 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-fenceevent"><code><c- g>FenceEvent</c-></code></dfn> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventtype"><code><c- g>eventType</c-></code><a class="self-link" href="#dom-fenceevent-eventtype"></a></dfn>;
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑤"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventdata"><code><c- g>eventData</c-></code><a class="self-link" href="#dom-fenceevent-eventdata"></a></dfn>;
-  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination"><c- n>FenceReportingDestination</c-></a>> <dfn class="idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="sequence<FenceReportingDestination> " id="dom-fenceevent-destination"><code><c- g>destination</c-></code><a class="self-link" href="#dom-fenceevent-destination"></a></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventtype"><code><c- g>eventType</c-></code></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑤"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-fenceevent-eventdata"><code><c- g>eventData</c-></code></dfn>;
+  <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination⑤"><c- n>FenceReportingDestination</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="FenceEvent" data-dfn-type="dict-member" data-export data-type="sequence<FenceReportingDestination> " id="dom-fenceevent-destination"><code><c- g>destination</c-></code></dfn>;
 };
 
 <c- b>typedef</c-> (<a data-link-type="idl-name" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent"><c- n>FenceEvent</c-></a> <c- b>or</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑥"><c- b>DOMString</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-reporteventtype"><code><c- g>ReportEventType</c-></code></dfn>;
@@ -1555,9 +1708,14 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>If <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter①">fenced frame reporter</a> is null, then return.</p>
      <li data-md>
-      <p>If <var>event</var> is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑦">DOMString</a></code>, run <a data-link-type="dfn" href="#report-a-private-aggregation-event" id="ref-for-report-a-private-aggregation-event">report a private aggregation event</a> with <var>event</var> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter②">fenced frame reporter</a>.</p>
+      <p>If <var>event</var> is a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑦">DOMString</a></code>, run <a data-link-type="dfn" href="#report-a-private-aggregation-event" id="ref-for-report-a-private-aggregation-event">report a private aggregation event</a> using <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter②">fenced frame reporter</a> with <var>event</var>.</p>
      <li data-md>
-      <p>If <var>event</var> is a <code class="idl"><a data-link-type="idl" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent②">FenceEvent</a></code>, run <a data-link-type="dfn" href="#report-an-event" id="ref-for-report-an-event">report an event</a> with <var>event</var> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter③">fenced frame reporter</a>.</p>
+      <p>If <var>event</var> is a <code class="idl"><a data-link-type="idl" href="#dictdef-fenceevent" id="ref-for-dictdef-fenceevent②">FenceEvent</a></code>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">for each</a> <var>destination</var> of <var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-destination" id="ref-for-dom-fenceevent-destination">destination</a></code>:</p>
+      <ol>
+       <li data-md>
+        <p>Run <a data-link-type="dfn" href="#report-an-event" id="ref-for-report-an-event①">report an event</a> using <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter③">fenced frame
+  reporter</a> with <var>destination</var>, <var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-eventtype" id="ref-for-dom-fenceevent-eventtype">eventType</a></code>, and <var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-eventdata" id="ref-for-dom-fenceevent-eventdata">eventData</a></code>.</p>
+      </ol>
     </ol>
     <details class="wpt-tests-block" dir="ltr" lang="en" open>
      <summary>Tests</summary>
@@ -1570,6 +1728,8 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Fence" data-dfn-type="method" data-export id="dom-fence-setreporteventdataforautomaticbeacons"><code>setReportEventDataForAutomaticBeacons(<var>event</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
+      <p>If <var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-eventtype" id="ref-for-dom-fenceevent-eventtype①">eventType</a></code> is not <code>"reserved.top_navigation"</code>, return.</p>
+     <li data-md>
       <p>Let <var>instance</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window①">associated Document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable①">node
  navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable" id="ref-for-nav-traversable①">traversable navigable</a>'s <a data-link-type="dfn" href="#navigable-fenced-frame-config-instance" id="ref-for-navigable-fenced-frame-config-instance②">fenced frame config instance</a>.</p>
      <li data-md>
@@ -1580,7 +1740,15 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>If <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter④">fenced frame reporter</a> is null, then return.</p>
      <li data-md>
-      <p>Run <a data-link-type="dfn" href="#set-automatic-beacon-data" id="ref-for-set-automatic-beacon-data">set automatic beacon data</a> with <var>event</var> and <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑤">fenced frame reporter</a>.</p>
+      <p>Set <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑤">fenced frame reporter</a>'s <a data-link-type="dfn" href="#fenced-frame-reporter-automatic-beacon-data" id="ref-for-fenced-frame-reporter-automatic-beacon-data①">automatic beacon data</a> to a struct with the following members:</p>
+      <dl>
+       <dt data-md>eventData
+       <dd data-md>
+        <p><var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-eventdata" id="ref-for-dom-fenceevent-eventdata①">eventData</a></code></p>
+       <dt data-md>destination
+       <dd data-md>
+        <p><var>event</var>’s <code class="idl"><a data-link-type="idl" href="#dom-fenceevent-destination" id="ref-for-dom-fenceevent-destination①">destination</a></code></p>
+      </dl>
     </ol>
     <details class="wpt-tests-block" dir="ltr" lang="en" open>
      <summary>Tests</summary>
@@ -1603,7 +1771,7 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
      <li data-md>
       <p>If <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs③">nested configs</a> is null, then return.</p>
      <li data-md>
-      <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a> of <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑧">FencedFrameConfig</a></code>s.</p>
+      <p>Let <var>results</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a> of <code class="idl"><a data-link-type="idl" href="#fencedframeconfig" id="ref-for-fencedframeconfig⑧">FencedFrameConfig</a></code>s.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate①">For each</a> <var>urn</var> → <var>config</var> of <var>instance</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-nested-configs" id="ref-for-fenced-frame-config-instance-nested-configs④">nested
  configs</a>:</p>
@@ -1620,7 +1788,7 @@ maps to an internal <a data-link-type="dfn" href="#fenced-frame-config" id="ref-
           <p><var>config</var></p>
         </dl>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>newConfig</var> to <var>results</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> <var>newConfig</var> to <var>results</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>results</var>.</p>
@@ -1747,7 +1915,7 @@ things that need to be "<em>unfenced</em>", like some algorithms in the focus pr
      <li data-md>
       <p>If <var>navigable</var> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable④">child navigable</a>, return <var>navigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-parent" id="ref-for-nav-parent①">parent</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①">Assert</a>: <var>navigable</var> is a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①③">fenced navigable</a>.</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert③">Assert</a>: <var>navigable</var> is a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①③">fenced navigable</a>.</p>
      <li data-md>
       <p>Return <var>navigable</var>’s <a data-link-type="dfn" href="#traversable-navigable-unfenced-parent" id="ref-for-traversable-navigable-unfenced-parent③">unfenced parent</a>.</p>
     </ol>
@@ -1871,11 +2039,11 @@ in the <a href="#nested-traversables-intro">§ 2.3.1 Introduction</a>.</p>
   like so: 
     <ol>
      <li data-md>
-      <p>Let <var>navigables</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>.</p>
+      <p>Let <var>navigables</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>.</p>
      <li data-md>
-      <p>Let <var>navigableContainers</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a> of all <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-descendant" id="ref-for-concept-shadow-including-descendant">shadow-including descendants</a> of <var>document</var> that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container②">navigable containers</a> (or <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①">fenced navigable containers</a>, if <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced①">unfenced</a> us true), in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-tree-order" id="ref-for-concept-shadow-including-tree-order">shadow-including tree order</a>.</p>
+      <p>Let <var>navigableContainers</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①③">list</a> of all <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-descendant" id="ref-for-concept-shadow-including-descendant">shadow-including descendants</a> of <var>document</var> that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container②">navigable containers</a> (or <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①">fenced navigable containers</a>, if <a data-link-type="dfn" href="#dn-unfenced" id="ref-for-dn-unfenced①">unfenced</a> us true), in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-shadow-including-tree-order" id="ref-for-concept-shadow-including-tree-order">shadow-including tree order</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>navigableContainer</var> of <var>navigableContainers</var>:</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> <var>navigableContainer</var> of <var>navigableContainers</var>:</p>
       <ol>
        <li data-md>
         <p>If <var>navigableContainer</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#content-navigable" id="ref-for-content-navigable②">content navigable</a> and <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable①⑨">fenced navigable</a> are both null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</p>
@@ -2165,7 +2333,7 @@ specification adds another value for fenced frames:</p>
    <p><em>This introductory section is non-normative</em>.</p>
    <p>Content Security Policy <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> can ordinarily be used by web content associated with a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧">Document</a></code> that hosts a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑥">navigable container</a> to limit the source of navigations in a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable⑨">child
 navigable</a>.</p>
-   <p>In order to prevent <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> from being used a communication side-channel exposing the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">URL</a> of
+   <p>In order to prevent <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> from being used a communication side-channel exposing the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑦">URL</a> of
 navigations inside a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe③⑨">fencedframe</a></code> to the site operating its embedder, the only <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source
 expressions</a> that can influence a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe④⓪">fencedframe</a></code> navigation are:</p>
    <ul>
@@ -2174,7 +2342,7 @@ expressions</a> that can influence a <code><a data-link-type="element" href="#el
     <li data-md>
      <p>The <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-host-source" id="ref-for-grammardef-host-source">host-source</a> "<code>https://*:*</code>"</p>
     <li data-md>
-     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a> "<code>*</code>"</p>
+     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⑤">string</a> "<code>*</code>"</p>
    </ul>
    <p>See our <a href="https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md#proposal---scheme-source-matching">CSP
 explainer</a> that describes this.</p>
@@ -2313,7 +2481,7 @@ Therefore a feature can only be enabled inside of a <code><a data-link-type="ele
     <li data-md>
      <p>If a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①⓪">feature</a> that <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain⑥">exists</a> in the <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions⑥">effective enabled permissions</a> has a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist" id="ref-for-policy-controlled-feature-default-allowlist②">default allowlist</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#default-allowlist-self" id="ref-for-default-allowlist-self①"><code>'self'</code></a>, and the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤④">fencedframe</a></code>'s <code><a data-link-type="element-sub" href="#element-attrdef-fencedframe-allow" id="ref-for-element-attrdef-fencedframe-allow③">allow</a></code> attribute contains the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①①">feature</a> but no <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist①">allowlist</a>, the rules
  described in <a href="allow-attribute-fenced-frame">The <code>allow</code> attribute section</a>, the default <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist②">allowlist</a> for the feature will be <code>'src'</code> which is meant to represent the embedder-supplied
- navigation <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑤">URL</a>, for which there is none when navigating a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤⑤">fencedframe</a></code>, as the navigation <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑥">URL</a> is determined by the <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⑧">fenced frame config</a>. The navigation will be blocked.</p>
+ navigation <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑧">URL</a>, for which there is none when navigating a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤⑤">fencedframe</a></code>, as the navigation <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑨">URL</a> is determined by the <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①⑧">fenced frame config</a>. The navigation will be blocked.</p>
     <li data-md>
      <p>If a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①②">feature</a> that <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain⑦">exists</a> in the <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions⑦">effective enabled permissions</a> has a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist" id="ref-for-policy-controlled-feature-default-allowlist③">default allowlist</a> of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#default-allowlist-self" id="ref-for-default-allowlist-self②"><code>'self'</code></a> but either the `<a data-link-type="http-header" href="https://w3c.github.io/webappsec-permissions-policy/#permissions-policy-header" id="ref-for-permissions-policy-header②"><code>Permissions-Policy</code></a>` header served on the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤⑥">fencedframe</a></code>'s embedder <em>OR</em> the <code><a data-link-type="element-sub" href="#element-attrdef-fencedframe-allow" id="ref-for-element-attrdef-fencedframe-allow④">allow</a></code> attribute sets that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①③">feature</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist③">allowlist</a> to <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#the-special-value" id="ref-for-the-special-value②">the special value *</a>, then the navigation inside the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑤⑦">fencedframe</a></code> will succeed, and the
  resulting <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⑥">Document</a></code> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use①">allowed to use</a> the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature" id="ref-for-policy-controlled-feature①④">feature</a>.</p>
@@ -2342,7 +2510,7 @@ achieve the outcomes described in the above explanatory content.</p>
     <p>Rewrite step 1 to read:</p>
     <ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a>: if not null, <var>container</var> is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑦">navigable container</a> or a <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①②">fenced navigable container</a>.</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: if not null, <var>container</var> is either a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑦">navigable container</a> or a <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①②">fenced navigable container</a>.</p>
     </ol>
     <p>Rewrite step 4 to read:</p>
     <ol start="4">
@@ -2409,7 +2577,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
      <li data-md>
       <p>Let <var>inherited policy</var> be <var>permissions policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#inherited-policy" id="ref-for-inherited-policy④">inherited policy</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">For each</a> <var>effective permission</var> of <var>effective permissions</var>:</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>effective permission</var> of <var>effective permissions</var>:</p>
       <ol>
        <li data-md>
         <p>If <var>inherited policy</var>[<var>effective permission</var>] is "Disabled", return "<code>Blocked</code>".</p>
@@ -2493,6 +2661,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
     </ul>
    <li><a href="#exfiltration-budget-metadata-amount-to-debit">amount to debit</a><span>, in § 1.3.2</span>
    <li><a href="#exfiltration-budget-metadata-reference-amount-to-debit-reference">amount to debit reference</a><span>, in § 1.3.2</span>
+   <li><a href="#fenced-frame-reporter-automatic-beacon-data">automatic beacon data</a><span>, in § 1.3.2</span>
    <li><a href="#dom-fencereportingdestination-buyer">"buyer"</a><span>, in § 1.4</span>
    <li><a href="#dom-fencereportingdestination-component-seller">"component-seller"</a><span>, in § 1.4</span>
    <li>
@@ -2520,8 +2689,15 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
     </ul>
    <li><a href="#dom-fencedframeconfig-contentwidth">contentWidth</a><span>, in § 1.3.4</span>
    <li><a href="#create-a-new-nested-traversable">create a new nested traversable</a><span>, in § 2.3.3</span>
-   <li><a href="#dom-fenceevent-destination">destination</a><span>, in § 1.4</span>
+   <li>
+    destination
+    <ul>
+     <li><a href="#automatic-beacon-data-destination">dfn for automatic beacon data</a><span>, in § 1.3.2</span>
+     <li><a href="#pending-event-destination">dfn for pending event</a><span>, in § 1.3.2</span>
+     <li><a href="#dom-fenceevent-destination">dict-member for FenceEvent</a><span>, in § 1.4</span>
+    </ul>
    <li><a href="#dom-fencereportingdestination-direct-seller">"direct-seller"</a><span>, in § 1.4</span>
+   <li><a href="#fenced-frame-reporting-metadata-direct-seller-is-seller">direct seller is seller</a><span>, in § 1.3.2</span>
    <li><a href="#dn-unfenced">dn-unfenced</a><span>, in § 2.4</span>
    <li>
     effective enabled permissions
@@ -2540,10 +2716,20 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
     <ul>
      <li><a href="#fenced-frame-config-embedder-shared-storage-context">dfn for fenced frame config</a><span>, in § 1.3.2</span>
      <li><a href="#fenced-frame-config-instance-embedder-shared-storage-context">dfn for fenced frame config instance</a><span>, in § 1.3.3</span>
-     <li><a href="#fencedframetype-embedder-shared-storage-context">dfn for fencedframetype</a><span>, in § 1.3.2</span>
     </ul>
-   <li><a href="#dom-fenceevent-eventdata">eventData</a><span>, in § 1.4</span>
-   <li><a href="#dom-fenceevent-eventtype">eventType</a><span>, in § 1.4</span>
+   <li>
+    eventData
+    <ul>
+     <li><a href="#automatic-beacon-data-eventdata">dfn for automatic beacon data</a><span>, in § 1.3.2</span>
+     <li><a href="#pending-event-eventdata">dfn for pending event</a><span>, in § 1.3.2</span>
+     <li><a href="#dom-fenceevent-eventdata">dict-member for FenceEvent</a><span>, in § 1.4</span>
+    </ul>
+   <li>
+    eventType
+    <ul>
+     <li><a href="#pending-event-eventtype">dfn for pending event</a><span>, in § 1.3.2</span>
+     <li><a href="#dom-fenceevent-eventtype">dict-member for FenceEvent</a><span>, in § 1.4</span>
+    </ul>
    <li>
     exfiltration budget metadata
     <ul>
@@ -2585,16 +2771,29 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
    <li>
     fenced frame reporter
     <ul>
-     <li><a href="#fenced-frame-config-fenced-frame-reporter">dfn for fenced frame config</a><span>, in § 1.3.2</span>
      <li><a href="#fenced-frame-config-instance-fenced-frame-reporter">dfn for fenced frame config instance</a><span>, in § 1.3.3</span>
      <li><a href="#fencedframetype-fenced-frame-reporter">dfn for fencedframetype</a><span>, in § 1.3.2</span>
     </ul>
+   <li>
+    fenced frame reporting map
+    <ul>
+     <li><a href="#fenced-frame-reporting-metadata-fenced-frame-reporting-map">dfn for fenced frame reporting metadata</a><span>, in § 1.3.2</span>
+     <li><a href="#fencedframetype-fenced-frame-reporting-map">dfn for fencedframetype</a><span>, in § 1.3.2</span>
+    </ul>
+   <li>
+    fenced frame reporting metadata
+    <ul>
+     <li><a href="#fenced-frame-config-fenced-frame-reporting-metadata">dfn for fenced frame config</a><span>, in § 1.3.2</span>
+     <li><a href="#fencedframetype-fenced-frame-reporting-metadata">dfn for fencedframetype</a><span>, in § 1.3.2</span>
+    </ul>
+   <li><a href="#fenced-frame-reporter-fenced-frame-reporting-metadata-reference">fenced frame reporting metadata reference</a><span>, in § 1.3.2</span>
    <li><a href="#fenced-frame-src">fenced-frame-src</a><span>, in § 3.2.2</span>
    <li><a href="#fenced-navigable-container-fenced-navigable">fenced navigable</a><span>, in § 2.3.3</span>
    <li><a href="#fenced-navigable-containers">fenced navigable containers</a><span>, in § 2.3.3</span>
    <li><a href="#dictdef-fenceevent">FenceEvent</a><span>, in § 1.4</span>
    <li><a href="#enumdef-fencereportingdestination">FenceReportingDestination</a><span>, in § 1.4</span>
    <li><a href="#fenced-frame-config-mapping-finalize-a-pending-config">finalize a pending config</a><span>, in § 1.2</span>
+   <li><a href="#finalize-a-reporting-destination">finalize a reporting destination</a><span>, in § 1.3.2</span>
    <li><a href="#fenced-frame-config-mapping-finalized-config-mapping">finalized config mapping</a><span>, in § 1.2</span>
    <li><a href="#fenced-frame-config-mapping-find-a-config">find a config</a><span>, in § 1.2</span>
    <li><a href="#focus-unfenced">focus-unfenced</a><span>, in § 2.5</span>
@@ -2650,13 +2849,14 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
      <li><a href="#fenced-frame-config-instance-partition-nonce">dfn for fenced frame config instance</a><span>, in § 1.3.3</span>
     </ul>
    <li><a href="#fenced-frame-config-mapping-pending-config-mapping">pending config mapping</a><span>, in § 1.2</span>
+   <li><a href="#fencedframetype-pending-event">pending event</a><span>, in § 1.3.2</span>
    <li><a href="#process-the-fencedframe-attributes">process the fencedframe attributes</a><span>, in § 1</span>
    <li><a href="#report-an-event">report an event</a><span>, in § 1.3.2</span>
    <li><a href="#report-a-private-aggregation-event">report a private aggregation event</a><span>, in § 1.3.2</span>
    <li><a href="#dom-fence-reportevent">reportEvent(event)</a><span>, in § 1.4</span>
    <li><a href="#typedefdef-reporteventtype">ReportEventType</a><span>, in § 1.4</span>
    <li><a href="#dom-fencereportingdestination-seller">"seller"</a><span>, in § 1.4</span>
-   <li><a href="#set-automatic-beacon-data">set automatic beacon data</a><span>, in § 1.3.2</span>
+   <li><a href="#send-a-beacon">send a beacon</a><span>, in § 1.3.2</span>
    <li><a href="#dom-fence-setreporteventdataforautomaticbeacons">setReportEventDataForAutomaticBeacons(event)</a><span>, in § 1.4</span>
    <li><a href="#dom-fencedframeconfig-setsharedstoragecontext">setSharedStorageContext(contextString)</a><span>, in § 1.3.4</span>
    <li><a href="#dom-fencereportingdestination-shared-storage-select-url">"shared-storage-select-url"</a><span>, in § 1.4</span>
@@ -2687,7 +2887,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
      <li><a href="#effective-enabled-permissions-value">dfn for effective enabled permissions</a><span>, in § 1.3.2</span>
      <li><a href="#effective-sandbox-flags-value">dfn for effective sandbox flags</a><span>, in § 1.3.2</span>
      <li><a href="#exfiltration-budget-metadata-value">dfn for exfiltration budget metadata</a><span>, in § 1.3.2</span>
-     <li><a href="#fenced-frame-reporter-value">dfn for fenced frame reporter</a><span>, in § 1.3.2</span>
+     <li><a href="#fenced-frame-reporting-metadata-value">dfn for fenced frame reporting metadata</a><span>, in § 1.3.2</span>
      <li><a href="#interest-group-descriptor-value">dfn for interest group descriptor</a><span>, in § 1.3.2</span>
      <li><a href="#mapped-url-value">dfn for mapped url</a><span>, in § 1.3.2</span>
      <li><a href="#nested-configs-value">dfn for nested configs</a><span>, in § 1.3.2</span>
@@ -3077,6 +3277,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
   navigable creation</a> or <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#apis-for-creating-and-navigating-browsing-contexts-by-name:url-and-history-update-steps">top-level
   traversable creation</a>, but we still need a mechanism to initialize <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#history-3">History</a></code>.<code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#dom-history-length">length</a></code> in the new navigable. This is an existing issue in the HTML
   Standard: <a href="https://github.com/whatwg/html/issues/9030">https://github.com/whatwg/html/issues/9030</a>. <a class="issue-return" href="#issue-8e3b9846" title="Jump to section">↵</a></div>
+   <div class="issue"> Specify the <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[FETCH]</a> integration for sending this request. <a class="issue-return" href="#issue-c137ca33" title="Jump to section">↵</a></div>
    <div class="issue"> Determine if we need to fence or unfence the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#queue-a-cross-origin-embedder-policy-inheritance-violation">queue a cross-origin embedder policy
 inheritance violation</a> algorithm, as leaving it unfenced may cause a privacy leak. <a class="issue-return" href="#issue-3fa4bcc3" title="Jump to section">↵</a></div>
    <div class="issue"> Determine if we need to fence or unfence the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#queue-a-cross-origin-embedder-policy-corp-violation-report">queue a cross-origin embedder policy
@@ -3391,31 +3592,31 @@ window.dfnpanelData['d0c1b934'] = {"dfnID": "d0c1b934", "url": "https://html.spe
 window.dfnpanelData['17582406'] = {"dfnID": "17582406", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#nav-traversable", "dfnText": "traversable navigable (for navigable)", "refSections": [{"refs": [{"id": "ref-for-nav-traversable"}, {"id": "ref-for-nav-traversable\u2460"}, {"id": "ref-for-nav-traversable\u2461"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-nav-traversable\u2462"}], "title": "2.5. Modifications to the focusing algorithms"}, {"refs": [{"id": "ref-for-nav-traversable\u2463"}], "title": "2.6.1. The `Supports-Loading-Mode` HTTP response header"}], "external": true};
 window.dfnpanelData['b79e50d6'] = {"dfnID": "b79e50d6", "url": "https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation", "dfnText": "user activation", "refSections": [{"refs": [{"id": "ref-for-tracking-user-activation"}, {"id": "ref-for-tracking-user-activation\u2460"}, {"id": "ref-for-tracking-user-activation\u2461"}], "title": "2.3.1. Introduction"}], "external": true};
 window.dfnpanelData['cdb5db7e'] = {"dfnID": "cdb5db7e", "url": "https://html.spec.whatwg.org/multipage/embedder-content-other.html#attr-dim-width", "dfnText": "width", "refSections": [{"refs": [{"id": "ref-for-attr-dim-width"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-attr-dim-width\u2460"}], "title": "1.1. Dimension attributes"}], "external": true};
-window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.spec.whatwg.org/#list-append", "dfnText": "append (for list)", "refSections": [{"refs": [{"id": "ref-for-list-append"}], "title": "1.4. The Fence interface"}], "external": true};
+window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.spec.whatwg.org/#list-append", "dfnText": "append (for list)", "refSections": [{"refs": [{"id": "ref-for-list-append"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-list-append\u2460"}], "title": "1.4. The Fence interface"}], "external": true};
 window.dfnpanelData['a3b18719'] = {"dfnID": "a3b18719", "url": "https://infra.spec.whatwg.org/#set-append", "dfnText": "append (for set)", "refSections": [{"refs": [{"id": "ref-for-set-append"}], "title": "2.3.3. Nested traversables"}], "external": true};
-window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-assert\u2460"}], "title": "2.3.2. Traversable navigables"}, {"refs": [{"id": "ref-for-assert\u2461"}], "title": "3.3.1. Algorithm patches"}], "external": true};
+window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-assert\u2460"}, {"id": "ref-for-assert\u2461"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-assert\u2462"}], "title": "2.3.2. Traversable navigables"}, {"refs": [{"id": "ref-for-assert\u2463"}], "title": "3.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['36858240'] = {"dfnID": "36858240", "url": "https://infra.spec.whatwg.org/#boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-boolean"}, {"id": "ref-for-boolean\u2460"}], "title": "2.4. Modifications to navigable-traversing algorithms"}, {"refs": [{"id": "ref-for-boolean\u2461"}], "title": "2.5. Modifications to the focusing algorithms"}, {"refs": [{"id": "ref-for-boolean\u2462"}, {"id": "ref-for-boolean\u2463"}, {"id": "ref-for-boolean\u2464"}, {"id": "ref-for-boolean\u2465"}], "title": "3.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['7b0d918d'] = {"dfnID": "7b0d918d", "url": "https://infra.spec.whatwg.org/#iteration-break", "dfnText": "break", "refSections": [{"refs": [{"id": "ref-for-iteration-break"}], "title": "2.3.4. Top-level traversables"}, {"refs": [{"id": "ref-for-iteration-break\u2460"}], "title": "2.5. Modifications to the focusing algorithms"}, {"refs": [{"id": "ref-for-iteration-break\u2461"}], "title": "2.6.2. COOP, COEP, and cross-origin isolation"}], "external": true};
 window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain", "refSections": [{"refs": [{"id": "ref-for-list-contain"}, {"id": "ref-for-list-contain\u2460"}], "title": "2.5. Modifications to the focusing algorithms"}, {"refs": [{"id": "ref-for-list-contain\u2461"}], "title": "2.6.1. The `Supports-Loading-Mode` HTTP response header"}, {"refs": [{"id": "ref-for-list-contain\u2462"}], "title": "3.2.1. Algorithms"}, {"refs": [{"id": "ref-for-list-contain\u2463"}, {"id": "ref-for-list-contain\u2464"}, {"id": "ref-for-list-contain\u2465"}, {"id": "ref-for-list-contain\u2466"}], "title": "3.3. Permissions Policies"}], "external": true};
 window.dfnpanelData['f937b7b6'] = {"dfnID": "f937b7b6", "url": "https://infra.spec.whatwg.org/#iteration-continue", "dfnText": "continue", "refSections": [{"refs": [{"id": "ref-for-iteration-continue"}], "title": "2.4. Modifications to navigable-traversing algorithms"}], "external": true};
 window.dfnpanelData['75393c04'] = {"dfnID": "75393c04", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "exist (for list)", "refSections": [{"refs": [{"id": "ref-for-list-contain"}, {"id": "ref-for-list-contain\u2460"}], "title": "2.5. Modifications to the focusing algorithms"}, {"refs": [{"id": "ref-for-list-contain\u2461"}], "title": "2.6.1. The `Supports-Loading-Mode` HTTP response header"}, {"refs": [{"id": "ref-for-list-contain\u2462"}], "title": "3.2.1. Algorithms"}, {"refs": [{"id": "ref-for-list-contain\u2463"}, {"id": "ref-for-list-contain\u2464"}, {"id": "ref-for-list-contain\u2465"}, {"id": "ref-for-list-contain\u2466"}], "title": "3.3. Permissions Policies"}], "external": true};
-window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist (for map)", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}], "title": "1.2. Fenced frame config mapping"}], "external": true};
+window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist (for map)", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-exists\u2464"}, {"id": "ref-for-map-exists\u2465"}], "title": "1.3.2. The fenced frame config struct"}], "external": true};
 window.dfnpanelData['d8f8bd6e'] = {"dfnID": "d8f8bd6e", "url": "https://infra.spec.whatwg.org/#list-extend", "dfnText": "extend", "refSections": [{"refs": [{"id": "ref-for-list-extend"}, {"id": "ref-for-list-extend\u2460"}], "title": "2.4. Modifications to navigable-traversing algorithms"}], "external": true};
-window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.spec.whatwg.org/#list-iterate", "dfnText": "for each (for list)", "refSections": [{"refs": [{"id": "ref-for-list-iterate"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-list-iterate\u2460"}], "title": "2.4. Modifications to navigable-traversing algorithms"}, {"refs": [{"id": "ref-for-list-iterate\u2461"}], "title": "3.3.1. Algorithm patches"}], "external": true};
+window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.spec.whatwg.org/#list-iterate", "dfnText": "for each (for list)", "refSections": [{"refs": [{"id": "ref-for-list-iterate"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-list-iterate\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-list-iterate\u2461"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-list-iterate\u2462"}], "title": "2.4. Modifications to navigable-traversing algorithms"}, {"refs": [{"id": "ref-for-list-iterate\u2463"}], "title": "3.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['45209803'] = {"dfnID": "45209803", "url": "https://infra.spec.whatwg.org/#map-iterate", "dfnText": "for each (for map)", "refSections": [{"refs": [{"id": "ref-for-map-iterate"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-iterate\u2460"}], "title": "1.4. The Fence interface"}], "external": true};
 window.dfnpanelData['860300d4'] = {"dfnID": "860300d4", "url": "https://infra.spec.whatwg.org/#implementation-defined", "dfnText": "implementation-defined", "refSections": [{"refs": [{"id": "ref-for-implementation-defined"}], "title": "1.3.2. The fenced frame config struct"}], "external": true};
-window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item", "refSections": [{"refs": [{"id": "ref-for-struct-item"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-struct-item\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item", "refSections": [{"refs": [{"id": "ref-for-struct-item"}, {"id": "ref-for-struct-item\u2460"}, {"id": "ref-for-struct-item\u2461"}, {"id": "ref-for-struct-item\u2462"}, {"id": "ref-for-struct-item\u2463"}, {"id": "ref-for-struct-item\u2464"}, {"id": "ref-for-struct-item\u2465"}, {"id": "ref-for-struct-item\u2466"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-struct-item\u2467"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['efe8653e'] = {"dfnID": "efe8653e", "url": "https://infra.spec.whatwg.org/#map-iterate", "dfnText": "iterate", "refSections": [{"refs": [{"id": "ref-for-map-iterate"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-iterate\u2460"}], "title": "1.4. The Fence interface"}], "external": true};
-window.dfnpanelData['31db57e6'] = {"dfnID": "31db57e6", "url": "https://infra.spec.whatwg.org/#map-getting-the-keys", "dfnText": "keys", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-keys"}, {"id": "ref-for-map-getting-the-keys\u2460"}, {"id": "ref-for-map-getting-the-keys\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-keys\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
-window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-list\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-list\u2463"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-list\u2464"}, {"id": "ref-for-list\u2465"}], "title": "2.4. Modifications to navigable-traversing algorithms"}], "external": true};
-window.dfnpanelData['3fca5a9e'] = {"dfnID": "3fca5a9e", "url": "https://infra.spec.whatwg.org/#ordered-map", "dfnText": "map", "refSections": [{"refs": [{"id": "ref-for-ordered-map"}, {"id": "ref-for-ordered-map\u2460"}, {"id": "ref-for-ordered-map\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-ordered-map\u2462"}, {"id": "ref-for-ordered-map\u2463"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
-window.dfnpanelData['84b454ff'] = {"dfnID": "84b454ff", "url": "https://infra.spec.whatwg.org/#ordered-map", "dfnText": "ordered map", "refSections": [{"refs": [{"id": "ref-for-ordered-map"}, {"id": "ref-for-ordered-map\u2460"}, {"id": "ref-for-ordered-map\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-ordered-map\u2462"}, {"id": "ref-for-ordered-map\u2463"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['31db57e6'] = {"dfnID": "31db57e6", "url": "https://infra.spec.whatwg.org/#map-getting-the-keys", "dfnText": "keys", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-keys"}, {"id": "ref-for-map-getting-the-keys\u2460"}, {"id": "ref-for-map-getting-the-keys\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-keys\u2462"}, {"id": "ref-for-map-getting-the-keys\u2463"}, {"id": "ref-for-map-getting-the-keys\u2464"}, {"id": "ref-for-map-getting-the-keys\u2465"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-getting-the-keys\u2466"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}, {"id": "ref-for-list\u2462"}, {"id": "ref-for-list\u2463"}, {"id": "ref-for-list\u2464"}, {"id": "ref-for-list\u2465"}, {"id": "ref-for-list\u2466"}, {"id": "ref-for-list\u2467"}, {"id": "ref-for-list\u2468"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-list\u2460\u24ea"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-list\u2460\u2460"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-list\u2460\u2461"}, {"id": "ref-for-list\u2460\u2462"}], "title": "2.4. Modifications to navigable-traversing algorithms"}], "external": true};
+window.dfnpanelData['3fca5a9e'] = {"dfnID": "3fca5a9e", "url": "https://infra.spec.whatwg.org/#ordered-map", "dfnText": "map", "refSections": [{"refs": [{"id": "ref-for-ordered-map"}, {"id": "ref-for-ordered-map\u2460"}, {"id": "ref-for-ordered-map\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-ordered-map\u2462"}, {"id": "ref-for-ordered-map\u2463"}, {"id": "ref-for-ordered-map\u2464"}, {"id": "ref-for-ordered-map\u2465"}, {"id": "ref-for-ordered-map\u2466"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-ordered-map\u2467"}, {"id": "ref-for-ordered-map\u2468"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['84b454ff'] = {"dfnID": "84b454ff", "url": "https://infra.spec.whatwg.org/#ordered-map", "dfnText": "ordered map", "refSections": [{"refs": [{"id": "ref-for-ordered-map"}, {"id": "ref-for-ordered-map\u2460"}, {"id": "ref-for-ordered-map\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-ordered-map\u2462"}, {"id": "ref-for-ordered-map\u2463"}, {"id": "ref-for-ordered-map\u2464"}, {"id": "ref-for-ordered-map\u2465"}, {"id": "ref-for-ordered-map\u2466"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-ordered-map\u2467"}, {"id": "ref-for-ordered-map\u2468"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['7d4424b2'] = {"dfnID": "7d4424b2", "url": "https://infra.spec.whatwg.org/#map-remove", "dfnText": "remove", "refSections": [{"refs": [{"id": "ref-for-map-remove"}], "title": "1.2. Fenced frame config mapping"}], "external": true};
-window.dfnpanelData['0e6b2056'] = {"dfnID": "0e6b2056", "url": "https://infra.spec.whatwg.org/#map-set", "dfnText": "set", "refSections": [{"refs": [{"id": "ref-for-map-set"}, {"id": "ref-for-map-set\u2460"}, {"id": "ref-for-map-set\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-set\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['0e6b2056'] = {"dfnID": "0e6b2056", "url": "https://infra.spec.whatwg.org/#map-set", "dfnText": "set", "refSections": [{"refs": [{"id": "ref-for-map-set"}, {"id": "ref-for-map-set\u2460"}, {"id": "ref-for-map-set\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-set\u2462"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-set\u2463"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['653d0848'] = {"dfnID": "653d0848", "url": "https://infra.spec.whatwg.org/#map-size", "dfnText": "size", "refSections": [{"refs": [{"id": "ref-for-map-size"}, {"id": "ref-for-map-size\u2460"}], "title": "1.2. Fenced frame config mapping"}], "external": true};
-window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}], "title": "3.2. Content Security Policy"}], "external": true};
+window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}, {"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}, {"id": "ref-for-string\u2464"}, {"id": "ref-for-string\u2465"}, {"id": "ref-for-string\u2466"}, {"id": "ref-for-string\u2467"}, {"id": "ref-for-string\u2468"}, {"id": "ref-for-string\u2460\u24ea"}, {"id": "ref-for-string\u2460\u2460"}, {"id": "ref-for-string\u2460\u2461"}, {"id": "ref-for-string\u2460\u2462"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-string\u2460\u2463"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-string\u2460\u2464"}], "title": "3.2. Content Security Policy"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-struct\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-struct\u2461"}], "title": "1.3.4. The FencedFrameConfig interface"}], "external": true};
-window.dfnpanelData['12d6b9a8'] = {"dfnID": "12d6b9a8", "url": "https://infra.spec.whatwg.org/#map-getting-the-values", "dfnText": "values", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-values"}, {"id": "ref-for-map-getting-the-values\u2460"}, {"id": "ref-for-map-getting-the-values\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
+window.dfnpanelData['12d6b9a8'] = {"dfnID": "12d6b9a8", "url": "https://infra.spec.whatwg.org/#map-getting-the-values", "dfnText": "values", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-values"}, {"id": "ref-for-map-getting-the-values\u2460"}, {"id": "ref-for-map-getting-the-values\u2461"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2462"}, {"id": "ref-for-map-getting-the-values\u2463"}, {"id": "ref-for-map-getting-the-values\u2464"}, {"id": "ref-for-map-getting-the-values\u2465"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2466"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "2.3.4. Top-level traversables"}], "external": true};
 window.dfnpanelData['333b39ba'] = {"dfnID": "333b39ba", "url": "https://w3c.github.io/webappsec-permissions-policy/#default-allowlist-self", "dfnText": "'self'", "refSections": [{"refs": [{"id": "ref-for-default-allowlist-self"}, {"id": "ref-for-default-allowlist-self\u2460"}, {"id": "ref-for-default-allowlist-self\u2461"}], "title": "3.3. Permissions Policies"}], "external": true};
 window.dfnpanelData['a4bd3a02'] = {"dfnID": "a4bd3a02", "url": "https://w3c.github.io/webappsec-permissions-policy/#create-for-navigable", "dfnText": "Create a Permissions Policy for a navigable", "refSections": [{"refs": [{"id": "ref-for-create-for-navigable"}, {"id": "ref-for-create-for-navigable\u2460"}, {"id": "ref-for-create-for-navigable\u2461"}], "title": "3.3.1. Algorithm patches"}], "external": true};
@@ -3443,8 +3644,8 @@ window.dfnpanelData['bb0c2ce5'] = {"dfnID": "bb0c2ce5", "url": "https://w3c.gith
 window.dfnpanelData['e8409d67'] = {"dfnID": "e8409d67", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens", "dfnText": "token", "refSections": [{"refs": [{"id": "ref-for-name-tokens"}, {"id": "ref-for-name-tokens\u2460"}], "title": "2.6.1. The `Supports-Loading-Mode` HTTP response header"}], "external": true};
 window.dfnpanelData['959ad97b'] = {"dfnID": "959ad97b", "url": "https://url.spec.whatwg.org/#concept-url-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-url-origin"}, {"id": "ref-for-concept-url-origin\u2460"}, {"id": "ref-for-concept-url-origin\u2461"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-concept-url-origin\u2462"}], "title": "3.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec.whatwg.org/#concept-url-scheme", "dfnText": "scheme", "refSections": [{"refs": [{"id": "ref-for-concept-url-scheme"}], "title": "2.6.1. The `Supports-Loading-Mode` HTTP response header"}], "external": true};
-window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-concept-url\u2461"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-url\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-concept-url\u2463"}], "title": "3.2. Content Security Policy"}, {"refs": [{"id": "ref-for-concept-url\u2464"}, {"id": "ref-for-concept-url\u2465"}], "title": "3.3. Permissions Policies"}], "external": true};
-window.dfnpanelData['a8c7461b'] = {"dfnID": "a8c7461b", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url record", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-concept-url\u2461"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-url\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-concept-url\u2463"}], "title": "3.2. Content Security Policy"}, {"refs": [{"id": "ref-for-concept-url\u2464"}, {"id": "ref-for-concept-url\u2465"}], "title": "3.3. Permissions Policies"}], "external": true};
+window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-concept-url\u2461"}, {"id": "ref-for-concept-url\u2462"}, {"id": "ref-for-concept-url\u2463"}, {"id": "ref-for-concept-url\u2464"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-url\u2465"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-concept-url\u2466"}], "title": "3.2. Content Security Policy"}, {"refs": [{"id": "ref-for-concept-url\u2467"}, {"id": "ref-for-concept-url\u2468"}], "title": "3.3. Permissions Policies"}], "external": true};
+window.dfnpanelData['a8c7461b'] = {"dfnID": "a8c7461b", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url record", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-concept-url\u2461"}, {"id": "ref-for-concept-url\u2462"}, {"id": "ref-for-concept-url\u2463"}, {"id": "ref-for-concept-url\u2464"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-url\u2465"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-concept-url\u2466"}], "title": "3.2. Content Security Policy"}, {"refs": [{"id": "ref-for-concept-url\u2467"}, {"id": "ref-for-concept-url\u2468"}], "title": "3.3. Permissions Policies"}], "external": true};
 window.dfnpanelData['8855a9aa'] = {"dfnID": "8855a9aa", "url": "https://webidl.spec.whatwg.org/#idl-DOMString", "dfnText": "DOMString", "refSections": [{"refs": [{"id": "ref-for-idl-DOMString"}, {"id": "ref-for-idl-DOMString\u2460"}, {"id": "ref-for-idl-DOMString\u2461"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-idl-DOMString\u2462"}], "title": "1.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-idl-DOMString\u2463"}, {"id": "ref-for-idl-DOMString\u2464"}, {"id": "ref-for-idl-DOMString\u2465"}, {"id": "ref-for-idl-DOMString\u2466"}], "title": "1.4. The Fence interface"}], "external": true};
 window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-Exposed\u2460"}], "title": "1.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-Exposed\u2461"}], "title": "1.4. The Fence interface"}], "external": true};
 window.dfnpanelData['b0d7f3c3'] = {"dfnID": "b0d7f3c3", "url": "https://webidl.spec.whatwg.org/#idl-USVString", "dfnText": "USVString", "refSections": [{"refs": [{"id": "ref-for-idl-USVString"}], "title": "1.3.4. The FencedFrameConfig interface"}], "external": true};
@@ -3472,17 +3673,27 @@ window.dfnpanelData['size-width'] = {"dfnID": "size-width", "url": "#size-width"
 window.dfnpanelData['size-height'] = {"dfnID": "size-height", "url": "#size-height", "dfnText": "height", "refSections": [{"refs": [{"id": "ref-for-size-height"}, {"id": "ref-for-size-height\u2460"}], "title": "1.3.4. The FencedFrameConfig interface"}], "external": false};
 window.dfnpanelData['fencedframetype-interest-group-descriptor'] = {"dfnID": "fencedframetype-interest-group-descriptor", "url": "#fencedframetype-interest-group-descriptor", "dfnText": "interest group descriptor", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-interest-group-descriptor"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fencedframetype-interest-group-descriptor\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fencedframetype-exhaustive-set-of-sandbox-flags'] = {"dfnID": "fencedframetype-exhaustive-set-of-sandbox-flags", "url": "#fencedframetype-exhaustive-set-of-sandbox-flags", "dfnText": "exhaustive set of sandbox flags", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-exhaustive-set-of-sandbox-flags"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fencedframetype-exhaustive-set-of-sandbox-flags\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
-window.dfnpanelData['fencedframetype-fenced-frame-reporter'] = {"dfnID": "fencedframetype-fenced-frame-reporter", "url": "#fencedframetype-fenced-frame-reporter", "dfnText": "fenced frame reporter", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporter"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporter\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
-window.dfnpanelData['report-an-event'] = {"dfnID": "report-an-event", "url": "#report-an-event", "dfnText": "report an event", "refSections": [{"refs": [{"id": "ref-for-report-an-event"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['fencedframetype-pending-event'] = {"dfnID": "fencedframetype-pending-event", "url": "#fencedframetype-pending-event", "dfnText": "pending event", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-pending-event"}, {"id": "ref-for-fencedframetype-pending-event\u2460"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['pending-event-destination'] = {"dfnID": "pending-event-destination", "url": "#pending-event-destination", "dfnText": "destination", "refSections": [{"refs": [{"id": "ref-for-pending-event-destination"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['pending-event-eventtype'] = {"dfnID": "pending-event-eventtype", "url": "#pending-event-eventtype", "dfnText": "eventType", "refSections": [{"refs": [{"id": "ref-for-pending-event-eventtype"}, {"id": "ref-for-pending-event-eventtype\u2460"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['pending-event-eventdata'] = {"dfnID": "pending-event-eventdata", "url": "#pending-event-eventdata", "dfnText": "eventData", "refSections": [{"refs": [{"id": "ref-for-pending-event-eventdata"}, {"id": "ref-for-pending-event-eventdata\u2460"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['fencedframetype-fenced-frame-reporting-map'] = {"dfnID": "fencedframetype-fenced-frame-reporting-map", "url": "#fencedframetype-fenced-frame-reporting-map", "dfnText": "fenced frame reporting map", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporting-map"}, {"id": "ref-for-fencedframetype-fenced-frame-reporting-map\u2460"}, {"id": "ref-for-fencedframetype-fenced-frame-reporting-map\u2461"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['finalize-a-reporting-destination'] = {"dfnID": "finalize-a-reporting-destination", "url": "#finalize-a-reporting-destination", "dfnText": "finalize a reporting destination", "refSections": [{"refs": [{"id": "ref-for-finalize-a-reporting-destination"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['fencedframetype-fenced-frame-reporting-metadata'] = {"dfnID": "fencedframetype-fenced-frame-reporting-metadata", "url": "#fencedframetype-fenced-frame-reporting-metadata", "dfnText": "fenced frame reporting metadata", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporting-metadata"}, {"id": "ref-for-fencedframetype-fenced-frame-reporting-metadata\u2460"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['fenced-frame-reporting-metadata-fenced-frame-reporting-map'] = {"dfnID": "fenced-frame-reporting-metadata-fenced-frame-reporting-map", "url": "#fenced-frame-reporting-metadata-fenced-frame-reporting-map", "dfnText": "fenced frame reporting map", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-reporting-metadata-fenced-frame-reporting-map"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['fenced-frame-reporting-metadata-direct-seller-is-seller'] = {"dfnID": "fenced-frame-reporting-metadata-direct-seller-is-seller", "url": "#fenced-frame-reporting-metadata-direct-seller-is-seller", "dfnText": "direct seller is seller", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-reporting-metadata-direct-seller-is-seller"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['fencedframetype-fenced-frame-reporter'] = {"dfnID": "fencedframetype-fenced-frame-reporter", "url": "#fencedframetype-fenced-frame-reporter", "dfnText": "fenced frame reporter", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporter"}, {"id": "ref-for-fencedframetype-fenced-frame-reporter\u2460"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fencedframetype-fenced-frame-reporter\u2461"}, {"id": "ref-for-fencedframetype-fenced-frame-reporter\u2462"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
+window.dfnpanelData['fenced-frame-reporter-fenced-frame-reporting-metadata-reference'] = {"dfnID": "fenced-frame-reporter-fenced-frame-reporting-metadata-reference", "url": "#fenced-frame-reporter-fenced-frame-reporting-metadata-reference", "dfnText": "fenced frame reporting metadata reference", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference"}, {"id": "ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference\u2460"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference\u2461"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
+window.dfnpanelData['fenced-frame-reporter-automatic-beacon-data'] = {"dfnID": "fenced-frame-reporter-automatic-beacon-data", "url": "#fenced-frame-reporter-automatic-beacon-data", "dfnText": "automatic beacon data", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-reporter-automatic-beacon-data"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-fenced-frame-reporter-automatic-beacon-data\u2460"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['send-a-beacon'] = {"dfnID": "send-a-beacon", "url": "#send-a-beacon", "dfnText": "send a beacon", "refSections": [{"refs": [{"id": "ref-for-send-a-beacon"}, {"id": "ref-for-send-a-beacon\u2460"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
+window.dfnpanelData['report-an-event'] = {"dfnID": "report-an-event", "url": "#report-an-event", "dfnText": "report an event", "refSections": [{"refs": [{"id": "ref-for-report-an-event"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-report-an-event\u2460"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['report-a-private-aggregation-event'] = {"dfnID": "report-a-private-aggregation-event", "url": "#report-a-private-aggregation-event", "dfnText": "report a private aggregation event", "refSections": [{"refs": [{"id": "ref-for-report-a-private-aggregation-event"}], "title": "1.4. The Fence interface"}], "external": false};
-window.dfnpanelData['set-automatic-beacon-data'] = {"dfnID": "set-automatic-beacon-data", "url": "#set-automatic-beacon-data", "dfnText": "set automatic beacon data", "refSections": [{"refs": [{"id": "ref-for-set-automatic-beacon-data"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['fencedframetype-exfiltration-budget-metadata'] = {"dfnID": "fencedframetype-exfiltration-budget-metadata", "url": "#fencedframetype-exfiltration-budget-metadata", "dfnText": "exfiltration budget metadata", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-exfiltration-budget-metadata"}], "title": "1.3.2. The fenced frame config struct"}], "external": false};
 window.dfnpanelData['exfiltration-budget-metadata-origin'] = {"dfnID": "exfiltration-budget-metadata-origin", "url": "#exfiltration-budget-metadata-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-origin"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['exfiltration-budget-metadata-amount-to-debit'] = {"dfnID": "exfiltration-budget-metadata-amount-to-debit", "url": "#exfiltration-budget-metadata-amount-to-debit", "dfnText": "amount to debit", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-amount-to-debit"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fencedframetype-exfiltration-budget-metadata-reference'] = {"dfnID": "fencedframetype-exfiltration-budget-metadata-reference", "url": "#fencedframetype-exfiltration-budget-metadata-reference", "dfnText": "exfiltration budget metadata reference", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-exfiltration-budget-metadata-reference"}, {"id": "ref-for-fencedframetype-exfiltration-budget-metadata-reference\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['exfiltration-budget-metadata-reference-origin'] = {"dfnID": "exfiltration-budget-metadata-reference-origin", "url": "#exfiltration-budget-metadata-reference-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-reference-origin"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
-window.dfnpanelData['exfiltration-budget-metadata-reference-amount-to-debit-reference'] = {"dfnID": "exfiltration-budget-metadata-reference-amount-to-debit-reference", "url": "#exfiltration-budget-metadata-reference-amount-to-debit-reference", "dfnText": "amount to debit\nreference", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-reference-amount-to-debit-reference"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
-window.dfnpanelData['fencedframetype-embedder-shared-storage-context'] = {"dfnID": "fencedframetype-embedder-shared-storage-context", "url": "#fencedframetype-embedder-shared-storage-context", "dfnText": "embedder shared storage context", "refSections": [{"refs": [{"id": "ref-for-fencedframetype-embedder-shared-storage-context"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fencedframetype-embedder-shared-storage-context\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
+window.dfnpanelData['exfiltration-budget-metadata-reference-amount-to-debit-reference'] = {"dfnID": "exfiltration-budget-metadata-reference-amount-to-debit-reference", "url": "#exfiltration-budget-metadata-reference-amount-to-debit-reference", "dfnText": "amount to debit reference", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-reference-amount-to-debit-reference"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['partition-nonce'] = {"dfnID": "partition-nonce", "url": "#partition-nonce", "dfnText": "partition nonce", "refSections": [{"refs": [{"id": "ref-for-partition-nonce"}, {"id": "ref-for-partition-nonce\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fenced-frame-config'] = {"dfnID": "fenced-frame-config", "url": "#fenced-frame-config", "dfnText": "fenced frame config", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config"}, {"id": "ref-for-fenced-frame-config\u2460"}, {"id": "ref-for-fenced-frame-config\u2461"}, {"id": "ref-for-fenced-frame-config\u2462"}, {"id": "ref-for-fenced-frame-config\u2463"}, {"id": "ref-for-fenced-frame-config\u2464"}], "title": "1.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2465"}, {"id": "ref-for-fenced-frame-config\u2466"}, {"id": "ref-for-fenced-frame-config\u2467"}, {"id": "ref-for-fenced-frame-config\u2468"}], "title": "1.3.1. Introduction"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2460\u24ea"}, {"id": "ref-for-fenced-frame-config\u2460\u2460"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2460\u2461"}, {"id": "ref-for-fenced-frame-config\u2460\u2462"}, {"id": "ref-for-fenced-frame-config\u2460\u2463"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2460\u2464"}, {"id": "ref-for-fenced-frame-config\u2460\u2465"}], "title": "1.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2460\u2466"}, {"id": "ref-for-fenced-frame-config\u2460\u2467"}], "title": "3.3. Permissions Policies"}, {"refs": [{"id": "ref-for-fenced-frame-config\u2460\u2468"}], "title": "3.3.1. Algorithm patches"}], "external": false};
 window.dfnpanelData['fenced-frame-config-mapped-url'] = {"dfnID": "fenced-frame-config-mapped-url", "url": "#fenced-frame-config-mapped-url", "dfnText": "mapped url", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config-mapped-url"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-fenced-frame-config-mapped-url\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-fenced-frame-config-mapped-url\u2461"}, {"id": "ref-for-fenced-frame-config-mapped-url\u2462"}], "title": "1.3.4. The FencedFrameConfig interface"}], "external": false};
@@ -3498,6 +3709,8 @@ window.dfnpanelData['fenced-frame-config-effective-sandbox-flags'] = {"dfnID": "
 window.dfnpanelData['effective-sandbox-flags-value'] = {"dfnID": "effective-sandbox-flags-value", "url": "#effective-sandbox-flags-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-effective-sandbox-flags-value"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fenced-frame-config-effective-enabled-permissions'] = {"dfnID": "fenced-frame-config-effective-enabled-permissions", "url": "#fenced-frame-config-effective-enabled-permissions", "dfnText": "effective enabled permissions", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config-effective-enabled-permissions"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2461"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2462"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2463"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2464"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2465"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2466"}, {"id": "ref-for-fenced-frame-config-effective-enabled-permissions\u2467"}], "title": "3.3. Permissions Policies"}], "external": false};
 window.dfnpanelData['effective-enabled-permissions-value'] = {"dfnID": "effective-enabled-permissions-value", "url": "#effective-enabled-permissions-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-effective-enabled-permissions-value"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
+window.dfnpanelData['fenced-frame-config-fenced-frame-reporting-metadata'] = {"dfnID": "fenced-frame-config-fenced-frame-reporting-metadata", "url": "#fenced-frame-config-fenced-frame-reporting-metadata", "dfnText": "fenced frame reporting metadata", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config-fenced-frame-reporting-metadata"}, {"id": "ref-for-fenced-frame-config-fenced-frame-reporting-metadata\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
+window.dfnpanelData['fenced-frame-reporting-metadata-value'] = {"dfnID": "fenced-frame-reporting-metadata-value", "url": "#fenced-frame-reporting-metadata-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-reporting-metadata-value"}, {"id": "ref-for-fenced-frame-reporting-metadata-value\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fenced-frame-config-exfiltration-budget-metadata'] = {"dfnID": "fenced-frame-config-exfiltration-budget-metadata", "url": "#fenced-frame-config-exfiltration-budget-metadata", "dfnText": "exfiltration budget metadata", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config-exfiltration-budget-metadata"}, {"id": "ref-for-fenced-frame-config-exfiltration-budget-metadata\u2460"}, {"id": "ref-for-fenced-frame-config-exfiltration-budget-metadata\u2461"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['exfiltration-budget-metadata-value'] = {"dfnID": "exfiltration-budget-metadata-value", "url": "#exfiltration-budget-metadata-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-exfiltration-budget-metadata-value"}, {"id": "ref-for-exfiltration-budget-metadata-value\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
 window.dfnpanelData['fenced-frame-config-nested-configs'] = {"dfnID": "fenced-frame-config-nested-configs", "url": "#fenced-frame-config-nested-configs", "dfnText": "nested configs", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-config-nested-configs"}, {"id": "ref-for-fenced-frame-config-nested-configs\u2460"}], "title": "1.3.3. The fenced frame config instance struct"}], "external": false};
@@ -3529,8 +3742,11 @@ window.dfnpanelData['dom-fencedframeconfig-contentheight'] = {"dfnID": "dom-fenc
 window.dfnpanelData['fencedframeconfig-urn'] = {"dfnID": "fencedframeconfig-urn", "url": "#fencedframeconfig-urn", "dfnText": "urn", "refSections": [{"refs": [{"id": "ref-for-fencedframeconfig-urn"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['fencedframeconfig-config'] = {"dfnID": "fencedframeconfig-config", "url": "#fencedframeconfig-config", "dfnText": "config", "refSections": [{"refs": [{"id": "ref-for-fencedframeconfig-config"}], "title": "1. The fencedframe element"}, {"refs": [{"id": "ref-for-fencedframeconfig-config\u2460"}, {"id": "ref-for-fencedframeconfig-config\u2461"}, {"id": "ref-for-fencedframeconfig-config\u2462"}, {"id": "ref-for-fencedframeconfig-config\u2463"}, {"id": "ref-for-fencedframeconfig-config\u2464"}, {"id": "ref-for-fencedframeconfig-config\u2465"}, {"id": "ref-for-fencedframeconfig-config\u2466"}, {"id": "ref-for-fencedframeconfig-config\u2467"}, {"id": "ref-for-fencedframeconfig-config\u2468"}, {"id": "ref-for-fencedframeconfig-config\u2460\u24ea"}], "title": "1.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-fencedframeconfig-config\u2460\u2460"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-fencedframeconfig-config\u2460\u2461"}, {"id": "ref-for-fencedframeconfig-config\u2460\u2462"}], "title": "3.3. Permissions Policies"}], "external": false};
 window.dfnpanelData['dom-fencedframeconfig-setsharedstoragecontext'] = {"dfnID": "dom-fencedframeconfig-setsharedstoragecontext", "url": "#dom-fencedframeconfig-setsharedstoragecontext", "dfnText": "setSharedStorageContext(contextString)", "refSections": [{"refs": [{"id": "ref-for-dom-fencedframeconfig-setsharedstoragecontext"}], "title": "1.3.4. The FencedFrameConfig interface"}], "external": false};
-window.dfnpanelData['enumdef-fencereportingdestination'] = {"dfnID": "enumdef-fencereportingdestination", "url": "#enumdef-fencereportingdestination", "dfnText": "FenceReportingDestination", "refSections": [{"refs": [{"id": "ref-for-enumdef-fencereportingdestination"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['enumdef-fencereportingdestination'] = {"dfnID": "enumdef-fencereportingdestination", "url": "#enumdef-fencereportingdestination", "dfnText": "FenceReportingDestination", "refSections": [{"refs": [{"id": "ref-for-enumdef-fencereportingdestination"}, {"id": "ref-for-enumdef-fencereportingdestination\u2460"}, {"id": "ref-for-enumdef-fencereportingdestination\u2461"}, {"id": "ref-for-enumdef-fencereportingdestination\u2462"}, {"id": "ref-for-enumdef-fencereportingdestination\u2463"}], "title": "1.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-enumdef-fencereportingdestination\u2464"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['dictdef-fenceevent'] = {"dfnID": "dictdef-fenceevent", "url": "#dictdef-fenceevent", "dfnText": "FenceEvent", "refSections": [{"refs": [{"id": "ref-for-dictdef-fenceevent"}, {"id": "ref-for-dictdef-fenceevent\u2460"}, {"id": "ref-for-dictdef-fenceevent\u2461"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['dom-fenceevent-eventtype'] = {"dfnID": "dom-fenceevent-eventtype", "url": "#dom-fenceevent-eventtype", "dfnText": "eventType", "refSections": [{"refs": [{"id": "ref-for-dom-fenceevent-eventtype"}, {"id": "ref-for-dom-fenceevent-eventtype\u2460"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['dom-fenceevent-eventdata'] = {"dfnID": "dom-fenceevent-eventdata", "url": "#dom-fenceevent-eventdata", "dfnText": "eventData", "refSections": [{"refs": [{"id": "ref-for-dom-fenceevent-eventdata"}, {"id": "ref-for-dom-fenceevent-eventdata\u2460"}], "title": "1.4. The Fence interface"}], "external": false};
+window.dfnpanelData['dom-fenceevent-destination'] = {"dfnID": "dom-fenceevent-destination", "url": "#dom-fenceevent-destination", "dfnText": "destination", "refSections": [{"refs": [{"id": "ref-for-dom-fenceevent-destination"}, {"id": "ref-for-dom-fenceevent-destination\u2460"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['typedefdef-reporteventtype'] = {"dfnID": "typedefdef-reporteventtype", "url": "#typedefdef-reporteventtype", "dfnText": "ReportEventType", "refSections": [{"refs": [{"id": "ref-for-typedefdef-reporteventtype"}], "title": "1.4. The Fence interface"}], "external": false};
 window.dfnpanelData['fence'] = {"dfnID": "fence", "url": "#fence", "dfnText": "Fence", "refSections": [{"refs": [{"id": "ref-for-fence"}, {"id": "ref-for-fence\u2460"}], "title": "1.4. The Fence interface"}, {"refs": [{"id": "ref-for-fence\u2461"}, {"id": "ref-for-fence\u2462"}], "title": "2.1. Extensions to the Window interface"}], "external": false};
 window.dfnpanelData['dom-fence-reportevent'] = {"dfnID": "dom-fence-reportevent", "url": "#dom-fence-reportevent", "dfnText": "reportEvent(event)", "refSections": [{"refs": [{"id": "ref-for-dom-fence-reportevent"}], "title": "1.4. The Fence interface"}], "external": false};
