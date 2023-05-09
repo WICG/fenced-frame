@@ -436,6 +436,8 @@ then turn the pending config into a finalized config. Those procedures are as fo
   1. Let |urn| be a randomly generated [=urn uuid=].
 
   1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
+  
+  1. Return |urn|.
 </div>
 
 <div algorithm>
