@@ -415,8 +415,8 @@ asynchronously in a way that doesn't create timing side channels, i.e., the pend
 returned to the web platform in a constant amount of time, before any computation whose duration
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
 to discern when a pending config is finalized, it is important that all visibilities and values of
-transparent fields do not change from the pending config to the finalized config, because they can
-be inspected through {{FencedFrameConfig}}'s getters.
+transparent fields do not change from the pending config to the finalized config, given that they
+can be inspected through {{FencedFrameConfig}}'s getters.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
