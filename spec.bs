@@ -410,7 +410,6 @@ A <dfn>fenced frame config mapping</dfn> has three submappings:
      configs=]
 </dl>
 
-----------------------------------------------------------------------------------------------------
 Note: The purpose of pending configs is to enable config-generating APIs to resolve configs
 asynchronously in a way that doesn't create timing side channels, i.e., the pending config is
 returned to the web platform in a constant amount of time, before any computation whose duration
