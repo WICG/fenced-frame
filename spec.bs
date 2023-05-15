@@ -410,6 +410,15 @@ A <dfn>fenced frame config mapping</dfn> has three submappings:
      configs=]
 </dl>
 
+----------------------------------------------------------------------------------------------------
+Note: The purpose of pending configs is to enable config-generating APIs to resolve configs
+asynchronously in a way that doesn't create timing side channels, i.e., the pending config is
+returned to the web platform in a constant amount of time, before any computation whose duration
+depends on cross-site data. Because the privacy of this depends on the web platform not being able
+to discern when a pending config is finalized, it is important that all visibilities and values of
+transparent fields do not change from the pending config to the finalized config, because they can
+be inspected through {{FencedFrameConfig}}'s getters.
+
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
 configs=] may be a nonnegative number or infinity.
