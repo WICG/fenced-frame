@@ -416,7 +416,9 @@ returned to the web platform in a constant amount of time, before any computatio
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
 to discern when a pending config is finalized, it is important that all visibilities and values of
 transparent fields do not change from the pending config to the finalized config, given that they
-can be inspected through {{FencedFrameConfig}}'s getters.
+can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that
+is created and exposed to the web platform is effectively immutable even if its underlying
+{{FencedFrameConfig/config}} is technically "pending", and will asynchronously resolve later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
