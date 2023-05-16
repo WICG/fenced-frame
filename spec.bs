@@ -418,7 +418,7 @@ to discern when a pending config is finalized, it is important that all visibili
 transparent fields do not change from the pending config to the finalized config, given that they
 can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that
 is created and exposed to the web platform is effectively immutable even if its underlying
-{{FencedFrameConfig/config}} is technically "pending", and will asynchronously resolve later.
+{{FencedFrameConfig/config}} is technically "pending", and will finish resolving completely later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
