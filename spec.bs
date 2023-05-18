@@ -144,10 +144,6 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
-spec: CSS; urlPrefix: https://www.w3.org/TR/cssom-view-1/
-  type: dfn
-    text: scroll a target into view; url: #scroll-an-element-into-view
-    text: run the scroll steps; url: document-run-the-scroll-steps
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -2258,9 +2254,9 @@ Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 t
    a [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
    terminate these steps.
 
-Modify the [=run the scroll steps=] algorithm to add a check after step 1.1 that reads:
+Modify the [=Document/run the scroll steps=] algorithm to add a check before step 1.1 that reads:
 
-2. If <var ignore=''>target</var> is a {{Document}} whose [=node navigable=]'s
+1. If <var ignore=''>target</var> is a {{Document}} whose [=node navigable=]'s
    [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
    continue.
 
