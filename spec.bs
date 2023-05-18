@@ -962,7 +962,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window]
   interface FencedFrameConfig {
-    readonly attribute FencedFrameConfigURL? url;
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
     readonly attribute FencedFrameConfigSize? contentWidth;
@@ -974,16 +973,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a
 [=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
-
-<div algorithm="url getter">
-  The {{FencedFrameConfig/url}} IDL attribute getter steps are:
-
-  1. If {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s
-     [=mapped url/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
-     mapped url=]'s [=mapped url/value=].
-
-  1. Otherwise, return `"opaque"`.
-</div>
 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
