@@ -11,7 +11,7 @@ Boilerplate: omit conformance, omit feedback-header
 Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com, https://domfarolino.com
 Abstract: The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together.
 !Participate: <a href="https://github.com/WICG/fenced-frame">GitHub WICG/fenced-frame</a> (<a href="https://github.com/WICG/fenced-frame/issues/new">new issue</a>, <a href="https://github.com/WICG/fenced-frame/issues?state=open">open issues</a>)
-!Commits: <a href="https://github.com/WICG/fenced-frame/commits/main/spec.bs">GitHub spec.bs commits</a>
+!Commits: <a href="https://github.com/WICG/fenced-frame/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Default Biblio Status: current
@@ -69,6 +69,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: active session history entry; url: nav-active-history-entry
         text: current session history entry; url: nav-current-history-entry
         text: parent; url: nav-parent
+        text: ongoing navigation
       for: traversable navigable
         text: session history entries; url: tn-session-history-entries
       for: browsing context group
@@ -90,6 +91,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: replace; url: hh-replace
       for: document state
         text: document; url: document-state-document
+      text: checking if unloading is user-canceled
       text: history policy container; url: document-state-history-policy-container
       text: source policy container; url: source-snapshot-params-policy-container
     urlPrefix: interaction.html
@@ -308,6 +310,8 @@ interface HTMLFencedFrameElement : HTMLElement {
 
 The <{fencedframe}> element [=represents=] its [=fenced navigable container/fenced navigable=].
 
+Descendants of <{fencedframe}> elements represent nothing.
+
 Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
 
@@ -322,15 +326,6 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 
   1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
 
-  1. [=Process the fencedframe attributes=] with |element| and [=initialInsertion=] set to true.
-</div>
-
-<div algorithm=process-the-fencedframe-attributes>
-  To <dfn>process the <{fencedframe}> attributes</dfn> given a <{fencedframe}> element |element| and
-  a boolean <dfn><var>initialInsertion</var></dfn>, run these steps:
-
-  1. [=Assert=]: |element| is [=connected=].
-
   Issue: It's not necessary to call the <a
   href=https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps>URL
   and history update steps</a> as we do during usual <a
@@ -341,24 +336,6 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
   {{History}}.{{History/length}} in the new navigable. This is an existing issue in the HTML
   Standard: <a
   href=https://github.com/whatwg/html/issues/9030>https://github.com/whatwg/html/issues/9030</a>.
-
-  1. If |element|'s [=fencedframe/config=] is null and |initialInsertion| is true, then return.
-
-  1. Let |url| be the [=URL record=] <code>about:blank</code>.
-
-  1. <a spec="HTML" lt="parse a URL">Parse</a> |element|'s [=fencedframe/config=]'s
-     [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
-     relative to |element|'s [=Node/node document=]. If this is successful, then set [=url=] to the
-     <a spec="HTML">resulting URL record</a>.
-
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |url| using
-     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
-     <span class="XXX">TODO: generate and store the config instance</span>
-
-  <wpt>
-    /fenced-frame/header-referrer.https.html
-  </wpt>
 </div>
 
 <div algorithm=destroy>
@@ -372,7 +349,25 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 <div algorithm=config-setter>
   The {{HTMLFencedFrameElement/config}} IDL attribute setter steps are:
 
-  1. <span class=XXX>TODO</span>
+  1. If [=this=] is not [=connected=]:
+
+    1. [=Assert=]: [=this=]'s [=fenced navigable container/fenced navigable=] is null.
+
+       Note: This holds because when the element has been removed from the DOM, its removal steps
+       immediately destroy the [=fenced navigable container/fenced navigable=].
+
+  1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
+     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
+     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
+
+     Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
+     navigation flow.
+
+  <wpt>
+    /fenced-frame/header-referrer.https.html
+  </wpt>
 </div>
 
 The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, determines the
@@ -417,6 +412,16 @@ A <dfn>fenced frame config mapping</dfn> has three submappings:
      configs=]
 </dl>
 
+Note: The purpose of pending configs is to enable config-generating APIs to resolve configs
+asynchronously in a way that doesn't create timing side channels, i.e., the pending config is
+returned to the web platform in a constant amount of time, before any computation whose duration
+depends on cross-site data. Because the privacy of this depends on the web platform not being able
+to discern when a pending config is finalized, it is important that all visibilities and values of
+transparent fields do not change from the pending config to the finalized config, given that they
+can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that
+is created and exposed to the web platform is effectively immutable even if its underlying
+[=fencedframeconfig/config=] is technically "pending", and will finish resolving completely later.
+
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
 configs=] may be a nonnegative number or infinity.
@@ -443,6 +448,8 @@ then turn the pending config into a finalized config. Those procedures are as fo
   1. Let |urn| be a randomly generated [=urn uuid=].
 
   1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
+  
+  1. Return |urn|.
 </div>
 
 <div algorithm>
@@ -540,45 +547,185 @@ A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integ
 "size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
 TODO: Maybe change the numeric type.</span>
 
-An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with <dfn export
-for="interest group descriptor">owner</dfn>, which is a string, and <dfn export for="interest group
-descriptor">name</dfn>, which is a string.
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with the following
+[=struct/items=]:
+
+<dl export dfn-for="interest group descriptor">
+  : <dfn>owner</dfn>
+  :: a [=string=]
+
+  : <dfn>name</dfn>
+  :: a [=string=]
+</dl>
 
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-A <dfn export for=fencedframetype>fenced frame reporter</dfn> is <span class=XXX>TODO: Specify the type for this.</span>
+A <dfn export for=fencedframetype>pending event</dfn> is a struct with the following [=struct/items=]:
+<dl export dfn-for="pending event">
+  : <dfn>destination</dfn>
+  :: a {{FenceReportingDestination}}
+
+  : <dfn>eventType</dfn>
+  :: a [=string=]
+
+  : <dfn>eventData</dfn>
+  :: a [=string=]
+</dl>
+
+A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] whose [=map/keys=]
+are {{FenceReportingDestination}}s and whose [=map/values=] are either:
+ * [=lists=] of [=fencedframetype/pending events=] (which are used to represent events that need to
+   be reported asynchronously, because the metadata has not been finalized yet); or
+ * [=maps=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=] (which are used
+   to represent the actual metadata once it is finalized).
+
+Note: This representation is meant to allow config-generating APIs to reduce latency by resolving
+the values of reporting destinations asynchronously, after they've already constructed and returned
+the fenced frame config (and even after the config has been loaded, and event reports have been
+generated inside the fenced frame). When the config-generating API declares the [=fencedframetype/
+fenced frame reporting map=], they can mark certain destinations as pending using an empty
+[=list=], and then maintain a reference to the map for later. If the fenced frame attempts to
+[=report an event=] to a destination while it is still pending, it stores the event in this
+[=list=] for later handling. When the config-generating API or its callback eventually [=finalizes
+a reporting destination=] through the reference it kept, it will handle all of the pending events
+stored in the [=list=]. If the destination is never finalized, then the pending events will never
+be sent.
 
 <div algorithm>
-  In order to <dfn export>report an event</dfn>, run these steps:
+  In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
+  [=map=] |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are
+  [=urls=], run these steps:
 
-  1. <span class=XXX>TODO: fill this in</span>
+  1. [=Assert=] that |reporting map|[|destination|] is a [=list=] (i.e., that |destination|'s
+     metadata has not yet been finalized).
+
+  1. Let |pending event list| be |reporting map|[|destination|].
+
+  1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
+
+  1. [=list/For each=] |pending event| of |pending event list|:
+
+     1. [=Send a beacon=] with |destination map|, |pending event|'s [=pending event/eventType=],
+        and |pending event|'s [=pending event/eventData=].
+</div>
+
+A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the
+following [=struct/items=]:
+
+<dl export dfn-for="fenced frame reporting metadata">
+  : <dfn>fenced frame reporting map</dfn>
+  :: a [=fencedframetype/fenced frame reporting map=]
+
+  : <dfn>direct seller is seller</dfn>
+  :: a boolean
+</dl>
+
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following
+[=struct/items=]:
+<dl export dfn-for="fenced frame reporter">
+  : <dfn>fenced frame reporting metadata reference</dfn>
+  :: a mutable reference to a [=fencedframetype/fenced frame reporting metadata=]
+     <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
+
+  : <dfn>automatic beacon data</dfn>
+  :: null, or a struct with the following [=struct/items=]:
+     <dl dfn-for="automatic beacon data">
+       : <dfn>eventData</dfn>
+       :: a [=string=]
+
+       : <dfn>destination</dfn>
+       :: a [=list=] of {{FenceReportingDestination}}s
+     </dl>
+</dl>
+
+<div algorithm>
+  In order to <dfn>send a beacon</dfn> with a [=map=] |destination map| whose [=map/keys=] are
+  [=strings=] and whose [=map/values=] are [=urls=], a [=string=] |eventType|, and a [=string=]
+  |eventData|, run these steps:
+
+  1. If |destination map|[|eventType|] does not [=map/exist=], return.
+
+  1. Let |destination url| be |destination map|[|eventType|].
+
+  1. Send a beacon with |eventData| to |destination url|.
+
+     Issue: Specify the [[FETCH]] integration for sending this request.
 </div>
 
 <div algorithm>
-  In order to <dfn export>report a private aggregation event</dfn>, run these steps:
+  In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
+  |reporter| with a {{FenceReportingDestination}} |destination|, [=string=] |eventType|, and
+  [=string=] |eventData|, run these steps:
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. If |destination| is `"direct-seller"`:
+
+     1. If |reporter|'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
+        [=fenced frame reporting metadata/direct seller is seller=] is true, set |destination| to
+        `"seller"`.
+
+     1. Otherwise, set |destination| to `"component-seller"`.
+
+  1. Let |reporting map| be a reference to |reporter|'s [=fenced frame reporter/fenced frame
+     reporting metadata reference=]'s [=fenced frame reporting metadata/fenced frame reporting
+     map=].
+
+  1. If |reporting map|[|destination|] does not [=map/exist=], return.
+
+  1. If |reporting map|[|destination|] is a [=list=]:
+
+     1. Let |newEvent| be a new [=fencedframetype/pending event=] with the following:
+        : [=pending event/destination=]
+        :: |destination|
+
+        : [=pending event/eventType=]
+        :: |eventType|
+
+        : [=pending event/eventData=]
+        :: |eventData|
+
+     1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
+
+     1. Return.
+
+       Note: The pending event will be sent asynchronously.
+
+  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
+     metadata has been finalized).
+
+  1. [=Send a beacon=] with |reporting map|[|destination|], |eventType|, and |eventData|.
 </div>
 
 <div algorithm>
-  In order to <dfn export>set automatic beacon data</dfn>, run these steps:
+  In order to <dfn>report a private aggregation event</dfn> using a [=fencedframetype/fenced frame
+  reporter=] |reporter| with a [=string=] |event|, run these steps:
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct containing an
-<dfn export for="exfiltration budget metadata">origin</dfn>, which is an [=origin=]; and an <dfn
-export for="exfiltration budget metadata">amount to debit</dfn>, which is a non-negative valid
-floating point number.
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct with the following
+[=struct/items=]:
 
-An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct
-containing an <dfn export for="exfiltration budget metadata reference">origin</dfn>, which is an
-[=origin=]; and an <dfn export for="exfiltration budget metadata reference">amount to debit
-reference</dfn>, which is a mutable reference to a non-negative valid floating point number.
-<span class=XXX>TODO: are mutable references a thing in spec?</span>
+<dl export dfn-for="exfiltration budget metadata">
+  : <dfn>origin</dfn>
+  :: an [=origin=]
 
-An <dfn export for=fencedframetype>embedder shared storage context</dfn> is a string.
+  : <dfn>amount to debit</dfn>
+  :: a non-negative valid floating point number
+</dl>
+
+An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct with the
+following [=struct/items=]:
+
+<dl export dfn-for="exfiltration budget metadata reference">
+  : <dfn>origin</dfn>
+  :: an [=origin=]
+
+  : <dfn>amount to debit reference</dfn>
+  :: a mutable reference to a non-negative valid floating point number
+     <span class=XXX>TODO: Handle pointers/references in a more specy-y way</span>
+</dl>
 
 A <dfn export>partition nonce</dfn> is an [=implementation-defined=] value.
 
@@ -643,10 +790,10 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
     in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
-  : <dfn>fenced frame reporter</dfn>
+  : <dfn>fenced frame reporting metadata</dfn>
   :: null, or a struct with the following fields:
-    : <dfn for="fenced frame reporter">value</dfn>
-    :: a [=fencedframetype/fenced frame reporter=]
+    : <dfn for="fenced frame reporting metadata">value</dfn>
+    :: a [=fencedframetype/fenced frame reporting metadata=]
 
     : <dfn for="fenced frame reporter">visibility</dfn>
     :: a [=visibility=]
@@ -668,7 +815,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an [=fencedframetype/embedder shared storage context=]
+  :: null, or a [=string=]
 </dl>
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
@@ -694,7 +841,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>effective enabled permissions</dfn>
   :: null, or a [=list=] of [=policy-controlled features=]
 
-  : <dfn>fenced frame reporter</dfn> TODO: including automatic beacon info
+  : <dfn>fenced frame reporter</dfn>
   :: null, or a [=fencedframetype/fenced frame reporter=]
 
   : <dfn>exfiltration budget metadata reference</dfn>
@@ -708,7 +855,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: a [=partition nonce=]
 
   : <dfn>embedder shared storage context</dfn>
-  :: null, or an [=fencedframetype/embedder shared storage context=]
+  :: null, or a [=string=]
 </dl>
 
 <div algorithm>
@@ -739,13 +886,26 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
        permissions/value=]
 
     : [=fenced frame config instance/fenced frame reporter=]
-    :: |config|'s <span class=XXX>TODO: Fill this in</span>
+    ::
+        1. If |config|'s [=fenced frame config/fenced frame reporting metadata=]'s [=fenced frame
+           reporting metadata/value=] is null, set to null.
+
+        1. Otherwise, set to a [=fencedframetype/fenced frame reporter=] with the following
+           members:
+
+            : [=fenced frame reporter/fenced frame reporting metadata reference=]
+            :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
+               [=fenced frame reporting metadata/value=]
+
+            : [=fenced frame reporter/automatic beacon data=]
+            :: null
 
     : [=fenced frame config instance/exfiltration budget metadata reference=]
     ::
         1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
 
         1. Otherwise, set to a [=fencedframetype/exfiltration budget metadata reference=]:
+
             : [=exfiltration budget metadata reference/origin=]
             :: |config|'s [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration
                budget metadata/value=]'s [=exfiltration budget metadata/origin=]
@@ -804,7 +964,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window]
   interface FencedFrameConfig {
-    readonly attribute FencedFrameConfigURL? url;
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
     readonly attribute FencedFrameConfigSize? contentWidth;
@@ -816,16 +975,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a
 [=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
-
-<div algorithm="url getter">
-  The {{FencedFrameConfig/url}} IDL attribute getter steps are:
-
-  1. If {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame config/mapped url=]'s
-     [=mapped url/visibility=] is [=visibility/transparent=], return the [=fenced frame config/
-     mapped url=]'s [=mapped url/value=].
-
-  1. Otherwise, return `"opaque"`.
-</div>
 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
@@ -924,11 +1073,14 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] with |event| and
-     |instance|'s [=fenced frame config instance/fenced frame reporter=].
+  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] using |instance|'s
+     [=fenced frame config instance/fenced frame reporter=] with |event|.
 
-  1. If |event| is a {{FenceEvent}}, run [=report an event=] with |event| and |instance|'s
-     [=fenced frame config instance/fenced frame reporter=].
+  1. If |event| is a {{FenceEvent}}, [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
+
+     1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+        reporter=] with |destination|, |event|'s {{FenceEvent/eventType}}, and |event|'s
+        {{FenceEvent/eventData}}.
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
@@ -938,6 +1090,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
+
+  1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
      navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
@@ -950,8 +1104,14 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. Run [=set automatic beacon data=] with |event| and |instance|'s
-     [=fenced frame config instance/fenced frame reporter=].
+  1. Set |instance|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame
+     reporter/automatic beacon data=] to a struct with the following members:
+
+     : eventData
+     :: |event|'s {{FenceEvent/eventData}}
+
+     : destination
+     :: |event|'s {{FenceEvent/destination}}
 
   <wpt>
     /fenced-frame/set-automatic-beacon.https.html
@@ -1597,6 +1757,68 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   /fenced-frame/embedder-no-coep.https.html
   /fenced-frame/embedder-require-corp.https.html
 </wpt>
+
+<h4 id=navigation-changes>Actual navigation changes</h4>
+
+<div algorithm=navigate>
+  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
+
+    * |navigable| is a [=fenced navigable container/fenced navigable=];
+
+      Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
+      for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
+
+  <wpt>
+    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
+    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
+    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+  </wpt>
+
+  Modify step 8 of the same algorithm to include the following condition:
+
+    * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
+      while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
+
+      Note: This ensures that embedder-initiated navigations can *never* trigger a fragment
+      navigation inside of a <{fencedframe}>.
+
+  <wpt>
+    /fenced-frame/fragment-navigation.https.html
+  </wpt>
+
+  Insert these steps immediately after step 16, the step that goes [=in parallel=]:
+
+    1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
+       navigable=]:
+
+      1. Let |config| be the result of [=fenced frame config mapping/finding a
+         config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
+         navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+         Note: This might "wait" for an arbitrary period of time for the |config| associated with
+         the [=urn uuid=] |url| to be "finalized" in the [=traversable navigable/fenced frame config
+         mapping=]. This is why this step runs [=in parallel=]. This navigation will be canceled by
+         any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
+         occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
+
+      1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
+         [=URL=] whose [=url/scheme=] is "`https`".
+      1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+  <wpt>
+    /fenced-frame/frame-navigation.https.html
+  </wpt>
+
+  Rewrite the step starting with "Let |unloadPromptCanceled| be the result of" to:
+
+    1. Let |unloadPromptCanceled| be false if |navigable| is a [=fenced navigable container/fenced
+       navigable=], and the result of [=checking if unloading is user-canceled=] for |navigable|'s
+       [=navigable/active document=]'s [=Document/inclusive descendant navigables=].
+
+  <wpt>
+    /fenced-frame/before-unload.https.html
+  </wpt>
+</div>
 
 <h3 id=page-visibility>Page visibility</h3>
 
