@@ -39,6 +39,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
+      text: determine navigation params policy container; url: determining-navigation-params-policy-container
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -89,6 +90,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: replace; url: hh-replace
       for: document state
         text: document; url: document-state-document
+      text: history policy container; url: document-state-history-policy-container
+      text: source policy container; url: source-snapshot-params-policy-container
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -2016,13 +2019,13 @@ achieve the outcomes described in the above explanatory content.
   /fenced-frame/permission-notification.https.html
 </wpt>
 
-<h3 id=local-network-access-monkeypatch>Local Network Access</h3>
+<h3 id=private-network-access-monkeypatch>Private network access</h3>
 
-Local network access is a security feature that allows you to control which apps on your device can
+Private network access is a security feature that allows you to control which apps on your device can
 access your local network. On creation, regular iframes inherit their policy container from the
 navigation initiator, while fenced frames explicitly do not. While this prevents information from
 leaking from an embedder to a fenced frame, this results in a policy container being created that
-causes subresource requests to not do local network access checks. This section patches the local
+causes subresource requests to not do private network access checks. This section patches the local
 network access spec to have subresources be subject to those checks.
 
 <div algorithm=pna-html-changes>
@@ -2039,3 +2042,61 @@ network access spec to have subresources be subject to those checks.
       Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
       [=response/IP address space=].
 </div>
+
+<div algorithm=pna-clone-policy>
+  Modify the [=Integration with HTML=] section. Rewrite step 2 to read:
+
+  2. Modify the definition of [=clone a policy container=] to read:
+
+    To [=clone a policy container=] given a [=policy container=] |policyContainer| and an optional
+    [=boolean=] |fenced| that defaults to false
+
+    An additional step is added to the algorithm:
+
+      1. If |fenced| is set to true, then set |clone|’s [=IP address space=] to [=IP address space/
+        public|public=].
+
+        Otherwise, set |clone|’s [=IP address space=] to |policyContainer|’s [=IP address space=].
+</div>
+
+<div algorithm=pna-determine-params>
+  Modify the definition of the [=determine navigation params policy container=] algorithm to read:
+
+  To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
+    container=]-or-nulls |historyPolicyContainer|, |initiatorPolicyContainer|,
+    |parentPolicyContainer|, and <var ignore>responsePolicyContainer</var>; and an optional
+    [=boolean=] |fenced| that defaults to false:
+
+  Rewrite step 1.2 to read:
+    
+    2. Return a [=clone a policy container|clone=] of |historyPolicyContainer| with fenced set to
+      |fenced|.
+
+  Rewrite step 2.2 to read:
+
+    2. Return a [=clone a policy container|clone=] of |parentPolicyContainer| with fenced set to
+      |fenced|.
+
+  Rewrite step 3 to read:
+
+    3. If |responseURL| is local and |initiatorPolicyContainer| is not null, then return a clone of
+      |initiatorPolicyContainer| with fenced set to |fenced|.
+</div>
+
+<div algorithm=pna-populate-session-history-entry>
+  Add a step before step 23 of [=create navigation params by fetching=] that says:
+
+  23. Let |fenced| be true if <var ignore>navigable</var> is a [=fenced navigable container/fenced navigable=],
+    false otherwise.
+
+  Rewrite step 23 (now step 24) to read:
+
+  24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params policy
+    container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s [=document
+    state=]'s [=history policy container=], <var ignore>sourceSnapshotParams</var>'s [=source policy
+    container=], null, <var ignore>responsePolicyContainer</var>, and |fenced|.
+</div>
+
+Note: Inheritance also needs to be gated on initial document creation. However, that is already
+handled in the <a href=#creating-browsing-contexts-patch>Modifications to creating browsing
+contexts</a> section.
