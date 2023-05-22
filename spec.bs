@@ -1776,6 +1776,13 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
+<div algorithm=source-snapshot-param-config>
+  Add a new [=struct/item=] to the [=source snapshot params=] [=struct=]:
+
+  : <dfn for="source snapshot params">fenced frame config</dfn>
+  :: a [=fenced frame config=] or null, initially null.
+</div>
+
 <div algorithm=navigate>
   Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
 
@@ -1817,8 +1824,12 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
+      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fenced frame config=]
+         to |config|.
+
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
          [=URL=] whose [=url/scheme=] is "`https`".
+
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
   <wpt>
@@ -1834,6 +1845,34 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   <wpt>
     /fenced-frame/before-unload.https.html
   </wpt>
+</div>
+
+<br>
+
+The below patches make use of the previously-assigned [=source snapshot params/fenced frame
+config=], [=instantiate a config|insantiating=] it in preparation for use when the navigation is
+finalized.
+
+<div algorithm=navigation-params-config-instance>
+  Add a new [=struct/item=] to the [=navigation params=] [=struct=]:
+
+  : <dfn for="navigation params">fenced frame config instance</dfn>
+  :: A [=fenced frame config instance=] or null, initially null.
+
+     Note: This is only set for embedder-initiated <{fencedframe}> navigations, and if a new
+     {{Document}} is created as a result of such a navigation, this member is transferred to the new
+     [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
+     [=browsing context/fenced frame config instance=] member.
+</div>
+
+<div algorithm=create-navigation-params-config-instance>
+  Modify [[HTML]]'s [=create navigation params by fetching=] algorithm such that the last step that
+  returns a [=navigation params=] has the following additional assignment:
+
+  : [=navigation params/fenced frame config instance=]
+  :: If |sourceSnapshotParams|'s [=source snapshot params/fenced frame config=] is null, then null;
+     otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
+     [=source snapshot params/fenced frame config=].
 </div>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
