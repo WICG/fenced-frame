@@ -539,8 +539,8 @@ of their fenced frame configs in order to ensure that they have considered the p
 of each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
-[=fenced frame config instance=], which governs that particular context inside the [=fenced
-navigable container/fenced navigable=].
+[=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
+[=fenced navigable container/fenced navigable=].
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
@@ -945,17 +945,16 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/embedder shared storage context=]
 </div>
 
-Each [=navigable=] has a <dfn for=navigable>fenced frame config instance</dfn>, which is a [=fenced
-frame config instance=] or null, initially null.
+Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
+which is a [=fenced frame config instance=] or null, initially null.
 
-Advisement: This [=navigable/fenced frame config instance=] should really exist on [=traversable
-navigable=], specifically a [=fenced navigable container/fenced navigable=], however until
-third-party cookies are <a
+Advisement: This [=browsing context/fenced frame config instance=] should really exist on
+[=browsing context group=], however until third-party cookies are <a
 href=https://w3ctag.github.io/web-without-3p-cookies/#introduction>deprecated</a>, this
-specification supports many of the <{fencedframe}> constructs on the <{iframe}> element. This
-requires that for the short term, a normal [=navigable container/content navigable=] be able to load
-a [=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced
-frame config instance=].
+specification supports many of the <{fencedframe}> concepts on the <{iframe}> element. This requires
+that for the short term, a normal [=navigable container/content navigable=] be able to load a
+[=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced frame
+config instance=].
 
 <h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
