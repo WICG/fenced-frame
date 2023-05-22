@@ -768,6 +768,9 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="interest group descriptor">visibility</dfn>
     :: a [=visibility=]
 
+  : <dfn>on navigate callback</dfn>
+  :: null, or a series of steps
+
   : <dfn>effective sandbox flags</dfn>
   :: null, or a struct with the following fields:
     : <dfn for="effective sandbox flags">value</dfn>
@@ -841,6 +844,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>interest group descriptor</dfn>
   :: null, or an [=fencedframetype/interest group descriptor=]
 
+  : <dfn>on navigate callback</dfn>
+  :: null, or a series of steps
+
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
@@ -872,7 +878,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
 
     : [=fenced frame config instance/container size=]
-    :: |config|'s [=fenced frame config/container size=] if null
+    :: |config|'s [=fenced frame config/container size=]
 
     : [=fenced frame config instance/content size=]
     :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
@@ -881,6 +887,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     : [=fenced frame config instance/interest group descriptor=]
     :: |config|'s [=fenced frame config/interest group descriptor=] if null, otherwise |config|'s
        [=fenced frame config/interest group descriptor=]'s [=interest group descriptor/value=]
+
+    : [=fenced frame config instance/on navigate callback=]
+    :: |config|'s [=fenced frame config/on navigate callback=]
 
     : [=fenced frame config instance/effective sandbox flags=]
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
@@ -1671,6 +1680,8 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 
 This section describes how the <{fencedframe}> element interacts with the ever-complicated process
 of navigation, which includes integration with various headers, isolation mechanisms, and policies.
+
+<span class=XXX>TODO: Describe how the [=fenced frame config instance=] is carried along the navigation request and is stored upon navigation commit, along with running the [=fenced frame config instance/on navigate callback=].</span>
 
 <h4 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h4>
 
