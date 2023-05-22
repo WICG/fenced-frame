@@ -1068,12 +1068,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s
+     [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
@@ -1099,12 +1099,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s
+     [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
@@ -1127,12 +1127,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s
+     [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
