@@ -39,6 +39,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
+      text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      for: cross-origin opener policy enforcement result
+        text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -86,11 +89,15 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
         text: origin; url: navigation-params-origin
+        text: COOP enforcement result; url: navigation-params-coop-enforcement-result
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
         text: document; url: document-state-document
       text: checking if unloading is user-canceled
+      text: source snapshot params
+      for: source snapshot params
+        text: fetch client; url: source-snapshot-params-client
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -116,6 +123,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: webappapis.html
       for: environment
         text: target browsing context; url: concept-environment-target-browsing-context
+      text: navigation and traversal task source
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
@@ -1816,6 +1824,34 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   <wpt>
     /fenced-frame/before-unload.https.html
   </wpt>
+</div>
+
+<h4 id=bcg-swap>Browsing context group swap</h4>
+
+When the embedder of a <{fencedframe}> initiates navigations inside the frame, we must perform a
+[=browsing context group=] swap to entirely reset the context inside the frame, to ensure nothing is
+left over to be leaked to the next {{Document}}.
+
+<div algorithm=attempt-populate-history-bcg-swap>
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
+  before the step that "[=queues a task=] on the [=navigation and traversal task source=]", that
+  reads:
+
+  6. If all of the following conditions are true:
+
+       * |navigable| is a [=fenced navigable container/fenced navigable=];
+
+       * <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=] is **not**
+         |navigable|'s [=navigable/active document=]'s [=relevant settings object=];
+
+       * |navigationParams| is non-null
+
+     then set |navigationParams|'s [=navigation params/COOP enforcement result=]'s [=cross-origin
+     opener policy enforcement result/needs a browsing context group switch=] [=boolean=] to true.
+
+     Issue: This indeed works, but we should consider using a separate mechanism to carry this out,
+     instead of piggybacking off of the COOP mechanism which was designed without fenced frames in
+     mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
 
 <h3 id=page-visibility>Page visibility</h3>
