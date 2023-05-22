@@ -1903,6 +1903,22 @@ left over to be leaked to the next {{Document}}.
      mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
 
+<h4 id=create-and-initialize-document>Document creation & initialization</h4>
+
+The [[HTML]] Standard defines the creation and initialization of {{Document}}s that result from
+navigations in the <a
+href=https://html.spec.whatwg.org/multipage/document-lifecycle.html#initialise-the-document-object>create
+and initialize a Document object</a> algorithm. This specification modifies this algorithm to setup
+the environment for a <{fencedframe}>.
+
+<div algorithm=create-and-initialize-document>
+  Modify this algorithm by inserting a new step after step 2 (which sets the |browsingContext|
+  variable) that reads:
+
+  3. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to <var
+     ignore>navigationParams</var>'s [=navigation params/fenced frame config instance=].
+</div>
+
 <h3 id=page-visibility>Page visibility</h3>
 
 The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
