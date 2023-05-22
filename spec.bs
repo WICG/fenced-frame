@@ -40,6 +40,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
       text: determine navigation params policy container; url: determining-navigation-params-policy-container
+      text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      for: cross-origin opener policy enforcement result
+        text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -87,6 +90,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
         text: origin; url: navigation-params-origin
+        text: COOP enforcement result; url: navigation-params-coop-enforcement-result
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -94,6 +98,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: checking if unloading is user-canceled
       text: history policy container; url: document-state-history-policy-container
       text: source policy container; url: source-snapshot-params-policy-container
+      text: source snapshot params
+      for: source snapshot params
+        text: fetch client; url: source-snapshot-params-client
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -119,6 +126,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: webappapis.html
       for: environment
         text: target browsing context; url: concept-environment-target-browsing-context
+      text: navigation and traversal task source
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
@@ -533,8 +541,8 @@ of their fenced frame configs in order to ensure that they have considered the p
 of each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
-[=fenced frame config instance=], which governs that particular context inside the [=fenced
-navigable container/fenced navigable=].
+[=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
+[=fenced navigable container/fenced navigable=].
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
@@ -762,6 +770,9 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     : <dfn for="interest group descriptor">visibility</dfn>
     :: a [=visibility=]
 
+  : <dfn>on navigate callback</dfn>
+  :: null, or a series of steps
+
   : <dfn>effective sandbox flags</dfn>
   :: null, or a struct with the following fields:
     : <dfn for="effective sandbox flags">value</dfn>
@@ -835,6 +846,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   : <dfn>interest group descriptor</dfn>
   :: null, or an [=fencedframetype/interest group descriptor=]
 
+  : <dfn>on navigate callback</dfn>
+  :: null, or a series of steps
+
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
@@ -866,7 +880,7 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
 
     : [=fenced frame config instance/container size=]
-    :: |config|'s [=fenced frame config/container size=] if null
+    :: |config|'s [=fenced frame config/container size=]
 
     : [=fenced frame config instance/content size=]
     :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
@@ -875,6 +889,9 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     : [=fenced frame config instance/interest group descriptor=]
     :: |config|'s [=fenced frame config/interest group descriptor=] if null, otherwise |config|'s
        [=fenced frame config/interest group descriptor=]'s [=interest group descriptor/value=]
+
+    : [=fenced frame config instance/on navigate callback=]
+    :: |config|'s [=fenced frame config/on navigate callback=]
 
     : [=fenced frame config instance/effective sandbox flags=]
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
@@ -939,17 +956,16 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
     :: |config|'s [=fenced frame config/embedder shared storage context=]
 </div>
 
-Each [=navigable=] has a <dfn for=navigable>fenced frame config instance</dfn>, which is a [=fenced
-frame config instance=] or null, initially null.
+Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
+which is a [=fenced frame config instance=] or null, initially null.
 
-Advisement: This [=navigable/fenced frame config instance=] should really exist on [=traversable
-navigable=], specifically a [=fenced navigable container/fenced navigable=], however until
-third-party cookies are <a
+Advisement: This [=browsing context/fenced frame config instance=] should really exist on
+[=browsing context group=], however until third-party cookies are <a
 href=https://w3ctag.github.io/web-without-3p-cookies/#introduction>deprecated</a>, this
-specification supports many of the <{fencedframe}> constructs on the <{iframe}> element. This
-requires that for the short term, a normal [=navigable container/content navigable=] be able to load
-a [=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced
-frame config instance=].
+specification supports many of the <{fencedframe}> concepts on the <{iframe}> element. This requires
+that for the short term, a normal [=navigable container/content navigable=] be able to load a
+[=fenced frame config=], and therefore have access to the navigation's corresponding [=fenced frame
+config instance=].
 
 <h4 id=fenced-frame-config-interface>The {{FencedFrameConfig}} interface</h4>
 
@@ -1062,12 +1078,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
@@ -1093,12 +1109,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
@@ -1121,12 +1137,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=node
-     navigable=]'s [=navigable/traversable navigable=]'s [=navigable/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=origin=] and |instance|'s
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
 
@@ -1196,8 +1212,8 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
 <div algorithm>
   The <dfn attribute for=Window>fence</dfn> getter steps are:
-    1. If [=this=]'s [=Window/navigable=]'s [=navigable/fenced frame config instance=] is not null,
-       then return [=this=]'s [=Window/fence=].
+    1. If [=this=]'s [=Window/browsing context=]'s [=browsing context/fenced frame config instance=]
+       is not null, then return [=this=]'s [=Window/fence=].
 
     1. Return null.
 
@@ -1667,6 +1683,8 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 This section describes how the <{fencedframe}> element interacts with the ever-complicated process
 of navigation, which includes integration with various headers, isolation mechanisms, and policies.
 
+<span class=XXX>TODO: Describe how the [=fenced frame config instance=] is carried along the navigation request and is stored upon navigation commit, along with running the [=fenced frame config instance/on navigate callback=].</span>
+
 <h4 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h4>
 
 Add the new [=structured header/token=] below to the list of valid [=structured header/tokens=] for the \`<a
@@ -1760,6 +1778,13 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
+<div algorithm=source-snapshot-param-config>
+  Add a new [=struct/item=] to the [=source snapshot params=] [=struct=]:
+
+  : <dfn for="source snapshot params">fenced frame config</dfn>
+  :: a [=fenced frame config=] or null, initially null.
+</div>
+
 <div algorithm=navigate>
   Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
 
@@ -1801,8 +1826,12 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
+      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fenced frame config=]
+         to |config|.
+
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
          [=URL=] whose [=url/scheme=] is "`https`".
+
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
   <wpt>
@@ -1818,6 +1847,62 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   <wpt>
     /fenced-frame/before-unload.https.html
   </wpt>
+</div>
+
+<br>
+
+The below patches make use of the previously-assigned [=source snapshot params/fenced frame
+config=], [=instantiate a config|insantiating=] it in preparation for use when the navigation is
+finalized.
+
+<div algorithm=navigation-params-config-instance>
+  Add a new [=struct/item=] to the [=navigation params=] [=struct=]:
+
+  : <dfn for="navigation params">fenced frame config instance</dfn>
+  :: A [=fenced frame config instance=] or null, initially null.
+
+     Note: This is only set for embedder-initiated <{fencedframe}> navigations, and if a new
+     {{Document}} is created as a result of such a navigation, this member is transferred to the new
+     [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
+     [=browsing context/fenced frame config instance=] member.
+</div>
+
+<div algorithm=create-navigation-params-config-instance>
+  Modify [[HTML]]'s [=create navigation params by fetching=] algorithm such that the last step that
+  returns a [=navigation params=] has the following additional assignment:
+
+  : [=navigation params/fenced frame config instance=]
+  :: If |sourceSnapshotParams|'s [=source snapshot params/fenced frame config=] is null, then null;
+     otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
+     [=source snapshot params/fenced frame config=].
+</div>
+
+<h4 id=bcg-swap>Browsing context group swap</h4>
+
+When the embedder of a <{fencedframe}> initiates navigations inside the frame, we must perform a
+[=browsing context group=] swap to entirely reset the context inside the frame, to ensure nothing is
+left over to be leaked to the next {{Document}}.
+
+<div algorithm=attempt-populate-history-bcg-swap>
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
+  before the step that "[=queues a task=] on the [=navigation and traversal task source=]", that
+  reads:
+
+  6. If all of the following conditions are true:
+
+       * |navigable| is a [=fenced navigable container/fenced navigable=];
+
+       * <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=] is **not**
+         |navigable|'s [=navigable/active document=]'s [=relevant settings object=];
+
+       * |navigationParams| is non-null
+
+     then set |navigationParams|'s [=navigation params/COOP enforcement result=]'s [=cross-origin
+     opener policy enforcement result/needs a browsing context group switch=] [=boolean=] to true.
+
+     Issue: This indeed works, but we should consider using a separate mechanism to carry this out,
+     instead of piggybacking off of the COOP mechanism which was designed without fenced frames in
+     mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
 
 <h3 id=page-visibility>Page visibility</h3>
@@ -2000,15 +2085,16 @@ config/effective enabled permissions=] defines the exclusive list of [=policy-co
 that will be enabled in the {{Document}} (all others will be disabled).
 
 During navigation, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=] [=instantiate a
-config|instantiates=] a [=navigable/fenced frame config instance=] that is stored on the [=fenced
-navigable container/fenced navigable=]. This navigable's [=navigable/fenced frame config
-instance=]'s [=fenced frame config instance/effective enabled permissions=] is consulted [=Should
-navigation response to navigation request be blocked by Permissions Policy?|during navigation=]. A
-<{fencedframe}> navigation can only succeed if the [=Document/permissions policy=] for the
-navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that the
-[=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
-[=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
-is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
+config|instantiates=] a [=browsing context/fenced frame config instance=] that is stored on the
+[=browsing context=] in the [=fenced navigable container/fenced navigable=]. This browsing context's
+[=browsing context/fenced frame config instance=]'s [=fenced frame config instance/effective enabled
+permissions=] is consulted [=Should navigation response to navigation request be blocked by
+Permissions Policy?|during navigation=]. A <{fencedframe}> navigation can only succeed if the
+[=Document/permissions policy=] for the navigation's resulting {{Document}} has an [=permissions
+policy/inherited policy=] such that the [=inherited policy for a feature|inherited policy value=] is
+"`Enabled`" for each feature in the [=fenced frame config/effective enabled permissions=]. Otherwise
+the environment the <{fencedframe}> is embedded in is deemed unsuitable for the [=fenced frame
+config=], and the navigation is blocked.
 
 At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
 in the frame based on that navigation's [=navigation params/origin=] (since the origin is derived
@@ -2153,8 +2239,14 @@ achieve the outcomes described in the above explanatory content.
 
   1. Let |origin| be |navigationParams|'s [=navigation params/origin=].
 
-  1. Let |effective permissions| be the |navigable|'s [=navigable/fenced frame config instance=]'s
-     [=fenced frame config instance/effective enabled permissions=].
+  1. Let |effective permissions| be the |navigable|'s [=navigable/active browsing context=]'s
+     [=browsing context/fenced frame config instance=]'s [=fenced frame config instance/effective
+     enabled permissions=].
+
+     Issue: Per work omitted in [pull request
+     #84](https://github.com/WICG/fenced-frame/pull/84#discussion_r1186531028), the config instance
+     has not yet been assigned to the browsing context. We should consider storing the instance
+     inside |navigationParams| and reference it from here instead.
 
   1. Let |permissions policy| be the result of [$Create a Permissions Policy for a navigable|
      creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
