@@ -4,9 +4,10 @@
   <title>Fenced frame</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
+  <link href="https://www.w3.org/StyleSheets/TR/2016/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet">
   <meta content="Bikeshed version 3383f409d, updated Fri Apr 28 15:49:22 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="f3d2d23341b1402f0591428481b871170e773141" name="document-revision">
+  <meta content="2aee54bcd8e3e3a3e36ed7f5188bb71ce83212e5" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -838,7 +839,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-22">22 May 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-24">24 May 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1047,7 +1048,7 @@ attributes</a> section. This section will be updated to include <code><a data-li
 elements that the <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedder-content-other.html#attr-dim-width" id="ref-for-attr-dim-width①">width</a></code> and <code><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/embedder-content-other.html#attr-dim-height" id="ref-for-attr-dim-height①">height</a></code> dimension attributes apply to.</p>
    <h3 class="heading settled" data-level="1.2" id="fenced-frame-config-map"><span class="secno">1.2. </span><span class="content">Fenced frame config mapping</span><a class="self-link" href="#fenced-frame-config-map"></a></h3>
    <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a> has a <dfn class="dfn-paneled" data-dfn-for="traversable navigable" data-dfn-type="dfn" data-export data-lt="fenced frame config mapping" id="traversable-navigable-fenced-frame-config-mapping">fenced frame config
-mapping</dfn>, which is a new <a data-link-type="dfn" href="#fenced-frame-config-mapping" id="ref-for-fenced-frame-config-mapping">fenced frame config mapping</a>.</p>
+mapping</dfn>, which is a <a data-link-type="dfn" href="#fenced-frame-config-mapping" id="ref-for-fenced-frame-config-mapping">fenced frame config mapping</a>.</p>
    <p class="note" role="note"><span class="marker">Note:</span> This mapping is consulted during <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate①">navigation</a>, and written to by what we
 colloquially refer to as <em>URN-generating APIs</em> or <em>config-generating APIs</em>, that generate both <a data-link-type="dfn" href="https://www.ietf.org/rfc/rfc4122.txt#urn-uuid" id="ref-for-urn-uuid">urn
 uuids</a> and <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config">fenced frame configs</a> for use in navigating <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑨">fencedframe</a></code> and <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element">iframe</a></code> elements.
