@@ -394,7 +394,7 @@ elements that the <code>[=width=]</code> and <code>[=height=]</code> dimension a
 <h3 id=fenced-frame-config-map>Fenced frame config mapping</h3>
 
 Each [=traversable navigable=] has a <dfn for="traversable navigable" export>fenced frame config
-mapping</dfn>, which is a new [=fenced frame config mapping=].
+mapping</dfn>, which is a [=fenced frame config mapping=].
 
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
