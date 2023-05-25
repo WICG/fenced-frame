@@ -444,21 +444,23 @@ Note: It is important to specify the behavior of
 config-generating APIs in a privacy sensitive way.
 
 At a high level, in order to store a [=fenced frame config=] in the
-[=traversable navigable/fenced frame config mapping=], one must first store a pending config, and
-then turn the pending config into a finalized config. Those procedures are as follows:
+[=traversable navigable/fenced frame config mapping=], the creator of the config must first store a
+pending config, and then turn the pending config into a finalized config. Those procedures are as
+follows:
 
 <div algorithm>
-  To <dfn for="fenced frame config mapping" export>store a pending config</dfn> into a particular
-  [=fenced frame config mapping=] given a [=fenced frame config=] |config|, run these steps:
+  To <dfn for="fenced frame config mapping" export>store a pending config</dfn> in a [=fenced frame
+  config mapping=] |mapping| given a [=fenced frame config=] |config|, run these steps:
 
-  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |pendingMapping| be |mapping|'s [=fenced frame config mapping/pending config mapping=].
 
-  1. If the [=map/size=] of the [=fenced frame config mapping/pending config mapping=] + the
-     [=map/size=] of the [=fenced frame config mapping/finalized config mapping=] >= the [=fenced
-     frame config mapping/maximum number of configs=], return failure.
+  1. If the [=map/size=] of |pendingMapping| + the [=map/size=] of |mapping|'s [=fenced frame config
+     mapping/finalized config mapping=] ≥ |mapping|'s [=fenced frame config mapping/maximum number
+     of configs=], return failure.
 
   1. Let |urn| be a randomly generated [=urn uuid=].
+
+  1. [=Assert=]: |urn| does not [=map/exist=] in |pendingMapping|.
 
   1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
   
@@ -466,14 +468,12 @@ then turn the pending config into a finalized config. Those procedures are as fo
 </div>
 
 <div algorithm>
-  To <dfn for="fenced frame config mapping" export>finalize a pending config</dfn> in a particular
-  [=fenced frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
+  To <dfn for="fenced frame config mapping" export>finalize a pending config</dfn> in a [=fenced
+  frame config mapping=] |mapping| given a [=urn uuid=] |urn|, run these steps:
 
-  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |pendingMapping| be |mapping|'s [=fenced frame config mapping/pending config mapping=].
 
-  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |finalizedMapping| be |mapping|'s [=fenced frame config mapping/finalized config mapping=].
 
   1. If |pendingMapping|[|urn|] does not [=map/exist=], return failure.
 
@@ -485,12 +485,11 @@ then turn the pending config into a finalized config. Those procedures are as fo
 </div>
 
 <div algorithm>
-  To <dfn for="fenced frame config mapping" export>store nested configs</dfn> into a particular
-  [=fenced frame config mapping=] given a [=fenced frame config instance/nested configs=]
+  To <dfn for="fenced frame config mapping" export>store nested configs</dfn> in a [=fenced frame
+  config mapping=] |mapping| given a [=fenced frame config instance/nested configs=]
   |nestedConfigs|, run these steps:
 
-  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |nestedMapping| be |mapping|'s [=fenced frame config mapping/nested config mapping=].
 
   1. If |nestedConfigs| is null, return.
 
@@ -500,17 +499,14 @@ then turn the pending config into a finalized config. Those procedures are as fo
 </div>
 
 <div algorithm>
-  To <dfn for="fenced frame config mapping" export>find a config</dfn> in a particular [=fenced
-  frame config mapping=] given a [=urn uuid=] |urn|, run these steps:
+  To <dfn for="fenced frame config mapping" export>find a config</dfn> in a [=fenced frame config
+  mapping=] |mapping| given a [=urn uuid=] |urn|, run these steps:
 
-  1. Let |nestedMapping| be the [=fenced frame config mapping/nested config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |nestedMapping| be |mapping|'s [=fenced frame config mapping/nested config mapping=].
 
-  1. Let |pendingMapping| be the [=fenced frame config mapping/pending config mapping=] of the
-     associated [=fenced frame config mapping=].
+  1. Let |pendingMapping| be |mapping|'s [=fenced frame config mapping/pending config mapping=].
 
-  1. Let |finalizedMapping| be the [=fenced frame config mapping/finalized config mapping=] of
-     the associated [=fenced frame config mapping=].
+  1. Let |finalizedMapping| be |mapping|'s [=fenced frame config mapping/finalized config mapping=].
 
   1. If |nestedMapping|[|urn|] [=map/exists=], return its value.
 
@@ -529,7 +525,7 @@ then turn the pending config into a finalized config. Those procedures are as fo
 
 A key feature of the <{fencedframe}> element is that web platform APIs can configure the behavior
 of the frame in a way that limits the ability of other execution contexts to modify or inspect this
-configuration, for security or privacy reasons. For example, the
+configuration, for security and privacy reasons. For example, the
 <a href=https://wicg.github.io/turtledove/>FLEDGE</a> API performs on-device ad auctions over
 cross-site data, and it is important that the ad that wins the auction can be loaded into a frame,
 without the API caller knowing *which ad* won the auction or being able to manipulate the
@@ -537,13 +533,13 @@ environment in which the ad loads.
 
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
-resulting environments. [=Fenced frame configs=] can only be constructed by web platform APIs, not
-initialized or modified arbitrarily. Their fields also contain "[=visibilities=]", which dictate
-whether the field should be "redacted" when inspected through the {{FencedFrameConfig}} interface.
-Config-generating APIs (like <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
-href=https://wicg.github.io/shared-storage/>Shared Storage</a>) must specify values for all fields
-of their fenced frame configs in order to ensure that they have considered the privacy implications
-of each field, though they may choose to set the values to null.
+resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
+and not constructed or modified by script. Their fields also contain "[=visibilities=]", which
+dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
+interface.  Config-generating APIs (like <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and
+<a href=https://wicg.github.io/shared-storage/>Shared Storage</a>) must specify values for all
+fields of their fenced frame configs in order to ensure that they have considered the privacy
+implications of each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
@@ -553,15 +549,23 @@ Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instan
 
 We now establish some preliminary types:
 
-A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export for=visibility>
-`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
+A <dfn export for=fencedframeconfig>visibility</dfn> is either "<dfn export
+for=visibility>`opaque`</dfn>" or "<dfn export for=visibility>`transparent`</dfn>".
 
-A <dfn export for=fencedframetype>size</dfn> is a struct with non-negative integer <dfn export for=
-"size">width</dfn> and non-negative integer <dfn export for="size">height</dfn>. <span class=XXX>
-TODO: Maybe change the numeric type.</span>
+A <dfn export for=fencedframetype>size</dfn> is a [=struct=] with the following [=struct/items=]:
 
-An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct with the following
-[=struct/items=]:
+<dl export dfn-for="size">
+  : <dfn>width</dfn>
+  :: a non-negative integer
+
+  : <dfn>height</dfn>
+  :: a non-negative integer
+
+  <span class=XXX>TODO: Consider different numeric types for these members.</span>
+</dl>
+
+An <dfn export for=fencedframetype>interest group descriptor</dfn> is a [=struct=] with the
+following [=struct/items=]:
 
 <dl export dfn-for="interest group descriptor">
   : <dfn>owner</dfn>
@@ -574,7 +578,9 @@ An <dfn export for=fencedframetype>interest group descriptor</dfn> is a struct w
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
-A <dfn export for=fencedframetype>pending event</dfn> is a struct with the following [=struct/items=]:
+A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
+[=struct/items=]:
+
 <dl export dfn-for="pending event">
   : <dfn>destination</dfn>
   :: a {{FenceReportingDestination}}
@@ -624,7 +630,7 @@ be sent.
         and |pending event|'s [=pending event/eventData=].
 </div>
 
-A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a struct with the
+A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a [=struct=] with the
 following [=struct/items=]:
 
 <dl export dfn-for="fenced frame reporting metadata">
@@ -635,7 +641,7 @@ following [=struct/items=]:
   :: a boolean
 </dl>
 
-A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with the following
+A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] with the following
 [=struct/items=]:
 <dl export dfn-for="fenced frame reporter">
   : <dfn>fenced frame reporting metadata reference</dfn>
@@ -643,7 +649,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with t
      <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
 
   : <dfn>automatic beacon data</dfn>
-  :: null, or a struct with the following [=struct/items=]:
+  :: null, or a [=struct=] with the following [=struct/items=]:
      <dl dfn-for="automatic beacon data">
        : <dfn>eventData</dfn>
        :: a [=string=]
@@ -717,8 +723,8 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a struct with t
   1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struct with the following
-[=struct/items=]:
+An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a [=struct=] with the
+following [=struct/items=]:
 
 <dl export dfn-for="exfiltration budget metadata">
   : <dfn>origin</dfn>
@@ -728,8 +734,8 @@ An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a struc
   :: a non-negative valid floating point number
 </dl>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a struct with the
-following [=struct/items=]:
+An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a [=struct=] with
+the following [=struct/items=]:
 
 <dl export dfn-for="exfiltration budget metadata reference">
   : <dfn>origin</dfn>
@@ -745,11 +751,11 @@ A <dfn export>partition nonce</dfn> is an [=implementation-defined=] value.
 Note: This is similar to the <a href=https://fetch.spec.whatwg.org/#network-partition-key>network
 partition key</a> used by <a href=https://fetch.spec.whatwg.org/>Fetch</a>.
 
-A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/items=]:
+A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=struct/items=]:
 
 <dl export dfn-for="fenced frame config">
   : <dfn>mapped url</dfn>
-  :: a struct with the following fields:
+  :: a [=struct=] with the following [=struct/items=]:
     : <dfn for="mapped url">value</dfn>
     :: a [=URL=]
 
@@ -760,7 +766,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or a [=fencedframetype/size=]
 
   : <dfn>content size</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="content size">value</dfn>
     :: a [=fencedframetype/size=]
 
@@ -768,7 +774,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>interest group descriptor</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="interest group descriptor">value</dfn>
     :: an [=fencedframetype/interest group descriptor=]
 
@@ -779,7 +785,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
   :: null, or a series of steps
 
   : <dfn>effective sandbox flags</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="effective sandbox flags">value</dfn>
     :: an [=fencedframetype/exhaustive set of sandbox flags=]
 
@@ -787,7 +793,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>effective enabled permissions</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="effective enabled permissions">value</dfn>
     :: a [=list=] of [=policy-controlled features=]
 
@@ -807,7 +813,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
 
   : <dfn>fenced frame reporting metadata</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="fenced frame reporting metadata">value</dfn>
     :: a [=fencedframetype/fenced frame reporting metadata=]
 
@@ -815,7 +821,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="exfiltration budget metadata">value</dfn>
     :: an [=fencedframetype/exfiltration budget metadata=]
 
@@ -823,7 +829,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
     :: a [=visibility=]
 
   : <dfn>nested configs</dfn>
-  :: null, or a struct with the following fields:
+  :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="nested configs">value</dfn>
     :: a [=list=] of [=fenced frame configs=]
 
@@ -836,7 +842,7 @@ A <dfn export>fenced frame config</dfn> is a struct with the following [=struct/
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
 
-A <dfn export>fenced frame config instance</dfn> is a struct with the following [=struct/items=]:
+A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the following [=struct/items=]:
 
 <dl export dfn-for="fenced frame config instance">
   : <dfn>mapped url</dfn>
@@ -867,8 +873,8 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
   :: null, or an [=fencedframetype/exfiltration budget metadata reference=]
 
   : <dfn>nested configs</dfn>
-  :: null, or an [=ordered map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are
-     [=fenced frame configs=]
+  :: null, or an [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced
+     frame configs=]
 
   : <dfn>partition nonce</dfn>
   :: a [=partition nonce=]
@@ -943,12 +949,12 @@ A <dfn export>fenced frame config instance</dfn> is a struct with the following 
 
         1. Otherwise:
 
-           1. Let |results| be an empty [=ordered map=].
+           1. Let |results| be a new [=map=].
 
            1. [=list/For each=] |nested config| of |config|'s [=fenced frame config/nested
              configs=]'s [=nested configs/value=]:
 
-               1. Let |urn| be a random, unique [=urn uuid=].
+               1. Let |urn| be a randomly generated [=urn uuid=].
 
                1. [=map/Set=] |results|[|urn|] to |nested config|.
 
@@ -994,8 +1000,15 @@ maps to an internal [=fenced frame config=] [=struct=].
   };
 </pre>
 
-Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>urn</dfn>, which is a
-[=urn uuid=], and <dfn for=fencedframeconfig>config</dfn>, which is a [=fenced frame config=].
+Note: Note that {{FencedFrameConfig}}s cannot be constructed manually from JavaScript. They can only
+be created by config-generating APIs. However, some browsers [support a developer-only
+flag](https://github.com/WICG/fenced-frame/issues/94) which help developers test the <{fencedframe}>
+element with arbitrary URLs *not* produced by config-generating APIs for development.
+
+Each {{FencedFrameConfig}} has:
+
+ * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
+ * A <dfn for=fencedframeconfig>config</dfn>, a [=fenced frame config=]
 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
@@ -1024,10 +1037,10 @@ Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>
      return null.
 
   1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
-     size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/content
-     size=]'s [=content size/value=]'s [=size/width=].
+     size/visibility=] is "<a for=visibility>`transparent`</a>", return the [=fenced frame
+     config/content size=]'s [=content size/value=]'s [=size/width=].
 
-  1. Otherwise, return `"opaque"`.
+  1. Otherwise, return the `"opaque"` {{OpaqueProperty}}.
 </div>
 
 <div algorithm="contentHeight getter">
@@ -1037,10 +1050,10 @@ Each {{FencedFrameConfig}} has two internal members: <dfn for=fencedframeconfig>
      return null.
 
   1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
-     size/visibility=] is [=visibility/transparent=], return the [=fenced frame config/content
-     size=]'s [=content size/value=]'s [=size/height=].
+     size/visibility=] is "<a for=visibility>`transparent`</a>", return the [=fenced frame
+     config/content size=]'s [=content size/value=]'s [=size/height=].
 
-  1. Otherwise, return `"opaque"`.
+  1. Otherwise, return the `"opaque"` {{OpaqueProperty}}.
 </div>
 
 <div algorithm>
@@ -1126,12 +1139,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
   1. Set |instance|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame
-     reporter/automatic beacon data=] to a struct with the following members:
+     reporter/automatic beacon data=] to a [=struct=] with the following [=struct/items=]:
 
-     : eventData
+     : [=automatic beacon data/eventData=]
      :: |event|'s {{FenceEvent/eventData}}
 
-     : destination
+     : [=automatic beacon data/destination=]
      :: |event|'s {{FenceEvent/destination}}
 
   <wpt>
@@ -1178,29 +1191,36 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
-Every distinct element should have its own request destination to allow for special handling when
-making requests (fenced frame request behavior deviates from iframe behavior in enough ways to
-justify having a separate destination). Update the associated request [=request/destination=] list
-to include a new entry, "<code>fencedframe</code>". It will have the [=request/initiator=] "", the
-CSP directive <code>fenced-frame-src</code>, and the features HTML's
-<code>&lt;fencedframe&gt;</code>.
+The processing model of a <{fencedframe}>'s navigation request deviates from that of the normal
+[=navigation request=] in enough ways to justify a new [=request=] [=request/destination=] value.
+This specification updates the [=request=] [=request/destination=] enumeration to include a new
+entry, "<code>fencedframe</code>". Perform the following monkeypatches to the [[FETCH]] Standard.
 
 Add "<code>fencedframe</code>" to the [=non-subresource request=] list and to the [=navigation
 request=] list.
 
 Add "<code>fencedframe</code>" to the {{RequestDestination}} enum.
 
-In the [=fetch=] algorithm, step 13.2, where it says:
+<div algorithm=fetch-destination-patch>
+  In the [=fetch=] algorithm, step 13.2, where it says:
 
-> A user agent should set value to the first matching statement, if any, switching on request's
-[=request/destination=]:
+    > A user agent should set value to the first matching statement, if any, switching on request's
+    [=request/destination=]:
 
-Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
-"<code>frame</code>", and "<code>iframe</code>".
+  Add "<code>fencedframe</code>" to the switch cases alongside "<code>document</code>",
+  "<code>frame</code>", and "<code>iframe</code>".
 
-<wpt>
-  /fenced-frame/header-secFetchDest.https.html
-</wpt>
+  <wpt>
+    /fenced-frame/header-secFetchDest.https.html
+  </wpt>
+</div>
+
+Non-normatively, update the DOM intro [destination
+table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fencedframe}> [=navigation requests=] have the following properties:
+ * [=request/destination=] of "`fencedframe`"
+ * [=request/initiator=] ""
+ * CSP directive of <code>fenced-frame-src</code>
+ * Features as HTML's <code>&lt;fencedframe&gt;</code>
 
 <h2 id=html-integration>HTML Integration</h2>
 
