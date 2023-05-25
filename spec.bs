@@ -560,9 +560,9 @@ A <dfn export for=fencedframetype>size</dfn> is a [=struct=] with the following 
 
   : <dfn>height</dfn>
   :: a non-negative integer
-
-  <span class=XXX>TODO: Consider different numeric types for these members.</span>
 </dl>
+
+<span class=XXX>TODO: Consider different numeric types for these members.</span>
 
 An <dfn export for=fencedframetype>interest group descriptor</dfn> is a [=struct=] with the
 following [=struct/items=]:
