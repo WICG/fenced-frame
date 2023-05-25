@@ -437,7 +437,7 @@ is created and exposed to the web platform is effectively immutable even if its 
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
-configs=] may be a nonnegative number or infinity.
+configs=] may be a non-negative number or infinity.
 
 Note: It is important to specify the behavior of
 [=fenced frame config mapping/maximum number of configs=] because its semantics can interact with
