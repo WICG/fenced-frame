@@ -2375,13 +2375,14 @@ achieve the outcomes described in the above explanatory content.
 
 <h3 id=private-network-access-monkeypatch>Private Network Access</h3>
 
-[[Private-Network-Access]] is a security feature that allows you to control which web applications
-on can make [=local network requests=]. On creation, <{iframe}>s inherit their policy container from
-the navigation initiator, while <{fencedframe}>s explicitly do not. While this prevents information
-from leaking into a <{fencedframe}> from its embedder, it also results in a
-[=Document/policy container=] for {{Document}}s inside of a <{fencedframe}> being created that
-causes [=subresource requests=] to not do private network access checks. This section patches the
-[[Private-Network-Access]] specification to have subresources be subject to those checks.
+[[Private-Network-Access]] is a security feature that regulates when and how [=local network
+requests=] can be made. On [[HTML#creating-browsing-contexts|creation]], <{iframe}>s inherit their
+[=Document/policy container=] from their [=navigable container=]'s [=node document=], while
+<{fencedframe}>s do not. While this prevents information from leaking into a <{fencedframe}> from
+its embedder, it also results in a [=Document/policy container=] for {{Document}}s inside of a
+<{fencedframe}> being created that causes [=subresource requests=] to not do private network access
+checks. This section patches the [[Private-Network-Access]] specification to make subresources be
+subject to those checks.
 
 <div algorithm=pna-html-clone-policy>
   Modify the [[PRIVATE-NETWORK-ACCESS#integration-html]] section. Rewrite step 2 to read:
