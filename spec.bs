@@ -2419,39 +2419,40 @@ subject to those checks.
   Modify the definition of the [=determine navigation params policy container=] algorithm to read:
 
   To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
-    container=]-or-nulls |historyPolicyContainer|, |initiatorPolicyContainer|,
-    |parentPolicyContainer|, and <var ignore>responsePolicyContainer</var>; and an optional
-    [=boolean=] |fenced| that defaults to false:
+  container=]-or-nulls |historyPolicyContainer|, |initiatorPolicyContainer|,
+  |parentPolicyContainer|, and <var ignore>responsePolicyContainer</var>; and an optional
+  [=boolean=] |fenced| that defaults to false:
 
-  Rewrite step 1.2 to read:
+  Rewrite step 1, substep 2 to read:
     
-    2. Return a [=clone a policy container|clone=] of |historyPolicyContainer| with fenced set to
-      |fenced|.
+    2. Return a [=clone a policy container|clone=] of |historyPolicyContainer| given |fenced|.
 
-  Rewrite step 2.2 to read:
+  Rewrite step 2, substep 2 to read:
 
-    2. Return a [=clone a policy container|clone=] of |parentPolicyContainer| with fenced set to
-      |fenced|.
+    2. Return a [=clone a policy container|clone=] of |parentPolicyContainer| given |fenced|.
 
   Rewrite step 3 to read:
 
-    3. If |responseURL| is local and |initiatorPolicyContainer| is not null, then return a clone of
-      |initiatorPolicyContainer| with fenced set to |fenced|.
+    3. If |responseURL| is local and |initiatorPolicyContainer| is not null, then return a [=clone a
+       policy container|clone=] of |initiatorPolicyContainer| given |fenced|.
 </div>
 
 <div algorithm=pna-populate-session-history-entry>
   Add a step before step 23 of [=create navigation params by fetching=] that says:
 
-  23. Let |fenced| be true if <var ignore>navigable</var> is a [=fenced navigable container/fenced
-    navigable=], false otherwise.
+  23. Let |fenced| be true if |navigable| is a [=fenced navigable container/fenced navigable=],
+      false otherwise.
+
+      Note: This ensures |fenced| is true regardless of whether the initiator {{Document}} is
+      |navigable|'s [=navigable/active document=] or its [=navigable/unfenced parent=].
 
   Rewrite step 23 (now step 24) to read:
 
   24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params
-    policy container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s [=document
-    state=]'s [=document state/history policy container=], <var ignore>sourceSnapshotParams</var>'s
-    [=source snapshot params/source policy container=], null, <var ignore>responsePolicyContainer
-    </var>, and |fenced|.
+      policy container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s
+      [=document state=]'s [=document state/history policy container=], <var
+      ignore>sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null,
+      <var ignore>responsePolicyContainer</var>, and |fenced|.
 </div>
 
 Note: Inheritance also needs to be gated on initial document creation. However, that is already
