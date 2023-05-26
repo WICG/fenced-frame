@@ -2377,7 +2377,7 @@ achieve the outcomes described in the above explanatory content.
 
 [[Private-Network-Access]] is a security feature that regulates when and how [=local network
 requests=] can be made. On [[HTML#creating-browsing-contexts|creation]], <{iframe}>s inherit their
-[=Document/policy container=] from their [=navigable container=]'s [=node document=], while
+[=Document/policy container=] from their [=navigable container=]'s [=Node/node document=], while
 <{fencedframe}>s do not. While this prevents information from leaking into a <{fencedframe}> from
 its embedder, it also results in a [=Document/policy container=] for {{Document}}s inside of a
 <{fencedframe}> being created that causes [=subresource requests=] to not do private network access
