@@ -2455,6 +2455,6 @@ subject to those checks.
       <var ignore>responsePolicyContainer</var>, and |fenced|.
 </div>
 
-Note: Inheritance also needs to be gated on initial document creation. However, that is already
-handled in the <a href=#creating-browsing-contexts-patch>Modifications to creating browsing
-contexts</a> section.
+Note: <{fencedframe}> [=policy container=] "inheritance" upon initial {{Document}} creation (and its
+corresponding [=policy container/ip address space=]) is handled in the
+[[#creating-browsing-contexts-patch]] section.
