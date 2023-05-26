@@ -2373,7 +2373,7 @@ achieve the outcomes described in the above explanatory content.
   /fenced-frame/permission-notification.https.html
 </wpt>
 
-<h3 id=private-network-access-monkeypatch>Private network access</h3>
+<h3 id=private-network-access-monkeypatch>Private Network Access</h3>
 
 [[Private-Network-Access]] is a security feature that allows you to control which web applications
 on can make [=local network requests=]. On creation, <{iframe}>s inherit their policy container from
@@ -2393,8 +2393,8 @@ causes [=subresource requests=] to not do private network access checks. This se
 
     An additional step is added to the algorithm:
 
-      1. If |fenced| is set to true, then set |clone|’s [=IP address space=] to [=IP address space/
-        public|public=].
+      1. If |fenced| is set to true, then set |clone|’s [=IP address space=] to [=IP address
+         space/public=].
 
         Otherwise, set |clone|’s [=IP address space=] to |policyContainer|’s [=IP address space=].
 </div>
