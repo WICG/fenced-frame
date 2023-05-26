@@ -22,6 +22,22 @@ WPT Display: open
 
 <pre class="link-defaults">
 </pre>
+<pre class="biblio">
+{
+  "private-network-access": {
+    "authors": [
+      "Titouan Rigoudy"
+    ],
+    "href": "https://wicg.github.io/private-network-access",
+    "title": "Private Network Access",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
+  }
+}
+</pre>
 <pre class="anchors">
 urlPrefix: https://www.ietf.org/rfc/rfc4122.txt
   type: dfn; text: urn uuid
@@ -151,9 +167,6 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
-spec: local-network-access; urlPrefix: https://wicg.github.io/local-network-access/
-  type: dfn
-    text: Integration with HTML; url: integration-html
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -2335,31 +2348,16 @@ achieve the outcomes described in the above explanatory content.
 
 <h3 id=private-network-access-monkeypatch>Private network access</h3>
 
-Private network access is a security feature that allows you to control which apps on your device
-can access your local network. On creation, regular iframes can inherit their policy container from
-the navigation initiator, while fenced frames explicitly do not. While this prevents information
-from leaking from an embedder to a fenced frame, this results in a policy container being created
-that causes subresource requests to not do private network access checks. This section patches the
-local network access spec to have subresources be subject to those checks.
+[[Private-Network-Access]] is a security feature that allows you to control which web applications
+on can make [=local network requests=]. On creation, <{iframe}>s inherit their policy container from
+the navigation initiator, while <{fencedframe}>s explicitly do not. While this prevents information
+from leaking into a <{fencedframe}> from its embedder, it also results in a
+[=Document/policy container=] for {{Document}}s inside of a <{fencedframe}> being created that
+causes [=subresource requests=] to not do private network access checks. This section patches the
+[[Private-Network-Access]] specification to have subresources be subject to those checks.
 
-<div algorithm=pna-html-changes>
-  Modify the [=Integration with HTML=] section. Rewrite step 3 to read:
-
-  3. An additional step is added to the [=create a policy container from a fetch response=]
-    algorithm:
-
-    1. If |environment| is not null, |environment|'s [=environment/target browsing context=] is not
-      null, and |environment|'s [=environment/target browsing context=]'s [=browsing context/active
-      document=]'s [=node navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable
-      container/fenced navigable=], then set |result|'s [=IP address space=] to [=IP address
-      space/public|public=].
-
-      Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
-      [=response/IP address space=].
-</div>
-
-<div algorithm=pna-clone-policy>
-  Modify the [=Integration with HTML=] section. Rewrite step 2 to read:
+<div algorithm=pna-html-clone-policy>
+  Modify the [[PRIVATE-NETWORK-ACCESS#integration-html]] section. Rewrite step 2 to read:
 
   2. Modify the definition of [=clone a policy container=] to read:
 
@@ -2372,6 +2370,21 @@ local network access spec to have subresources be subject to those checks.
         public|public=].
 
         Otherwise, set |clone|’s [=IP address space=] to |policyContainer|’s [=IP address space=].
+</div>
+
+<div algorithm=pna-html-response-policy>
+  Modify the [[PRIVATE-NETWORK-ACCESS#integration-html]] section. Rewrite step 3 to read:
+
+  3. An additional step is added to the [=create a policy container from a fetch response=]
+    algorithm:
+
+    1. If |environment| is not null and |environment|'s [=environment/target browsing context=]'s
+       [=browsing context/active document=]'s [=node navigable=]'s [=navigable/traversable
+       navigable=] is a [=fenced navigable container/fenced navigable=], then set |result|'s [=IP
+       address space=] to [=IP address space/public=].
+
+       Otherwise, set |result|'s [=IP address space=] to <var ignore>response</var>'s
+       [=response/IP address space=].
 </div>
 
 <div algorithm=pna-determine-params>
