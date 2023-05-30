@@ -22,22 +22,6 @@ WPT Display: open
 
 <pre class="link-defaults">
 </pre>
-<pre class="biblio">
-{
-  "private-network-access": {
-    "authors": [
-      "Titouan Rigoudy"
-    ],
-    "href": "https://wicg.github.io/private-network-access",
-    "title": "Private Network Access",
-    "status": "CG-DRAFT",
-    "publisher": "WICG",
-    "deliveredBy": [
-      "https://wicg.io/"
-    ]
-  }
-}
-</pre>
 <pre class="anchors">
 urlPrefix: https://www.ietf.org/rfc/rfc4122.txt
   type: dfn; text: urn uuid
@@ -1279,6 +1263,49 @@ Note: This is because we need to ensure that we do not leak <var ignore>creator<
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
 
+<h3 id=local-policy-container-monkeypatch>Local Requests Policy Container Patch</h3>
+
+When making local requests, <{iframe}>s inherit their [=Document/policy container=] from their
+[=navigable container=]'s [=Node/node document=]. If fenced frames were to do the same thing, that
+would allow information about the initiator's [=IP address space=] to leak across a fenced frame
+boundary. his section patches [=Document/policy container=] inheritance to close that leak.
+
+<div algorithm=local-policy-inheritance-determine-params>
+  Modify the definition of the [=determine navigation params policy container=] algorithm to read:
+
+  To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
+  container=]-or-nulls <var ignore>historyPolicyContainer</var>, |initiatorPolicyContainer|,
+  <var ignore>parentPolicyContainer</var>, and <var ignore>responsePolicyContainer</var>; and an
+  optional [=boolean=] |fenced| that defaults to false:
+
+  Rewrite step 3 to read:
+
+    3. If |responseURL| is local, |initiatorPolicyContainer| is not null, and |fenced| is set to
+       false, then return a [=clone a policy container|clone=] of |initiatorPolicyContainer|.
+</div>
+
+<div algorithm=local-policy-inheritance-populate-session-history-entry>
+  Add a step before step 23 of [=create navigation params by fetching=] that says:
+
+  23. Let |fenced| be true if |navigable| is a [=fenced navigable container/fenced navigable=],
+      false otherwise.
+
+      Note: This ensures |fenced| is true regardless of whether the initiator {{Document}} is
+      |navigable|'s [=navigable/active document=] or its [=navigable/unfenced parent=].
+
+  Rewrite step 23 (now step 24) to read:
+
+  24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params
+      policy container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s
+      [=document state=]'s [=document state/history policy container=], <var
+      ignore>sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null,
+      <var ignore>responsePolicyContainer</var>, and |fenced|.
+</div>
+
+Note: <{fencedframe}> [=policy container=] "inheritance" upon initial {{Document}} creation (and its
+corresponding [=policy container/ip address space=]) is handled in the
+[[#creating-browsing-contexts-patch]] section.
+
 <h3 id=nested-traversables>Nested traversables</h3>
 
 <h4 id=nested-traversables-intro>Introduction</h4>
@@ -2372,65 +2399,3 @@ achieve the outcomes described in the above explanatory content.
   /fenced-frame/permission-geolocation.https.html
   /fenced-frame/permission-notification.https.html
 </wpt>
-
-<h3 id=private-network-access-monkeypatch>Private Network Access</h3>
-
-[[Private-Network-Access]] is a security feature that regulates when and how [=local network
-requests=] can be made. When making local requests, <{iframe}>s inherit their [=Document/policy
-container=] from their [=navigable container=]'s [=Node/node document=]. If fenced frames were to
-do the same thing, that would allow information about the initiator's [=IP address space=] to leak
-across a fenced frame boundary. his section patches the [[Private-Network-Access]] specification to
-close that leak.
-
-<div algorithm=pna-html-clone-policy>
-  Modify the [[PRIVATE-NETWORK-ACCESS#integration-html]] section. Rewrite step 2 to read:
-
-  2. Modify the definition of [=clone a policy container=] to read:
-
-    To [=clone a policy container=] given a [=policy container=] |policyContainer| and an optional
-    [=boolean=] |fenced| that defaults to false
-
-    An additional step is added to the algorithm:
-
-      1. If |fenced| is set to true, then set |clone|’s [=IP address space=] to [=IP address
-         space/public=].
-
-        Otherwise, set |clone|’s [=IP address space=] to |policyContainer|’s [=IP address space=].
-</div>
-
-<div algorithm=pna-determine-params>
-  Modify the definition of the [=determine navigation params policy container=] algorithm to read:
-
-  To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
-  container=]-or-nulls <var ignore>historyPolicyContainer</var>, |initiatorPolicyContainer|,
-  <var ignore>parentPolicyContainer</var>, and <var ignore>responsePolicyContainer</var>; and an optional
-  [=boolean=] |fenced| that defaults to false:
-
-  Rewrite step 3 to read:
-
-    3. If |responseURL| is local, |initiatorPolicyContainer| is not null, and |fenced| is set to
-       false, then return a [=clone a
-       policy container|clone=] of |initiatorPolicyContainer| given |fenced|.
-</div>
-
-<div algorithm=pna-populate-session-history-entry>
-  Add a step before step 23 of [=create navigation params by fetching=] that says:
-
-  23. Let |fenced| be true if |navigable| is a [=fenced navigable container/fenced navigable=],
-      false otherwise.
-
-      Note: This ensures |fenced| is true regardless of whether the initiator {{Document}} is
-      |navigable|'s [=navigable/active document=] or its [=navigable/unfenced parent=].
-
-  Rewrite step 23 (now step 24) to read:
-
-  24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params
-      policy container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s
-      [=document state=]'s [=document state/history policy container=], <var
-      ignore>sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null,
-      <var ignore>responsePolicyContainer</var>, and |fenced|.
-</div>
-
-Note: <{fencedframe}> [=policy container=] "inheritance" upon initial {{Document}} creation (and its
-corresponding [=policy container/ip address space=]) is handled in the
-[[#creating-browsing-contexts-patch]] section.
