@@ -2242,7 +2242,7 @@ achieve the outcomes described in the above explanatory content.
 
 <h3 id=cssom-monkeypatch>CSSOM View</h3>
 
-The <a href=https://www.w3.org/TR/cssom-view-1>CSSOM View Module</a> defines scroll bubbling
+The [[!CSSOM-VIEW]] module defines scroll bubbling
 behavior through the [=scroll a target into view=] algorithm. Our specification modifies it to not
 allow scrolling a target into view if it is inside of a fenced frame. This is done because the
 {{Element/scrollIntoView()}} method is an event that can both be triggered from and observed by the
@@ -2250,15 +2250,15 @@ web platform, which can open a side channel between a fenced frame and its embed
 
 Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that reads:
 
-2. If the <var ignore=''>target</var>-associated {{Document}}'s [=node navigable=]'s
+2. If the <var ignore>target</var>-associated {{Document}}'s [=node navigable=]'s
    [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=], terminate these steps.
-3. If the <var ignore=''>target</var>-associated {{Document}}'s [=Document/ancestor navigables=] contains
+3. If the <var ignore>target</var>-associated {{Document}}'s [=Document/ancestor navigables=] contains
    a [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
    terminate these steps.
 
 Modify the [=Document/run the scroll steps=] algorithm to add a check before step 1.1 that reads:
 
-1. If <var ignore=''>target</var> is a {{Document}} whose [=node navigable=]'s
+1. If <var ignore>target</var> is a {{Document}} whose [=node navigable=]'s
    [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
    continue.
 
