@@ -28,7 +28,7 @@ WPT Display: open
     "authors": [
       "Paul Jensen"
     ],
-    "href": "https://wicg.github.io/turtledove",
+    "href": "https://wicg.github.io/turtledove/",
     "title": "Protected Audience API",
     "status": "CG-DRAFT",
     "publisher": "WICG",
