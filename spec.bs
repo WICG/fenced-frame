@@ -22,6 +22,34 @@ WPT Display: open
 
 <pre class="link-defaults">
 </pre>
+<pre class="biblio">
+{
+  "protected-audience": {
+    "authors": [
+      "Paul Jensen"
+    ],
+    "href": "https://wicg.github.io/turtledove/",
+    "title": "Protected Audience API",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
+  },
+  "shared-storage": {
+    "authors": [
+      "Cammie Barnes"
+    ],
+    "href": "https://wicg.github.io/shared-storage/",
+    "title": "Shared Storage API",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
+  }
+}
+</pre>
 <pre class="anchors">
 urlPrefix: https://www.ietf.org/rfc/rfc4122.txt
   type: dfn; text: urn uuid
@@ -278,6 +306,30 @@ dl, dd {
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
 
+<h2 id=introduction>Introduction</h2>
+
+*This section is non-normative.*
+
+In a web that has its cookies and storage partitioned by top-frame site, there are occasions — such
+as interest group based advertising as provided by the [[Protected-Audience]] API, or [Conversion
+Lift
+Measurements](https://github.com/w3c/web-advertising/blob/main/support_for_advertising_use_cases.md#conversion-lift-measurement))
+— when it would be useful to display content from different partitions in the same page. This can
+only be done in a privacy-preserving way if the {{Document}}s that contain data from different
+partitions are isolated from each other, unable to communicate despite being re visually composed on
+the same page. <{iframe}> elements are not suitable for this, since they offer many intentional
+communication channels with their embedder. This specification introduces the <{fencedframe}>
+element, a new element to embed {{Document}}s on a page that explicitly prevents communication
+between the {{Document}} and its embedder.
+
+This specification defines the new element, its integration with the rest of the web platform,
+including [[#html-integration]] and [[#interaction-with-other-specs]], and its supporting primitives
+like {{FencedFrameConfig}}, which is the major input to the <{fencedframe}> in place of normal
+[=URLs=] and "`src`" attributes. Given that this specification defines a new element and its
+integration with the rest of the platform, it should be read as largely a monkeypatch to the
+[[HTML]], with its end goal to be merged into that standard, provided there is adequate
+cross-browser support.
+
 <h2 id=the-fencedframe-element>The <dfn element export>fencedframe</dfn> element</h2>
 
 <dl class="element">
@@ -406,8 +458,7 @@ mapping</dfn>, which is a [=fenced frame config mapping=].
 Note: This mapping is consulted during [=navigate|navigation=], and written to by what we
 colloquially refer to as *URN-generating APIs* or *config-generating APIs*, that generate both [=urn
 uuids=] and [=fenced frame configs=] for use in navigating <{fencedframe}> and <{iframe}> elements.
-See for example, the <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and <a
-href=https://wicg.github.io/shared-storage/>Shared Storage</a> specifications.
+See for example, the [[Protected-Audience]] API and [[Shared-Storage]] specifications.
 
 A <dfn>fenced frame config mapping</dfn> has three submappings:
 
@@ -525,21 +576,19 @@ follows:
 
 A key feature of the <{fencedframe}> element is that web platform APIs can configure the behavior
 of the frame in a way that limits the ability of other execution contexts to modify or inspect this
-configuration, for security and privacy reasons. For example, the
-<a href=https://wicg.github.io/turtledove/>FLEDGE</a> API performs on-device ad auctions over
-cross-site data, and it is important that the ad that wins the auction can be loaded into a frame,
-without the API caller knowing *which ad* won the auction or being able to manipulate the
-environment in which the ad loads.
+configuration, for security and privacy reasons. For example, the [[Protected-Audience]] API
+performs on-device ad auctions over cross-site data, and it is important that the ad that wins the
+auction can be loaded into a frame, without the API caller knowing *which ad* won the auction or
+being able to manipulate the environment in which the ad loads.
 
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
 and not constructed or modified by script. Their fields also contain "[=visibilities=]", which
 dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
-interface.  Config-generating APIs (like <a href=https://wicg.github.io/turtledove/>FLEDGE</a> and
-<a href=https://wicg.github.io/shared-storage/>Shared Storage</a>) must specify values for all
-fields of their fenced frame configs in order to ensure that they have considered the privacy
-implications of each field, though they may choose to set the values to null.
+interface. Config-generating APIs like the [[Protected-Audience]] and [[Shared-Storage]] APIs must
+specify values for all fields of their [=fenced frame configs=] in order to ensure that they have
+considered the privacy implications of each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
