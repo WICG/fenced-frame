@@ -126,6 +126,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: source snapshot params
       for: source snapshot params
         text: fetch client; url: source-snapshot-params-client
+      text: session-history-entry
+      for: session history entry
+        text: step; url: she-step
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -1343,25 +1346,28 @@ vector between these two parties, for the purpose of user activation a <{fencedf
 [=fenced navigable container/fenced navigable=] cannot not be considered a descendant of its
 embedder, nor can its embedder be considered an ancestor of the <{fencedframe}>'s [=fenced navigable
 container/fenced navigable=], in the way that the [=user activation=] algorithms currently use those
-terms. In other words, we consider user activation to be "fenced" to denote that it never crosses the
-[=fenced navigable container/fenced navigable=] boundary.</p>
+terms. In other words, we consider user activation to be *fenced*, to denote that it never crosses
+the [=fenced navigable container/fenced navigable=] boundary; if it were unfenced, it would behave
+as it would with <{iframe}>s, allowing [=user activation=] to flow freely across the frame
+boundary.</p>
 
 <wpt>
   /fenced-frame/consume-user-activation.https.html
 </wpt>
 
-<p class=example id=unfenced-sandbox-inheritance>On the other hand, when a <{fencedframe}>'s
-[=fenced navigable container/fenced navigable=] gets [=created a new nested traversable|created=] or
-[=navigated=], it <span class=allow-2119>must</span> <a
+<p class=example id=unfenced-sandbox-inheritance>Unlike [=user activation=], when a
+<{fencedframe}>'s [=fenced navigable container/fenced navigable=] gets [=created a new nested
+traversable|created=] or [=navigated=], it <span class=allow-2119>must</span> <a
 href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inherit</a> its embedder
 {{Document}}'s [=Document/active sandboxing flag set=] as is standard for {{Document}}s in normal
 [=child navigables=]. If we did not do this, then the <{fencedframe}> element would be a trivial
-sandbox bypass.</p>
+sandbox bypass. Because <{fencedframe}> sandbox flag inheritance behaves similarly to how it does in
+<{iframe}> elements, we consider sandbox inheritance to be *unfenced*.</p>
 
 To provide the isolation mentioned above, and its conditional relaxation, this specification defines
-a new kind of "*parent*" for [=traversable navigables=] called an [=traversable navigable/unfenced
+a new kind of parent for [=traversable navigables=] called an [=traversable navigable/unfenced
 parent=], which provides a link to its embedder that algorithms can intentionally use when they need
-to be "*unfenced*", as described above.
+to be *unfenced*, as described above.
 
 Note: Introducing a new kind of parent ([=traversable navigable/unfenced parent=]) is an intentional
 design decision. It means that by default, the <{fencedframe}> boundary is private and isolated,
@@ -1390,7 +1396,7 @@ Note: The [=traversable navigable/unfenced parent=] link is what gives a <{fence
 things that need to be "*unfenced*", like some algorithms in the focus processing model.
 
 <div algorithm>
-  To get a [=navigable=] |navigable|'s <dfn for=navigable>unfenced parent</dfn>:
+  To get the <dfn for=navigable>unfenced parent</dfn> of a [=navigable=] |navigable|:
 
     1. If |navigable| is a [=child navigable=], return |navigable|'s [=navigable/parent=].
 
@@ -1400,11 +1406,11 @@ things that need to be "*unfenced*", like some algorithms in the focus processin
 
     Note: This algorithm is different from the [=traversable navigable=]'s [=traversable
     navigable/unfenced parent=] getter in that this algorithm first tries to get the [=navigable=]'s
-    *normal* [=navigable/parent=] if |navigable| is a normal [=child navigable=].
+    normal [=navigable/parent=] if |navigable| is a normal [=child navigable=].
 </div>
 
 <div algorithm>
-  To get a [=navigable=] |navigable|'s <dfn for=navigable>unfenced container document</dfn>:
+  To get the <dfn for=navigable>unfenced container document</dfn> of a [=navigable=] |navigable|:
 
     1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
 
@@ -1434,7 +1440,7 @@ parent=], or null. It is initially null.
   To <dfn>initialize the nested traversable</dfn> |traversable| given a [=document state=]
   |documentState| and a [=navigable=] |parent|:
 
-  1. [=Initialize the navigable=] |traversable| given |documentState| and null.
+  1. [=Initialize the navigable=] |traversable| given |documentState|.
 
   1. Set |traversable|'s [=traversable navigable/unfenced parent=] to |parent|.
 </div>
@@ -1463,7 +1469,7 @@ parent=], or null. It is initially null.
 
   1. Let |initialHistoryEntry| be |traversable|'s [=navigable/active session history entry=].
 
-  1. Set |initialHistoryEntry|'s step to 0.
+  1. Set |initialHistoryEntry|'s [=session history entry/step=] to 0.
 
   1. [=Append=] |initialHistoryEntry| to |traversable|'s [=traversable navigable/session history
      entries=].
