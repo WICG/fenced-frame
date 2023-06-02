@@ -2282,7 +2282,7 @@ achieve the outcomes described in the above explanatory content.
 
   When not empty, the <{iframe}>'s <{iframe/allow}> or <{fencedframe}>'s <{fencedframe/allow}>
   attribute will result in adding an [=allowlist=] for each [=supported feature=] to the <{iframe}>
-  or <{fencedframe}>'s [=container policy=].
+  or <{fencedframe}>'s [=container policy=], when it is constructed.
 </div>
 
 <div algorithm=create-permissions-policy>
