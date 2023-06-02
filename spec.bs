@@ -1300,13 +1300,14 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
 <div algorithm="creating a new browsing context and document patch">
   In [[HTML]]'s [=creating a new browsing context and document=] algorithm, rewrite the two steps
-  starting with;
+  (currently steps 4 &amp; 15) starting with;
 
-  1. If |creator| is non-null, then:
+    * If |creator| is non-null, then:
 
   to instead use the tighter condition:
 
-  1. If |creator| is non-null and <var ignore>embedder</var> is not a <{fencedframe}> element, then:
+    * If |creator| is non-null and <var ignore>embedder</var> is not a <{fencedframe}> element,
+      then:
 </div>
 
 Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
