@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="baf75f581f294a792f292591f8b85919c1341fd6" name="document-revision">
+  <meta content="fb89d8c443e6e30b2bcddab32e94a696e0306568" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -999,6 +999,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#permissions-policy-patches"><span class="secno">4.3.1</span> <span class="content">Algorithm patches</span></a>
        </ol>
      </ol>
+    <li><a href="#security-and-privacy"><span class="secno">5</span> <span class="content">Security &amp; Privacy Considerations</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -2713,8 +2714,7 @@ Therefore a feature can only be enabled inside of a <code><a data-link-type="ele
      <p class="note" role="note"><span class="marker">Note:</span> This is OK because it is the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦①">fencedframe</a></code>'s content <em>itself</em> that is making the decision
  to disable a particular feature, not its embedder environment.</p>
    </ul>
-   <p>The patches in the below section "fence" the appropriate <a data-link-type="biblio" href="#biblio-permissions-policy" title="Permissions Policy">[PERMISSIONS-POLICY]</a> algorithms to
-achieve the outcomes described in the above explanatory content.</p>
+   <p>The patches in the below section "fence" the appropriate <a data-link-type="biblio" href="#biblio-permissions-policy" title="Permissions Policy">[PERMISSIONS-POLICY]</a> and <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> algorithms to achieve the outcomes described in the above explanatory content.</p>
    <h4 class="heading settled" data-level="4.3.1" id="permissions-policy-patches"><span class="secno">4.3.1. </span><span class="content">Algorithm patches</span><a class="self-link" href="#permissions-policy-patches"></a></h4>
    <div class="algorithm" data-algorithm="allow-attribute-fenced-frame" id="allow-attribute-fenced-frame">
      Rename the <a href="https://w3c.github.io/webappsec-permissions-policy/#iframe-allow-attribute">The <code>allow</code> attribute of the <code>iframe</code> element</a> section to "The <code>allow</code> attribute of the <code>iframe</code> and <code>fencedframe</code> element", and rewrite the section to read: 
@@ -2722,7 +2722,7 @@ achieve the outcomes described in the above explanatory content.</p>
   policy directive</a>.</p>
     <p>The allowlist for the features named in the attribute may be empty; in that case, the default
   value for the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑤">allowlist</a> is "<code>src</code>", which represents the origin of the URL in the iframe’s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-src" id="ref-for-attr-iframe-src">src</a></code> attribute, or the fencedframe’s <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config②①">fenced frame config</a>.</p>
-    <p>When not empty, the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element①⓪">iframe</a></code>'s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow" id="ref-for-attr-iframe-allow①">allow</a></code> or <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦④">fencedframe</a></code>'s <code><a data-link-type="element-sub" href="#element-attrdef-fencedframe-allow" id="ref-for-element-attrdef-fencedframe-allow⑥">allow</a></code> attribute will result in adding an <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑥">allowlist</a> for each <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#supported-features" id="ref-for-supported-features">supported feature</a> to the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element①①">iframe</a></code> or <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#container-policy" id="ref-for-container-policy①">container policy</a>.</p>
+    <p>When not empty, the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element①⓪">iframe</a></code>'s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow" id="ref-for-attr-iframe-allow①">allow</a></code> or <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦④">fencedframe</a></code>'s <code><a data-link-type="element-sub" href="#element-attrdef-fencedframe-allow" id="ref-for-element-attrdef-fencedframe-allow⑥">allow</a></code> attribute will result in adding an <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑥">allowlist</a> for each <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#supported-features" id="ref-for-supported-features">supported feature</a> to the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element①①">iframe</a></code> or <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦⑤">fencedframe</a></code>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#container-policy" id="ref-for-container-policy①">container policy</a>, when it is constructed.</p>
    </div>
    <div class="algorithm" data-algorithm="create-permissions-policy">
      Modify the <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-permissions-policy/#create-for-navigable" id="ref-for-create-for-navigable">Create a Permissions Policy for a navigable</a> algorithm: 
@@ -2747,7 +2747,7 @@ achieve the outcomes described in the above explanatory content.</p>
    </div>
    <div class="algorithm" data-algorithm="create-permissions-policy-response">
      Modify the <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-permissions-policy/#create-from-response" id="ref-for-create-from-response">Create a Permissions Policy for a navigable from response</a> algorithm to read: 
-    <p>Given null, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑧">navigable container</a>, or a <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①③">fenced navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin④">origin</a> (<var>origin</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> (<var>response</var>), this algorithm returns a
+    <p>Given null, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑧">navigable container</a>-or-<a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①③">fenced navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin④">origin</a> (<var>origin</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> (<var>response</var>), this algorithm returns a
   new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy" id="ref-for-concept-document-permissions-policy③">permissions policy</a>.</p>
     <p>Add a step before step 1 that reads:</p>
     <ol>
@@ -2766,13 +2766,13 @@ achieve the outcomes described in the above explanatory content.</p>
   before the step inside the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">queued task</a> starting with "If <var>failure</var> is true, then:" that reads: 
     <ol start="8">
      <li data-md>
-      <p>Otherwise, if the result of <a data-link-type="dfn" href="#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy" id="ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy①">Should navigation response to navigation request be blocked by
+      <p>Otherwise, if the result of <a data-link-type="dfn" href="#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy" id="ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy①">should navigation response to navigation request be blocked by
 Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</code>", then set <var>failure</var> to true.</p>
     </ol>
     <p class="note" role="note"><span class="marker">Note:</span> If this algorithm returns "<code>Blocked</code>", the pre-existing <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②③">Document</a></code> in the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦⑥">fencedframe</a></code> does not stick around; an error page will be loaded.</p>
    </div>
    <div class="algorithm" data-algorithm="permissions-policy-block-request">
-     Create a new algorithm called <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="Should navigation response to navigation request be blocked by Permissions Policy?" data-noexport id="should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy">Should navigation response to navigation request be blocked by
+     Create a new algorithm called <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="should navigation response to navigation request be blocked by Permissions Policy?" data-noexport id="should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy">should navigation response to navigation request be blocked by
   Permissions Policy?</dfn> in <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>. 
     <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params" id="ref-for-navigation-params②">navigation params</a> (<var>navigationParams</var>), this algorithm returns "<code>Blocked</code>" or
   "<code>Allowed</code>":</p>
@@ -2841,10 +2841,10 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
       <p>If <var>feature</var> is present in <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#declared-policy" id="ref-for-declared-policy">declared policy</a>,</p>
       <ol>
        <li data-md>
-        <p>If <var>fenced</var> is set to false, and the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑦">allowlist</a> for <var>feature</var> in <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#declared-policy" id="ref-for-declared-policy①">declared
- policy</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#matches" id="ref-for-matches">matches</a> <var>origin</var>, then return "<code>Enabled</code>".</p>
+        <p>If <var>fenced</var> is false, and the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑦">allowlist</a> for <var>feature</var> in <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#declared-policy" id="ref-for-declared-policy①">declared policy</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#matches" id="ref-for-matches">matches</a> <var>origin</var>, then return "<code>Enabled</code>".</p>
        <li data-md>
-        <p>Otherwise, if <var>fenced</var> is set to true, and the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑧">allowlist</a> for <var>feature</var> in <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#declared-policy" id="ref-for-declared-policy②">declared policy</a> is <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#the-special-value" id="ref-for-the-special-value③">the special value *</a>, then return "<code>Enabled</code>".</p>
+        <p>Otherwise, if <var>fenced</var> is true, and the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist⑧">allowlist</a> for <var>feature</var> in <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#declared-policy" id="ref-for-declared-policy②">declared
+ policy</a> is <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#the-special-value" id="ref-for-the-special-value③">the special value *</a>, then return "<code>Enabled</code>".</p>
        <li data-md>
         <p>Otherwise, return "<code>Disabled</code>".</p>
       </ol>
@@ -2852,7 +2852,8 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
     <p>Rewrite step 5 to read:</p>
     <ol start="5">
      <li data-md>
-      <p>If <var>fenced</var> is set to false, <var>feature</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist" id="ref-for-policy-controlled-feature-default-allowlist⑤">default allowlist</a> is <code>'self'</code>, and <var>origin</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin⑦">same origin</a> with <var>document</var>’s origin, return "Enabled".</p>
+      <p>If <var>fenced</var> is false, <var>feature</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#policy-controlled-feature-default-allowlist" id="ref-for-policy-controlled-feature-default-allowlist⑤">default allowlist</a> is <code>'self'</code>,
+ and <var>origin</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin⑦">same origin</a> with <var>document</var>’s origin, return "Enabled".</p>
     </ol>
    </div>
    <details class="wpt-tests-block" dir="ltr" lang="en" open>
@@ -2873,6 +2874,17 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/permission-notification.https.html" title="fenced-frame/permission-notification.https.html">permission-notification.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/permission-notification.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/permission-notification.https.html"><small>(source)</small></a>
     </ul>
    </details>
+   <h2 class="heading settled" data-level="5" id="security-and-privacy"><span class="secno">5. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
+   <p>This material is being upstreamed from our explainer into this specification, and in the meantime
+you can consult the following resources:</p>
+   <ul>
+    <li data-md>
+     <p><a href="https://github.com/WICG/fenced-frame/tree/master/explainer#security-considerations">Security considerations</a></p>
+    <li data-md>
+     <p><a href="https://github.com/WICG/fenced-frame/tree/master/explainer#privacy-considerations">Privacy considerations</a></p>
+    <li data-md>
+     <p><a href="https://github.com/WICG/fenced-frame/blob/master/explainer/TAG_Security_Privacy_Questionnaire.md">TAG Security/Privacy Questionnaire</a></p>
+   </ul>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -3096,7 +3108,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
    <li><a href="#dom-fence-setreporteventdataforautomaticbeacons">setReportEventDataForAutomaticBeacons(event)</a><span>, in § 2.4</span>
    <li><a href="#dom-fencedframeconfig-setsharedstoragecontext">setSharedStorageContext(contextString)</a><span>, in § 2.3.4</span>
    <li><a href="#dom-fencereportingdestination-shared-storage-select-url">"shared-storage-select-url"</a><span>, in § 2.4</span>
-   <li><a href="#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy">Should navigation response to navigation request be blocked by Permissions Policy?</a><span>, in § 4.3.1</span>
+   <li><a href="#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy">should navigation response to navigation request be blocked by Permissions Policy?</a><span>, in § 4.3.1</span>
    <li><a href="#fencedframetype-size">size</a><span>, in § 2.3.2</span>
    <li><a href="#fenced-frame-config-mapping-store-a-pending-config">store a pending config</a><span>, in § 2.2</span>
    <li><a href="#fenced-frame-config-mapping-store-nested-configs">store nested configs</a><span>, in § 2.2</span>
@@ -4191,7 +4203,7 @@ window.dfnpanelData['supports-loading-mode-fenced-frame'] = {"dfnID": "supports-
 window.dfnpanelData['source-snapshot-params-fenced-frame-config'] = {"dfnID": "source-snapshot-params-fenced-frame-config", "url": "#source-snapshot-params-fenced-frame-config", "dfnText": "fenced frame config", "refSections": [{"refs": [{"id": "ref-for-source-snapshot-params-fenced-frame-config"}, {"id": "ref-for-source-snapshot-params-fenced-frame-config\u2460"}, {"id": "ref-for-source-snapshot-params-fenced-frame-config\u2461"}, {"id": "ref-for-source-snapshot-params-fenced-frame-config\u2462"}], "title": "3.6.3. Actual navigation changes"}], "external": false};
 window.dfnpanelData['navigation-params-fenced-frame-config-instance'] = {"dfnID": "navigation-params-fenced-frame-config-instance", "url": "#navigation-params-fenced-frame-config-instance", "dfnText": "fenced frame config instance", "refSections": [{"refs": [{"id": "ref-for-navigation-params-fenced-frame-config-instance"}], "title": "3.6.3. Actual navigation changes"}], "external": false};
 window.dfnpanelData['fenced-frame-src'] = {"dfnID": "fenced-frame-src", "url": "#fenced-frame-src", "dfnText": "fenced-frame-src", "refSections": [{"refs": [{"id": "ref-for-fenced-frame-src"}, {"id": "ref-for-fenced-frame-src\u2460"}], "title": "4.2.2. New fenced-frame-src [CSP] directive"}], "external": false};
-window.dfnpanelData['should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy'] = {"dfnID": "should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy", "url": "#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy", "dfnText": "Should navigation response to navigation request be blocked by\n  Permissions Policy?", "refSections": [{"refs": [{"id": "ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy"}], "title": "4.3. Permissions Policies"}, {"refs": [{"id": "ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy\u2460"}], "title": "4.3.1. Algorithm patches"}], "external": false};
+window.dfnpanelData['should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy'] = {"dfnID": "should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy", "url": "#should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy", "dfnText": "should navigation response to navigation request be blocked by\n  Permissions Policy?", "refSections": [{"refs": [{"id": "ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy"}], "title": "4.3. Permissions Policies"}, {"refs": [{"id": "ref-for-should-navigation-response-to-navigation-request-be-blocked-by-permissions-policy\u2460"}], "title": "4.3.1. Algorithm patches"}], "external": false};
 </script>
 <script>/* Boilerplate: script-dom-helper */
 function query(sel) { return document.querySelector(sel); }
