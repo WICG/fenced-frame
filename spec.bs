@@ -2262,8 +2262,8 @@ Considering all of the above, we get the following interesting implications:
    Note: This is OK because it is the <{fencedframe}>'s content *itself* that is making the decision
    to disable a particular feature, not its embedder environment.
 
-The patches in the below section "fence" the appropriate [[PERMISSIONS-POLICY]] algorithms to
-achieve the outcomes described in the above explanatory content.
+The patches in the below section "fence" the appropriate [[PERMISSIONS-POLICY]] and [[HTML]]
+algorithms to achieve the outcomes described in the above explanatory content.
 
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
@@ -2282,7 +2282,7 @@ achieve the outcomes described in the above explanatory content.
 
   When not empty, the <{iframe}>'s <{iframe/allow}> or <{fencedframe}>'s <{fencedframe/allow}>
   attribute will result in adding an [=allowlist=] for each [=supported feature=] to the <{iframe}>
-  or <{fencedframe}>'s [=container policy=].
+  or <{fencedframe}>'s [=container policy=], when it is constructed.
 </div>
 
 <div algorithm=create-permissions-policy>
@@ -2309,7 +2309,7 @@ achieve the outcomes described in the above explanatory content.
 <div algorithm=create-permissions-policy-response>
   Modify the [$Create a Permissions Policy for a navigable from response$] algorithm to read:
 
-  Given null, a [=navigable container=], or a [=fenced navigable container=] (|container|), an
+  Given null, a [=navigable container=]-or-[=fenced navigable container=] (|container|), an
   [=origin=] (|origin|), and a [=response=] (<var ignore>response</var>), this algorithm returns a
   new [=Document/permissions policy=].
 
@@ -2328,7 +2328,7 @@ achieve the outcomes described in the above explanatory content.
   before the step inside the [=queue a task|queued task=] starting with "If
   |failure| is true, then:" that reads:
 
-  8. Otherwise, if the result of [=Should navigation response to navigation request be blocked by
+  8. Otherwise, if the result of [=should navigation response to navigation request be blocked by
     Permissions Policy?=] given <var ignore>navigationParams</var> is "`Blocked`", then set 
     |failure| to true.
 
@@ -2337,7 +2337,7 @@ achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm=permissions-policy-block-request>
-  Create a new algorithm called <dfn>Should navigation response to navigation request be blocked by
+  Create a new algorithm called <dfn>should navigation response to navigation request be blocked by
   Permissions Policy?</dfn> in [[!HTML]].
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
@@ -2414,18 +2414,18 @@ achieve the outcomes described in the above explanatory content.
 
   3. If |feature| is present in |policy|'s [=declared policy=],
 
-    1. If |fenced| is set to false, and the [=allowlist=] for |feature| in |policy|'s [=declared
-       policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
+    1. If |fenced| is false, and the [=allowlist=] for |feature| in |policy|'s [=declared policy=]
+       [=permissions/matches=] |origin|, then return "`Enabled`".
 
-    2. Otherwise, if |fenced| is set to true, and the [=allowlist=] for |feature| in |policy|'s
-      [=declared policy=] is [=the special value *=], then return "`Enabled`".
+    2. Otherwise, if |fenced| is true, and the [=allowlist=] for |feature| in |policy|'s [=declared
+       policy=] is [=the special value *=], then return "`Enabled`".
 
     3. Otherwise, return "`Disabled`".
 
   Rewrite step 5 to read:
 
-  5. If |fenced| is set to false, |feature|'s [=policy-controlled feature/default allowlist=] is
-     `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
+  5. If |fenced| is false, |feature|'s [=policy-controlled feature/default allowlist=] is `'self'`,
+     and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
 <wpt>
@@ -2443,3 +2443,12 @@ achieve the outcomes described in the above explanatory content.
   /fenced-frame/permission-geolocation.https.html
   /fenced-frame/permission-notification.https.html
 </wpt>
+
+<h2 id=security-and-privacy>Security & Privacy Considerations</h2>
+
+This material is being upstreamed from our explainer into this specification, and in the meantime
+you can consult the following resources:
+
+ * [Security considerations](https://github.com/WICG/fenced-frame/tree/master/explainer#security-considerations)
+ * [Privacy considerations](https://github.com/WICG/fenced-frame/tree/master/explainer#privacy-considerations)
+ * [TAG Security/Privacy Questionnaire](https://github.com/WICG/fenced-frame/blob/master/explainer/TAG_Security_Privacy_Questionnaire.md)
