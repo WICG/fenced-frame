@@ -1346,9 +1346,9 @@ container=], across the fenced frame boundary.
 <h3 id=local-policy-container-monkeypatch>Local Requests Policy Container Patch</h3>
 
 When making local requests, <{iframe}>s inherit their [=Document/policy container=] from their
-[=navigable container=]'s [=Node/node document=]. If fenced frames were to do the same thing, that
-would allow information about the initiator's [=IP address space=] to leak across a fenced frame
-boundary. his section patches [=Document/policy container=] inheritance to close that leak.
+[=navigable container=]'s [=Node/node document=]. If <{fencedframe}>s were to do the same thing,
+that would allow information about the initiator's [=IP address space=] to leak across a fenced
+frame boundary. This section patches [=Document/policy container=] inheritance to close that leak.
 
 <div algorithm=local-policy-inheritance-determine-params>
   Modify the definition of the [=determine navigation params policy container=] algorithm to read:
