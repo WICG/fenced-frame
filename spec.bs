@@ -47,6 +47,19 @@ WPT Display: open
     "deliveredBy": [
       "https://wicg.io/"
     ]
+  },
+  "prerendering-revamped": {
+    "authors": [
+      "Domenic Denicola",
+      "Dominic Farolino"
+    ],
+    "href": "https://wicg.github.io/nav-speculation/prerendering.html",
+    "title": "Prerendering Revamped",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
   }
 }
 </pre>
@@ -158,15 +171,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
-spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
-  type: dfn
-    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
-    text: should request be blocked due to a bad port; url: block-bad-port
-spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
-  type: dfn
-    text: should fetching request be blocked as mixed content; url: should-block-fetch
-spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
-  type: dfn
     urlPrefix: interactive-elements.html
       text: accesskey attribute command; url: using-the-accesskey-attribute-to-define-a-command-on-other-elements
       text: previously focused element; url: previously-focused-element
@@ -178,6 +182,13 @@ spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
       text: face validation anchor; url: face-validation-anchor
     urlPrefix: webappapis.html
       text: fire a click event; url: fire-a-click-event
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
+    text: should request be blocked due to a bad port; url: block-bad-port
+spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
+  type: dfn
+    text: should fetching request be blocked as mixed content; url: should-block-fetch
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -1538,13 +1549,14 @@ in the [[#nested-traversables-intro]].
 
 <div algorithm="inclusive-descendant-navigables-patch">
   Modify the [=Document/inclusive descendant navigables=] algorithm to take a new optional
-  [=boolean=] argument <dfn lt="inclusive-dn-unfenced">unfenced</dfn> that defaults to false.
+  [=boolean=] argument <var><dfn lt="inclusive-dn-unfenced">unfenced</dfn></var> that defaults to
+  false.
 
   Further rewrite step 2 of this algorithm to:
 
   2. [=list/Extend=] <var ignore>navigables</var> with <var ignore>document</var>'s
      [=Document/descendant navigables=] with [=dn-unfenced|unfenced=] set to
-     [=inclusive-dn-unfenced|unfenced=].
+     <var>[=inclusive-dn-unfenced|unfenced=]</var>.
 </div>
 
 <div algorithm="descendant-navigables-patch">
@@ -1556,7 +1568,7 @@ in the [[#nested-traversables-intro]].
 
   1. Let |navigableContainers| be a [=list=] of all [=shadow-including descendants=] of <var
      ignore>document</var> that are [=navigable containers=] (or [=fenced navigable containers=], if
-     [=dn-unfenced|unfenced=] us true), in [=shadow-including tree order=].
+     <var>[=dn-unfenced|unfenced=]</var> is true), in [=shadow-including tree order=].
 
   1. [=list/For each=] |navigableContainer| of |navigableContainers|:
 
@@ -1568,7 +1580,7 @@ in the [[#nested-traversables-intro]].
 
     1. [=list/Extend=] |navigables| with |descendantNavigable|'s [=navigable/active document=]'s
        [=Document/inclusive descendant navigables=] with [=inclusive-dn-unfenced|unfenced=] set to
-       [=dn-unfenced=].
+       <var>[=dn-unfenced|unfenced=]</var>.
 
   1. Return |navigables|.
 </div>
@@ -1577,29 +1589,29 @@ in the [[#nested-traversables-intro]].
 
 The [[HTML]] standard defines how to handle focusing elements and {{Window}}s, both by user gesture
 and through script-initiated APIs. Since fenced frames are designed to prevent communication across
-a fenced frame boundary, we need to handle focusing carefully. This is because when focus is pulled
-across a fenced frame boundary, contexts on both sides of the boundary can detect that change, which
-can be used to open a communication channel between a <{fencedframe}> and its embedder.
+a fenced frame boundary, we need to handle focusing carefully. This is because when focus crosses a
+<{fencedframe}> boundary, contexts on both sides of the boundary can detect that change, which can
+be used to open a communication channel between a <{fencedframe}> and its embedder.
 
-We do this is by not allowing the [=focusing steps=] to move script-initiated focus across a fenced
+We do this by not allowing the [=focusing steps=] to move script-initiated focus across a fenced
 frame boundary.
 
 <p class=example id=user-initiated-focus>When a user clicks on an element like a <{button}> inside a
-<{fencedframe}> while another element *outside* of the <{fencedframe}> is [=focused=], because this
-is a user-initiated action, the [=focusing steps=] will allow the <{button}> to [=gain focus=].
-Without allowing that, no element inside of a <{fencedframe}> would never be able [=gain
-focus=].</p>
+<{fencedframe}> while another element *outside* of the <{fencedframe}> is [=focused=], the
+[=focusing steps=] will allow the <{button}> to [=gain focus=], because this is specifically a
+user-initiated action. Without allowing that, no element inside of a <{fencedframe}> would never be
+able [=gain focus=].</p>
 
-<p class=example id=script-initiated-focus>If we were to continue blindly allowing all elements to
-be [=focused=] via the {{HTMLOrSVGElement/focus()}} method as is the status quo before this
+<p class=example id=script-initiated-focus>If we were to continue allowing all elements to be
+[=focused=] via the {{HTMLOrSVGElement/focus()}} method as is the status quo before this
 specification, a [=fenced navigable container=] and its [=fenced navigable container/fenced
 navigable=] could use a sequence of {{HTMLOrSVGElement/focus()}} calls to send arbitrary data across
 the fenced frame boundary, which is a privacy leak. To avoid this, we effectively "fence" the
 {{HTMLOrSVGElement/focus()}} method, which sacrifices some functionality for privacy.</p>
 
 <div algorithm=focusing-steps-patch>
-  Modify the [=focusing steps=] to take a new optional [=boolean=] argument <dfn
-  lt="focus-unfenced">unfenced</dfn> that defaults to false.
+  Modify the [=focusing steps=] to take a new optional [=boolean=] argument <var><dfn
+  lt="focus-unfenced">unfenced</dfn></var> that defaults to false.
 
   Add a new step after step 3 of the algorithm (that changes new focus target) that reads:
 
@@ -1609,10 +1621,10 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 
   Add a new step after the step that defines the |new chain| variable, that reads:
 
-  9. If [=focus-unfenced|unfenced=] is false, |new chain| [=list/contains=] a {{Document}}
-    |document| whose [=node navigable=]'s [=navigable/traversable navigable=] is a
-    [=fenced navigable container/fenced navigable=], and <var ignore>old chain</var> does not also
-    [=list/contain=] |document|, then return.
+  9. If <var>[=focus-unfenced|unfenced=]</var> is false, |new chain| [=list/contains=] a
+     {{Document}} |document| whose [=node navigable=]'s [=navigable/traversable navigable=] is a
+     [=fenced navigable container/fenced navigable=], and <var ignore>old chain</var> does not also
+     [=list/contain=] |document|, then return.
 
     Note: This is how we bail-out early just before calling the [=focus update steps=], in the case
     where focus is trying to cross the fence.
@@ -1620,14 +1632,15 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   Modify the user agent sentence after the algorithm steps in [=focusing steps=] to read:
 
   User agents must [=immediately=] run the [=focusing steps=] for a [=focusable area=] or
-  [=navigable=] |candidate| with [=focus-unfenced|unfenced=] set to true whenever the user attempts to
-  move the focus to |candidate|.
+  [=navigable=] |candidate| with <var>[=focus-unfenced|unfenced=]</var> set to true whenever the
+  user attempts to move the focus to |candidate|.
 </div>
 
 <div algorithm=access-key-patch>
   Modify the action of the [=accesskey attribute command=] algorithm to be:
 
-  1. Run the [=focusing steps=] for the element with [=focus-unfenced|unfenced=] set to true.
+  1. Run the [=focusing steps=] for the element with <var ignore>[=focus-unfenced|unfenced=]</var>
+     set to true.
 
   1. <a>Fire a `click` event</a> at the element.
 </div>
@@ -1638,7 +1651,7 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 
   When a user [=activation|activates=] a [=click focusable=] [=focusable area=], the user agent must
   run the [=focusing steps=] on the [=focusable area=] with <var ignore>focus trigger</var> set
-  to "`click`" and [=focus-unfenced|unfenced=] set to true.
+  to "`click`" and <var ignore>[=focus-unfenced|unfenced=]</var> set to true.
 </div>
 
 <div algorithm=hide-popover-patch>
@@ -1647,8 +1660,8 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   10. If |previouslyFocusedElement| is not null, then:
       1. Set <var ignore>element</var>'s [=previously focused element=] to null.
       2. If <var ignore>focusPreviousElement</var> is true, then run the [=focusing steps=] for
-        |previouslyFocusedElement| with [=focus-unfenced|unfenced=] set to true; the viewport
-        should not be scrolled by doing this step.
+        |previouslyFocusedElement| with <var ignore>[=focus-unfenced|unfenced=]</var> set to true; the
+        viewport should not be scrolled by doing this step.
 
   Note: Although dismissing a popover manually is a user-initiated gesture, the
   [=focusing steps=] will be called with [=focus-unfenced|unfenced=] set to false regardless
@@ -1705,7 +1718,7 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   </dl>
 
   Note: This algorithm can unconditionally "jump the fence" boundary because its return value always
-  feeds into an algorithm that _does_ carefully consider the fence boundary.
+  feeds into an algorithm that *does* carefully consider the fence boundary.
 </div>
 
 <div algorithm=currently-focused-area-of-a-top-level-traversable>
@@ -1768,6 +1781,11 @@ of navigation, which includes integration with various headers, isolation mechan
 
 <h4 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h4>
 
+<i>This section is intended to monkeypatch the [[HTML]] Standard, however since the \`<a
+http-header><code>Supports-Loading-Mode</code></a>\` header has not been merged into [[HTML]] yet,
+and instead lives in the [[Prerendering-Revamped]] specification, this section effectively
+monkeypatches that monkeypatch specification.</i>
+
 Add the new [=structured header/token=] below to the list of valid [=structured header/tokens=] for the \`<a
 http-header><code>Supports-Loading-Mode</code></a>\` response header:
 
@@ -1782,7 +1800,7 @@ is true, then:", insert a new step:
 
 <div algorithm=navigation-patch>
 
-1. Otherwise, if all of the following conditions are true:
+8. Otherwise, if all of the following conditions are true:
 
     * |navigationParams|'s [=navigation params/navigable=]'s [=navigable/traversable navigable=] is
       a [=fenced navigable container/fenced navigable=];
