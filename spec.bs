@@ -60,6 +60,18 @@ WPT Display: open
     "deliveredBy": [
       "https://wicg.io/"
     ]
+  },
+  "cspee": {
+    "authors": [
+      "Mike West"
+    ],
+    "href": "https://w3c.github.io/webappsec-cspee/",
+    "title": "Prerendering Revamped",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
   }
 }
 </pre>
@@ -1910,7 +1922,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 16, the step that goes [=in parallel=]:
+  Insert these steps immediately after step 16, the step that goes [=in parallel=], so that what
+  follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
        navigable=]:
@@ -1940,8 +1953,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Rewrite the step starting with "Let |unloadPromptCanceled| be the result of" to:
 
     1. Let |unloadPromptCanceled| be false if |navigable| is a [=fenced navigable container/fenced
-       navigable=], and the result of [=checking if unloading is user-canceled=] for |navigable|'s
-       [=navigable/active document=]'s [=Document/inclusive descendant navigables=].
+       navigable=], or the result of [=checking if unloading is user-canceled=] for |navigable|'s
+       [=navigable/active document=]'s [=Document/inclusive descendant navigables=] otherwise.
 
   <wpt>
     /fenced-frame/before-unload.https.html
@@ -1951,7 +1964,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <br>
 
 The below patches make use of the previously-assigned [=source snapshot params/fenced frame
-config=], [=instantiate a config|insantiating=] it in preparation for use when the navigation is
+config=], [=instantiate a config|instantiating=] it in preparation for use when the navigation is
 finalized.
 
 <div algorithm=navigation-params-config-instance>
@@ -1984,8 +1997,8 @@ left over to be leaked to the next {{Document}}.
 
 <div algorithm=attempt-populate-history-bcg-swap>
   Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
-  before the step that "[=queues a task=] on the [=navigation and traversal task source=]", that
-  reads:
+  before the step that reads "6. [=Queue a global task=] on the [=navigation and traversal task
+  source=]", that reads:
 
   6. If all of the following conditions are true:
 
@@ -2067,12 +2080,12 @@ explainer</a> that describes this.
   Add a step after step 2 of the [=frame-src post-request check=] that says:
 
   3. If <var ignore>request</var> [=request/destination=] is "`fencedframe`", and this directive's
-    [=directive value|value=] does not contain either "`https:`", "`https://*:*`", or "`*`", return
-    "`Blocked`".
+    [=directive value|value=] does not [=set/contain=] either "`https:`", "`https://*:*`", or "`*`",
+    return "`Blocked`".
 </div>
 
-Next, we modify the behavior of the CSPEE spec. If the embedding frame specifies a
-[=required csp=], fenced frames will not load. This is done to prevent arbitrary data flow from the
+Next, we modify the behavior of the [[CSPEE]] specification. If the embedding frame specifies a
+[=required CSP=], fenced frames will not load. This is done to prevent arbitrary data flow from the
 embedder to the fenced frame.
 
 <div algorithm=cspee-changes>
@@ -2085,10 +2098,9 @@ embedder to the fenced frame.
 
 <h4 id=new-csp-directive>New fenced-frame-src [[!CSP]] [=directive=]</h4>
 
-Fenced frames are a different element from an iframe. Therefore, using the
-<b><i>[=frame-src=]</i></b> directive wouldn't give web sites enough control over their CSP rules.
-Introduce a new [[!CSP]] [=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched
-specification is printed below:
+Since <{fencedframe}> is a different element than <{iframe}>, using the <b><i>[=frame-src=]</i></b>
+directive wouldn't give web sites enough control over their CSP rules. Introduce a new [[!CSP]]
+[=directive=]: <b><i>fenced-frame-src</i></b>. The monkey-patched specification is printed below:
 
 <div algorithm=fenced-frame-src>
   The <dfn>fenced-frame-src</dfn> directive restricts the URLs which may be loaded into a
