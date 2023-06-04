@@ -132,6 +132,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       for: cross-origin isolation mode
         text: none; url:cross-origin-isolation-none
     urlPrefix: browsing-the-web.html
+      text: create and initialize a Document object; url: initialise-the-document-object
       text: create navigation params by fetching; url: create-navigation-params-by-fetching
       text: document state; url: she-document-state
       text: historyHandling; url: navigation-hh
@@ -198,6 +199,8 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
+    for: response
+      text: has-cross-origin-redirects; url: response-has-cross-origin-redirects
 spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
   type: dfn
     text: should fetching request be blocked as mixed content; url: should-block-fetch
@@ -1987,6 +1990,68 @@ finalized.
   :: If |sourceSnapshotParams|'s [=source snapshot params/fenced frame config=] is null, then null;
      otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
      [=source snapshot params/fenced frame config=].
+</div>
+
+<br>
+
+Finally, the below patches make use of the [=navigation params=]'s [=navigation params/fenced frame
+config instance=], and handle the assignment of a [=browsing context=]'s [=browsing context/fenced
+frame config instance=] that is initiated by a navigation.
+
+Note: A [=browsing context=]'s [=browsing context/fenced frame config instance=] is assigned in two
+different ways: (1) during embedder-initiated <{fencedframe}> navigation, as described by the rest
+of this section, and (2) dnherited during initial {{Document}} creation, for same-origin
+{{Document}}s in [=child navigables=] whose [=navigable/traversable navigable=] is a [=fenced
+navigable container/fenced navigable=].
+
+For any successful navigation inside of a <{fencedframe}>, regardless of whether it was initiated by
+content in the <{fencedframe}> or its embedder, exactly one of three things will happen:
+
+ * <i>Embedder-initiated navigations</i>: The [=navigation params=]'s [=navigation params/fenced
+   frame config instance=] will be unconditionally assigned to the <{fencedframe}>'s [=fenced
+   navigable container=]'s [=fenced navigable container/fenced navigable=]'s [=navigable/active
+   browsing context=]'s [=browsing context/fenced frame config instance=].
+
+ * <i>Cross-origin inner-content-initiated navigations</i>: We do not want the <{fencedframe}>'s
+   [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=]'s
+   [=navigable/active browsing context=]'s [=browsing context/fenced frame config instance=] to
+   persist through this kind of cross-{{Document}} same-[=browsing context group=] navigation, so
+   we manually clear it.
+
+ * <i>Same-origin inner-content-initiated navigations</i>: The [=fenced frame config instance=]
+   referenced in the immediately-preceding point persists through this kind of cross-{{Document}}
+   navigation. The patches below take no action to clear it, so it continues to be visible through
+   the {{Window/fence}} API.
+
+<div algorithm=create-and-initialize-document-patch>
+  Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert a step after
+  step 2 that reads:
+
+  3. If |navigationParams|'s [=navigation params/fenced frame config instance=] is not null:
+
+    1. [=Assert=]: |browsingContext| does not equal |navigationParams|'s [=navigation
+       params/navigable=]'s [=navigable/active browsing context=].
+
+       Note: This is because embedder-initiated navigations (indicated by |navigationParams|'s
+       [=navigation params/fenced frame config instance=] being non-null) always cause a
+       [[#bcg-swap]].
+
+    1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
+       |navigationParams|'s [=navigation params/fenced frame config instance=].
+
+  4. Otherwise, if both of the following conditions are true:
+
+       * |navigationParams|'s [=navigable/active browsing context=]'s [=browsing context/fenced
+         frame config instance=] is non-null;
+
+       * |navigationParams|'s [=navigation params/response=]'s
+         [=response/has-cross-origin-redirects=] boolean is true
+
+     Then set |navigationParams|'s [=navigable/active browsing context=]'s [=browsing context/fenced
+     frame config instance=] to null.
+
+     Note: This ensures that the {{Window/fence}} API return null for script running in the
+     {{Document}} created by this algorithm.
 </div>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
