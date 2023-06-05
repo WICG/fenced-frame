@@ -84,9 +84,6 @@ spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/p
     for: navigable
       text: loading mode; url: #navigable-loading-mode
 
-spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
-  type: dfn
-    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
@@ -197,10 +194,13 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: face validation anchor; url: face-validation-anchor
     urlPrefix: webappapis.html
       text: fire a click event; url: fire-a-click-event
+    urlPrefix: urls-and-fetching.html
+      text: about:srcdoc; url: about:srcdoc
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
+    text: is local; url: is-local
 spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
   type: dfn
     text: should fetching request be blocked as mixed content; url: should-block-fetch
@@ -1345,13 +1345,14 @@ container=], across the fenced frame boundary.
 
 <h3 id=local-policy-container-monkeypatch>Local Requests Policy Container Patch</h3>
 
-When making local requests, <{iframe}>s inherit their [=Document/policy container=] from their
-[=navigable container=]'s [=Node/node document=]. If <{fencedframe}>s were to do the same thing,
-that would allow information about the initiator's [=IP address space=] to leak across a fenced
-frame boundary. This section patches [=Document/policy container=] inheritance to close that leak.
+When making [=local scheme=] requests, <{iframe}>s inherit their [=Document/policy container=] from
+their [=navigable container=]'s [=Node/node document=]. If <{fencedframe}>s were to do the same
+thing, that would allow information about the initiator's [=Document/policy container=] to leak
+across a fenced frame boundary. This section patches [=Document/policy container=] inheritance to
+close that leak.
 
 <div algorithm=local-policy-inheritance-determine-params>
-  Modify the definition of the [=determine navigation params policy container=] algorithm to read:
+  Modify the [=determine navigation params policy container=] algorithm to read:
 
   To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
   container=]-or-nulls <var ignore>historyPolicyContainer</var>, |initiatorPolicyContainer|,
@@ -1360,8 +1361,11 @@ frame boundary. This section patches [=Document/policy container=] inheritance t
 
   Rewrite step 3 to read:
 
-    3. If |responseURL| is local, |initiatorPolicyContainer| is not null, and |fenced| is set to
+    3. If |responseURL| [=is local=], |initiatorPolicyContainer| is not null, and |fenced| is set to
        false, then return a [=clone a policy container|clone=] of |initiatorPolicyContainer|.
+
+  Note: We do not need to modify the <code>[=about:srcdoc=]</code> case because navigations to
+  <code>[=about:srcdoc=]</code> are not supported in fenced frames.
 </div>
 
 <div algorithm=local-policy-inheritance-populate-session-history-entry>
@@ -1376,13 +1380,13 @@ frame boundary. This section patches [=Document/policy container=] inheritance t
   Rewrite step 23 (now step 24) to read:
 
   24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params
-      policy container=] given <var ignore>response</var>'s URL, <var ignore>entry</var>'s
-      [=document state=]'s [=document state/history policy container=], <var
-      ignore>sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null,
-      <var ignore>responsePolicyContainer</var>, and |fenced|.
+      policy container=] given <var ignore>response</var>'s [=response/URL=], <var ignore>
+      entry</var>'s [=document state=]'s [=document state/history policy container=], <var ignore>
+      sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null, <var
+      ignore>responsePolicyContainer</var>, and |fenced|.
 </div>
 
-Note: <{fencedframe}> [=policy container=] "inheritance" upon initial {{Document}} creation (and its
+Note: <{fencedframe}> [=policy container=] inheritance upon initial {{Document}} creation (and its
 corresponding [=policy container/ip address space=]) is handled in the
 [[#creating-browsing-contexts-patch]] section.
 
