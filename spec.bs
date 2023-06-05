@@ -2039,10 +2039,13 @@ content in the <{fencedframe}> or its embedder, exactly one of three things will
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
 
-  4. Otherwise, if both of the following conditions are true:
+  4. Otherwise, if |navigationParams|'s [=navigable/active browsing context=]'s [=browsing
+     context/fenced frame config instance=] is non-null, and either of the following conditions are
+     true:
 
-       * |navigationParams|'s [=navigable/active browsing context=]'s [=browsing context/fenced
-         frame config instance=] is non-null;
+       * |navigationParams|'s [=navigation params/origin=] is not [=same origin=] with
+         |navigationParams|'s [=navigation params/navigable=]'s [=navigable/active document=]'s
+         [=Document/origin=];
 
        * |navigationParams|'s [=navigation params/response=]'s
          [=response/has-cross-origin-redirects=] boolean is true
