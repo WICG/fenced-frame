@@ -1337,11 +1337,18 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
 
     * If |creator| is non-null and <var ignore>embedder</var> is not a <{fencedframe}> element,
       then:
-</div>
 
-Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
-document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
-container=], across the fenced frame boundary.
+  Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
+  document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
+  container=], across the fenced frame boundary.
+
+
+  Add a substep to step 4 of this algorithm (that was modified above) that reads:
+
+    4. Set <var ignore>browsingContext</var>'s [=browsing context/fenced frame config instance=] to
+       |creator|'s [=Document/browsing context=]'s [=browsing context/fenced frame config
+       instance=].
+</div>
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
@@ -1792,8 +1799,6 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 This section describes how the <{fencedframe}> element interacts with the ever-complicated process
 of navigation, which includes integration with various headers, isolation mechanisms, and policies.
 
-<span class=XXX>TODO: Describe how the [=fenced frame config instance=] is carried along the navigation request and is stored upon navigation commit, along with running the [=fenced frame config instance/on navigate callback=].</span>
-
 <h4 id=supports-loading-mode>The \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header</h4>
 
 <i>This section is intended to monkeypatch the [[HTML]] Standard, however since the \`<a
@@ -2000,9 +2005,10 @@ frame config instance=] that is initiated by a navigation.
 
 Note: A [=browsing context=]'s [=browsing context/fenced frame config instance=] is assigned in two
 different ways: (1) during embedder-initiated <{fencedframe}> navigation, as described by the rest
-of this section, and (2) dnherited during initial {{Document}} creation, for same-origin
+of this section, and (2) inherited during initial {{Document}} creation, for same-origin
 {{Document}}s in [=child navigables=] whose [=navigable/traversable navigable=] is a [=fenced
-navigable container/fenced navigable=].
+navigable container/fenced navigable=], as handled in the [[#creating-browsing-contexts-patch]]
+section.
 
 For any successful navigation inside of a <{fencedframe}>, regardless of whether it was initiated by
 content in the <{fencedframe}> or its embedder, exactly one of three things will happen:
@@ -2053,9 +2059,12 @@ content in the <{fencedframe}> or its embedder, exactly one of three things will
      Then set |navigationParams|'s [=navigable/active browsing context=]'s [=browsing context/fenced
      frame config instance=] to null.
 
-     Note: This ensures that the {{Window/fence}} API return null for script running in the
+     Note: This ensures that the {{Window/fence}} API returns null for script running in the
      {{Document}} created by this algorithm.
 </div>
+
+<span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
+appropriate time.</span>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
 
