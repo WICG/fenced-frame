@@ -2030,7 +2030,7 @@ content in the <{fencedframe}> or its embedder, exactly one of three things will
    the {{Window/fence}} API.
 
 <div algorithm=create-and-initialize-document-patch>
-  Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert a step after
+  Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert two steps after
   step 2 that reads:
 
   3. If |navigationParams|'s [=navigation params/fenced frame config instance=] is not null:
