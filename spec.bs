@@ -2061,6 +2061,11 @@ content in the <{fencedframe}> or its embedder, exactly one of three things will
 
      Note: This ensures that the {{Window/fence}} API returns null for script running in the
      {{Document}} created by this algorithm.
+
+<wpt>
+  /fenced-frame/config-cross-origin-apis.https.html
+</wpt>
+
 </div>
 
 <span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
