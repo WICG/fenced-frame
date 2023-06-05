@@ -1753,10 +1753,10 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
 
   Modify step 9 of the [=sequential focus navigation=] algorithm to read:
 
-  9. Otherwise, |starting point| is a [=focusable area=] in a [=child navigable=] or [=fenced
-     navigable container/fenced navigable=]. Set |starting point| to that [=child navigable=]'s
-     [=navigable/parent=] or [=fenced navigable container/fenced navigable=]'s [=navigable/unfenced
-     parent=] and return to the step labeled <i>loop</i>.
+  9. Otherwise, |starting point| is a [=focusable area=] whose [=Node/node document=]'s [=node
+     navigable=] is a [=child navigable=] or [=fenced navigable container/fenced navigable=]. Set
+     |starting point| to that [=node navigable=]'s [=navigable/unfenced parent=] and return to the
+     step labeled <i>loop</i>.
 </div>
 
 <div algorithm=sequential-navigation-search-patch>
