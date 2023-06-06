@@ -1264,6 +1264,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   <wpt>
     /fenced-frame/get-nested-configs.https.html
+    /fenced-frame/config-cross-origin-apis.https.html
   </wpt>
 </div>
 
@@ -2005,32 +2006,23 @@ frame config instance=] that is initiated by a navigation.
 
 Note: A [=browsing context=]'s [=browsing context/fenced frame config instance=] is assigned in two
 different ways: (1) during embedder-initiated <{fencedframe}> navigation, as described by the rest
-of this section, and (2) inherited during initial {{Document}} creation, for same-origin
-{{Document}}s in [=child navigables=] whose [=navigable/traversable navigable=] is a [=fenced
-navigable container/fenced navigable=], as handled in the [[#creating-browsing-contexts-patch]]
-section.
+of this section, and (2) inherited during initial {{Document}} creation for {{Document}}s in [=child
+navigables=] whose [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+navigable=], as handled in the [[#creating-browsing-contexts-patch]] section.
 
 For any successful navigation inside of a <{fencedframe}>, regardless of whether it was initiated by
-content in the <{fencedframe}> or its embedder, exactly one of three things will happen:
+content in the <{fencedframe}> or its embedder, exactly one of two things will happen:
 
  * <i>Embedder-initiated navigations</i>: The [=navigation params=]'s [=navigation params/fenced
    frame config instance=] will be unconditionally assigned to the <{fencedframe}>'s [=fenced
    navigable container=]'s [=fenced navigable container/fenced navigable=]'s [=navigable/active
    browsing context=]'s [=browsing context/fenced frame config instance=].
 
- * <i>Cross-origin inner-content-initiated navigations</i>: We do not want the <{fencedframe}>'s
-   [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=]'s
-   [=navigable/active browsing context=]'s [=browsing context/fenced frame config instance=] to
-   persist through this kind of cross-{{Document}} same-[=browsing context group=] navigation, so
-   we manually clear it.
-
- * <i>Same-origin inner-content-initiated navigations</i>: The [=fenced frame config instance=]
-   referenced in the immediately-preceding point persists through this kind of cross-{{Document}}
-   navigation. The patches below take no action to clear it, so it continues to be visible through
-   the {{Window/fence}} API.
+ * <i>Inner-content-initiated navigations</i>: The [=fenced frame config instance=] referenced in
+   the immediately-preceding point persists through this kind of cross-{{Document}} navigation.
 
 <div algorithm=create-and-initialize-document-patch>
-  Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert two steps after
+  Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert one step after
   step 2 that reads:
 
   3. If |navigationParams|'s [=navigation params/fenced frame config instance=] is not null:
@@ -2044,28 +2036,6 @@ content in the <{fencedframe}> or its embedder, exactly one of three things will
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
-
-  4. Otherwise, if |navigationParams|'s [=navigable/active browsing context=]'s [=browsing
-     context/fenced frame config instance=] is non-null, and either of the following conditions are
-     true:
-
-       * |navigationParams|'s [=navigation params/origin=] is not [=same origin=] with
-         |navigationParams|'s [=navigation params/navigable=]'s [=navigable/active document=]'s
-         [=Document/origin=];
-
-       * |navigationParams|'s [=navigation params/response=]'s
-         [=response/has-cross-origin-redirects=] boolean is true
-
-     Then set |navigationParams|'s [=navigable/active browsing context=]'s [=browsing context/fenced
-     frame config instance=] to null.
-
-     Note: This ensures that the {{Window/fence}} API returns null for script running in the
-     {{Document}} created by this algorithm.
-
-<wpt>
-  /fenced-frame/config-cross-origin-apis.https.html
-</wpt>
-
 </div>
 
 <span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
