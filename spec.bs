@@ -2452,19 +2452,24 @@ is inside of a fenced frame. This is done because the {{Element/scrollIntoView()
 event that can both be invoked from and observed by script, which can open a communication side
 channel between a <{fencedframe}> and its embedder.
 
-Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that reads:
+<div algorithm=scroll-target-into-view>
+  Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that read:
 
-2. If the <var ignore>target</var>-associated {{Document}}'s [=node navigable=]'s [=navigable/
-   traversable navigable=] is a [=fenced navigable container/fenced navigable=], terminate these
-   steps.
-3. If the <var ignore>target</var>-associated {{Document}}'s [=Document/ancestor navigables=]
-   contains a [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable
-   container/fenced navigable=], terminate these steps.
+  2. If |target|'s associated {{Document}}'s [=node navigable=]'s [=navigable/traversable
+     navigable=] is a [=fenced navigable container/fenced navigable=], terminate these steps.
 
-Modify the [=Document/run the scroll steps=] algorithm to add a check before step 1.1 that reads:
+  3. If |target|'s associated {{Document}}'s [=Document/ancestor navigables=] [list/contains=] a
+     [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable
+     container/fenced navigable=], terminate these steps.
+</div>
 
-1. If <var ignore>target</var> is a {{Document}} whose [=node navigable=]'s [=navigable/traversable
-   navigable=] is a [=fenced navigable container/fenced navigable=], continue.
+<div algorithm=run-the-scroll-steps>
+  Modify the [=Document/run the scroll steps=] algorithm to add a check before step 1.1 that reads:
+
+  1. If <var ignore>target</var> is a {{Document}} whose [=node navigable=]'s
+     [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
+     [=iteration/continue=].
+</div>
 
 Note: This ensures that scroll events do not affect fenced frames.
 
