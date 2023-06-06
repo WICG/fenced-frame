@@ -200,7 +200,6 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
-    text: is local; url: is-local
 spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
   type: dfn
     text: should fetching request be blocked as mixed content; url: should-block-fetch
@@ -1343,7 +1342,7 @@ Note: This is because we need to ensure that we do not leak <var ignore>creator<
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
 
-<h3 id=local-policy-container-monkeypatch>Local Requests Policy Container Patch</h3>
+<h3 id=local-policy-container-monkeypatch>Local requests policy container patch</h3>
 
 When making [=local scheme=] requests, <{iframe}>s inherit their [=Document/policy container=] from
 their [=navigable container=]'s [=Node/node document=]. If <{fencedframe}>s were to do the same
