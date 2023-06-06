@@ -2446,11 +2446,11 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
 <h3 id=cssom-monkeypatch>CSSOM View</h3>
 
-The [[!CSSOM-VIEW]] module defines scroll bubbling behavior through the [=scroll a target into
-view=] algorithm. Our specification modifies it to not allow scrolling a target into view if it is
-inside of a fenced frame. This is done because the {{Element/scrollIntoView()}} method is an event
-that can both be triggered from and observed by the web platform, which can open a side channel
-between a fenced frame and its embedder.
+The [[!CSSOM-VIEW]] specification defines scroll bubbling behavior through the [=scroll a target
+into view=] algorithm. Our specification modifies it to not allow scrolling a target into view if it
+is inside of a fenced frame. This is done because the {{Element/scrollIntoView()}} method is an
+event that can both be invoked from and observed by script, which can open a communication side
+channel between a <{fencedframe}> and its embedder.
 
 Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that reads:
 
