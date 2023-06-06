@@ -1723,7 +1723,8 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   Modify the [=get the focusable area=] algorithm. Add a new case to the switch statement:
 
   <dl class="switch">
-    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null [=fenced navigable container/fenced navigable=]</dt>
+    <dt>If <var ignore>focus target</var> is a [=fenced navigable container=] with a non-null
+    [=fenced navigable container/fenced navigable=]</dt>
 
     <dd><p>Return the [=fenced navigable container=]'s [=fenced navigable container/fenced
     navigable=]'s [=navigable/active document=].</p></dd>
@@ -1737,25 +1738,25 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
   Modify step 3 of the [=currently focused area of a top-level traversable=] algorithm to read:
 
   3. While |candidate|'s [=focused area=] is either a [=navigable container=] with a non-null
-    [=navigable container/content navigable=] or a [=fenced navigable container=] with a non-null
-    [=fenced navigable container/fenced navigable=]: set |candidate| to the
-    [=navigable/active document=] of either that [=navigable container=]'s
-    [=navigable container/content navigable=] or that [=fenced navigable container=]'s
-    [=fenced navigable container/fenced navigable=], whichever is non-null.
+     [=navigable container/content navigable=] or a [=fenced navigable container=] with a non-null
+     [=fenced navigable container/fenced navigable=]: set |candidate| to the [=navigable/active
+     document=] of either that [=navigable container=]'s [=navigable container/content navigable=]
+     or that [=fenced navigable container=]'s [=fenced navigable container/fenced navigable=],
+     whichever is non-null.
 </div>
 
 <div algorithm=sequential-focus-navigation-patch>
   Modify step 6 of the [=sequential focus navigation=] algorithm to read:
 
-  6. If |candidate| is not null, then run the [=focusing steps=] for
-    |candidate| with [=focus-unfenced|unfenced=] set to true and return.
+  6. If |candidate| is not null, then run the [=focusing steps=] for |candidate| with
+     [=focus-unfenced|unfenced=] set to true and return.
 
   Modify step 9 of the [=sequential focus navigation=] algorithm to read:
 
-  9. Otherwise, |starting point| is a [=focusable area=] in a [=child navigable=] or
-    [=fenced navigable container/fenced navigable=]. Set |starting point| to that
-    [=child navigable=] or [=fenced navigable container/fenced navigable=]'s
-    [=traversable navigable/unfenced parent=] and return to the step labeled <i>loop</i>.
+  9. Otherwise, |starting point| is a [=focusable area=] whose [=Node/node document=]'s [=node
+     navigable=] is a [=child navigable=] or [=fenced navigable container/fenced navigable=]. Set
+     |starting point| to that [=node navigable=]'s [=navigable/unfenced parent=] and return to the
+     step labeled <i>loop</i>.
 </div>
 
 <div algorithm=sequential-navigation-search-patch>
