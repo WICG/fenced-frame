@@ -647,7 +647,7 @@ following [=struct/items=]:
 
 <dl export dfn-for="interest group descriptor">
   : <dfn>owner</dfn>
-  :: a [=string=]
+  :: an [=origin=]
 
   : <dfn>name</dfn>
   :: a [=string=]
