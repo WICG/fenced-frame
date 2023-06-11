@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="376d4d05c3a520517ee7323491034ef5987acb1b" name="document-revision">
+  <meta content="2d2a330016a6383d096e4afdbeb1c5cf24291d9f" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-06">6 June 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-11">11 June 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1278,10 +1278,10 @@ following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-it
    <dl>
     <dt data-md><dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-owner">owner<a class="self-link" href="#interest-group-descriptor-owner"></a></dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a></p>
+     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin">origin</a></p>
     <dt data-md><dfn data-dfn-for="interest group descriptor" data-dfn-type="dfn" data-export id="interest-group-descriptor-name">name<a class="self-link" href="#interest-group-descriptor-name"></a></dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a></p>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a></p>
    </dl>
    <p>An <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-exhaustive-set-of-sandbox-flags">exhaustive set of sandbox flags</dfn> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag
 set</a>.</p>
@@ -1292,10 +1292,10 @@ set</a>.</p>
      <p>a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination">FenceReportingDestination</a></code></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="pending event" data-dfn-type="dfn" data-export id="pending-event-eventtype">eventType</dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a></p>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="pending event" data-dfn-type="dfn" data-export id="pending-event-eventdata">eventData</dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a></p>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a></p>
    </dl>
    <p>A <dfn class="dfn-paneled" data-dfn-for="fencedframetype" data-dfn-type="dfn" data-export id="fencedframetype-fenced-frame-reporting-map">fenced frame reporting map</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys③">keys</a> are <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination①">FenceReportingDestination</a></code>s and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values③">values</a> are either:</p>
    <ul>
@@ -1303,7 +1303,7 @@ set</a>.</p>
      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">lists</a> of <a data-link-type="dfn" href="#fencedframetype-pending-event" id="ref-for-fencedframetype-pending-event">pending events</a> (which are used to represent events that need to
  be reported asynchronously, because the metadata has not been finalized yet); or</p>
     <li data-md>
-     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">maps</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys④">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values④">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">urls</a> (which are used
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">maps</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys④">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values④">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">urls</a> (which are used
  to represent the actual metadata once it is finalized).</p>
    </ul>
    <p class="note" role="note"><span class="marker">Note:</span> This representation is meant to allow config-generating APIs to reduce latency by resolving
@@ -1315,7 +1315,7 @@ stored in the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list"
 be sent.</p>
    <div class="algorithm" data-algorithm="finalize a reporting destination">
      In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="finalize-a-reporting-destination">finalize a reporting destination</dfn>, given a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-map" id="ref-for-fencedframetype-fenced-frame-reporting-map①">fenced
-  frame reporting map</a> <var>reporting map</var>, a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination②">FenceReportingDestination</a></code> <var>destination</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑤">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑤">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑤">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑤">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">urls</a>, run these steps: 
+  frame reporting map</a> <var>reporting map</var>, a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination②">FenceReportingDestination</a></code> <var>destination</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑤">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑤">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑤">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">urls</a>, run these steps: 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a> that <var>reporting map</var>[<var>destination</var>] is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a> (i.e., that <var>destination</var>’s
@@ -1354,14 +1354,14 @@ following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-it
      <dl>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="automatic beacon data" data-dfn-type="dfn" data-export id="automatic-beacon-data-eventdata">eventData</dfn>
       <dd data-md>
-       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">string</a></p>
+       <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑤">string</a></p>
       <dt data-md><dfn class="dfn-paneled" data-dfn-for="automatic beacon data" data-dfn-type="dfn" data-export id="automatic-beacon-data-destination">destination</dfn>
       <dd data-md>
        <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination③">FenceReportingDestination</a></code>s</p>
      </dl>
    </dl>
    <div class="algorithm" data-algorithm="send a beacon">
-     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="send-a-beacon">send a beacon</dfn> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑥">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑥">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑥">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">urls</a>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a> <var>eventType</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑨">string</a> <var>eventData</var>, run these steps: 
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="send-a-beacon">send a beacon</dfn> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map⑥">map</a> <var>destination map</var> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys⑥">keys</a> are <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">strings</a> and whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-values" id="ref-for-map-getting-the-values⑥">values</a> are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">urls</a>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">string</a> <var>eventType</var>, and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a> <var>eventData</var>, run these steps: 
     <ol>
      <li data-md>
       <p>If <var>destination map</var>[<var>eventType</var>] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exist</a>, return.</p>
@@ -1373,7 +1373,7 @@ following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-it
     </ol>
    </div>
    <div class="algorithm" data-algorithm="report an event">
-     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="report-an-event">report an event</dfn> using a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter">fenced frame reporter</a> <var>reporter</var> with a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination④">FenceReportingDestination</a></code> <var>destination</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⓪">string</a> <var>eventType</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①①">string</a> <var>eventData</var>, run these steps: 
+     In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="report-an-event">report an event</dfn> using a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter">fenced frame reporter</a> <var>reporter</var> with a <code class="idl"><a data-link-type="idl" href="#enumdef-fencereportingdestination" id="ref-for-enumdef-fencereportingdestination④">FenceReportingDestination</a></code> <var>destination</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑨">string</a> <var>eventType</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⓪">string</a> <var>eventData</var>, run these steps: 
     <ol>
      <li data-md>
       <p>If <var>destination</var> is <code>"direct-seller"</code>:</p>
@@ -1420,7 +1420,7 @@ following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-it
    </div>
    <div class="algorithm" data-algorithm="report a private aggregation event">
      In order to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="report-a-private-aggregation-event">report a private aggregation event</dfn> using a <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporter" id="ref-for-fencedframetype-fenced-frame-reporter①">fenced frame
-  reporter</a> <var>reporter</var> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①②">string</a> <var>event</var>, run these steps: 
+  reporter</a> <var>reporter</var> with a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①①">string</a> <var>event</var>, run these steps: 
     <ol>
      <li data-md>
       <p><var>reporter</var> <var>event</var> <span class="XXX">TODO: Fill this in</span></p>
@@ -1431,7 +1431,7 @@ following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-it
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-origin">origin</dfn>
     <dd data-md>
-     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin">origin</a></p>
+     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-amount-to-debit">amount to debit</dfn>
     <dd data-md>
      <p>a non-negative valid floating point number</p>
@@ -1441,7 +1441,7 @@ the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struc
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-reference-origin">origin</dfn>
     <dd data-md>
-     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a></p>
+     <p>an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin②">origin</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="exfiltration budget metadata reference" data-dfn-type="dfn" data-export id="exfiltration-budget-metadata-reference-amount-to-debit-reference">amount to debit reference</dfn>
     <dd data-md>
      <p>a mutable reference to a non-negative valid floating point number <span class="XXX">TODO: Handle pointers/references in a more specy-y way</span></p>
@@ -1555,7 +1555,7 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
      </dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config" data-dfn-type="dfn" data-export id="fenced-frame-config-embedder-shared-storage-context">embedder shared storage context</dfn>
     <dd data-md>
-     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①③">string</a></p>
+     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①②">string</a></p>
    </dl>
    <h4 class="heading settled" data-level="2.3.3" id="fenced-frame-config-instance-struct"><span class="secno">2.3.3. </span><span class="content">The <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance①">fenced frame config instance</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①⑧">struct</a></span><a class="self-link" href="#fenced-frame-config-instance-struct"></a></h4>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="fenced-frame-config-instance">fenced frame config instance</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①⑨">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①⑦">items</a>:</p>
@@ -1596,7 +1596,7 @@ If the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions
      <p>a <a data-link-type="dfn" href="#partition-nonce" id="ref-for-partition-nonce">partition nonce</a></p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="fenced frame config instance" data-dfn-type="dfn" data-export id="fenced-frame-config-instance-embedder-shared-storage-context">embedder shared storage context</dfn>
     <dd data-md>
-     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①④">string</a></p>
+     <p>null, or a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①③">string</a></p>
    </dl>
    <div class="algorithm" data-algorithm="instantiate a config">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="instantiate-a-config">instantiate a config</dfn> given a <a data-link-type="dfn" href="#fenced-frame-config" id="ref-for-fenced-frame-config①④">fenced frame config</a> <var>config</var>, return a <a data-link-type="dfn" href="#fenced-frame-config-instance" id="ref-for-fenced-frame-config-instance②">fenced frame config instance</a> with the following members: 
@@ -2611,7 +2611,7 @@ expressions</a> that can influence a <code><a data-link-type="element" href="#el
     <li data-md>
      <p>The <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-host-source" id="ref-for-grammardef-host-source">host-source</a> "<code>https://*:*</code>"</p>
     <li data-md>
-     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⑤">string</a> "<code>*</code>"</p>
+     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①④">string</a> "<code>*</code>"</p>
    </ul>
    <p>See our <a href="https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md#proposal---scheme-source-matching">CSP
 explainer</a> that describes this.</p>
@@ -2757,7 +2757,7 @@ Therefore a feature can only be enabled inside of a <code><a data-link-type="ele
     <li data-md>
      <p>If a navigation inside a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦②">fencedframe</a></code> would otherwise succeed, but the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> on the
  navigation inside the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦③">fencedframe</a></code> is served with a `<a data-link-type="http-header" href="https://w3c.github.io/webappsec-permissions-policy/#permissions-policy-header" id="ref-for-permissions-policy-header③"><code>Permissions-Policy</code></a>` header that sets the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy/#allowlist" id="ref-for-allowlist④">allowlist</a> to "<code>none</code>" or an
- otherwise incompatible <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin②">origin</a> for a feature in the <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions⑧">effective enabled
+ otherwise incompatible <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin③">origin</a> for a feature in the <a data-link-type="dfn" href="#fenced-frame-config-effective-enabled-permissions" id="ref-for-fenced-frame-config-effective-enabled-permissions⑧">effective enabled
  permissions</a>, the navigation still succeeds, but the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②⑤">Document</a></code> in the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦④">fencedframe</a></code> is <strong>not</strong> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use②">allowed to use</a> the feature.</p>
      <p class="note" role="note"><span class="marker">Note:</span> This is OK because it is the <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe⑦⑤">fencedframe</a></code>'s content <em>itself</em> that is making the decision
  to disable a particular feature, not its embedder environment.</p>
@@ -2774,7 +2774,7 @@ Therefore a feature can only be enabled inside of a <code><a data-link-type="ele
    </div>
    <div class="algorithm" data-algorithm="create-permissions-policy">
      Modify the <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-permissions-policy/#create-for-navigable" id="ref-for-create-for-navigable">Create a Permissions Policy for a navigable</a> algorithm: 
-    <p>Given null or an element (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin③">origin</a> (<var>origin</var>), and an optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean④">boolean</a> <var>fenced</var> that defaults to false, this algorithm returns a new Permissions Policy.</p>
+    <p>Given null or an element (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin④">origin</a> (<var>origin</var>), and an optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean④">boolean</a> <var>fenced</var> that defaults to false, this algorithm returns a new Permissions Policy.</p>
     <p>Rewrite step 1 to read:</p>
     <ol>
      <li data-md>
@@ -2795,7 +2795,7 @@ Therefore a feature can only be enabled inside of a <code><a data-link-type="ele
    </div>
    <div class="algorithm" data-algorithm="create-permissions-policy-response">
      Modify the <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-permissions-policy/#create-from-response" id="ref-for-create-from-response">Create a Permissions Policy for a navigable from response</a> algorithm to read: 
-    <p>Given null, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑧">navigable container</a>-or-<a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①④">fenced navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin④">origin</a> (<var>origin</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> (<var>response</var>), this algorithm returns a
+    <p>Given null, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑧">navigable container</a>-or-<a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers①④">fenced navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin⑤">origin</a> (<var>origin</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> (<var>response</var>), this algorithm returns a
   new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy" id="ref-for-concept-document-permissions-policy③">permissions policy</a>.</p>
     <p>Add a step before step 1 that reads:</p>
     <ol>
@@ -2862,7 +2862,7 @@ Permissions Policy?</a> given <var>navigationParams</var> is "<code>Blocked</cod
    <div class="algorithm" data-algorithm="define-inherited-policy-in-container-patches">
      Modify the <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-permissions-policy/#define-inherited-policy-in-container" id="ref-for-define-inherited-policy-in-container①">Define an inherited policy for feature in container at origin</a> algorithm to
   read: 
-    <p>Given a feature (<var>feature</var>), null or a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑨">navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin⑤">origin</a> for a
+    <p>Given a feature (<var>feature</var>), null or a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container" id="ref-for-navigable-container⑨">navigable container</a> (<var>container</var>), an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin⑥">origin</a> for a
   document in that container (<var>origin</var>), and an optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean⑤">boolean</a> <var>fenced</var> that defaults to
   false, this algorithm returns the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-policy#inherited-policy" id="ref-for-inherited-policy⑤">inherited policy</a> for that feature.</p>
     <p>Rewrite step 3 to read:</p>
@@ -4041,7 +4041,7 @@ window.dfnpanelData['13dd6cae'] = {"dfnID": "13dd6cae", "url": "https://html.spe
 window.dfnpanelData['e86519ee'] = {"dfnID": "e86519ee", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#cross-origin-isolation-none", "dfnText": "none", "refSections": [{"refs": [{"id": "ref-for-cross-origin-isolation-none"}], "title": "3.6.2. COOP, COEP, and cross-origin isolation"}], "external": true};
 window.dfnpanelData['fbadcbc4'] = {"dfnID": "fbadcbc4", "url": "https://html.spec.whatwg.org/multipage/dom.html#concept-content-nothing", "dfnText": "nothing", "refSections": [{"refs": [{"id": "ref-for-concept-content-nothing"}], "title": "2. The fencedframe element"}], "external": true};
 window.dfnpanelData['e8798b0b'] = {"dfnID": "e8798b0b", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#ongoing-navigation", "dfnText": "ongoing navigation", "refSections": [{"refs": [{"id": "ref-for-ongoing-navigation"}], "title": "3.6.3. Actual navigation changes"}], "external": true};
-window.dfnpanelData['086e3aff'] = {"dfnID": "086e3aff", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin"}, {"id": "ref-for-concept-origin\u2460"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-origin\u2461"}], "title": "4.3. Permissions Policies"}, {"refs": [{"id": "ref-for-concept-origin\u2462"}, {"id": "ref-for-concept-origin\u2463"}, {"id": "ref-for-concept-origin\u2464"}], "title": "4.3.1. Algorithm patches"}], "external": true};
+window.dfnpanelData['086e3aff'] = {"dfnID": "086e3aff", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin"}, {"id": "ref-for-concept-origin\u2460"}, {"id": "ref-for-concept-origin\u2461"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-concept-origin\u2462"}], "title": "4.3. Permissions Policies"}, {"refs": [{"id": "ref-for-concept-origin\u2463"}, {"id": "ref-for-concept-origin\u2464"}, {"id": "ref-for-concept-origin\u2465"}], "title": "4.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['43ac8374'] = {"dfnID": "43ac8374", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin", "dfnText": "origin (for environment settings object)", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-origin"}, {"id": "ref-for-concept-settings-object-origin\u2460"}, {"id": "ref-for-concept-settings-object-origin\u2461"}], "title": "2.4. The Fence interface"}], "external": true};
 window.dfnpanelData['225c2b02'] = {"dfnID": "225c2b02", "url": "https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-origin", "dfnText": "origin (for navigation params)", "refSections": [{"refs": [{"id": "ref-for-navigation-params-origin"}, {"id": "ref-for-navigation-params-origin\u2460"}], "title": "4.3. Permissions Policies"}, {"refs": [{"id": "ref-for-navigation-params-origin\u2461"}], "title": "4.3.1. Algorithm patches"}], "external": true};
 window.dfnpanelData['d54eeea2'] = {"dfnID": "d54eeea2", "url": "https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2", "dfnText": "palpable content", "refSections": [{"refs": [{"id": "ref-for-palpable-content-2"}], "title": "2. The fencedframe element"}], "external": true};
@@ -4097,7 +4097,7 @@ window.dfnpanelData['3fca5a9e'] = {"dfnID": "3fca5a9e", "url": "https://infra.sp
 window.dfnpanelData['7d4424b2'] = {"dfnID": "7d4424b2", "url": "https://infra.spec.whatwg.org/#map-remove", "dfnText": "remove", "refSections": [{"refs": [{"id": "ref-for-map-remove"}], "title": "2.2. Fenced frame config mapping"}], "external": true};
 window.dfnpanelData['0e6b2056'] = {"dfnID": "0e6b2056", "url": "https://infra.spec.whatwg.org/#map-set", "dfnText": "set", "refSections": [{"refs": [{"id": "ref-for-map-set"}, {"id": "ref-for-map-set\u2460"}, {"id": "ref-for-map-set\u2461"}], "title": "2.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-set\u2462"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-set\u2463"}], "title": "2.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['653d0848'] = {"dfnID": "653d0848", "url": "https://infra.spec.whatwg.org/#map-size", "dfnText": "size", "refSections": [{"refs": [{"id": "ref-for-map-size"}, {"id": "ref-for-map-size\u2460"}], "title": "2.2. Fenced frame config mapping"}], "external": true};
-window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}, {"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}, {"id": "ref-for-string\u2464"}, {"id": "ref-for-string\u2465"}, {"id": "ref-for-string\u2466"}, {"id": "ref-for-string\u2467"}, {"id": "ref-for-string\u2468"}, {"id": "ref-for-string\u2460\u24ea"}, {"id": "ref-for-string\u2460\u2460"}, {"id": "ref-for-string\u2460\u2461"}, {"id": "ref-for-string\u2460\u2462"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-string\u2460\u2463"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-string\u2460\u2464"}], "title": "4.2. Content Security Policy"}], "external": true};
+window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}, {"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}, {"id": "ref-for-string\u2464"}, {"id": "ref-for-string\u2465"}, {"id": "ref-for-string\u2466"}, {"id": "ref-for-string\u2467"}, {"id": "ref-for-string\u2468"}, {"id": "ref-for-string\u2460\u24ea"}, {"id": "ref-for-string\u2460\u2460"}, {"id": "ref-for-string\u2460\u2461"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-string\u2460\u2462"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-string\u2460\u2463"}], "title": "4.2. Content Security Policy"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}, {"id": "ref-for-struct\u2460"}, {"id": "ref-for-struct\u2461"}, {"id": "ref-for-struct\u2462"}, {"id": "ref-for-struct\u2463"}, {"id": "ref-for-struct\u2464"}, {"id": "ref-for-struct\u2465"}, {"id": "ref-for-struct\u2466"}, {"id": "ref-for-struct\u2467"}, {"id": "ref-for-struct\u2468"}, {"id": "ref-for-struct\u2460\u24ea"}, {"id": "ref-for-struct\u2460\u2460"}, {"id": "ref-for-struct\u2460\u2461"}, {"id": "ref-for-struct\u2460\u2462"}, {"id": "ref-for-struct\u2460\u2463"}, {"id": "ref-for-struct\u2460\u2464"}, {"id": "ref-for-struct\u2460\u2465"}, {"id": "ref-for-struct\u2460\u2466"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-struct\u2460\u2467"}, {"id": "ref-for-struct\u2460\u2468"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-struct\u2461\u24ea"}], "title": "2.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-struct\u2461\u2460"}], "title": "2.4. The Fence interface"}, {"refs": [{"id": "ref-for-struct\u2461\u2461"}, {"id": "ref-for-struct\u2461\u2462"}], "title": "3.6.3. Actual navigation changes"}], "external": true};
 window.dfnpanelData['12d6b9a8'] = {"dfnID": "12d6b9a8", "url": "https://infra.spec.whatwg.org/#map-getting-the-values", "dfnText": "values", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-values"}, {"id": "ref-for-map-getting-the-values\u2460"}, {"id": "ref-for-map-getting-the-values\u2461"}], "title": "2.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2462"}, {"id": "ref-for-map-getting-the-values\u2463"}, {"id": "ref-for-map-getting-the-values\u2464"}, {"id": "ref-for-map-getting-the-values\u2465"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2466"}], "title": "2.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "3.3.4. Top-level traversables"}], "external": true};
