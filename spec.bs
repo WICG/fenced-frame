@@ -549,7 +549,8 @@ follows:
 
 <div algorithm>
   To <dfn for="fenced frame config mapping" export>finalize a pending config</dfn> in a [=fenced
-  frame config mapping=] |mapping| given a [=urn uuid=] |urn|, run these steps:
+  frame config mapping=] |mapping| given a [=urn uuid=] |urn| and [=fenced frame config=]
+  |config|, run these steps:
 
   1. Let |pendingMapping| be |mapping|'s [=fenced frame config mapping/pending config mapping=].
 
@@ -557,11 +558,9 @@ follows:
 
   1. If |pendingMapping|[|urn|] does not [=map/exist=], return failure.
 
-  1. Let |finalizedConfig| be |pendingMapping|[|urn|].
-
   1. [=map/Remove=] |pendingMapping|[|urn|].
 
-  1. [=map/Set=] |finalizedMapping|[|urn|] be |finalizedConfig|.
+  1. [=map/Set=] |finalizedMapping|[|urn|] to |config|.
 </div>
 
 <div algorithm>
