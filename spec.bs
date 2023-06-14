@@ -895,7 +895,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="fenced frame reporting metadata">value</dfn>
     :: a [=fencedframetype/fenced frame reporting metadata=]
 
-    : <dfn for="fenced frame reporter">visibility</dfn>
+    : <dfn for="fenced frame reporting metadata">visibility</dfn>
     :: a [=visibility=]
 
   : <dfn>exfiltration budget metadata</dfn>
