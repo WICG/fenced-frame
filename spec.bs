@@ -1815,11 +1815,10 @@ the response can be used to create a {{Document}} inside of a [=fenced navigable
 navigable=]. Without this explicit opt-in, all navigations inside of a [=fenced navigable
 container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
 
-[[HTML]]'s [=attempt to populate the history entry's document=] algorithm is modified such that just
-before the step inside the [=queue a task|queued task=] starting with "If <var ignore>failure</var>
-is true, then:", insert a new step:
-
 <div algorithm=navigation-patch>
+  [[HTML]]'s [=attempt to populate the history entry's document=] algorithm is modified such that
+  just before the step inside the [=queue a task|queued task=] starting with "If <var
+  ignore>failure</var> is true, then:", insert a new step:
 
 8. Otherwise, if all of the following conditions are true:
 
