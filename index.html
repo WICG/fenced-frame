@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="eb02f76f09f99470892208c9615d31082df70f2d" name="document-revision">
+  <meta content="8626b3766d6953bc30a6e91f8c72af4a5d9586e8" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-15">15 June 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-16">16 June 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2339,9 +2339,9 @@ monkeypatches that monkeypatch specification.</i></p>
    <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-export id="supports-loading-mode-fenced-frame">fenced-frame</dfn></code>` token indicates that
 the response can be used to create a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪">Document</a></code> inside of a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable③⑤">fenced
 navigable</a>. Without this explicit opt-in, all navigations inside of a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable③⑥">fenced navigable</a> will fail, as outlined in <a href="#navigation-patch">§ 3.6 Navigation</a>.</p>
-   <p><a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry&apos;s-document" id="ref-for-attempt-to-populate-the-history-entry&apos;s-document">attempt to populate the history entry’s document</a> algorithm is modified such that just
-before the step inside the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">queued task</a> starting with "If <var>failure</var> is true, then:", insert a new step:</p>
    <div class="algorithm" data-algorithm="navigation-patch">
+     <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry&apos;s-document" id="ref-for-attempt-to-populate-the-history-entry&apos;s-document">attempt to populate the history entry’s document</a> algorithm is modified such that
+  just before the step inside the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">queued task</a> starting with "If <var>failure</var> is true, then:", insert a new step: 
     <ol start="8">
      <li data-md>
       <p>Otherwise, if all of the following conditions are true:</p>
