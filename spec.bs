@@ -1342,13 +1342,13 @@ Note: This is because we need to ensure that we do not leak <var ignore>creator<
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
 
-<h3 id=local-policy-container-monkeypatch>Local requests policy container patch</h3>
+<h3 id=local-scheme-policy-container-monkeypatch>Local scheme requests policy container patch</h3>
 
-When making [=local scheme=] requests, <{iframe}>s inherit their [=Document/policy container=] from
-their [=navigable container=]'s [=Node/node document=]. If <{fencedframe}>s were to do the same
-thing, that would allow information about the initiator's [=Document/policy container=] to leak
-across a fenced frame boundary. This section patches [=Document/policy container=] inheritance to
-close that leak.
+When making a [=navigation request=] to a [=is local|local=] [=URL=], <{iframe}>s clone their
+[=Document/policy container=] from the [=Document/policy container=] of the {{Document}} initiating
+the [=navigation request=]. If <{fencedframe}>s were to do the same thing, that would allow
+information about the initiator's [=Document/policy container=] to leak across a fenced frame
+boundary. This section patches [=Document/policy container=] inheritance to close that leak.
 
 <div algorithm=local-policy-inheritance-determine-params>
   Modify the [=determine navigation params policy container=] algorithm to read:
@@ -1385,9 +1385,8 @@ close that leak.
       ignore>responsePolicyContainer</var>, and |fenced|.
 </div>
 
-Note: <{fencedframe}> [=policy container=] inheritance upon initial {{Document}} creation (and its
-corresponding [=policy container/ip address space=]) is handled in the
-[[#creating-browsing-contexts-patch]] section.
+Note: <{fencedframe}> [=policy container=] inheritance upon initial {{Document}} creation is handled
+in the [[#creating-browsing-contexts-patch]] section.
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
