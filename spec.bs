@@ -1342,29 +1342,25 @@ Note: This is because we need to ensure that we do not leak <var ignore>creator<
 document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
 container=], across the fenced frame boundary.
 
-<h3 id=local-scheme-policy-container-monkeypatch>Local scheme requests policy container patch</h3>
+<h3 id=local-scheme-policy-container-inheritance>Policy container inheritance</h3>
 
 When making a [=navigation request=] to a [=is local|local=] [=URL=], <{iframe}>s clone their
-[=Document/policy container=] from the [=Document/policy container=] of the {{Document}} initiating
-the [=navigation request=]. If <{fencedframe}>s were to do the same thing, that would allow
-information about the initiator's [=Document/policy container=] to leak across a fenced frame
-boundary. This section patches [=Document/policy container=] inheritance to close that leak.
+[=Document/policy container=] from the [=navigation request=]'s *initiator* {{Document}}. If
+<{fencedframe}>s were to do the same thing, that would allow information about the initiator's
+[=Document/policy container=] to leak across a fenced frame boundary. This section patches
+[=Document/policy container=] inheritance to close that leak.
 
 <div algorithm=local-policy-inheritance-determine-params>
-  Modify the [=determine navigation params policy container=] algorithm to read:
-
-  To determine navigation params policy container given a [=URL=] |responseURL|; four [=policy
-  container=]-or-nulls <var ignore>historyPolicyContainer</var>, |initiatorPolicyContainer|,
-  <var ignore>parentPolicyContainer</var>, and <var ignore>responsePolicyContainer</var>; and an
-  optional [=boolean=] |fenced| that defaults to false:
+  Modify the [=determine navigation params policy container=] algorithm to have a new optional
+  [=boolean=] parameter |fenced| that defaults to false.
 
   Rewrite step 3 to read:
 
-    3. If |responseURL| [=is local=], |initiatorPolicyContainer| is not null, and |fenced| is set to
-       false, then return a [=clone a policy container|clone=] of |initiatorPolicyContainer|.
+    3. If |responseURL| [=is local=], |initiatorPolicyContainer| is not null, and |fenced| false,
+       then return a [=clone a policy container|clone=] of |initiatorPolicyContainer|.
 
-  Note: We do not need to modify the <code>[=about:srcdoc=]</code> case because navigations to
-  <code>[=about:srcdoc=]</code> are not supported in fenced frames.
+  Note: We do not need to modify the case where |responseURL| is <code>[=about:srcdoc=]</code>,
+  because navigations to <code>[=about:srcdoc=]</code> are not supported in fenced frames.
 </div>
 
 <div algorithm=local-policy-inheritance-populate-session-history-entry>
