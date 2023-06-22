@@ -84,14 +84,12 @@ spec: prerendering-revamped; urlPrefix: https://wicg.github.io/nav-speculation/p
     for: navigable
       text: loading mode; url: #navigable-loading-mode
 
-spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
-  type: dfn
-    text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
       text: check a navigation response's adherence to its embedder policy; url: check-a-navigation-response's-adherence-to-its-embedder-policy
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
+      text: determine navigation params policy container; url: determining-navigation-params-policy-container
       text: cross-origin opener policy enforcement result; url: coop-enforcement-result
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
@@ -148,10 +146,12 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: replace; url: hh-replace
       for: document state
         text: document; url: document-state-document
+        text: history policy container; url: document-state-history-policy-container
       text: checking if unloading is user-canceled
       text: source snapshot params
       for: source snapshot params
         text: fetch client; url: source-snapshot-params-client
+        text: source policy container; url: source-snapshot-params-policy-container
       text: session-history-entry
       for: session history entry
         text: step; url: she-step
@@ -195,6 +195,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: face validation anchor; url: face-validation-anchor
     urlPrefix: webappapis.html
       text: fire a click event; url: fire-a-click-event
+    urlPrefix: urls-and-fetching.html
+      text: about:srcdoc; url: about:srcdoc
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -1349,6 +1351,48 @@ Each {{Window}} object has an associated <dfn for=Window>fence</dfn>, which is a
        |creator|'s [=Document/browsing context=]'s [=browsing context/fenced frame config
        instance=].
 </div>
+
+<h3 id=local-scheme-policy-container-inheritance>Policy container inheritance</h3>
+
+When making a [=navigation request=] to a [=is local|local=] [=URL=], <{iframe}>s clone their
+[=Document/policy container=] from the [=navigation request=]'s *initiator* {{Document}}. If
+<{fencedframe}>s were to do the same thing, that would allow information about the initiator's
+[=Document/policy container=] to leak across a fenced frame boundary. This section patches
+[=Document/policy container=] inheritance to close that leak.
+
+<div algorithm=local-policy-inheritance-determine-params>
+  Modify the [=determine navigation params policy container=] algorithm to have a new optional
+  [=boolean=] parameter |fenced| that defaults to false.
+
+  Rewrite step 3 to read:
+
+    3. If |responseURL| [=is local=], |initiatorPolicyContainer| is not null, and |fenced| false,
+       then return a [=clone a policy container|clone=] of |initiatorPolicyContainer|.
+
+  Note: We do not need to modify the case where |responseURL| is <code>[=about:srcdoc=]</code>,
+  because navigations to <code>[=about:srcdoc=]</code> are not supported in fenced frames.
+</div>
+
+<div algorithm=local-policy-inheritance-populate-session-history-entry>
+  Add a step before step 23 of [=create navigation params by fetching=] that says:
+
+  23. Let |fenced| be true if |navigable| is a [=fenced navigable container/fenced navigable=],
+      false otherwise.
+
+      Note: This ensures |fenced| is true regardless of whether the initiator {{Document}} is
+      |navigable|'s [=navigable/active document=] or its [=navigable/unfenced parent=].
+
+  Rewrite step 23 (now step 24) to read:
+
+  24. Let <var ignore>resultPolicyContainer</var> be the result of [=determining navigation params
+      policy container=] given <var ignore>response</var>'s [=response/URL=], <var ignore>
+      entry</var>'s [=document state=]'s [=document state/history policy container=], <var ignore>
+      sourceSnapshotParams</var>'s [=source snapshot params/source policy container=], null, <var
+      ignore>responsePolicyContainer</var>, and |fenced|.
+</div>
+
+Note: <{fencedframe}> [=policy container=] inheritance upon initial {{Document}} creation is handled
+in the [[#creating-browsing-contexts-patch]] section.
 
 <h3 id=nested-traversables>Nested traversables</h3>
 
