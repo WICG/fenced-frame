@@ -746,7 +746,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
 
   1. Let |destination url| be |destination map|[|eventType|].
 
-  1. Let |request| be a new [=request=] with the following:
+  1. Let |request| be a new [=request=] with the following properties:
 
     : [=request/method=]
     :: <code>`POST`</code>
