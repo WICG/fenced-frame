@@ -747,9 +747,51 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
 
   1. Let |destination url| be |destination map|[|eventType|].
 
-  1. Send a beacon with |eventData| to |destination url|.
+  1. Let |request| be a new [=request=] with the following properties:
 
-     Issue: Specify the [[FETCH]] integration for sending this request.
+    : [=request/method=]
+    :: <code>`POST`</code>
+
+    : [=request/URL=]
+    :: |destination url|
+
+    : [=request/header list=]
+    :: A new [=header list=] containing a [=header=] whose [=header/name=] is `"Content-Type"` and
+       [=header/value=] is `"text/plain"`.
+
+    : [=request/body=]
+    :: A [=body=] whose [=body/source=] is |eventData|.
+
+    : [=request/client=]
+    :: null
+
+    : [=request/service-workers mode=]
+    :: `"all"`
+
+       Issue: The default is `"all"`, so we technically don't have to set anything here. We do in order
+       to remind ourselves that it might be more appropriate to skip service workers here, like some
+       [other
+       beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
+
+    : [=request/origin=]
+    :: <span class=XXX>Get the origin from somewhere, like the [implementation
+       does](https://source.chromium.org/chromium/chromium/src/+/refs/heads/main:content/browser/fenced_frame/fenced_frame_reporter.cc;l=384;drc=183dd920ea5d6aed92e007c40e226f1f840c0567)</span>.
+
+    : [=request/referrer=]
+    :: `"no-referrer"`
+
+    : [=request/mode=]
+    :: `"cors"`
+
+    : [=request/credentials mode=]
+    :: `"omit"`
+
+  1. [=Fetch=] |request|.
+
+    Note: This algorithm can be invoked from while [=in parallel=] or while on a {{Document}}'s main
+    thread. To handle the [=in parallel=] invocation correctly, ordinarily we would invoke [=fetch=]
+    with [=fetch/useParallelQueue=] set to true, but since we don't pass in any of the <span
+    class=allow-2119>optional</span> [=response=]-handling algorithms, there is no need to do this.
 </div>
 
 <div algorithm>
