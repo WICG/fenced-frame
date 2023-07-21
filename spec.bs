@@ -230,6 +230,10 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
   type: dfn
     for: permissions policy
       text: inherited policy; url: inherited-policy
+spec: css2; urlPrefix: https://www.w3.org/TR/CSS21/visuren.html
+  type: dfn
+    for: css2
+      text: viewport; url: viewport
 </pre>
 
 <style>
@@ -2446,32 +2450,24 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
 <h3 id=cssom-monkeypatch>CSSOM View</h3>
 
-The [[!CSSOM-VIEW]] specification defines scroll bubbling behavior through the [=scroll a target
-into view=] algorithm. Our specification modifies it to not allow scrolling a target into view if it
-is inside of a fenced frame. This is done because the {{Element/scrollIntoView()}} method is an
-event that can both be invoked from and observed by script, which can open a communication side
-channel between a <{fencedframe}> and its embedder.
+The [[!CSSOM-VIEW]] specification defines the {{Element/scrollIntoView()}} method that calls the
+[=scroll a target into view=] algorithm. This will not only scroll the {{Element}} or
+[=css2/viewport=] to make the target visible, but will also scroll [=tree/ancestor=]s if necessary
+to make the target visible, essentially causing the scroll to "bubble up". This means that
+{{Element/scrollIntoView()}} performed in a [=child navigable=] or [=fenced navigable
+container/fenced navigable=] can be observed by its embedder, allowing for collusion across a fenced
+frame boundary. This section patches {{Element/scrollIntoView()}} to prevent that collusion at the
+expense of some functionality.
 
 <div algorithm=scroll-target-into-view>
-  Modify the [=scroll a target into view=] algorithm to add 2 steps after step 1 that read:
+  Modify the [=scroll a target into view=] algorithm to add a step at the end of the algorithm that reads:
 
-  2. If |target|'s associated {{Document}}'s [=node navigable=]'s [=navigable/traversable
-     navigable=] is a [=fenced navigable container/fenced navigable=], terminate these steps.
-
-  3. If |target|'s associated {{Document}}'s [=Document/ancestor navigables=] [list/contains=] a
-     [=navigable=] whose [=navigable/traversable navigable=] is a [=fenced navigable
+  14. If <var ignore>scrolling box</var>'s associated {{Element}} or [=css2/viewport=]'s associated
+     {{Document}}'s [=node navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable
      container/fenced navigable=], terminate these steps.
+
+  Note: This allows scrolling to "bubble up" to a fenced frame boundary, but not cross it.
 </div>
-
-<div algorithm=run-the-scroll-steps>
-  Modify the [=Document/run the scroll steps=] algorithm to add a check before step 1.1 that reads:
-
-  1. If <var ignore>target</var> is a {{Document}} whose [=node navigable=]'s
-     [=navigable/traversable navigable=] is a [=fenced navigable container/fenced navigable=],
-     [=iteration/continue=].
-</div>
-
-Note: This ensures that scroll events do not affect fenced frames.
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
 
