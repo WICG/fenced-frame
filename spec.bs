@@ -2433,9 +2433,9 @@ algorithms to achieve the outcomes described in the above explanatory content.
   1. [=Assert=]: if not null, <var ignore>container</var> is either a [=navigable container=] or a
      [=fenced navigable container=].
 
-  Rewrite step 4 to read:
+  Rewrite step 3 to read:
 
-  4. For each |feature| supported:
+  4. For each |feature| [=supported features|supported=]:
 
      1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
         container at origin$] on |feature|, |container|, |origin|, and |fenced|.
