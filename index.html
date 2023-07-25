@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version d29f71adb, updated Wed Jul 19 11:08:56 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="e31e55d6d0087b29945c9b56b858a8105e8f00e3" name="document-revision">
+  <meta content="03267d016f5852f5bef74fb3aaa5e08443dc6be0" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-24">24 July 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-25">25 July 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2268,7 +2268,7 @@ the fenced frame boundary, which is a privacy leak. To avoid this, we effectivel
    <div class="algorithm" data-algorithm="focusing-steps-patch">
      Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#focusing-steps" id="ref-for-focusing-steps②">focusing steps</a> to take a new optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean③">boolean</a> argument <var><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="focus-unfenced" data-noexport id="focus-unfenced">unfenced</dfn></var> that defaults to false. 
     <p>Add a new step after step 3 of the algorithm (that changes new focus target) that reads:</p>
-    <ol start="4">
+    <ol start="3">
      <li data-md>
       <p>If <var>new focus target</var> is a <a data-link-type="dfn" href="#fenced-navigable-containers" id="ref-for-fenced-navigable-containers③">fenced navigable container</a> with non-null <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable②④">fenced navigable</a>, then set <var>new focus target</var> to the <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable②⑤">fenced navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document③">active document</a>.</p>
     </ol>
