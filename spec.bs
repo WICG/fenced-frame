@@ -2454,10 +2454,10 @@ The [[!CSSOM-VIEW]] specification defines the {{Element/scrollIntoView()}} metho
 [=scroll a target into view=] algorithm. This will not only scroll the {{Element}} or
 [=css2/viewport=] to make the target visible, but will also scroll [=tree/ancestor=]s if necessary
 to make the target visible, essentially causing the scroll to "bubble up". This means that
-{{Element/scrollIntoView()}} performed in a [=child navigable=] or [=fenced navigable
-container/fenced navigable=] can be observed by its embedder, allowing for collusion across a fenced
-frame boundary. This section patches {{Element/scrollIntoView()}} to prevent that collusion at the
-expense of some utility.
+{{Element/scrollIntoView()}} performed in a [=child navigable=] or [=fenced navigable container/
+fenced navigable=] can be observed by its embedder, allowing for collusion across a fenced frame
+boundary. This section patches the [=scroll a target into view=] algorithm to prevent that collusion
+at the expense of some utility.
 
 <div algorithm=scroll-target-into-view>
   Modify the [=scroll a target into view=] algorithm to add a step at the end of the algorithm that
