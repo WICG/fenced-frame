@@ -2463,9 +2463,12 @@ at the expense of some utility.
   Modify the [=scroll a target into view=] algorithm to add a step at the end of the algorithm that
   reads:
 
-  14. If <var ignore>scrolling box</var>'s associated {{Element}} or [=css2/viewport=]'s associated
+  14. If <var ignore>scrolling box</var>'s associated {{Element}}'s associated {{Document}}'s [=node
+     navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+     navigable=], or if <var ignore>scrolling box</var>'s associated [=css2/viewport=]'s associated
      {{Document}}'s [=node navigable=]'s [=navigable/traversable navigable=] is a [=fenced navigable
-     container/fenced navigable=], terminate these steps.
+     container/fenced navigable=], then let this be the last instance of this algorithm that stops
+     any further recursive instances that would otherwise follow.
 
   Note: This allows scrolling to "bubble up" to a fenced frame boundary, but not cross it.
 </div>
