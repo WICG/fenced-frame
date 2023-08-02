@@ -148,7 +148,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       for: document state
         text: document; url: document-state-document
         text: history policy container; url: document-state-history-policy-container
-        text: initiator origin; url: document-state-initiator origin
+        text: initiator origin; url: document-state-initiator-origin
       text: checking if unloading is user-canceled
       text: source snapshot params
       for: source snapshot params
