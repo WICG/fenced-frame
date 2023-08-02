@@ -2608,6 +2608,10 @@ at the expense of some utility.
      any further recursive instances that would otherwise follow.
 
   Note: This allows scrolling to "bubble up" to a fenced frame boundary, but not cross it.
+
+  <wpt>
+    /fenced-frame/scroll-into-view.https.html
+  </wpt>
 </div>
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
