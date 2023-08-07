@@ -1114,7 +1114,7 @@ maps to an internal [=fenced frame config=] [=struct=].
   typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
   typedef USVString FencedFrameConfigURL;
 
-  [Exposed=Window]
+  [Exposed=Window, Serializable]
   interface FencedFrameConfig {
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
@@ -1187,6 +1187,27 @@ Each {{FencedFrameConfig}} has:
 
   1. Set [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/embedder shared storage
      context=] to |contextString|.
+</div>
+
+<div algorithm="FencedFrameConfig serializer">
+  {{FencedFrameConfig}} objects are [=serializable objects=]. Their
+  [=serialization steps=], given |value|, |serialized|, and |forStorage| are:
+
+  1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
+  
+  2. Set |serialized|.`[[Urn]]` to the value of |value|'s [=fencedframeconfig/urn=] attribute.
+
+  3. Set |serialized|.`[[Config]]` to the value of |value|'s [=fencedframeconfig/config=] attribute.
+</div>
+
+<div algorithm="FencedFrameConfig deserializer">
+  Their
+  [=deserialization steps=], given |serialized|, |value|, and <var ignore>
+  targetRealm</var> are:
+
+  1. Initialize |value|'s [=fencedframeconfig/urn=] attribute to |serialized|.`[[Urn]]`.
+
+  2. Initialize |value|'s [=fencedframeconfig/config=] attribute to |serialized|.`[[Config]]`.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
