@@ -21,6 +21,7 @@ WPT Display: open
 </pre>
 
 <pre class="link-defaults">
+spec:dom; type:dfn; for:/; text:element
 </pre>
 <pre class="biblio">
 {
@@ -216,9 +217,11 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: ASCII-serialized policy directive; url: serialized-policy-directive
     text: serialized permissions policy; url: serialized-permissions-policy
     text: supported features; url: supported-features
-    text: declared policy; url: declared-policy
     text: the special value *; url: the-special-value
     text: permissions policy; url: permissions-policy
+    for: permissions policy
+      text: declared policy; url: permissions-policy-declared-policy
+      text: inherited policy; url: permissions-policy-inherited-policy
     for: permissions
       text: matches; url: matches
 spec: CSP; urlPrefix: https://w3c.github.io/webappsec-csp/
@@ -231,10 +234,6 @@ spec: CSPEE; urlPrefix: https://w3c.github.io/webappsec-cspee/
   type: dfn
     text: Is response to request blocked by context's required CSP?; url: process-response
     text: required csp; url: browsing-context-required-csp
-spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
-  type: dfn
-    for: permissions policy
-      text: inherited policy; url: inherited-policy
 spec: css2; urlPrefix: https://www.w3.org/TR/CSS21/visuren.html
   type: dfn
     for: css2
@@ -2426,20 +2425,51 @@ algorithms to achieve the outcomes described in the above explanatory content.
   or <{fencedframe}>'s [=container policy=], when it is constructed.
 </div>
 
+<div algorithm>
+  Create a new algorithm, called <dfn export>Create a Permissions Policy for a fenced navigable</dfn>.
+
+  Given null or an [=element=] (|container|), this algorithm returns a new Permissions Policy.
+
+  1. [=Assert=]: if not null, |container| is a [=fenced navigable container=].
+
+  2. Let |inherited policy| be a new [=ordered map=].
+
+  3. Let |effective permissions| be an empty [=list=].
+  
+  4. Let |fenced frame config| be |container|'s [=Node/node document=]'s [=navigable/active browsing
+     context=]'s [=browsing context/fenced frame config instance=].
+
+  5. If |fenced frame config| is not null, and |fenced frame config|'s [=fenced frame config/
+     effective enabled permissions=] are not null, set |effective permissions| to
+     |fenced frame config|'s [=fenced frame config/effective enabled permissions=].
+
+  6. [=list/For each=] |feature| [=supported features|supported=]:
+
+    1. If |effective permissions| [=list/contains=] |feature|, then set |inherited policy|[feature]
+       to "`Enabled`".
+       
+       Otherwise, set |inherited policy|[feature] to "`Disabled`".
+
+  7. Let |policy| be a new [=permissions policy=], with [=permissions policy/inherited policy=]
+     |inherited policy| and [=permissions policy/declared policy=] a new [=ordered map=].
+
+  8. Return |policy|.
+</div>
+
 <div algorithm=create-permissions-policy>
   Modify the [$Create a Permissions Policy for a navigable$] algorithm:
 
-  Given null or an element (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
+  Given null or an [=element=] (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
   |fenced| that defaults to false, this algorithm returns a new Permissions Policy.
 
   Rewrite step 1 to read:
 
-  1. [=Assert=]: if not null, <var ignore>container</var> is either a [=navigable container=] or a
+  1. [=Assert=]: if not null, |container| is either a [=navigable container=] or a
      [=fenced navigable container=].
 
   Rewrite step 3 to read:
 
-  4. For each |feature| [=supported features|supported=]:
+  4. [=list/For each=] |feature| [=supported features|supported=]:
 
      1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
         container at origin$] on |feature|, |container|, |origin|, and |fenced|.
@@ -2454,14 +2484,13 @@ algorithms to achieve the outcomes described in the above explanatory content.
   [=origin=] (|origin|), and a [=response=] (<var ignore>response</var>), this algorithm returns a
   new [=Document/permissions policy=].
 
-  Add a step before step 1 that reads:
+  Rewrite step 1 to read:
 
-  1. Let |fenced| be true if |container| is a [=fenced navigable container=], and false otherwise.
+  1. If |container| is a [=fenced navigable container=], then let |policy| be the result of running
+     [=Create a Permissions Policy for a fenced navigable=] given |container|.
 
-  Modify what is *now* step 2 of the algorithm to read:
-
-  2. Let <var ignore>policy</var> be the result of running [$Create a Permissions Policy
-     for a navigable$] given |container|, |origin|, and |fenced|.
+     Otherwise, Let |policy| be the result of running [$Create a Permissions Policy for a
+     navigable$] given |container| and |origin|.
 </div>
 
 <div algorithm=attempt-populate-history-patches>
@@ -2553,13 +2582,13 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
   Rewrite step 3 to read:
 
-  3. If |feature| is present in |policy|'s [=declared policy=],
+  3. If |feature| is present in |policy|'s [=permissions policy/declared policy=],
 
-    1. If |fenced| is false, and the [=allowlist=] for |feature| in |policy|'s [=declared policy=]
-       [=permissions/matches=] |origin|, then return "`Enabled`".
+    1. If |fenced| is false, and the [=allowlist=] for |feature| in |policy|'s [=permissions policy/
+       declared policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
 
-    2. Otherwise, if |fenced| is true, and the [=allowlist=] for |feature| in |policy|'s [=declared
-       policy=] is [=the special value *=], then return "`Enabled`".
+    2. Otherwise, if |fenced| is true, and the [=allowlist=] for |feature| in |policy|'s
+       [=permissions policy/declared policy=] is [=the special value *=], then return "`Enabled`".
 
     3. Otherwise, return "`Disabled`".
 
