@@ -1190,8 +1190,8 @@ Each {{FencedFrameConfig}} has:
 </div>
 
 <div algorithm="FencedFrameConfig serializer">
-  {{FencedFrameConfig}} objects are [=serializable objects=]. Their
-  [=serialization steps=], given |value|, |serialized|, and |forStorage| are:
+  {{FencedFrameConfig}} objects are [=serializable objects=]. Their [=serialization steps=], given
+  |value|, |serialized|, and |forStorage| are:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
   
@@ -1202,8 +1202,7 @@ Each {{FencedFrameConfig}} has:
 
 <div algorithm="FencedFrameConfig deserializer">
   Their
-  [=deserialization steps=], given |serialized|, |value|, and <var ignore>
-  targetRealm</var> are:
+  [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var> are:
 
   1. Initialize |value|'s [=fencedframeconfig/urn=] attribute to |serialized|.`[[Urn]]`.
 
