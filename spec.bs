@@ -1385,7 +1385,8 @@ a [=top-level traversable=].
   3.  If |sourceSnapshotParams|' [=source snapshot params/has transient activation=] is set to
       false, terminate these steps.
 
-  4.  Let |config| be |sourceSnapshotParams|' [=source snapshot params/fenced frame config=].
+  4.  Let |config| be |sourceSnapshotParams|' [=source snapshot params/initiator fenced frame
+      config instance=].
 
   5.  If |config| is null, terminate these steps.
 
@@ -2063,10 +2064,22 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
 <div algorithm=source-snapshot-param-config>
-  Add a new [=struct/item=] to the [=source snapshot params=] [=struct=]:
+  Add 2 new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
 
-  : <dfn for="source snapshot params">fenced frame config</dfn>
+  : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
+  :: a [=fenced frame config instance=] or null, initially null.
+
+  : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
+</div>
+
+<div algorithm=snapshot-source-snapshot-params>
+  Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
+  with an additional field:
+
+  : [=source snapshot params/initiator fenced frame config instance=]
+  :: <var ignore>sourceDocument</var>'s [=browsing context=]'s [=browsing context/fenced frame
+     config instance=]
 </div>
 
 <div algorithm=navigate>
@@ -2111,8 +2124,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fenced frame config=]
-         to |config|.
+      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+         config=] to |config|.
 
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
          [=URL=] whose [=url/scheme=] is "`https`".
@@ -2136,7 +2149,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <br>
 
-The below patches make use of the previously-assigned [=source snapshot params/fenced frame
+The below patches make use of the previously-assigned [=source snapshot params/target fenced frame
 config=], [=instantiate a config|instantiating=] it in preparation for use when the navigation is
 finalized.
 
@@ -2157,9 +2170,9 @@ finalized.
   returns a [=navigation params=] has the following additional assignment:
 
   : [=navigation params/fenced frame config instance=]
-  :: If |sourceSnapshotParams|'s [=source snapshot params/fenced frame config=] is null, then null;
-     otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
-     [=source snapshot params/fenced frame config=].
+  :: If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then
+     null; otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
+     [=source snapshot params/target fenced frame config=].
 </div>
 
 <br>
