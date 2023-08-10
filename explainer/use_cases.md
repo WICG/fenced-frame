@@ -69,15 +69,15 @@ This use case is the fenced frames with no special restrictions on the src and n
     *   Like all use cases, the fenced frame is isolated from the embedded context via any JS window references, script access, storage access, messaging APIs etc. The fenced frame does not know the embedding site’s origin or etld+1.
 
 To begin experimenting with fenced frames in default mode, enable the following experiments in `chrome://flags`:
-* Privacy Sandbox Ads APIs
-* Enable the \`FencedFrameConfig\` constructor.
+* Privacy Sandbox Ads APIs (chrome://flags/#privacy-sandbox-ads-apis)
+* Enable the \`FencedFrameConfig\` constructor. (chrome://flags/#enable-fenced-frames-developer-mode)
 
 After relaunching Chrome, a fenced frame can be added to a page with the following code:
 ```
 const frame = document.createElement("fencedframe");
-const config = new FencedFrameConfig("https://yoursite.com/page.html");
+const config = new FencedFrameConfig("https://example.com/");
 frame.config = config;
-document.body.appendChild(frame);
+document.body.append(frame);
 ```
 
 ## **Read-only**
