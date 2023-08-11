@@ -1412,6 +1412,7 @@ a [=top-level traversable=].
     /fenced-frame/automatic-beacon-click-handler.https.html
     /fenced-frame/automatic-beacon-two-events-clear.https.html
     /fenced-frame/automatic-beacon-two-events-persist.https.html
+    /fenced-frame/automatic-beacon-unfenced-top.https.html
   </wpt>
 </div>
 
