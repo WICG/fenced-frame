@@ -1362,7 +1362,7 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
 
 <h3 id=automatic-reporting>Automatic Reporting</h3>
 
-*This introductory sub-section is non-normative.*
+*This first introductory paragraph is non-normative.*
 
 A side effect of the fenced boundary model is that ads will lose the ability to know if a click
 resulted in a successful navigation. This is because the page loaded from a top-level [=navigate|
@@ -2078,12 +2078,13 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   :: a [=fenced frame config=] or null, initially null.
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
-  config instance=] that is already loaded in the [=fenced navigable container/fenced navigable=]
-  that initiates a [=navigate|navigation=], and is used by the [=attempt to send an automatic
-  beacon=] to retrieve the [=fenced frame reporter/automatic beacon data=] to be sent out. The
-  [=source snapshot params/target fenced frame config=] is the non-[=instantiate a
-  config|instantiated=] [=fenced frame config=] that will be loaded into a target [=fenced navigable
-  container/fenced navigable=] as part of this [=navigate|navigation=].
+  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
+  It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=fenced frame
+  reporter/automatic beacon data=] to be sent out if the <{fencedframe}>-initiated navigation
+  succeeds. The [=source snapshot params/target fenced frame config=] on the other hand, is the
+  non-[=instantiate a config|instantiated=] [=fenced frame config=] that will be loaded into a a
+  <{fencedframe}> element for navigations targeting fenced frames. These fields do not interact
+  *together* in any meaningful way.
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
