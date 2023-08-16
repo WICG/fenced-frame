@@ -137,6 +137,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
       text: navigation params; url: navigation-params
+      text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
@@ -147,6 +148,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       for: document state
         text: document; url: document-state-document
         text: history policy container; url: document-state-history-policy-container
+        text: initiator origin; url: document-state-initiator-origin
       text: checking if unloading is user-canceled
       text: source snapshot params
       for: source snapshot params
@@ -155,6 +157,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: session-history-entry
       for: session history entry
         text: step; url: she-step
+      for: source snapshot params
+        text: has transient activation; url: source-snapshot-params-activation
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -177,6 +181,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
+        text: opener; url: dom-opener
     urlPrefix: webappapis.html
       for: environment
         text: target browsing context; url: concept-environment-target-browsing-context
@@ -739,6 +744,9 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
 
        : <dfn>destination</dfn>
        :: a [=list=] of {{FenceReportingDestination}}s
+
+       : <dfn>once</dfn>
+       :: a [=boolean=]
      </dl>
 </dl>
 
@@ -1206,6 +1214,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     required DOMString eventType;
     required DOMString eventData;
     required sequence&lt;FenceReportingDestination&gt; destination;
+    boolean once = false;
   };
 
   typedef (FenceEvent or DOMString) ReportEventType;
@@ -1271,6 +1280,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      : [=automatic beacon data/destination=]
      :: |event|'s {{FenceEvent/destination}}
+
+     : [=automatic beacon data/once=]
+     :: |event|'s {{FenceEvent/once}}
 
   <wpt>
     /fenced-frame/set-automatic-beacon.https.html
@@ -1347,6 +1359,75 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
  * [=request/initiator=] ""
  * CSP directive of <code>fenced-frame-src</code>
  * Features as HTML's <code>&lt;fencedframe&gt;</code>
+
+<h3 id=automatic-reporting>Automatic Reporting</h3>
+
+*This first introductory paragraph is non-normative.*
+
+A side effect of the fenced boundary model is that ads will lose the ability to know if a click
+resulted in a successful navigation. This is because the page loaded from a top-level [=navigate|
+navigation=] originating from a fenced frame will not be allowed to report to the fenced frame that
+it loaded (through something like <code>window.[=Window/opener=]</code>). Instead, we introduce a
+special event-level [=pending event/eventType|reporting type=], `reserved.top_navigation`, which
+automatically sends an [=report an event|event-level beacon=] when a fenced frame initiates a
+successful [=navigate|navigation=] to a [=top-level traversable=].
+
+<div algorithm>
+  To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
+  |sourceSnapshotParams|, an [=origin=] |sourceOrigin|, a {{Document}} |targetDocument|, and a
+  [=string=] |eventType|, run these steps:
+
+  1. [=Assert=]: |eventType| is "`reserved.top_navigation`".
+
+  1. If |targetDocument|'s [=node navigable=]'s [=traversable navigable=] is not a [=top-level
+     traversable=], abort these steps.
+
+  1. If |sourceSnapshotParams|'s [=source snapshot params/has transient activation=] is set to false,
+     abort these steps.
+
+  1. Let |config| be |sourceSnapshotParams|'s [=source snapshot params/initiator fenced frame config
+     instance=].
+
+  1. If |config| is null, abort these steps.
+     
+     Note: Since this algorithm is called unconditionally for all navigations, this is used to catch
+     cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
+     <{fencedframe}>.
+
+  1. Let |beacon data| be |config|'s [=fenced frame config instance/fenced frame reporter=]'s
+     [=fenced frame reporter/automatic beacon data=].
+
+  1. If |beacon data| is null, abort these steps.
+
+  1. If |sourceOrigin| is not [=same origin=] with |config|'s [=fenced frame config instance/mapped
+     url=]'s [=url/origin=], abort these steps.
+
+  1. [=list/For each=] |destination| of |beacon data|'s [=automatic beacon data/destination=]:
+
+    1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
+       reporter=] with |destination|, |eventType|, and |beacon data|'s [=automatic beacon data/
+       eventData=].
+
+  1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
+      config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
+      null.
+
+  <wpt>
+    /fenced-frame/automatic-beacon-click-handler.https.html
+    /fenced-frame/automatic-beacon-two-events-clear.https.html
+    /fenced-frame/automatic-beacon-two-events-persist.https.html
+    /fenced-frame/automatic-beacon-unfenced-top.https.html
+  </wpt>
+</div>
+
+<div algorithm="automatic beacon patch">
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. In step 6,
+  substep 11, add a new step after step 5 that reads:
+
+  6. if <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
+     ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
+     state/initiator origin=], <var ignore>document</var>, and "`reserved.top_navigation`".
+</div>
 
 <h2 id=html-integration>HTML Integration</h2>
 
@@ -1988,10 +2069,31 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
 <div algorithm=source-snapshot-param-config>
-  Add a new [=struct/item=] to the [=source snapshot params=] [=struct=]:
+  Add two new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
 
-  : <dfn for="source snapshot params">fenced frame config</dfn>
+  : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
+  :: a [=fenced frame config instance=] or null, initially null.
+
+  : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
+
+  Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
+  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
+  It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=fenced frame
+  reporter/automatic beacon data=] to be sent out if the <{fencedframe}>-initiated navigation
+  succeeds. The [=source snapshot params/target fenced frame config=] on the other hand, is the
+  non-[=instantiate a config|instantiated=] [=fenced frame config=] that will be loaded into a a
+  <{fencedframe}> element for navigations targeting fenced frames. These fields do not interact
+  *together* in any meaningful way.
+</div>
+
+<div algorithm=snapshot-source-snapshot-params>
+  Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
+  with an additional field:
+
+  : [=source snapshot params/initiator fenced frame config instance=]
+  :: <var ignore>sourceDocument</var>'s [=browsing context=]'s [=browsing context/fenced frame
+     config instance=]
 </div>
 
 <div algorithm=navigate>
@@ -2036,8 +2138,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fenced frame config=]
-         to |config|.
+      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+         config=] to |config|.
 
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
          [=URL=] whose [=url/scheme=] is "`https`".
@@ -2061,7 +2163,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <br>
 
-The below patches make use of the previously-assigned [=source snapshot params/fenced frame
+The below patches make use of the previously-assigned [=source snapshot params/target fenced frame
 config=], [=instantiate a config|instantiating=] it in preparation for use when the navigation is
 finalized.
 
@@ -2082,9 +2184,9 @@ finalized.
   returns a [=navigation params=] has the following additional assignment:
 
   : [=navigation params/fenced frame config instance=]
-  :: If |sourceSnapshotParams|'s [=source snapshot params/fenced frame config=] is null, then null;
-     otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
-     [=source snapshot params/fenced frame config=].
+  :: If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then
+     null; otherwise, the result of [=instantiate a config|instantiating=] |sourceSnapshotParams|'s
+     [=source snapshot params/target fenced frame config=].
 </div>
 
 <br>
