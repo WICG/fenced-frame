@@ -224,6 +224,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: supported features; url: supported-features
     text: the special value *; url: the-special-value
     text: permissions policy; url: permissions-policy
+    text: policy directive; url: policy-directive
     for: permissions policy
       text: declared policy; url: permissions-policy-declared-policy
       text: inherited policy; url: permissions-policy-inherited-policy
@@ -2593,6 +2594,13 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
      Otherwise, Let |policy| be the result of running [$Create a Permissions Policy for a
      navigable$] given |container| and |origin|.
+</div>
+
+<div algorithm=process-permissions-policy-attribute-patch>
+  Modify step 1 of the [$Process permissions policy attributes$] algorithm to read:
+
+  1. If <var ignore>element</var> is not an <{iframe}> element or a <{fencedframe}> element, then
+     return an empty [=policy directive=].
 </div>
 
 <div algorithm=attempt-populate-history-patches>
