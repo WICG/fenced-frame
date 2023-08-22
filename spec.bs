@@ -526,9 +526,10 @@ returned to the web platform in a constant amount of time, before any computatio
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
 to discern when a pending config is finalized, it is important that all visibilities and values of
 transparent fields do not change from the pending config to the finalized config, given that they
-can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that
-is created and exposed to the web platform is effectively immutable even if its underlying
-[=fenced frame config=] is technically "pending", and will finish resolving completely later.
+can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that is
+created and exposed to the web platform is effectively immutable even if the [=fenced frame config=]
+represented by the [=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and
+will finish resolving completely later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
@@ -1182,46 +1183,43 @@ Each {{FencedFrameConfig}} has:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
   
-  1. Set |serialized|.`[[Urn]]` to the value of |value|'s [=fencedframeconfig/urn=] attribute.
+  1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
-  1. Set |serialized|.`[[SharedStorageContext]]` to the value of |value|'s [=fencedframeconfig/
-     sharedStorageContext=] attribute.
+  1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
+     sharedStorageContext=].
 
-  1. Set |serialized|.`[[ContainerWidth]]` to the value of |value|'s [=fencedframeconfig/
-     containerWidth=] attribute.
+  1. Set |serialized|.\[[ContainerWidth]] to |value|'s [=fencedframeconfig/
+     containerWidth=].
 
-  1. Set |serialized|.`[[ContainerHeight]]` to the value of |value|'s [=fencedframeconfig/
-     containerHeight=] attribute.
+  1. Set |serialized|.\[[ContainerHeight]] to |value|'s [=fencedframeconfig/
+     containerHeight=].
 
-  1. Set |serialized|.`[[ContentWidth]]` to the value of |value|'s [=fencedframeconfig/
-     contentWidth=] attribute.
+  1. Set |serialized|.\[[ContentWidth]] to |value|'s [=fencedframeconfig/
+     contentWidth=].
 
-  1. Set |serialized|.`[[ContentHeight]]` to the value of |value|'s [=fencedframeconfig/
-     contentHeight=] attribute.
+  1. Set |serialized|.\[[ContentHeight]] to |value|'s [=fencedframeconfig/
+     contentHeight=].
 
 
 </div>
 
 <div algorithm="FencedFrameConfig deserializer">
-  Their
-  [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var> are:
+  Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
+  are:
 
-  1. Initialize |value|'s [=fencedframeconfig/urn=] attribute to |serialized|.`[[Urn]]`.
+  1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
 
-  1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] attribute to |serialized|.`
-     [[SharedStorageContext]]`.
+  1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
+     |serialized|.\[[SharedStorageContext]].
 
-  1. Initialize |value|'s [=fencedframeconfig/containerWidth=] attribute to |serialized|.
-     `[[ContainerWidth]]`.
+  1. Initialize |value|'s [=fencedframeconfig/containerWidth=] to |serialized|.\[[ContainerWidth]].
 
-  1. Initialize |value|'s [=fencedframeconfig/containerHeight=] attribute to |serialized|.
-     `[[ContainerHeight]]`.
+  1. Initialize |value|'s [=fencedframeconfig/containerHeight=] to
+     |serialized|.\[[ContainerHeight]].
 
-  1. Initialize |value|'s [=fencedframeconfig/contentWidth=] attribute to |serialized|.
-     `[[ContentWidth]]`.
+  1. Initialize |value|'s [=fencedframeconfig/contentWidth=] to |serialized|.\[[ContentWidth]].
 
-  1. Initialize |value|'s [=fencedframeconfig/contentHeight=] attribute to |serialized|.
-     `[[ContentHeight]]`.
+  1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -1353,16 +1351,16 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            [=fenced frame config/container size=]'s [=size/height=]
 
         : [=fencedframeconfig/contentWidth=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, {{OpaqueProperty}} if
-           |config|'s [=fenced frame config/content size=]'s [=content size/visibility=] is
-           [=visibility/opaque=], otherwise |config|'s [=fenced frame config/content size=]'s
-           [=size/width=]
+        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
+           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
+           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
+           config/content size=]'s [=size/width=]
 
         : [=fencedframeconfig/contentHeight=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, {{OpaqueProperty}} if
-           |config|'s [=fenced frame config/content size=]'s [=content size/visibility=] is
-           [=visibility/opaque=], otherwise |config|'s [=fenced frame config/content size=]'s
-           [=size/height=]
+        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
+           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
+           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
+           config/content size=]'s [=size/height=]
 
      1. [=list/Append=] |newConfig| to |results|.
 
@@ -2144,8 +2142,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm=navigate>
-  Modify the beginning sentence of [[HTML]]'s [=navigate=] algorithm to include an extra parameter:
-  an optional [=string=] |sharedStorageContext| (default null).
+  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
+  optional [=string=] |sharedStorageContext| (default null).
 
   Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
 
