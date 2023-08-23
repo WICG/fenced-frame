@@ -746,6 +746,12 @@ following [=struct/items=]:
 
   : <dfn>direct seller is seller</dfn>
   :: a boolean
+
+  : <dfn>allowed reporting origins</dfn>
+  :: null or a [=list=] of [=origins=]
+
+  : <dfn>attempted custom url report to disallowed origin</dfn>
+  :: a boolean, initially false
 </dl>
 
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] with the following
@@ -802,7 +808,6 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
      1. If |macro map| is null, return.
      1. Set |destination url| to |event|.
      1. TODO: Substitute macros from |macro map| into |destination url|.
-     1. TODO: Check allowed origins.
 
   1. Let |request| be a new [=request=] with the following properties:
 
@@ -857,17 +862,29 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
   |reporter| with a {{FenceReportingDestination}} |destination|, and a
   [=fencedframetype/destination event=] |event|, run these steps:
 
+  1. Let |metadata| be |reporter|'s
+     [=fenced frame reporter/fenced frame reporting metadata reference=].
+
   1. If |destination| is `"direct-seller"`:
 
-     1. If |reporter|'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
-        [=fenced frame reporting metadata/direct seller is seller=] is true, set |destination| to
-        `"seller"`.
+     1. If |metadata|'s [=fenced frame reporting metadata/direct seller is seller=] is true, set
+        |destination| to `"seller"`.
 
      1. Otherwise, set |destination| to `"component-seller"`.
 
-  1. Let |reporting map| be a reference to |reporter|'s [=fenced frame reporter/fenced frame
-     reporting metadata reference=]'s [=fenced frame reporting metadata/fenced frame reporting
-     map=].
+  1. If |event| is a [=fencedframetype/destination enum event=]:
+     1. If |event|'s [=url/origin=] is not [=same origin=] with any of the entries in
+        |metadata|'s [=fenced frame reporting metadata/allowed reporting origins=]:
+        1. Set |metadata|'s
+           [=fenced frame reporting metadata/attempted custom url report to disallowed origin=] to
+           true.
+
+     1. If |metadata|'s
+        [=fenced frame reporting metadata/attempted custom url report to disallowed origin=] is
+        true, return.
+
+  1. Let |reporting map| be a reference to |metadata|'s
+     [=fenced frame reporting metadata/fenced frame reporting map=].
 
   1. If |reporting map|[|destination|] does not [=map/exist=], return.
 
