@@ -761,10 +761,9 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
   
   1. Optionally, return.
 
-    Note: This [=implementation-defined=] condition is intended to allow user
-        agents to drop the beacon for a number of reasons, for example user
-        opt-out or |destination url|'s [=site=] not being
-        <a href="https://github.com/privacysandbox/attestation">enrolled</a>.
+    Note: This [=implementation-defined=] condition is intended to allow user agents to drop the
+    beacon for a number of reasons, for example user opt-out or |destination url|'s [=site=] not
+    being <a href="https://github.com/privacysandbox/attestation">enrolled</a>.
 
   1. Let |request| be a new [=request=] with the following properties:
 
