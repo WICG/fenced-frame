@@ -759,7 +759,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
 
   1. Let |destination url| be |destination map|[|eventType|].
   
-  1. If |destination url|'s {{site}} is not <a
+  1. If |destination url|'s [=site=] is not <a
   href="https://github.com/privacysandbox/attestation">enrolled</a>, return.
 
   1. Let |request| be a new [=request=] with the following properties:
