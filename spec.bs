@@ -679,11 +679,8 @@ A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the f
   : <dfn>destination</dfn>
   :: a {{FenceReportingDestination}}
 
-  : <dfn>eventType</dfn>
-  :: a [=string=]
-
-  : <dfn>eventData</dfn>
-  :: a [=string=]
+  : <dfn>event</dfn>
+  :: a [=fencedframetype/destination event=]
 </dl>
 
 A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] whose [=map/keys=]
@@ -756,19 +753,40 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
      </dl>
 </dl>
 
+A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
+[=struct/items=]:
+<dl export dfn-for="destination enum event">
+  : <dfn>type</dfn>
+  :: a [=string=]
+
+  : <dfn>data</dfn>
+  :: a [=string=]
+</dl>
+
+A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
+
+A <dfn export for=fencedframetype>destination event</dfn> is either a
+[=fencedframetype/destination enum event=] or a [=fencedframetype/destination URL event=].
+
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=map=] |destination map| whose [=map/keys=] are
-  [=strings=] and whose [=map/values=] are [=urls=], a [=string=] |eventType|, and a [=string=]
-  |eventData|, run these steps:
+  [=strings=] and whose [=map/values=] are [=urls=], and a [=fencedframetype/destination event=]
+  |event|, run these steps:
 
-  1. If |destination map|[|eventType|] does not [=map/exist=], return.
+  1. Let |destination url| be an empty [=string=].
+  1. If |event| is a [=fencedframetype/destination enum event=]:
+     1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
-  1. Let |destination url| be |destination map|[|eventType|].
+     1. Set |destination url| to |destination map|[|eventType|].
+
+  1. Otherwise:
+     1. Assert that |event| is a [=fencedframetype/destination URL event=].
+     1. Set |destination url| to |event|.
 
   1. Let |request| be a new [=request=] with the following properties:
 
     : [=request/method=]
-    :: <code>`POST`</code>
+    :: <code>`POST`</code> if |event| is a [=fencedframetype/destination enum event=], otherwise <code>`GET`</code>.
 
     : [=request/URL=]
     :: |destination url|
@@ -778,7 +796,8 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
        [=header/value=] is `"text/plain"`.
 
     : [=request/body=]
-    :: A [=body=] whose [=body/source=] is |eventData|.
+    :: If |event| is a [=fencedframetype/destination enum event=], a [=body=] whose [=body/source=]
+       is |event|'s [=destination enum event/data=], otherwise null.
 
     : [=request/client=]
     :: null
@@ -814,8 +833,8 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
 
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
-  |reporter| with a {{FenceReportingDestination}} |destination|, [=string=] |eventType|, and
-  [=string=] |eventData|, run these steps:
+  |reporter| with a {{FenceReportingDestination}} |destination|, and a
+  [=fencedframetype/destination event=] |event|, run these steps:
 
   1. If |destination| is `"direct-seller"`:
 
@@ -837,11 +856,8 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
         : [=pending event/destination=]
         :: |destination|
 
-        : [=pending event/eventType=]
-        :: |eventType|
-
-        : [=pending event/eventData=]
-        :: |eventData|
+        : [=pending event/event=]
+        :: |event|
 
      1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
 
@@ -852,7 +868,7 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
   1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
      metadata has been finalized).
 
-  1. [=Send a beacon=] with |reporting map|[|destination|], |eventType|, and |eventData|.
+  1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
 </div>
 
 <div algorithm>
@@ -1237,10 +1253,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   };
 
   dictionary FenceEvent {
-    required DOMString eventType;
-    required DOMString eventData;
-    required sequence&lt;FenceReportingDestination&gt; destination;
+    // This dictionary has two mutually exclusive modes:
+    //
+    // When reporting to a preregistered destination (specified by enum), the following properties
+    // are used:
+    DOMString eventType;
+    DOMString eventData;
+    sequence&lt;FenceReportingDestination&gt; destination;
     boolean once = false;
+
+    // When reporting to a custom destination URL (with substitution of macros defined by the
+    // Protected Audience buyer), the following property is used:
+    USVString destinationURL;
   };
 
   typedef (FenceEvent or DOMString) ReportEventType;
@@ -1270,11 +1294,25 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] using |instance|'s
      [=fenced frame config instance/fenced frame reporter=] with |event|.
 
-  1. If |event| is a {{FenceEvent}}, [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
+  1. If |event| is a {{FenceEvent}}:
 
-     1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-        reporter=] with |destination|, |event|'s {{FenceEvent/eventType}}, and |event|'s
-        {{FenceEvent/eventData}}.
+     1. If |event| has a {{FenceEvent/destinationURL}}:
+        1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
+           {{FenceEvent/eventData}}:
+           1. Return a syntax error.
+        1. If |event|'s {{FenceEvent/destinationURL}} is not a valid URL or is not https:
+           1. Return a syntax error.
+
+     1. Otherwise:
+        1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
+           {{FenceEvent/eventType}}:
+           1. Return a syntax error.
+
+        1. [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
+
+        1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+           reporter=] with |destination|, |event|'s {{FenceEvent/eventType}}, and |event|'s
+           {{FenceEvent/eventData}} (or the empty string if it is not defined).
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
@@ -1284,6 +1322,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
+  1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
+     {{FenceEvent/eventType}}:
+     1. Return a syntax error.
 
   1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
@@ -1302,7 +1343,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      reporter/automatic beacon data=] to a [=struct=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
-     :: |event|'s {{FenceEvent/eventData}}
+     :: |event|'s {{FenceEvent/eventData}} if defined, otherwise empty string
 
      : [=automatic beacon data/destination=]
      :: |event|'s {{FenceEvent/destination}}
@@ -1435,7 +1476,7 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
      instance=].
 
   1. If |config| is null, abort these steps.
-     
+
      Note: Since this algorithm is called unconditionally for all navigations, this is used to catch
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
