@@ -812,7 +812,8 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
   1. Let |request| be a new [=request=] with the following properties:
 
     : [=request/method=]
-    :: <code>`POST`</code> if |event| is a [=fencedframetype/destination enum event=], otherwise <code>`GET`</code>.
+    :: <code>`POST`</code> if |event| is a [=fencedframetype/destination enum event=], otherwise
+       <code>`GET`</code>.
 
     : [=request/URL=]
     :: |destination url|
