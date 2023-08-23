@@ -1320,9 +1320,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. If |event| has a {{FenceEvent/destinationURL}}:
         1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
            {{FenceEvent/eventData}}:
-           1. Return a syntax error.
-        1. If |event|'s {{FenceEvent/destinationURL}} is not a valid URL or is not https:
-           1. Return a syntax error.
+           1. [=exception/Throw=] a {{TypeError}}.
+        1. Let |destinationURL| be the result of running the [=URL parser=] on
+           {{FenceEvent/destinationURL}}.
+        1. [=exception/Throw=] a {{TypeError}} if any of the following conditions hold:
+           * |destinationURL| is failure;
+           * |destinationURL| [=url/scheme=] is not "`https`";
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
            reporter=] with {{FenceReportingDestination/buyer}} and a
            [=fencedframetype/destination URL event=] that is event|'s
@@ -1331,7 +1334,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Otherwise:
         1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
            {{FenceEvent/eventType}}:
-           1. Return a syntax error.
+           1. [=exception/Throw=] a {{TypeError}}.
 
         1. [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
@@ -1356,7 +1359,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   method steps are:
   1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
      {{FenceEvent/eventType}}:
-     1. Return a syntax error.
+     1. [=exception/Throw=] a {{TypeError}}.
 
   1. If |event|'s {{FenceEvent/eventType}} is not `"reserved.top_navigation"`, return.
 
