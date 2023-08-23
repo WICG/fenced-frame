@@ -683,11 +683,22 @@ A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the f
   :: a [=fencedframetype/destination event=]
 </dl>
 
+A <dfn export for=fencedframetype>reporting destination info</dfn> is a [=struct=] with the
+following [=struct/items=]:
+
+<dl export dfn-for="reporting destination info">
+  : <dfn>reporting url map</dfn>
+  :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=]
+
+  : <dfn>reporting macro map</dfn>
+  :: null, or a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=strings=]
+</dl>
+
 A <dfn export for=fencedframetype>fenced frame reporting map</dfn> is a [=map=] whose [=map/keys=]
 are {{FenceReportingDestination}}s and whose [=map/values=] are either:
  * [=lists=] of [=fencedframetype/pending events=] (which are used to represent events that need to
    be reported asynchronously, because the metadata has not been finalized yet); or
- * [=maps=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=] (which are used
+ * [=fencedframetype/reporting destination infos=] (which are used
    to represent the actual metadata once it is finalized).
 
 Note: This representation is meant to allow config-generating APIs to reduce latency by resolving
@@ -704,21 +715,26 @@ be sent.
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
-  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, and a
-  [=map=] |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are
-  [=urls=], run these steps:
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, a [=map=]
+  |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=], and
+  |macro map|, which is either null or a [=map=] whose [=map/keys=] are [=strings=] and whose
+  [=map/values=] are [=strings=], run these steps:
 
   1. [=Assert=] that |reporting map|[|destination|] is a [=list=] (i.e., that |destination|'s
      metadata has not yet been finalized).
 
   1. Let |pending event list| be |reporting map|[|destination|].
 
-  1. [=map/Set=] |reporting map|[|destination|] to |destination map|.
+  1. [=map/Set=] |reporting map|[|destination|] to a [=struct=] with the following [=struct/items=]:
+       : [=reporting destination info/reporting url map=]
+       :: |destination map|
+
+       : [=reporting destination info/reporting macro map=]
+       :: |macro map|
 
   1. [=list/For each=] |pending event| of |pending event list|:
 
-     1. [=Send a beacon=] with |destination map|, |pending event|'s [=pending event/eventType=],
-        and |pending event|'s [=pending event/eventData=].
+     1. [=Send a beacon=] with |destination map| and |pending event|'s [=pending event/event=].
 </div>
 
 A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a [=struct=] with the
@@ -769,19 +785,24 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 [=fencedframetype/destination enum event=] or a [=fencedframetype/destination URL event=].
 
 <div algorithm>
-  In order to <dfn>send a beacon</dfn> with a [=map=] |destination map| whose [=map/keys=] are
-  [=strings=] and whose [=map/values=] are [=urls=], and a [=fencedframetype/destination event=]
-  |event|, run these steps:
+  In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
+  |destination info| and a [=fencedframetype/destination event=] |event|, run these steps:
 
   1. Let |destination url| be an empty [=string=].
   1. If |event| is a [=fencedframetype/destination enum event=]:
-     1. If |destination map|[|eventType|] does not [=map/exist=], return.
+     1. Let |destination map| be |destination info|'s
+        [=reporting destination info/reporting url map=].
+     1. |destination map|[|eventType|] does not [=map/exist=], return.
 
      1. Set |destination url| to |destination map|[|eventType|].
 
   1. Otherwise:
      1. Assert that |event| is a [=fencedframetype/destination URL event=].
+     1. Let |macro map| be |destination info|'s [=reporting destination info/reporting macro map=].
+     1. If |macro map| is null, return.
      1. Set |destination url| to |event|.
+     1. TODO: Substitute macros from |macro map| into |destination url|.
+     1. TODO: Check allowed origins.
 
   1. Let |request| be a new [=request=] with the following properties:
 
@@ -1302,6 +1323,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            1. Return a syntax error.
         1. If |event|'s {{FenceEvent/destinationURL}} is not a valid URL or is not https:
            1. Return a syntax error.
+        1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+           reporter=] with {{FenceReportingDestination/buyer}} and a
+           [=fencedframetype/destination URL event=] that is event|'s
+           {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
         1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
@@ -1311,11 +1336,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with |destination|, |event|'s {{FenceEvent/eventType}}, and |event|'s
-           {{FenceEvent/eventData}} (or the empty string if it is not defined).
+           reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
+           following [=struct/items=]:
+
+           : [=destination enum event/type=]
+           :: |event|'s {{FenceEvent/eventType}}
+
+           : [=destination enum event/data=]
+           :: |event|'s {{FenceEvent/eventData}} (or the empty string if it is not defined).
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
+    /fenced-frame/fence-report-event-destination-url.https.html
   </wpt>
 </div>
 
