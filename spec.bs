@@ -1292,8 +1292,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   [Exposed=Window]
   interface Fence {
-      undefined reportEvent(ReportEventType event);
-      undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event);
+      undefined reportEvent(optional ReportEventType event = {});
+      undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event = {});
       sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
   };
 </pre>
