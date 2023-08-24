@@ -972,7 +972,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
   
-  : <dfn>is ad component</dfn> :: A [=boolean=]
+  : <dfn>is ad component</dfn>
+  :: A [=boolean=]
 </dl>
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
@@ -1017,7 +1018,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
   
-  : <dfn>is ad component</dfn> :: A [=boolean=]
+  : <dfn>is ad component</dfn>
+  :: A [=boolean=]
 </dl>
 
 <div algorithm>
@@ -1103,8 +1105,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
     
-    : [=fenced frame config instance/is ad component=] :: |config|'s [=fenced frame config/is ad
-    component=]
+    : [=fenced frame config instance/is ad component=] 
+    :: |config|'s [=fenced frame config/is ad component=]
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
