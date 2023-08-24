@@ -598,6 +598,8 @@ follows:
   1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
 
     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
+    
+    1. Set |nestedMapping|[|urn|]'s [=fenced frame config/is ad component=] to true.
 </div>
 
 <div algorithm>
@@ -1506,6 +1508,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
+  
+  1. If |instance|'s [=fenced frame config instance/is ad component=] is true, then return.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
