@@ -462,7 +462,7 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
   1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
      behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
-     sharedStorageContext set to |shared storage context|.
+     |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
