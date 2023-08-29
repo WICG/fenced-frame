@@ -1604,7 +1604,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=fencedframetype/automatic beacon data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
-     :: |event|'s {{FenceEvent/eventData}} if defined, otherwise empty string
+     :: If |instance|'s [=fenced frame config instance/is ad component=] is false, then |event|'s {{FenceEvent/eventData}}. Otherwise, the empty string.
 
      : [=automatic beacon data/destination=]
      :: |event|'s {{FenceEvent/destination}}
