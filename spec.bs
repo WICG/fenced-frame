@@ -745,13 +745,13 @@ following [=struct/items=]:
   :: a [=fencedframetype/fenced frame reporting map=]
 
   : <dfn>direct seller is seller</dfn>
-  :: a boolean
+  :: a [=boolean=]
 
   : <dfn>allowed reporting origins</dfn>
   :: null or a [=list=] of [=origins=]
 
   : <dfn>attempted custom url report to disallowed origin</dfn>
-  :: a boolean, initially false
+  :: a [=boolean=], initially false
 </dl>
 
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] with the following
@@ -798,7 +798,8 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
   1. If |event| is a [=fencedframetype/destination enum event=]:
      1. Let |destination map| be |destination info|'s
         [=reporting destination info/reporting url map=].
-     1. |destination map|[|eventType|] does not [=map/exist=], return.
+     1. Let |eventType| be |event|'s [=destination enum event/type=].
+     1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
      1. Set |destination url| to |destination map|[|eventType|].
 
@@ -873,7 +874,7 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
      1. Otherwise, set |destination| to `"component-seller"`.
 
-  1. If |event| is a [=fencedframetype/destination enum event=]:
+  1. If |event| is a [=fencedframetype/destination URL event=]:
      1. If |event|'s [=url/origin=] is not [=same origin=] with any of the entries in
         |metadata|'s [=fenced frame reporting metadata/allowed reporting origins=]:
         1. Set |metadata|'s
@@ -1346,7 +1347,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
            reporter=] with {{FenceReportingDestination/buyer}} and a
-           [=fencedframetype/destination URL event=] that is event|'s
+           [=fencedframetype/destination URL event=] that is |event|'s
            {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
