@@ -972,14 +972,15 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
   
-  : <dfn>is ad component</dfn>
+  : <dfn>is ad component</dfn> 
   :: A [=boolean=]
   
-  Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be used to construct ads composed of multiple pieces. See the <a
-href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected Audience
-explainer</a>. For an ad component, event reporting is handled differently. See the <a
-href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced Frame Ads Reporting
-explainer</a> that describes this. 
+  Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
+  used to construct ads composed of multiple pieces. See the <a
+  href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
+  Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
+  href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
+  Frame Ads Reporting explainer</a> that describes this.
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
 
@@ -1023,7 +1024,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
   
-  : <dfn>is ad component</dfn>
+  : <dfn>is ad component</dfn> 
   :: A [=boolean=]
 </dl>
 
@@ -1110,7 +1111,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
     
-    : [=fenced frame config instance/is ad component=] 
+    : [=fenced frame config instance/is ad component=]  
     :: |config|'s [=fenced frame config/is ad component=]
 </div>
 
