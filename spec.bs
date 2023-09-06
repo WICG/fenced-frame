@@ -745,7 +745,7 @@ following [=struct/items=]:
   :: a [=fencedframetype/fenced frame reporting map=]
 
   : <dfn>direct seller is seller</dfn>
-  :: a [=boolean=]
+  :: a [=boolean=], initially true
 
   : <dfn>allowed reporting origins</dfn>
   :: null or a [=list=] of [=origins=]
@@ -808,7 +808,8 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
      1. Let |macro map| be |destination info|'s [=reporting destination info/reporting macro map=].
      1. If |macro map| is null, return.
      1. Set |destination url| to |event|.
-     1. TODO: Substitute macros from |macro map| into |destination url|.
+     1. Let |destination url| be the result of [=fencedframeutil/substituting macros=] with
+        |macro map| into |destination url|.
 
   1. Let |request| be a new [=request=] with the following properties:
 
@@ -1293,17 +1294,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   };
 
   dictionary FenceEvent {
-    // This dictionary has two mutually exclusive modes:
+    // This dictionary has two mutually exclusive modes that aren't represented as
+    // distinct IDL types due to distinguishability issues:
     //
-    // When reporting to a preregistered destination (specified by enum), the following properties
-    // are used:
+    // When reporting to a preregistered destination (specified by enum), the following
+    // properties are used:
     DOMString eventType;
     DOMString eventData;
     sequence&lt;FenceReportingDestination&gt; destination;
     boolean once = false;
 
-    // When reporting to a custom destination URL (with substitution of macros defined by the
-    // Protected Audience buyer), the following property is used:
+    // When reporting to a custom destination URL (with substitution of macros defined by
+    // the Protected Audience buyer), the following property is used:
     USVString destinationURL;
   };
 
