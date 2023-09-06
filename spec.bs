@@ -1248,7 +1248,7 @@ partial interface Navigator {
 </div>
 
 <div algorithm>
-  The <dfn method for=Navigator method>deprecatedReplaceInURN(|urnOrConfig|, |replacements|)</dfn>
+  The <dfn method for=Navigator>deprecatedReplaceInURN(|urnOrConfig|, |replacements|)</dfn>
   method steps are:
 
   1. Let |urn| be null.
