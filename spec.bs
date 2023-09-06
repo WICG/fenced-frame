@@ -1223,10 +1223,10 @@ Each {{FencedFrameConfig}} has:
 </div>
 
 To help with ease of adoption,
-<a href=https://github.com/WICG/turtledove/issues/286#issuecomment-1682842636>until 2026</a> we
-will support the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allows you
-to substitute macros into the [=fenced frame config/mapped url=] corresponding to a given
-[=urn uuid=] or {{FencedFrameConfig}}.
+[until 2026](https://github.com/WICG/turtledove/issues/286#issuecomment-1682842636) we will support
+the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allows you to substitute
+macros into the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
+{{FencedFrameConfig}}.
 
 <pre class=idl>
 typedef (USVString or FencedFrameConfig) UrnOrConfig;
@@ -1242,9 +1242,9 @@ partial interface Navigator {
   [=string=] [=map/keys=] and [=string=] [=map/values=] |macros| into a [=string=] |string|, run
   these steps:
 
-  1. TODO: [Spec this](https://github.com/WICG/fenced-frame/issues/116). Substitute the keys from
-     |macros| with the corresponding values into |string|, and return the new string. There should
-     be no recursive substitution.
+  1. <span class=XXX>TODO:</span> [Spec this](https://github.com/WICG/fenced-frame/issues/116).
+     Substitute the keys from |macros| with the corresponding values into |string|, and return the
+     new string. There should be no recursive substitution.
 </div>
 
 <div algorithm>
