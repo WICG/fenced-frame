@@ -1222,6 +1222,64 @@ Each {{FencedFrameConfig}} has:
   1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
 </div>
 
+To help with ease of adoption,
+<a href=https://github.com/WICG/turtledove/issues/286#issuecomment-1682842636>until 2026</a> we
+will support the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allows you
+to substitute macros into the [=fenced frame config/mapped url=] corresponding to a given
+[=urn uuid=] or {{FencedFrameConfig}}.
+
+<pre class=idl>
+typedef (USVString or FencedFrameConfig) UrnOrConfig;
+
+partial interface Navigator {
+  undefined deprecatedReplaceInURN(
+    UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+};
+</pre>
+
+<div algorithm>
+  To <dfn export for=fencedframeutil>substitute macros</dfn> with an [=ordered map=] with
+  [=string=] [=map/keys=] and [=string=] [=map/values=] |macros| into a [=string=] |string|, run
+  these steps:
+
+  1. TODO: [Spec this](https://github.com/WICG/fenced-frame/issues/116). Substitute the keys from
+     |macros| with the corresponding values into |string|, and return the new string. There should
+     be no recursive substitution.
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator method>deprecatedReplaceInURN(|urnOrConfig|, |replacements|)</dfn>
+  method steps are:
+
+  1. Let |urn| be null.
+
+  1. If |urnOrConfig| is a {{USVString}}, set |urn| to |urnOrConfig|.
+
+  1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
+
+  1. Let |mapping| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s
+     [=node navigable=]'s [=navigable/traversable navigable=]'s
+     [=traversable navigable/fenced frame config mapping=].
+
+  1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
+     with |urn|.
+
+  1. If |config| is failure, [=exception/throw=] a {{TypeError}}.
+
+  1. [=map/For each=] |key| → _ of |replacements|:
+     1. If |key| does not [=string/start with=] "${" or "%%", [=exception/throw=] a {{TypeError}}.
+     1. If |key| does not [=string/end with=] "}" or "%%", [=exception/throw=] a {{TypeError}}.
+
+  1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
+     |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+  1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to |substitutedUrl|.
+
+  <wpt>
+    /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
+</div>
+
 <h3 id=fence-interface>The {{Fence}} interface</h3>
 
 Several APIs specific to fenced frames are defined on the {{Fence}} interface.
