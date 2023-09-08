@@ -688,7 +688,7 @@ following [=struct/items=]:
 
 <dl export dfn-for="reporting destination info">
   : <dfn>reporting url map</dfn>
-  :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=]
+  :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=URLs=]
 
   : <dfn>reporting macro map</dfn>
   :: null, or a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=strings=]
