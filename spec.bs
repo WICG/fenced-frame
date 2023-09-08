@@ -795,19 +795,28 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
   |destination info| and a [=fencedframetype/destination event=] |event|, run these steps:
 
   1. Let |destination url| be an empty [=string=].
-  1. If |event| is a [=fencedframetype/destination enum event=]:
+
+  1. If |event| is a [=fencedframetype/destination enum event=], then:
+
      1. Let |destination map| be |destination info|'s
         [=reporting destination info/reporting url map=].
+
      1. Let |eventType| be |event|'s [=destination enum event/type=].
+
      1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
      1. Set |destination url| to |destination map|[|eventType|].
 
   1. Otherwise:
-     1. Assert that |event| is a [=fencedframetype/destination URL event=].
+
+     1. [=Assert=]: |event| is a [=fencedframetype/destination URL event=].
+
      1. Let |macro map| be |destination info|'s [=reporting destination info/reporting macro map=].
+
      1. If |macro map| is null, return.
+
      1. Set |destination url| to |event|.
+
      1. Let |destination url| be the result of [=fencedframeutil/substituting macros=] with
         |macro map| into |destination url|.
 
@@ -1341,12 +1350,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. If |event| has a {{FenceEvent/destinationURL}}:
         1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
            {{FenceEvent/eventData}}:
+
            1. [=exception/Throw=] a {{TypeError}}.
+
         1. Let |destinationURL| be the result of running the [=URL parser=] on
            {{FenceEvent/destinationURL}}.
+
         1. [=exception/Throw=] a {{TypeError}} if any of the following conditions hold:
+
            * |destinationURL| is failure;
            * |destinationURL| [=url/scheme=] is not "`https`";
+
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
            reporter=] with {{FenceReportingDestination/buyer}} and a
            [=fencedframetype/destination URL event=] that is |event|'s
@@ -1355,6 +1369,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Otherwise:
         1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
            {{FenceEvent/eventType}}:
+
            1. [=exception/Throw=] a {{TypeError}}.
 
         1. [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
