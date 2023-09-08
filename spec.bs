@@ -21,6 +21,7 @@ WPT Display: open
 </pre>
 
 <pre class="link-defaults">
+spec: url; for:/; type: dfn; text: url
 </pre>
 <pre class="biblio">
 {
