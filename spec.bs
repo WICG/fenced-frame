@@ -1232,7 +1232,7 @@ macros into the [=fenced frame config/mapped url=] corresponding to a given [=ur
 typedef (USVString or FencedFrameConfig) UrnOrConfig;
 
 partial interface Navigator {
-  undefined deprecatedReplaceInURN(
+  Promise&lt;undefined&gt; deprecatedReplaceInURN(
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
 };
 </pre>
@@ -1257,23 +1257,37 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. Let |mapping| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s
-     [=node navigable=]'s [=navigable/traversable navigable=]'s
-     [=traversable navigable/fenced frame config mapping=].
+  1. Let |p| be [=a new promise=].
 
-  1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
-     with |urn|.
+  1. Let |queue| be the result of [=starting a new parallel queue=].
 
-  1. If |config| is failure, [=exception/throw=] a {{TypeError}}.
+  1. [=parallel queue/enqueue steps|Enqueue the following steps=] to |queue|:
 
-  1. [=map/For each=] |key| → _ of |replacements|:
-     1. If |key| does not [=string/start with=] "${" or "%%", [=exception/throw=] a {{TypeError}}.
-     1. If |key| does not [=string/end with=] "}" or "%%", [=exception/throw=] a {{TypeError}}.
+     1. If |urn| is TODO invalid, then [=queue a task=] to [=reject=] |p| with a "{{TypeError}}"
+        and do not run the remaining steps.
 
-  1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
-     |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+     1. Let |mapping| be [=this=]'s [=relevant global object=]'s [=associated Document=]'s
+        [=node navigable=]'s [=navigable/traversable navigable=]'s
+        [=traversable navigable/fenced frame config mapping=].
 
-  1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to |substitutedUrl|.
+     1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
+        with |urn|.
+
+     1. If |config| is failure, [=queue a task=] to [=resolve=] |p| with `undefined` and do not run
+        the remaining steps.
+
+     1. [=map/For each=] |key| → _ of |replacements|:
+        1. If |key| does not [=string/start with=] "${" or "%%", [=exception/throw=] a {{TypeError}}.
+        1. If |key| does not [=string/end with=] "}" or "%%", [=exception/throw=] a {{TypeError}}.
+
+     1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
+        |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+     1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to |substitutedUrl|.
+
+     1. [=Queue a task=] to [=resolve=] |p| with `undefined`.
+
+  1. Return |p|.
 
   <wpt>
     /fenced-frame/deprecated-config-apis.https.html
