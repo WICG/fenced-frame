@@ -1449,16 +1449,18 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
   1. Let |beacon data| be |config|'s [=fenced frame config instance/fenced frame reporter=]'s
      [=fenced frame reporter/automatic beacon data=].
 
-  1. If |beacon data| is null, abort these steps.
+  1. Let |event data| be |beacon data|'s [=automatic beacon data/eventData=] if |beacon data| is not null, the empty string otherwise.
 
   1. If |sourceOrigin| is not [=same origin=] with |config|'s [=fenced frame config instance/mapped
      url=]'s [=url/origin=], abort these steps.
 
-  1. [=list/For each=] |destination| of |beacon data|'s [=automatic beacon data/destination=]:
+  1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
-    1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination|, |eventType|, and |beacon data|'s [=automatic beacon data/
-       eventData=].
+    1. If |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=] |destination|, run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
+       reporter=] with |destination|, |eventType|, and |event data|.
+
+       Otherwise, run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
+       reporter=] with |destination|, |eventType|, and the empty string.
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
       config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
