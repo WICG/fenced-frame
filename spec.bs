@@ -1271,15 +1271,14 @@ partial interface Navigator {
 
   1. Run the following steps [=in parallel=]:
 
-     1. Let |mapping| be |global|'s [=associated Document=]'s
-        [=node navigable=]'s [=navigable/traversable navigable=]'s
-        [=traversable navigable/fenced frame config mapping=].
+     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
         with |urn|.
 
-     1. If |config| is failure, [=queue a task=] to [=resolve=] |p| with {{undefined}} and abort
-        these steps.
+     1. If |config| is failure, [=queue a global task=] on the [=DOM manipulation task source=]
+        given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
 
      1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
         |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
@@ -1287,7 +1286,8 @@ partial interface Navigator {
      1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to
         |substitutedUrl|.
 
-     1. [=Queue a task=] to [=resolve=] |p| with {{undefined}}.
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with {{undefined}}.
 
   1. Return |p|.
 
