@@ -819,6 +819,12 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
      1. Let |destination url| be the result of [=fencedframeutil/substituting macros=] with
         |macro map| into |destination url|.
+  
+  1. Optionally, return.
+
+    Note: This [=implementation-defined=] condition is intended to allow user agents to drop the
+    beacon for a number of reasons, for example user opt-out or |destination url|'s [=site=] not
+    being <a href="https://github.com/privacysandbox/attestation">enrolled</a>.
 
   1. Let |request| be a new [=request=] with the following properties:
 
@@ -1287,6 +1293,80 @@ Each {{FencedFrameConfig}} has:
   1. Initialize |value|'s [=fencedframeconfig/contentWidth=] to |serialized|.\[[ContentWidth]].
 
   1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
+</div>
+
+Note: To help with ease of adoption,
+[until 2026](https://github.com/WICG/turtledove/issues/286#issuecomment-1682842636) we will support
+the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allows you to substitute
+macros into the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
+{{FencedFrameConfig}}.
+
+<pre class=idl>
+typedef (USVString or FencedFrameConfig) UrnOrConfig;
+
+partial interface Navigator {
+  Promise&lt;undefined&gt; deprecatedReplaceInURN(
+    UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+};
+</pre>
+
+<div algorithm>
+  To <dfn export for=fencedframeutil>substitute macros</dfn> with an [=ordered map=] with
+  [=string=] [=map/keys=] and [=string=] [=map/values=] |macros| into a [=string=] |string|, run
+  these steps:
+
+  1. <span class=XXX>TODO:</span> [Spec this](https://github.com/WICG/fenced-frame/issues/116).
+     Substitute the keys from |macros| with the corresponding values into |string|, and return the
+     new string. There is no recursive substitution.
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>deprecatedReplaceInURN(|urnOrConfig|, |replacements|)</dfn>
+  method steps are:
+
+  1. Let |urn| be null.
+
+  1. If |urnOrConfig| is a {{USVString}}, set |urn| to |urnOrConfig|.
+
+  1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
+
+  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+
+  1. [=map/For each=] |key| → _ of |replacements|:
+     1. If |key| does not [=string/start with=] <code>${</code> or <code>%%</code>,
+        [=exception/throw=] a {{TypeError}}.
+     1. If |key| does not [=string/end with=] <code>}</code> or <code>%%</code>,
+        [=exception/throw=] a {{TypeError}}.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+     1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
+        with |urn|.
+
+     1. If |config| is failure, [=queue a global task=] on the [=DOM manipulation task source=]
+        given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
+
+     1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
+        |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+     1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to
+        |substitutedUrl|.
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with {{undefined}}.
+
+  1. Return |p|.
+
+  <wpt>
+    /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
