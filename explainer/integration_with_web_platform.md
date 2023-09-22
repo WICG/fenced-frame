@@ -93,7 +93,7 @@ The [MediaDevices interface](https://w3c.github.io/mediacapture-main/#mediadevic
 
 "To ensure stored identifiers are recognized, the identifier MUST be the same in Documents of the same origin in top-level traversables. In child navigables, the decision of whether or not the identifier is the same across documents, MUST follow the User Agent's partitioning rules for storage (such as localStorage), if any, to not interfere with mitigations for cross-site correlation."
 
-Fenced frames partition storage using a unique nonce, so that no two fenced frames can access the same partitioned storage. As a result, `deviceID` values will always be different within two fenced frames, even if their origin is the same.
+Fenced frames partition storage using a unique nonce, so that no other frame can access the same partitioned storage as a given fenced frame. As a result, deviceID values will always be different within two fenced frames and similarly the value in a fenced frame will always differ with that in other iframes/top-level frames, even if their origin is the same.
 
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
