@@ -748,7 +748,7 @@ following [=struct/items=]:
   :: a [=boolean=], initially true
 
   : <dfn>allowed reporting origins</dfn>
-  :: null or a [=list=] of [=origins=]
+  :: null or a [=list=] of [=origins=]. Used to filter [=fencedframetype/destination URL event=] reports.
 
   : <dfn>attempted custom url report to disallowed origin</dfn>
   :: a [=boolean=], initially false
