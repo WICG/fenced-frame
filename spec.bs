@@ -1452,7 +1452,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
            1. [=exception/Throw=] a {{TypeError}}.
 
-        1. [=list/for each=] |destination| of |event|'s {{FenceEvent/destination}}:
+        1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
            reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
