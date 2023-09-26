@@ -985,7 +985,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   :: null, or a [=string=]
   
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]
+  :: A [=boolean=]. Defaulting to false.
 </dl>
   
   Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
@@ -1038,7 +1038,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   :: null, or a [=string=]
   
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]
+  :: A [=boolean=]. Defaulting to false.
 </dl>
 
 <div algorithm>
