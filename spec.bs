@@ -22,6 +22,7 @@ WPT Display: open
 
 <pre class="link-defaults">
 spec:dom; type:dfn; for:/; text:element
+spec: url; for:/; type: dfn; text: url
 </pre>
 <pre class="biblio">
 {
@@ -456,9 +457,13 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
 
   1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
 
+  1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
+     sharedStorageContext=].
+
   1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
      |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>" , and [=referrerPolicy=] set to <a>"`no-referrer`"</a>.
+     behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
+     |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
@@ -522,9 +527,10 @@ returned to the web platform in a constant amount of time, before any computatio
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
 to discern when a pending config is finalized, it is important that all visibilities and values of
 transparent fields do not change from the pending config to the finalized config, given that they
-can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that
-is created and exposed to the web platform is effectively immutable even if its underlying
-[=fencedframeconfig/config=] is technically "pending", and will finish resolving completely later.
+can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that is
+created and exposed to the web platform is effectively immutable even if the [=fenced frame config=]
+represented by the [=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and
+will finish resolving completely later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
@@ -758,6 +764,12 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
   1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
   1. Let |destination url| be |destination map|[|eventType|].
+  
+  1. Optionally, return.
+
+    Note: This [=implementation-defined=] condition is intended to allow user agents to drop the
+    beacon for a number of reasons, for example user opt-out or |destination url|'s [=site=] not
+    being <a href="https://github.com/privacysandbox/attestation">enrolled</a>.
 
   1. Let |request| be a new [=request=] with the following properties:
 
@@ -893,7 +905,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: a [=URL=]
 
     : <dfn for="mapped url">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>container size</dfn>
   :: null, or a [=fencedframetype/size=]
@@ -904,7 +916,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: a [=fencedframetype/size=]
 
     : <dfn for="content size">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>interest group descriptor</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -912,7 +924,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: an [=fencedframetype/interest group descriptor=]
 
     : <dfn for="interest group descriptor">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
@@ -923,7 +935,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: an [=fencedframetype/exhaustive set of sandbox flags=]
 
     : <dfn for="effective sandbox flags">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>effective enabled permissions</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -931,7 +943,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: a [=list=] of [=policy-controlled features=]
 
     : <dfn for="effective enabled permissions">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
     Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
     this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
@@ -951,7 +963,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: a [=fencedframetype/fenced frame reporting metadata=]
 
     : <dfn for="fenced frame reporting metadata">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>exfiltration budget metadata</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -959,7 +971,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: an [=fencedframetype/exfiltration budget metadata=]
 
     : <dfn for="exfiltration budget metadata">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>nested configs</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -967,7 +979,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     :: a [=list=] of [=fenced frame configs=]
 
     : <dfn for="nested configs">visibility</dfn>
-    :: a [=visibility=]
+    :: a [=fencedframeconfig/visibility=]
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
@@ -1122,7 +1134,7 @@ maps to an internal [=fenced frame config=] [=struct=].
   typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
   typedef USVString FencedFrameConfigURL;
 
-  [Exposed=Window]
+  [Exposed=Window, Serializable]
   interface FencedFrameConfig {
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
@@ -1141,60 +1153,154 @@ element with arbitrary URLs *not* produced by config-generating APIs for develop
 Each {{FencedFrameConfig}} has:
 
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
- * A <dfn for=fencedframeconfig>config</dfn>, a [=fenced frame config=]
+ * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
+ * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
+ * A <dfn for=fencedframeconfig>containerHeight</dfn>, a {{FencedFrameConfigSize}} or null
+ * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
+ * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
 
 <div algorithm="containerWidth getter">
-  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are:
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=] is null,
-     return null.
-
-  1. Return [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=]'s
-     [=size/width=].
+  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are to return [=this=]'s
+  [=fencedframeconfig/containerWidth=].
 </div>
 
 <div algorithm="containerHeight getter">
-  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are:
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=] is null,
-     return null.
-
-  1. Return [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/container size=]'s
-     [=size/height=].
+  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are to return [=this=]'s
+  [=fencedframeconfig/containerHeight=].
 </div>
 
 <div algorithm="contentWidth getter">
-  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are:
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=] is null,
-     return null.
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
-     size/visibility=] is "<a for=visibility>`transparent`</a>", return the [=fenced frame
-     config/content size=]'s [=content size/value=]'s [=size/width=].
-
-  1. Otherwise, return the `"opaque"` {{OpaqueProperty}}.
+  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are to return [=this=]'s
+  [=fencedframeconfig/contentWidth=].
 </div>
 
 <div algorithm="contentHeight getter">
-  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are:
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=] is null,
-     return null.
-
-  1. If [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/content size=]'s [=content
-     size/visibility=] is "<a for=visibility>`transparent`</a>", return the [=fenced frame
-     config/content size=]'s [=content size/value=]'s [=size/height=].
-
-  1. Otherwise, return the `"opaque"` {{OpaqueProperty}}.
+  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are to return [=this=]'s
+  [=fencedframeconfig/contentHeight=].
 </div>
 
 <div algorithm>
   The <dfn method for=FencedFrameConfig>setSharedStorageContext(|contextString|)</dfn> method steps
+  are to set [=this=]'s [=fencedframeconfig/sharedStorageContext=] to |contextString|.
+</div>
+
+<div algorithm="FencedFrameConfig serializer">
+  {{FencedFrameConfig}} objects are [=serializable objects=]. Their [=serialization steps=], given
+  |value|, |serialized|, and |forStorage| are:
+
+  1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
+  
+  1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
+
+  1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
+     sharedStorageContext=].
+
+  1. Set |serialized|.\[[ContainerWidth]] to |value|'s [=fencedframeconfig/
+     containerWidth=].
+
+  1. Set |serialized|.\[[ContainerHeight]] to |value|'s [=fencedframeconfig/
+     containerHeight=].
+
+  1. Set |serialized|.\[[ContentWidth]] to |value|'s [=fencedframeconfig/
+     contentWidth=].
+
+  1. Set |serialized|.\[[ContentHeight]] to |value|'s [=fencedframeconfig/
+     contentHeight=].
+
+
+</div>
+
+<div algorithm="FencedFrameConfig deserializer">
+  Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
 
-  1. Set [=this=]'s [=fencedframeconfig/config=]'s [=fenced frame config/embedder shared storage
-     context=] to |contextString|.
+  1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
+
+  1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
+     |serialized|.\[[SharedStorageContext]].
+
+  1. Initialize |value|'s [=fencedframeconfig/containerWidth=] to |serialized|.\[[ContainerWidth]].
+
+  1. Initialize |value|'s [=fencedframeconfig/containerHeight=] to
+     |serialized|.\[[ContainerHeight]].
+
+  1. Initialize |value|'s [=fencedframeconfig/contentWidth=] to |serialized|.\[[ContentWidth]].
+
+  1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
+</div>
+
+Note: To help with ease of adoption,
+[until 2026](https://github.com/WICG/turtledove/issues/286#issuecomment-1682842636) we will support
+the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allows you to substitute
+macros into the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
+{{FencedFrameConfig}}.
+
+<pre class=idl>
+typedef (USVString or FencedFrameConfig) UrnOrConfig;
+
+partial interface Navigator {
+  Promise&lt;undefined&gt; deprecatedReplaceInURN(
+    UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+};
+</pre>
+
+<div algorithm>
+  To <dfn export for=fencedframeutil>substitute macros</dfn> with an [=ordered map=] with
+  [=string=] [=map/keys=] and [=string=] [=map/values=] |macros| into a [=string=] |string|, run
+  these steps:
+
+  1. <span class=XXX>TODO:</span> [Spec this](https://github.com/WICG/fenced-frame/issues/116).
+     Substitute the keys from |macros| with the corresponding values into |string|, and return the
+     new string. There is no recursive substitution.
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>deprecatedReplaceInURN(|urnOrConfig|, |replacements|)</dfn>
+  method steps are:
+
+  1. Let |urn| be null.
+
+  1. If |urnOrConfig| is a {{USVString}}, set |urn| to |urnOrConfig|.
+
+  1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
+
+  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+
+  1. [=map/For each=] |key| → _ of |replacements|:
+     1. If |key| does not [=string/start with=] <code>${</code> or <code>%%</code>,
+        [=exception/throw=] a {{TypeError}}.
+     1. If |key| does not [=string/end with=] <code>}</code> or <code>%%</code>,
+        [=exception/throw=] a {{TypeError}}.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+     1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
+        with |urn|.
+
+     1. If |config| is failure, [=queue a global task=] on the [=DOM manipulation task source=]
+        given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
+
+     1. Let |substitutedUrl| be the result of [=fencedframeutil/substituting macros=] with
+        |replacements| into |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+     1. Set |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] to
+        |substitutedUrl|.
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with {{undefined}}.
+
+  1. Return |p|.
+
+  <wpt>
+    /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -1314,8 +1420,28 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         : [=fencedframeconfig/urn=]
         :: |urn|
 
-        : [=fencedframeconfig/config=]
-        :: |config|
+        : [=fencedframeconfig/sharedStorageContext=]
+        :: |config|'s [=fenced frame config/embedder shared storage context=]
+
+        : [=fencedframeconfig/containerWidth=]
+        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
+           [=fenced frame config/container size=]'s [=size/width=]
+
+        : [=fencedframeconfig/containerHeight=]
+        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
+           [=fenced frame config/container size=]'s [=size/height=]
+
+        : [=fencedframeconfig/contentWidth=]
+        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
+           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
+           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
+           config/content size=]'s [=size/width=]
+
+        : [=fencedframeconfig/contentHeight=]
+        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
+           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
+           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
+           config/content size=]'s [=size/height=]
 
      1. [=list/Append=] |newConfig| to |results|.
 
@@ -2097,6 +2223,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm=navigate>
+  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
+  optional [=string=] |sharedStorageContext| (default null).
+
   Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
 
     * |navigable| is a [=fenced navigable container/fenced navigable=];
@@ -2122,7 +2251,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 16, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
@@ -2137,6 +2266,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          mapping=]. This is why this step runs [=in parallel=]. This navigation will be canceled by
          any subsequent embedder-initiated navigations, <span class=allow-2119>should</span> they
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
+
+      1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
+         |sharedStorageContext|.
 
       1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
          config=] to |config|.
@@ -2433,22 +2565,21 @@ directive wouldn't give web sites enough control over their CSP rules. Introduce
 *This introductory sub-section is non-normative.*
 
 The [=policy-controlled features=] available to {{Document}}s inside of a <{fencedframe}> are
-determined exclusively by the {{FencedFrameConfig}} that the <{fencedframe}> navigates to.
-Specifically, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=]'s [=fenced frame
-config/effective enabled permissions=] defines the exclusive list of [=policy-controlled features=]
-that will be enabled in the {{Document}} (all others will be disabled).
+determined exclusively by the [=fenced frame config=] that the <{fencedframe}> navigates to.
+Specifically, the [=fenced frame config=]'s [=fenced frame config/effective enabled permissions=]
+defines the exclusive list of [=policy-controlled features=] that will be enabled in the
+{{Document}} (all others will be disabled).
 
-During navigation, the {{FencedFrameConfig}}'s [=fencedframeconfig/config=] [=instantiate a
-config|instantiates=] a [=browsing context/fenced frame config instance=] that is stored on the
-[=browsing context=] in the [=fenced navigable container/fenced navigable=]. This browsing context's
-[=browsing context/fenced frame config instance=]'s [=fenced frame config instance/effective enabled
-permissions=] is consulted [=Should navigation response to navigation request be blocked by
-Permissions Policy?|during navigation=]. A <{fencedframe}> navigation can only succeed if the
-[=Document/permissions policy=] for the navigation's resulting {{Document}} has an [=permissions
-policy/inherited policy=] such that the [=inherited policy for a feature|inherited policy value=] is
-"`Enabled`" for each feature in the [=fenced frame config/effective enabled permissions=]. Otherwise
-the environment the <{fencedframe}> is embedded in is deemed unsuitable for the [=fenced frame
-config=], and the navigation is blocked.
+During navigation, the [=fenced frame config=] [=instantiate a config|instantiates=] a [=browsing
+context/fenced frame config instance=] that is stored on the [=browsing context=] in the [=fenced
+navigable container/fenced navigable=]. This browsing context's [=browsing context/fenced frame
+config instance=]'s [=fenced frame config instance/effective enabled permissions=] is consulted
+[=Should navigation response to navigation request be blocked by Permissions Policy?|during
+navigation=]. A <{fencedframe}> navigation can only succeed if the [=Document/permissions policy=]
+for the navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that
+the [=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
+[=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
+is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
 
 At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
 in the frame based on that navigation's [=navigation params/origin=] (since the origin is derived
