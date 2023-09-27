@@ -2688,6 +2688,13 @@ algorithms to achieve the outcomes described in the above explanatory content.
      |inherited policy| and [=permissions policy/declared policy=] a new [=ordered map=].
 
   8. Return |policy|.
+
+  Note: While this algorithm doesn't take the <{fencedframe/allow}> attribute into consideration, it
+  will have already been checked by the time this is called because of [=Should navigation response
+  to navigation request be blocked by Permissions Policy?=]. Any policy specified in
+  <{fencedframe/allow}> that is too restrictive would have cause the fenced frame to not load, and
+  any policy that is more permissive than what is specified in the [=fenced frame config/effective
+  enabled permissions=] will be ignored.
 </div>
 
 <div algorithm=create-permissions-policy>
@@ -2774,11 +2781,15 @@ algorithms to achieve the outcomes described in the above explanatory content.
      creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
      and <var ignore>fenced</var> set to true.
 
-     Note: This is identical to the [=Document/permissions policy=] that will be created when the
-     navigation constructs the ultimate {{Document}} for this pending navigation. We create it now
-     and run tests on it since this is the appropriate time to determine if a navigation will fail,
-     and then throw it away. If the navigation succeeds, it will be recreated identically and
-     unconditionally installed on the {{Document}}.
+     Note: This is almost identical to the [=Document/permissions policy=] that will be created when
+     the navigation constructs the ultimate {{Document}} for this pending navigation (with the
+     [=Create a Permissions Policy for a fenced navigable=] algorithm). We create it now and run
+     tests on it since this is the appropriate time to determine if a navigation will fail, and then
+     throw it away. If the navigation succeeds, it will be recreated and unconditionally installed
+     on the {{Document}}. However, the recreation will not include any additional enabled
+     permissions that are not included in the [=fenced frame config/effective enabled permissions=],
+     effectively locking the enabled permissions to only what is specified in [=fenced frame
+     config/effective enabled permissions=].
 
   1. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
 
