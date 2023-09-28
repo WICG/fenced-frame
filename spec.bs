@@ -2660,7 +2660,8 @@ algorithms to achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm>
-  Create a new algorithm, called <dfn export>Create a Permissions Policy for a fenced navigable</dfn>.
+  Create a new algorithm, called <dfn export>Create a Permissions Policy for a fenced
+  navigable</dfn>.
 
   Given null or an [=element=] (|container|), this algorithm returns a new Permissions Policy.
 
