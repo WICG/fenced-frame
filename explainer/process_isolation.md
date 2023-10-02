@@ -62,16 +62,16 @@ Same-origin iframes (on the same page) are able to communicate with the embeddin
  
 
 
-## Same origin fenced frames on the same page
+## Same site fenced frames on the same page
 
-Since these are same-origin, both fenced frames have almost the same information except possibly different sizes. Since sizes are restricted in the values that can be allowed, this still seems acceptable for them to be in the same process, in the presence of an attack.
+Since these are same-site, both fenced frames have almost the same information except possibly different sizes and different src URLs. Since sizes are restricted in the values that can be allowed and URLs being same-site, this still seems acceptable for them to be in the same process, in the presence of an attack.
 
 **Severity: low**
 
 
-## Same origin fenced frames on a different page
+## Same site fenced frames on a different page
 
-Since these are same-origin, both fenced frames have almost the same information except possibly different sizes. This still seems less information and thus acceptable for them to be in the same process, in the presence of an attack.
+Since these are same-origin, both fenced frames have almost the same information except possibly different sizes and different src URLs. Similar to the above case, this seems less information and thus acceptable for them to be in the same process, in the presence of an attack.
 
 **Severity: low**
 
