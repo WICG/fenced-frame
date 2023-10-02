@@ -55,7 +55,7 @@ In the presence of an attack, this privacy constraint should still be achieved s
 
 ## Same site iframes 
 
-Same-origin iframes (on the same page) are able to communicate with the embedding site and thus in the presence of an attack, this could be used as a workaround for the fenced frame to communicate with the embedding site. Therefore they should be in distinct processes.
+Same-site iframes (on the same page) are able to communicate with the embedding site and thus in the presence of an attack, this could be used as a workaround for the fenced frame to communicate with the embedding site. Therefore they should be in distinct processes.
 
 **Severity:** **high**
 
@@ -71,13 +71,13 @@ Since these are same-site, both fenced frames have almost the same information e
 
 ## Same site fenced frames on a different page
 
-Since these are same-origin, both fenced frames have almost the same information except possibly different sizes and different src URLs. Similar to the above case, this seems less information and thus acceptable for them to be in the same process, in the presence of an attack.
+Since these are same-site, both fenced frames have almost the same information except possibly different sizes and different src URLs. Similar to the above case, this seems less information and thus acceptable for them to be in the same process, in the presence of an attack.
 
 **Severity: low**
 
 
 ## Cross-site fenced frames
 
-Cross-site fenced frames whether on the same page or on a different page will be similar to the same-origin fenced frame cases with the addition of the rendering URL also being an information that they can share with each other in the presence of an attack. 
+Cross-site fenced frames whether on the same page or on a different page will be similar to the same-site fenced frame cases with the addition of the cross-site rendering URL also being an information that they can share with each other in the presence of an attack. 
 
 **Severity: medium**
