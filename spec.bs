@@ -251,9 +251,6 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
       text: event-source; url:eligibility-event-source
       text: navigation-source; url:eligibility-navigation-source
       text: unset; url:eligibility-unset
-    for: request
-      text: Attribution Reporting eligibility
-    text: process an attribution eligible response
 </pre>
 
 <style>
