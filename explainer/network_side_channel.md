@@ -13,5 +13,5 @@ The common bits of information for such an attack are:
 
 ## Mitigations
 
-These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [Gnatcatcher](https://github.com/bslassey/ip-blindness), or could have additional specific mitigations for fenced frames. These are currently being brainstormed.
-Both the opaque-ads consumers, FLEDGE and SharedStorage will guarantee k-anonymity of the URL used to create the fenced frame. This, in conjunction with other solutions like Gnatcatcher, will mitigate the cross-site data joining attack to a large extent.
+These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [Gnatcatcher](https://github.com/bslassey/ip-blindness), or could have additional specific mitigations for fenced frames such as ad rendering in which all network-loaded resources come from a trusted CDN that does not keep logs of the resources it serves. The privacy model and browser trust mechanism for such a CDN would require further work.
+Both the opaque-ads consumers, FLEDGE and SharedStorage will guarantee k-anonymity of the URL used to create the fenced frame.
