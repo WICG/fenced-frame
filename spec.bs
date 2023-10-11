@@ -911,7 +911,8 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
     Note: This algorithm can be invoked from while [=in parallel=] or while on a {{Document}}'s main
     thread. To handle the [=in parallel=] invocation correctly, we invoke [=fetch=]
     with [=fetch/useParallelQueue=] set to true when the <span class=allow-2119>optional</span>
-    [=response=]-handling algorithm is used, otherwise there is no need to do this.
+    [=response=]-handling algorithm is used, otherwise there is no need to do this even when this
+    algorithm is running [=in parallel=] in other instances.
 </div>
 
 <div algorithm>
