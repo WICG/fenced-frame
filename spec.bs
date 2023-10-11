@@ -248,9 +248,9 @@ spec: css2; urlPrefix: https://www.w3.org/TR/CSS21/visuren.html
 spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-reporting-api/
   type: dfn
     for: eligibility
-      text: event-source; url:eligibility-event-source
-      text: navigation-source; url:eligibility-navigation-source
-      text: unset; url:eligibility-unset
+      text: event-source; url: eligibility-event-source
+      text: navigation-source; url: eligibility-navigation-source
+      text: unset; url: eligibility-unset
 </pre>
 
 <style>
