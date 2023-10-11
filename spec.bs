@@ -1455,15 +1455,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
-        1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
-           following [=struct/items=]:
+          1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+             reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
+             following [=struct/items=]:
 
-           : [=destination enum event/type=]
-           :: |event|'s {{FenceEvent/eventType}}
+             : [=destination enum event/type=]
+             :: |event|'s {{FenceEvent/eventType}}
 
-           : [=destination enum event/data=]
-           :: |event|'s {{FenceEvent/eventData}} (or the empty string if it is not defined).
+             : [=destination enum event/data=]
+             :: |event|'s {{FenceEvent/eventData}} (or the empty string if it is not defined).
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
