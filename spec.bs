@@ -1717,7 +1717,7 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
 
        : [=destination enum event/contextOrigin=]
-       :: |sourceSnapshotParams|'s [=source snapshot params/context origin=]
+       :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
       config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
@@ -2392,7 +2392,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">attribution reporting enabled</dfn>
   :: a [=boolean=].
 
-  : <dfn for="source snapshot params">context origin</dfn>
+  : <dfn for="source snapshot params">attribution reporting context origin</dfn>
   :: an [=origin=].
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
@@ -2417,7 +2417,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   :: The result of determining whether |sourceDocument| is [=allowed to use=] the
      "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature
 
-  : [=source snapshot params/context origin=]
+  : [=source snapshot params/attribution reporting context origin=]
   :: |sourceDocument|'s [=node/context origin=]
 
 </div>
