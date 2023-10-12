@@ -1665,9 +1665,8 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
 
 <div algorithm>
   To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
-  |sourceSnapshotParams|, an [=origin=] |sourceOrigin|, a {{Document}} |targetDocument|, a
-  [=string=] |eventType|, a [=boolean=] |attributionReportingEnabled|, and an [=origin=]
-  |contextOrigin|, run these steps:
+  |sourceSnapshotParams|, an [=origin=] |sourceOrigin|, a {{Document}} |targetDocument|, and a
+  [=string=] |eventType|, run these steps:
 
   1. [=Assert=]: |eventType| is "`reserved.top_navigation`".
 
@@ -1715,10 +1714,10 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
        :: |eventData|
 
        : [=destination enum event/attributionReportingEnabled=]
-       :: |attributionReportingEnabled|
+       :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
 
        : [=destination enum event/contextOrigin=]
-       :: |contextOrigin|
+       :: |sourceSnapshotParams|'s [=source snapshot params/context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
       config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
@@ -1734,22 +1733,12 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
 </div>
 
 <div algorithm="automatic beacon patch">
-  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm in the following ways.
-
-  First, add steps after step 5 that reads:
-
-  6. Let |attributionReportingEnabled| be the result of determining whether |navigable|'s
-     [=navigable/active document=] is [=allowed to use=] the "<code>{{PermissionPolicy/attribution-reporting}}</code>"
-     feature.
-
-  1. Let |contextOrigin| be |navigable|'s [=navigable/active document=]'s [=node/context origin=].
-
-  Second, in step 6, substep 11, add a new step after step 5 that reads:
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. In step 6,
+  substep 11, add a new step after step 5 that reads:
 
   6. if <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
      ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
-     state/initiator origin=], <var ignore>document</var>, "`reserved.top_navigation`", |attributionReportingEnabled|,
-     and |contextOrigin|.
+     state/initiator origin=], <var ignore>document</var>, and "`reserved.top_navigation`".
 </div>
 
 <h2 id=html-integration>HTML Integration</h2>
@@ -2392,13 +2381,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
 <div algorithm=source-snapshot-param-config>
-  Add two new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
+  Add four new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
 
   : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
   :: a [=fenced frame config instance=] or null, initially null.
 
   : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
+
+  : <dfn for="source snapshot params">attribution reporting enabled</dfn>
+  :: a [=boolean=].
+
+  : <dfn for="source snapshot params">context origin</dfn>
+  :: an [=origin=].
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
@@ -2412,11 +2407,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <div algorithm=snapshot-source-snapshot-params>
   Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
-  with an additional field:
+  with three additional fields:
 
   : [=source snapshot params/initiator fenced frame config instance=]
-  :: <var ignore>sourceDocument</var>'s [=browsing context=]'s [=browsing context/fenced frame
+  :: |sourceDocument|'s [=browsing context=]'s [=browsing context/fenced frame
      config instance=]
+
+  : [=source snapshot params/attribution reporting enabled=]
+  :: The result of determining whether |sourceDocument| is [=allowed to use=] the
+     "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature
+
+  : [=source snapshot params/context origin=]
+  :: |sourceDocument|'s [=node/context origin=]
+
 </div>
 
 <div algorithm=navigate>
