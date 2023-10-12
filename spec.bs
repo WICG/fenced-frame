@@ -794,7 +794,7 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
   : <dfn>attributionReportingEnabled</dfn>
   :: a [=boolean=]
 
-  : <dfn>contextOrigin</dfn>
+  : <dfn>attributionReportingContextOrigin</dfn>
   :: an [=origin=]
 </dl>
 
@@ -828,7 +828,7 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
     1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true and the result
        of [=getting supported registrars=] is not [=list/is empty|empty=] and |event|'s
-       [=destination enum event/contextOrigin=] [=check if an origin is suitable|is suitable=]:
+       [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
 
         1. If |event|'s [=destination enum event/type=] is `"reserved.top_navigation"`,
            set |attributionReportingEligibility| to "<code>[=eligibility/navigation-source=]</code>".
@@ -838,7 +838,7 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
         1. Set |processResponse| to these steps given a [=response=] |response|:
 
            1. Run [=process an attribution eligible response=] with |event|'s
-              [=destination enum event/contextOrigin=], |attributionReportingEligibility|, and |response|.
+              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, and |response|.
 
         1. Set |useParallelQueue| to true.
 
@@ -1497,7 +1497,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. Let |attributionReportingEnabled| be the result of determining whether |document| is
            [=allowed to use=] the "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature.
 
-        1. Let |contextOrigin| be |document|'s [=node/context origin=].
+        1. Let |attributionReportingContextOrigin| be |document|'s [=node/context origin=].
 
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
@@ -1514,8 +1514,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            : [=destination enum event/attributionReportingEnabled=]
            :: |attributionReportingEnabled|
 
-           : [=destination enum event/contextOrigin=]
-           :: |contextOrigin|
+           : [=destination enum event/attributionReportingContextOrigin=]
+           :: |attributionReportingContextOrigin|
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
@@ -1716,7 +1716,7 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
        : [=destination enum event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
 
-       : [=destination enum event/contextOrigin=]
+       : [=destination enum event/attributionReportingContextOrigin=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
