@@ -1607,9 +1607,9 @@ A side effect of the fenced boundary model is that ads will lose the ability to 
 resulted in a successful navigation. This is because the page loaded from a top-level [=navigate|
 navigation=] originating from a fenced frame will not be allowed to report to the fenced frame that
 it loaded (through something like <code>window.[=Window/opener=]</code>). Instead, we introduce a
-special event-level [=pending event/eventType|reporting type=], `reserved.top_navigation`, which
-automatically sends an [=report an event|event-level beacon=] when a fenced frame initiates a
-successful [=navigate|navigation=] to a [=top-level traversable=].
+special event-level {{FenceEvent/eventType}}, `reserved.top_navigation`, which automatically sends
+an [=report an event|event-level beacon=] when a fenced frame initiates a successful
+[=navigate|navigation=] to a [=top-level traversable=].
 
 <div algorithm>
   To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
@@ -1636,8 +1636,7 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
   1. Let |beacon data| be |config|'s [=fenced frame config instance/fenced frame reporter=]'s
      [=fenced frame reporter/automatic beacon data=].
 
-  1. Let |event data| be |beacon data|'s [=automatic beacon data/eventData=] if |beacon data| is not
-     null, the empty string otherwise.
+  1. If |beacon data| is null, abort these steps.
 
   1. If |sourceOrigin| is not [=same origin=] with |config|'s [=fenced frame config instance/mapped
      url=]'s [=url/origin=], abort these steps.
@@ -1646,12 +1645,16 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
      reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
-    1. If |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=] |destination|,
-       run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination|, |eventType|, and |event data|.
+    1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
+       reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
+       following [=struct/items=]:
 
-       Otherwise, run [=report an event=] using |config|'s [=fenced frame config instance/fenced
-       frame reporter=] with |destination|, |eventType|, and the empty string.
+       : [=destination enum event/type=]
+       :: |eventType|
+
+       : [=destination enum event/data=]
+       :: |beacon data|'s [=automatic beacon data/eventData=] if |beacon data|'s [=automatic beacon
+          data/destinations=] [=list/contains=] |destination|, the empty string otherwise.
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
       config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
@@ -1663,6 +1666,7 @@ successful [=navigate|navigation=] to a [=top-level traversable=].
     /fenced-frame/automatic-beacon-two-events-persist.https.html
     /fenced-frame/automatic-beacon-unfenced-top.https.html
     /fenced-frame/automatic-beacon-no-destination.https.html
+    /fenced-frame/automatic-beacon-no-opt-in.https.html
   </wpt>
 </div>
 
