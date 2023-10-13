@@ -245,6 +245,12 @@ spec: css2; urlPrefix: https://www.w3.org/TR/CSS21/visuren.html
   type: dfn
     for: css2
       text: viewport; url: viewport
+spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-reporting-api/
+  type: dfn
+    for: eligibility
+      text: event-source; url: eligibility-event-source
+      text: navigation-source; url: eligibility-navigation-source
+      text: unset; url: eligibility-unset
 </pre>
 
 <style>
@@ -784,6 +790,12 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
 
   : <dfn>data</dfn>
   :: a [=string=]
+
+  : <dfn>attributionReportingEnabled</dfn>
+  :: a [=boolean=]
+
+  : <dfn>attributionReportingContextOrigin</dfn>
+  :: an [=origin=]
 </dl>
 
 A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
@@ -797,6 +809,12 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
   1. Let |destination url| be an empty [=string=].
 
+  1. Let |attributionReportingEligibility| be "<code>[=eligibility/unset=]</code>".
+
+  1. Let |processResponse| be null.
+
+  1. Let |useParallelQueue| be false.
+
   1. If |event| is a [=fencedframetype/destination enum event=], then:
 
      1. Let |destination map| be |destination info|'s
@@ -807,6 +825,22 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
      1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
      1. Set |destination url| to |destination map|[|eventType|].
+
+    1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true and the result
+       of [=getting supported registrars=] is not [=list/is empty|empty=] and |event|'s
+       [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
+
+        1. If |event|'s [=destination enum event/type=] is `"reserved.top_navigation"`,
+           set |attributionReportingEligibility| to "<code>[=eligibility/navigation-source=]</code>".
+
+        1. Otherwise, set |attributionReportingEligibility| to "<code>[=eligibility/event-source=]</code>".
+
+        1. Set |processResponse| to these steps given a [=response=] |response|:
+
+           1. Run [=process an attribution eligible response=] with |event|'s
+              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, and |response|.
+
+        1. Set |useParallelQueue| to true.
 
   1. Otherwise:
 
@@ -868,12 +902,17 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
     : [=request/credentials mode=]
     :: `"omit"`
 
-  1. [=Fetch=] |request|.
+    : [=request/Attribution Reporting eligibility=]
+    :: |attributionReportingEligibility|
+
+  1. [=Fetch=] |request| with [=fetch/processResponse=] being |processResponse| if it is not null
+     and [=fetch/useParallelQueue=] being |useParallelQueue|.
 
     Note: This algorithm can be invoked from while [=in parallel=] or while on a {{Document}}'s main
-    thread. To handle the [=in parallel=] invocation correctly, ordinarily we would invoke [=fetch=]
-    with [=fetch/useParallelQueue=] set to true, but since we don't pass in any of the <span
-    class=allow-2119>optional</span> [=response=]-handling algorithms, there is no need to do this.
+    thread. To handle the [=in parallel=] invocation correctly, we invoke [=fetch=]
+    with [=fetch/useParallelQueue=] set to true when the <span class=allow-2119>optional</span>
+    [=response=]-handling algorithm is used, otherwise there is no need to do this even when this
+    algorithm is running [=in parallel=] in other instances.
 </div>
 
 <div algorithm>
@@ -1453,17 +1492,30 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
            1. [=exception/Throw=] a {{TypeError}}.
 
+        1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
+
+        1. Let |attributionReportingEnabled| be the result of determining whether |document| is
+           [=allowed to use=] the "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature.
+
+        1. Let |attributionReportingContextOrigin| be |document|'s [=node/context origin=].
+
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
-        1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
-           following [=struct/items=]:
+          1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
+             reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
+             following [=struct/items=]:
 
-           : [=destination enum event/type=]
-           :: |event|'s {{FenceEvent/eventType}}
+             : [=destination enum event/type=]
+             :: |event|'s {{FenceEvent/eventType}}
 
-           : [=destination enum event/data=]
-           :: |event|'s {{FenceEvent/eventData}} (or the empty string if it is not defined).
+             : [=destination enum event/data=]
+             :: |event|'s {{FenceEvent/eventData}} (or the empty string if it is not defined).
+
+           : [=destination enum event/attributionReportingEnabled=]
+           :: |attributionReportingEnabled|
+
+           : [=destination enum event/attributionReportingContextOrigin=]
+           :: |attributionReportingContextOrigin|
 
   <wpt>
     /fenced-frame/fence-report-event.https.html
@@ -1607,9 +1659,9 @@ A side effect of the fenced boundary model is that ads will lose the ability to 
 resulted in a successful navigation. This is because the page loaded from a top-level [=navigate|
 navigation=] originating from a fenced frame will not be allowed to report to the fenced frame that
 it loaded (through something like <code>window.[=Window/opener=]</code>). Instead, we introduce a
-special event-level {{FenceEvent/eventType}}, `reserved.top_navigation`, which automatically sends
-an [=report an event|event-level beacon=] when a fenced frame initiates a successful
-[=navigate|navigation=] to a [=top-level traversable=].
+special event-level [=destination enum event/type|reporting type=], `reserved.top_navigation`, which
+automatically sends an [=report an event|event-level beacon=] when a fenced frame initiates a
+successful [=navigate|navigation=] to a [=top-level traversable=].
 
 <div algorithm>
   To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
@@ -1655,6 +1707,12 @@ an [=report an event|event-level beacon=] when a fenced frame initiates a succes
        : [=destination enum event/data=]
        :: |beacon data|'s [=automatic beacon data/eventData=] if |beacon data|'s [=automatic beacon
           data/destinations=] [=list/contains=] |destination|, the empty string otherwise.
+
+       : [=destination enum event/attributionReportingEnabled=]
+       :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
+
+       : [=destination enum event/attributionReportingContextOrigin=]
+       :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
       config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data=] to
@@ -2319,13 +2377,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
 <div algorithm=source-snapshot-param-config>
-  Add two new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
+  Add four new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
 
   : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
   :: a [=fenced frame config instance=] or null, initially null.
 
   : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
+
+  : <dfn for="source snapshot params">attribution reporting enabled</dfn>
+  :: a [=boolean=].
+
+  : <dfn for="source snapshot params">attribution reporting context origin</dfn>
+  :: an [=origin=].
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
@@ -2339,11 +2403,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <div algorithm=snapshot-source-snapshot-params>
   Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
-  with an additional field:
+  with three additional fields:
 
   : [=source snapshot params/initiator fenced frame config instance=]
-  :: <var ignore>sourceDocument</var>'s [=browsing context=]'s [=browsing context/fenced frame
+  :: |sourceDocument|'s [=browsing context=]'s [=browsing context/fenced frame
      config instance=]
+
+  : [=source snapshot params/attribution reporting enabled=]
+  :: The result of determining whether |sourceDocument| is [=allowed to use=] the
+     "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature
+
+  : [=source snapshot params/attribution reporting context origin=]
+  :: |sourceDocument|'s [=node/context origin=]
+
 </div>
 
 <div algorithm=navigate>
