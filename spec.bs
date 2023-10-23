@@ -1556,8 +1556,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
   1. Set |instance|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame
-     reporter/automatic beacon data map=][|event|'s {{FenceEvent/eventType}}] to a [=struct=] with
-     the following [=struct/items=]:
+     reporter/automatic beacon data map=][|event|'s {{FenceEvent/eventType}}] to an
+     [=fencedframetype/automatic beacon data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
      :: |event|'s {{FenceEvent/eventData}} if defined, otherwise empty string
@@ -1730,8 +1730,8 @@ traversable=].
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
-      config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data map=]
-      to null.
+      config instance/fenced frame reporter=]'s [=fenced frame reporter/automatic beacon data
+      map=][|eventType|] to null.
 
   <wpt>
     /fenced-frame/automatic-beacon-click-handler.https.html
@@ -2417,7 +2417,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
   It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=fenced frame
-  reporter/automatic beacon data=] to be sent out if the <{fencedframe}>-initiated navigation
+  reporter/automatic beacon data map=] to be sent out if the <{fencedframe}>-initiated navigation
   succeeds. The [=source snapshot params/target fenced frame config=] on the other hand, is the
   non-[=instantiate a config|instantiated=] [=fenced frame config=] that will be loaded into a a
   <{fencedframe}> element for navigations targeting fenced frames. These fields do not interact
