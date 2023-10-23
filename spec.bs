@@ -1703,8 +1703,7 @@ traversable=].
   1. Let |beacon data| be |config|'s [=fenced frame config instance/fenced frame reporter=]'s
      [=fenced frame reporter/automatic beacon data map=][|eventType|].
 
-  1. Let |event data| be |beacon data|'s [=automatic beacon data/eventData=] if |beacon data| is not
-     null, the empty string otherwise.
+  1. If |beacon data| is null, abort these steps.
 
   1. If |sourceOrigin| is not [=same origin=] with |config|'s [=fenced frame config instance/mapped
      url=]'s [=url/origin=], abort these steps.
@@ -1712,11 +1711,6 @@ traversable=].
   1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame
      reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
-
-    1. Let |eventData| be an empty [=string=].
-
-    1. If |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=] |destination|,
-       set |eventData| to |event data|.
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
        reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
@@ -1726,7 +1720,8 @@ traversable=].
        :: |eventType|
 
        : [=destination enum event/data=]
-       :: |eventData|
+       :: |beacon data|'s [=automatic beacon data/eventData=] if |beacon data|'s [=automatic beacon
+          data/destinations=] [=list/contains=] |destination|, the empty string otherwise.
 
        : [=destination enum event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
@@ -1744,6 +1739,7 @@ traversable=].
     /fenced-frame/automatic-beacon-two-events-persist.https.html
     /fenced-frame/automatic-beacon-unfenced-top.https.html
     /fenced-frame/automatic-beacon-no-destination.https.html
+    /fenced-frame/automatic-beacon-no-opt-in.https.html
   </wpt>
 </div>
 
