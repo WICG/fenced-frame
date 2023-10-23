@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="1c64d3b8a5931065110b61b1954e56bd66764280" name="document-revision">
+  <meta content="94b48b1b9233c13170bd70ca0a0e764bee61f87b" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-10-12">12 October 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-10-23">23 October 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2276,8 +2276,7 @@ successful <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/
      <li data-md>
       <p>Let <var>beacon data</var> be <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑦">fenced frame reporter</a>'s <a data-link-type="dfn" href="#fenced-frame-reporter-automatic-beacon-data" id="ref-for-fenced-frame-reporter-automatic-beacon-data②">automatic beacon data</a>.</p>
      <li data-md>
-      <p>Let <var>event data</var> be <var>beacon data</var>’s <a data-link-type="dfn" href="#automatic-beacon-data-eventdata" id="ref-for-automatic-beacon-data-eventdata①">eventData</a> if <var>beacon data</var> is not
- null, the empty string otherwise.</p>
+      <p>If <var>beacon data</var> is null, abort these steps.</p>
      <li data-md>
       <p>If <var>sourceOrigin</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin④">same origin</a> with <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-mapped-url" id="ref-for-fenced-frame-config-instance-mapped-url④">mapped
  url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin④">origin</a>, abort these steps.</p>
@@ -2285,11 +2284,6 @@ successful <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> <var>destination</var> of <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑧">fenced frame
  reporter</a>'s <a data-link-type="dfn" href="#fenced-frame-reporter-fenced-frame-reporting-metadata-reference" id="ref-for-fenced-frame-reporter-fenced-frame-reporting-metadata-reference②">fenced frame reporting metadata reference</a>'s <a data-link-type="dfn" href="#fencedframetype-fenced-frame-reporting-map" id="ref-for-fencedframetype-fenced-frame-reporting-map③">fenced frame reporting map</a>'s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-getting-the-keys" id="ref-for-map-getting-the-keys①⓪">keys</a>:</p>
       <ol>
-       <li data-md>
-        <p>Let <var>eventData</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⑨">string</a>.</p>
-       <li data-md>
-        <p>If <var>beacon data</var>’s <a data-link-type="dfn" href="#automatic-beacon-data-destination" id="ref-for-automatic-beacon-data-destination①">destinations</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> <var>destination</var>,
- set <var>eventData</var> to <var>event data</var>.</p>
        <li data-md>
         <p>Run <a data-link-type="dfn" href="#report-an-event" id="ref-for-report-an-event④">report an event</a> using <var>config</var>’s <a data-link-type="dfn" href="#fenced-frame-config-instance-fenced-frame-reporter" id="ref-for-fenced-frame-config-instance-fenced-frame-reporter⑨">fenced frame
  reporter</a> with <var>destination</var> and a <a data-link-type="dfn" href="#fencedframetype-destination-enum-event" id="ref-for-fencedframetype-destination-enum-event⑤">destination enum event</a> with the
@@ -2300,7 +2294,7 @@ successful <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/
           <p><var>eventType</var></p>
          <dt data-md><a data-link-type="dfn" href="#destination-enum-event-data" id="ref-for-destination-enum-event-data②">data</a>
          <dd data-md>
-          <p><var>eventData</var></p>
+          <p><var>beacon data</var>’s <a data-link-type="dfn" href="#automatic-beacon-data-eventdata" id="ref-for-automatic-beacon-data-eventdata①">eventData</a> if <var>beacon data</var>’s <a data-link-type="dfn" href="#automatic-beacon-data-destination" id="ref-for-automatic-beacon-data-destination①">destinations</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> <var>destination</var>, the empty string otherwise.</p>
          <dt data-md><a data-link-type="dfn" href="#destination-enum-event-attributionreportingenabled" id="ref-for-destination-enum-event-attributionreportingenabled②">attributionReportingEnabled</a>
          <dd data-md>
           <p><var>sourceSnapshotParams</var>’s <a data-link-type="dfn" href="#source-snapshot-params-attribution-reporting-enabled" id="ref-for-source-snapshot-params-attribution-reporting-enabled">attribution reporting enabled</a></p>
@@ -2321,6 +2315,7 @@ successful <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/
       <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/automatic-beacon-two-events-persist.https.html" title="fenced-frame/automatic-beacon-two-events-persist.https.html">automatic-beacon-two-events-persist.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/automatic-beacon-two-events-persist.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/automatic-beacon-two-events-persist.https.html"><small>(source)</small></a>
       <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/automatic-beacon-unfenced-top.https.html" title="fenced-frame/automatic-beacon-unfenced-top.https.html">automatic-beacon-unfenced-top.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/automatic-beacon-unfenced-top.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/automatic-beacon-unfenced-top.https.html"><small>(source)</small></a>
       <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/automatic-beacon-no-destination.https.html" title="fenced-frame/automatic-beacon-no-destination.https.html">automatic-beacon-no-destination.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/automatic-beacon-no-destination.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/automatic-beacon-no-destination.https.html"><small>(source)</small></a>
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/fenced-frame/automatic-beacon-no-opt-in.https.html" title="fenced-frame/automatic-beacon-no-opt-in.https.html">automatic-beacon-no-opt-in.https.html</a> <a class="wpt-live" href="https://wpt.live/fenced-frame/automatic-beacon-no-opt-in.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/fenced-frame/automatic-beacon-no-opt-in.https.html"><small>(source)</small></a>
      </ul>
     </details>
    </div>
@@ -2876,7 +2871,7 @@ CORP violation report</a> algorithm, as leaving it unfenced may cause a privacy 
    </div>
    <div class="algorithm" data-algorithm="navigate">
      Modify the definition of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑥">navigate</a> algorithm to include an extra parameter: an
-  optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②⓪">string</a> <var>sharedStorageContext</var> (default null). 
+  optional <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⑨">string</a> <var>sharedStorageContext</var> (default null). 
     <p>Modify step 7 of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑦">navigate</a> algorithm to include the following condition:</p>
     <ul>
      <li data-md>
@@ -3072,7 +3067,7 @@ expressions</a> that can influence a <code><a data-link-type="element" href="#el
     <li data-md>
      <p>The <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-host-source" id="ref-for-grammardef-host-source">host-source</a> "<code>https://*:*</code>"</p>
     <li data-md>
-     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②①">string</a> "<code>*</code>"</p>
+     <p>The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②⓪">string</a> "<code>*</code>"</p>
    </ul>
    <p>See our <a href="https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md#proposal---scheme-source-matching">CSP
 explainer</a> that describes this.</p>
@@ -4782,7 +4777,7 @@ window.dfnpanelData['7d4424b2'] = {"dfnID": "7d4424b2", "url": "https://infra.sp
 window.dfnpanelData['0e6b2056'] = {"dfnID": "0e6b2056", "url": "https://infra.spec.whatwg.org/#map-set", "dfnText": "set", "refSections": [{"refs": [{"id": "ref-for-map-set"}, {"id": "ref-for-map-set\u2460"}, {"id": "ref-for-map-set\u2461"}], "title": "2.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-set\u2462"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-set\u2463"}], "title": "2.3.3. The fenced frame config instance struct"}], "external": true};
 window.dfnpanelData['653d0848'] = {"dfnID": "653d0848", "url": "https://infra.spec.whatwg.org/#map-size", "dfnText": "size", "refSections": [{"refs": [{"id": "ref-for-map-size"}, {"id": "ref-for-map-size\u2460"}], "title": "2.2. Fenced frame config mapping"}], "external": true};
 window.dfnpanelData['54627f47'] = {"dfnID": "54627f47", "url": "https://infra.spec.whatwg.org/#string-starts-with", "dfnText": "starts with", "refSections": [{"refs": [{"id": "ref-for-string-starts-with"}], "title": "2.3.4. The FencedFrameConfig interface"}], "external": true};
-window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}, {"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}, {"id": "ref-for-string\u2464"}, {"id": "ref-for-string\u2465"}, {"id": "ref-for-string\u2466"}, {"id": "ref-for-string\u2467"}, {"id": "ref-for-string\u2468"}, {"id": "ref-for-string\u2460\u24ea"}, {"id": "ref-for-string\u2460\u2460"}, {"id": "ref-for-string\u2460\u2461"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-string\u2460\u2462"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-string\u2460\u2463"}, {"id": "ref-for-string\u2460\u2464"}, {"id": "ref-for-string\u2460\u2465"}, {"id": "ref-for-string\u2460\u2466"}], "title": "2.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-string\u2460\u2467"}, {"id": "ref-for-string\u2460\u2468"}], "title": "2.6. Automatic Reporting"}, {"refs": [{"id": "ref-for-string\u2461\u24ea"}], "title": "3.7.3. Actual navigation changes"}, {"refs": [{"id": "ref-for-string\u2461\u2460"}], "title": "4.2. Content Security Policy"}], "external": true};
+window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}, {"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}, {"id": "ref-for-string\u2464"}, {"id": "ref-for-string\u2465"}, {"id": "ref-for-string\u2466"}, {"id": "ref-for-string\u2467"}, {"id": "ref-for-string\u2468"}, {"id": "ref-for-string\u2460\u24ea"}, {"id": "ref-for-string\u2460\u2460"}, {"id": "ref-for-string\u2460\u2461"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-string\u2460\u2462"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-string\u2460\u2463"}, {"id": "ref-for-string\u2460\u2464"}, {"id": "ref-for-string\u2460\u2465"}, {"id": "ref-for-string\u2460\u2466"}], "title": "2.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-string\u2460\u2467"}], "title": "2.6. Automatic Reporting"}, {"refs": [{"id": "ref-for-string\u2460\u2468"}], "title": "3.7.3. Actual navigation changes"}, {"refs": [{"id": "ref-for-string\u2461\u24ea"}], "title": "4.2. Content Security Policy"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}, {"id": "ref-for-struct\u2460"}, {"id": "ref-for-struct\u2461"}, {"id": "ref-for-struct\u2462"}, {"id": "ref-for-struct\u2463"}, {"id": "ref-for-struct\u2464"}, {"id": "ref-for-struct\u2465"}, {"id": "ref-for-struct\u2466"}, {"id": "ref-for-struct\u2467"}, {"id": "ref-for-struct\u2468"}, {"id": "ref-for-struct\u2460\u24ea"}, {"id": "ref-for-struct\u2460\u2460"}, {"id": "ref-for-struct\u2460\u2461"}, {"id": "ref-for-struct\u2460\u2462"}, {"id": "ref-for-struct\u2460\u2463"}, {"id": "ref-for-struct\u2460\u2464"}, {"id": "ref-for-struct\u2460\u2465"}, {"id": "ref-for-struct\u2460\u2466"}, {"id": "ref-for-struct\u2460\u2467"}, {"id": "ref-for-struct\u2460\u2468"}, {"id": "ref-for-struct\u2461\u24ea"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-struct\u2461\u2460"}, {"id": "ref-for-struct\u2461\u2461"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-struct\u2461\u2462"}], "title": "2.3.4. The FencedFrameConfig interface"}, {"refs": [{"id": "ref-for-struct\u2461\u2463"}], "title": "2.4. The Fence interface"}, {"refs": [{"id": "ref-for-struct\u2461\u2464"}, {"id": "ref-for-struct\u2461\u2465"}], "title": "3.7.3. Actual navigation changes"}], "external": true};
 window.dfnpanelData['12d6b9a8'] = {"dfnID": "12d6b9a8", "url": "https://infra.spec.whatwg.org/#map-getting-the-values", "dfnText": "values", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-values"}, {"id": "ref-for-map-getting-the-values\u2460"}, {"id": "ref-for-map-getting-the-values\u2461"}], "title": "2.2. Fenced frame config mapping"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2462"}, {"id": "ref-for-map-getting-the-values\u2463"}, {"id": "ref-for-map-getting-the-values\u2464"}, {"id": "ref-for-map-getting-the-values\u2465"}, {"id": "ref-for-map-getting-the-values\u2466"}], "title": "2.3.2. The fenced frame config struct"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2467"}], "title": "2.3.3. The fenced frame config instance struct"}, {"refs": [{"id": "ref-for-map-getting-the-values\u2468"}], "title": "2.3.4. The FencedFrameConfig interface"}], "external": true};
 window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "3.4.4. Top-level traversables"}], "external": true};
