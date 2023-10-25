@@ -1746,16 +1746,16 @@ traversable=].
 <div algorithm="top_navigation_start beacon patch">
   Modify [[HTML]]'s [=navigate=] algorithm. Add a new step after step 4 that reads:
   
-  5. [=attempt to send an automatic beacon=] given <var ignore>sourceDocument</var>, <var
-     ignore>sourceSnapshotParams</var>, <var ignore>navigable</var>’s associated {{Document}}, and
-     "`reserved.top_navigation_start`".
+  5. [=Attempt to send an automatic beacon=] given <var ignore>sourceSnapshotParams</var>, <var
+     ignore>initiatorOriginSnapshot</var>, <var ignore>navigable</var>’s associated {{Document}},
+     and "`reserved.top_navigation_start`".
 </div>
 
 <div algorithm="top_navigation_commit beacon patch">
   Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. In step 6,
   substep 11, add a new step after step 5 that reads:
 
-  6. if <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
+  6. If <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
      ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
      state/initiator origin=], <var ignore>document</var>, and "`reserved.top_navigation_commit`".
 </div>
