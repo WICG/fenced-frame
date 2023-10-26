@@ -761,10 +761,16 @@ following [=struct/items=]:
   :: a [=boolean=], initially false
 </dl>
 
-The <dfn export for=fencedframetype>valid automatic beacon event types</dfn> are a [=list=] with the
-following [=list/items=]:
+An <dfn export for=fencedframetype>automatic beacon event type</dfn> is one of the following:
+<dl export dfn-for="automatic beacon event type">
+  : "<dfn>reserved.top_navigation_start</dfn>"
+  :: Sent at the beginning of a top-level [=navigate|navigation=]
 
-« "`reserved.top_navigation_start`", "`reserved.top_navigation_commit`" »
+  : "<dfn>reserved.top_navigation_commit</dfn>"
+  :: Sent while [=attempt to populate the history entry's document|attempting to populate the
+     history entry's document=] for a top-level navigation
+</dl>
+
 
 An <dfn export for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
 [=struct/items=]:
@@ -788,8 +794,8 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
      <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
 
   : <dfn>automatic beacon data map</dfn>
-  :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are null or an
-     [=fencedframetype/automatic beacon data=]
+  :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
+     [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 </dl>
 
 A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
@@ -810,8 +816,26 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
 
 A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
 
+An <dfn export for=fencedframetype>automatic beacon event</dfn> is a [=struct=] with the following
+[=struct/items=]:
+<dl export dfn-for="automatic beacon event">
+  : <dfn>type</dfn>
+  :: an [=fencedframetype/automatic beacon event type=]
+
+  : <dfn>data</dfn>
+  :: a [=string=]
+
+  : <dfn>attributionReportingEnabled</dfn>
+  :: a [=boolean=]
+
+  : <dfn>attributionReportingContextOrigin</dfn>
+  :: an [=origin=]
+</dl>
+
+
 A <dfn export for=fencedframetype>destination event</dfn> is either a
-[=fencedframetype/destination enum event=] or a [=fencedframetype/destination URL event=].
+[=fencedframetype/destination enum event=], a [=fencedframetype/destination URL event=], or a
+[=fencedframetype/automatic beacon event=].
 
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
@@ -825,12 +849,16 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
   1. Let |useParallelQueue| be false.
 
-  1. If |event| is a [=fencedframetype/destination enum event=], then:
+  1. If |event| is either a [=fencedframetype/destination enum event=] or an
+     [=fencedframetype/automatic beacon event=], then:
 
      1. Let |destination map| be |destination info|'s
         [=reporting destination info/reporting url map=].
 
-     1. Let |eventType| be |event|'s [=destination enum event/type=].
+     1. If |event| is a [=fencedframetype/destination enum event=], then let |eventType| be
+        |event|'s [=destination enum event/type=].
+
+        Otherwise, let |eventType| be |event|'s [=automatic beacon event/type=].
 
      1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
@@ -840,8 +868,8 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
        of [=getting supported registrars=] is not [=list/is empty|empty=] and |event|'s
        [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
 
-        1. If the list of [=fencedframetype/valid automatic beacon event types=] [=list/contains=]
-           |event|'s [=destination enum event/type=], set |attributionReportingEligibility| to
+        1. If |event|'s {{FenceEvent/eventType}} matches one of the [=fencedframetype/automatic
+           beacon event type=] values, set |attributionReportingEligibility| to
            "<code>[=eligibility/navigation-source=]</code>".
 
         1. Otherwise, set |attributionReportingEligibility| to "<code>[=eligibility/event-source=]</code>".
@@ -1541,8 +1569,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      {{FenceEvent/eventType}}:
      1. [=exception/Throw=] a {{TypeError}}.
 
-  1. If [=fencedframetype/valid automatic beacon event types=] does not [=list/contain=] |event|'s
-     {{FenceEvent/eventType}}, return.
+  1. If |event|'s {{FenceEvent/eventType}} does not match one of the [=fencedframetype/automatic
+     beacon event type=] values, return.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
@@ -1679,11 +1707,8 @@ traversable=].
 
 <div algorithm>
   To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
-  |sourceSnapshotParams|, an [=origin=] |sourceOrigin|, a {{Document}} |targetDocument|, and a
-  [=string=] |eventType|, run these steps:
-
-  1. [=Assert=]: The [=fencedframetype/valid automatic beacon event types=] [=list/contains=]
-     |eventType|.
+  |sourceSnapshotParams|, an [=origin=] |sourceOrigin|, a {{Document}} |targetDocument|, and an
+  [=fencedframetype/automatic beacon event type=] |eventType|, run these steps:
 
   1. If |targetDocument|'s [=node navigable=]'s [=traversable navigable=] is not a [=top-level
      traversable=], abort these steps.
@@ -1713,7 +1738,7 @@ traversable=].
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
+       reporter=] with |destination| and an [=fencedframetype/automatic beacon event=] with the
        following [=struct/items=]:
 
        : [=destination enum event/type=]
@@ -1748,7 +1773,7 @@ traversable=].
   
   5. [=Attempt to send an automatic beacon=] given <var ignore>sourceSnapshotParams</var>, <var
      ignore>initiatorOriginSnapshot</var>, <var ignore>navigable</var>’s associated {{Document}},
-     and "`reserved.top_navigation_start`".
+     and "[=automatic beacon event type/reserved.top_navigation_start=]".
 </div>
 
 <div algorithm="top_navigation_commit beacon patch">
@@ -1757,7 +1782,8 @@ traversable=].
 
   6. If <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
      ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
-     state/initiator origin=], <var ignore>document</var>, and "`reserved.top_navigation_commit`".
+     state/initiator origin=], <var ignore>document</var>, and "[=automatic beacon event
+     type/reserved.top_navigation_commit=]".
 </div>
 
 <h2 id=html-integration>HTML Integration</h2>
