@@ -848,11 +848,6 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
      1. Let |destination map| be |destination info|'s
         [=reporting destination info/reporting url map=].
 
-     1. If |event| is a [=fencedframetype/destination enum event=], then let |eventType| be
-        |event|'s [=destination enum event/type=].
-
-        Otherwise, let |eventType| be |event|'s [=automatic beacon event/type=].
-
      1. Let |eventType| be either |event|'s [=destination enum event/type|destination type=], or
         [=automatic beacon event/type|automatic type=], depending on which variant |event| is.
 
