@@ -761,16 +761,9 @@ following [=struct/items=]:
   :: a [=boolean=], initially false
 </dl>
 
-An <dfn export for=fencedframetype>automatic beacon event type</dfn> is one of the following:
-<dl export dfn-for="automatic beacon event type">
-  : "<dfn>reserved.top_navigation_start</dfn>"
-  :: Sent at the beginning of a top-level [=navigate|navigation=]
-
-  : "<dfn>reserved.top_navigation_commit</dfn>"
-  :: Sent while [=attempt to populate the history entry's document|attempting to populate the
-     history entry's document=] for a top-level navigation
-</dl>
-
+An <dfn export for=fencedframetype>automatic beacon event type</dfn> is either "<dfn export
+for="automatic beacon event type">`reserved.top_navigation_start`</dfn>" or "<dfn export
+for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>".
 
 An <dfn export for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
 [=struct/items=]:
