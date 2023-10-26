@@ -853,6 +853,9 @@ A <dfn export for=fencedframetype>destination event</dfn> is either a
 
         Otherwise, let |eventType| be |event|'s [=automatic beacon event/type=].
 
+     1. Let |eventType| be either |event|'s [=destination enum event/type|destination type=], or
+        [=automatic beacon event/type|automatic type=], depending on which variant |event| is.
+
      1. If |destination map|[|eventType|] does not [=map/exist=], return.
 
      1. Set |destination url| to |destination map|[|eventType|].
