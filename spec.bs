@@ -782,9 +782,9 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
      </dl>
 </dl>
 
-A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
+A <dfn for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
 [=struct/items=]:
-<dl export dfn-for="destination enum event">
+<dl dfn-for="destination enum event">
   : <dfn>type</dfn>
   :: a [=string=]
 
@@ -798,9 +798,9 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
   :: an [=origin=]
 </dl>
 
-A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
+A <dfn for=fencedframetype>destination URL event</dfn> is a [=URL=].
 
-A <dfn export for=fencedframetype>destination event</dfn> is either a
+A <dfn for=fencedframetype>destination event</dfn> is either a
 [=fencedframetype/destination enum event=] or a [=fencedframetype/destination URL event=].
 
 <div algorithm>
