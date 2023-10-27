@@ -761,14 +761,14 @@ following [=struct/items=]:
   :: a [=boolean=], initially false
 </dl>
 
-An <dfn export for=fencedframetype>automatic beacon event type</dfn> is either "<dfn export
-for="automatic beacon event type">`reserved.top_navigation_start`</dfn>" or "<dfn export
+An <dfn for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
+for="automatic beacon event type">`reserved.top_navigation_start`</dfn>" or "<dfn
 for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>".
 
-An <dfn export for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
+An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
 [=struct/items=]:
      
-<dl export dfn-for="automatic beacon data">
+<dl dfn-for="automatic beacon data">
   : <dfn>eventData</dfn>
   :: a [=string=]
 
@@ -809,9 +809,9 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
 
 A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
 
-An <dfn export for=fencedframetype>automatic beacon event</dfn> is a [=struct=] with the following
+An <dfn for=fencedframetype>automatic beacon event</dfn> is a [=struct=] with the following
 [=struct/items=]:
-<dl export dfn-for="automatic beacon event">
+<dl dfn-for="automatic beacon event">
   : <dfn>type</dfn>
   :: an [=fencedframetype/automatic beacon event type=]
 
@@ -1732,17 +1732,17 @@ traversable=].
        reporter=] with |destination| and an [=fencedframetype/automatic beacon event=] with the
        following [=struct/items=]:
 
-       : [=destination enum event/type=]
+       : [=automatic beacon event/type=]
        :: |eventType|
 
-       : [=destination enum event/data=]
+       : [=automatic beacon event/data=]
        :: |beacon data|'s [=automatic beacon data/eventData=] if |beacon data|'s [=automatic beacon
           data/destinations=] [=list/contains=] |destination|, the empty string otherwise.
 
-       : [=destination enum event/attributionReportingEnabled=]
+       : [=automatic beacon event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
 
-       : [=destination enum event/attributionReportingContextOrigin=]
+       : [=automatic beacon event/attributionReportingContextOrigin=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
