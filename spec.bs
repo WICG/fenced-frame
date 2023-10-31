@@ -791,9 +791,9 @@ A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] wi
      [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 </dl>
 
-A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
+A <dfn for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
 [=struct/items=]:
-<dl export dfn-for="destination enum event">
+<dl dfn-for="destination enum event">
   : <dfn>type</dfn>
   :: a [=string=]
 
@@ -807,7 +807,7 @@ A <dfn export for=fencedframetype>destination enum event</dfn> is a [=struct=] w
   :: an [=origin=]
 </dl>
 
-A <dfn export for=fencedframetype>destination URL event</dfn> is a [=URL=].
+A <dfn for=fencedframetype>destination URL event</dfn> is a [=URL=].
 
 An <dfn for=fencedframetype>automatic beacon event</dfn> is a [=struct=] with the following
 [=struct/items=]:
@@ -825,8 +825,7 @@ An <dfn for=fencedframetype>automatic beacon event</dfn> is a [=struct=] with th
   :: an [=origin=]
 </dl>
 
-
-A <dfn export for=fencedframetype>destination event</dfn> is either a
+A <dfn for=fencedframetype>destination event</dfn> is either a
 [=fencedframetype/destination enum event=], a [=fencedframetype/destination URL event=], or a
 [=fencedframetype/automatic beacon event=].
 
