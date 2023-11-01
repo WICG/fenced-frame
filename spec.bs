@@ -762,8 +762,14 @@ following [=struct/items=]:
 </dl>
 
 An <dfn for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
-for="automatic beacon event type">`reserved.top_navigation_start`</dfn>" or "<dfn
-for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>".
+for="automatic beacon event type">`reserved.top_navigation_start`</dfn>", "<dfn
+for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>", or "<dfn
+for="automatic beacon event type">`reserved.top_navigation`</dfn>".
+
+Advisement: <code>[=automatic beacon event type/reserved.top_navigation=]</code> is an earlier
+naming of <code>[=automatic beacon event type/reserved.top_navigation_commit=]</code>. While they
+both do the same thing, <code>[=automatic beacon event type/reserved.top_navigation=]</code> will be
+depreacted in the future and should not be used for new code.
 
 An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
 [=struct/items=]:
@@ -1690,10 +1696,11 @@ A side effect of the fenced boundary model is that ads will lose the ability to 
 resulted in a successful navigation. This is because the page loaded from a top-level [=navigate|
 navigation=] originating from a fenced frame will not be allowed to report to the fenced frame that
 it loaded (through something like <code>window.[=Window/opener=]</code>). Instead, we introduce
-special event-level [=destination enum event/type|reporting type=]s, `reserved.top_navigation_start`
-and `resrved.top_navigation_commit`, which automatically sends an [=report an event|event-level
-beacon=] when a fenced frame initiates a successful [=navigate|navigation=] to a [=top-level
-traversable=].
+special event-level [=automatic beacon event/type|reporting type=]s, <code>[=automatic beacon event
+type/reserved.top_navigation_start=]</code> and <code>[=automatic beacon event
+type/reserved.top_navigation_commit=]</code>, which automatically sends an [=report an
+event|event-level beacon=] when a fenced frame initiates a successful [=navigate|navigation=] to a
+[=top-level traversable=].
 
 <div algorithm>
   To <dfn>attempt to send an automatic beacon</dfn> given a [=source snapshot params=]
@@ -1763,17 +1770,24 @@ traversable=].
   
   5. [=Attempt to send an automatic beacon=] given <var ignore>sourceSnapshotParams</var>, <var
      ignore>initiatorOriginSnapshot</var>, <var ignore>navigable</var>’s associated {{Document}},
-     and "[=automatic beacon event type/reserved.top_navigation_start=]".
+     and <code>[=automatic beacon event type/reserved.top_navigation_start=]</code>.
 </div>
 
 <div algorithm="top_navigation_commit beacon patch">
   Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. In step 6,
   substep 11, add a new step after step 5 that reads:
 
-  6. If <var ignore>failure</var> is false, then [=attempt to send an automatic beacon=] given <var
-     ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
-     state/initiator origin=], <var ignore>document</var>, and "[=automatic beacon event
-     type/reserved.top_navigation_commit=]".
+  6. If <var ignore>failure</var> is false, then:
+    
+    1. [=Attempt to send an automatic beacon=] given <var
+       ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
+       state/initiator origin=], <var ignore>document</var>, and <code>[=automatic beacon event
+       type/reserved.top_navigation_commit=]</code>.
+    
+    1. [=Attempt to send an automatic beacon=] given <var
+       ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=document state=]'s [=document
+       state/initiator origin=], <var ignore>document</var>, and <code>[=automatic beacon event
+       type/reserved.top_navigation=]</code>.
 </div>
 
 <h2 id=html-integration>HTML Integration</h2>
