@@ -769,7 +769,7 @@ for="automatic beacon event type">`reserved.top_navigation`</dfn>".
 Advisement: <code>[=automatic beacon event type/reserved.top_navigation=]</code> is an earlier
 naming of <code>[=automatic beacon event type/reserved.top_navigation_commit=]</code>. While they
 both do the same thing, <code>[=automatic beacon event type/reserved.top_navigation=]</code> will be
-depreacted in the future and should not be used for new code.
+removed in the future and should not be used for new code.
 
 An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
 [=struct/items=]:
