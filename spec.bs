@@ -784,7 +784,7 @@ An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the
   : <dfn>once</dfn>
   :: a [=boolean=]
 
-  : <dfn>crossOrigin</dfn>
+  : <dfn>crossOriginExposed</dfn>
   :: a [=boolean=]
 </dl>
 
@@ -1489,7 +1489,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     // When setting event data to be used later in an automatic beacon, the
     // following properties are used:
     boolean once = false;
-    boolean crossOrigin = false;
+    boolean crossOriginExposed = false;
 
     // When reporting to a custom destination URL (with substitution of macros defined by
     // the Protected Audience buyer), the following property is used:
@@ -1615,8 +1615,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      : [=automatic beacon data/once=]
      :: |event|'s {{FenceEvent/once}}
 
-     : [=automatic beacon data/crossOrigin=]
-     :: |event|'s {{FenceEvent/crossOrigin}}
+     : [=automatic beacon data/crossOriginExposed=]
+     :: |event|'s {{FenceEvent/crossOriginExposed}}
 
   <wpt>
     /fenced-frame/set-automatic-beacon.https.html
@@ -1762,8 +1762,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
   1. If |is cross origin| is true and |has header opt in| is false, abort these steps.
 
   1. Let |should send beacon with data| be true if |beacon data| is not null and either
-     |is cross origin| is false or |beacon data|'s [=automatic beacon data/crossOrigin=] is true,
-     false otherwise.
+     |is cross origin| is false or |beacon data|'s [=automatic beacon data/crossOriginExposed=] is
+     true, false otherwise.
 
   1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame
      reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
