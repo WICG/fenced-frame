@@ -2495,12 +2495,12 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
-  It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=Document/
-  automatic beacon data map=] to be sent out if the <{fencedframe}>-initiated navigation succeeds.
-  The [=source snapshot params/target fenced frame config=] on the other hand, is the
-  non-[=instantiate a config|instantiated=] [=fenced frame config=] that will be loaded into a a
-  <{fencedframe}> element for navigations targeting fenced frames. These fields do not interact
-  *together* in any meaningful way. <span class="XXX">PAHACER: update this</span>
+  It is used by the [=attempt to send an automatic beacon=] algorithm to compare [=origin=]s and
+  determine which {{FenceReportingDestination}}s to send beacons to, if the
+  <{fencedframe}>-initiated navigation succeeds. The [=source snapshot params/target fenced frame
+  config=] on the other hand, is the non-[=instantiate a config|instantiated=] [=fenced frame
+  config=] that will be loaded into a a <{fencedframe}> element for navigations targeting fenced
+  frames. These fields do not interact *together* in any meaningful way.
 </div>
 
 <div algorithm>
@@ -2516,7 +2516,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
-  1. Return an empty [=map=]. <span class="XXX">PAHACER: is this valid even though I didn't define what the mapping is? Is this too hand-wavey?</span>
+  1. Return an empty [=map=].
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
