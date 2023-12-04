@@ -771,33 +771,12 @@ naming of <code>[=automatic beacon event type/reserved.top_navigation_commit=]</
 both do the same thing, <code>[=automatic beacon event type/reserved.top_navigation=]</code> will be
 removed in the future and should not be used for new code.
 
-An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
-[=struct/items=]:
-     
-<dl dfn-for="automatic beacon data">
-  : <dfn>eventData</dfn>
-  :: a [=string=]
-
-  : <dfn>destination</dfn>
-  :: a [=list=] of {{FenceReportingDestination}}s
-
-  : <dfn>once</dfn>
-  :: a [=boolean=]
-
-  : <dfn>crossOriginExposed</dfn>
-  :: a [=boolean=]
-</dl>
-
 A <dfn export for=fencedframetype>fenced frame reporter</dfn> is a [=struct=] with the following
 [=struct/items=]:
 <dl export dfn-for="fenced frame reporter">
   : <dfn>fenced frame reporting metadata reference</dfn>
   :: a mutable reference to a [=fencedframetype/fenced frame reporting metadata=]
      <span class=XXX>TODO: Handle pointers/references in a more spec-y way</span>
-
-  : <dfn>automatic beacon data map</dfn>
-  :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
-     [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 </dl>
 
 A <dfn for=fencedframetype>destination enum event</dfn> is a [=struct=] with the following
@@ -1227,9 +1206,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
             :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
                [=fenced frame reporting metadata/value=]
 
-            : [=fenced frame reporter/automatic beacon data map=]
-            :: an empty [=map=]
-
     : [=fenced frame config instance/exfiltration budget metadata reference=]
     ::
         1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
@@ -1602,9 +1578,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. Set |instance|'s [=fenced frame config instance/fenced frame reporter=]'s [=fenced frame
-     reporter/automatic beacon data map=][|event|'s {{FenceEvent/eventType}}] to an
-     [=fencedframetype/automatic beacon data=] with the following [=struct/items=]:
+  1. Set [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=Document/automatic
+     beacon data map=][|event|'s {{FenceEvent/eventType}}] to an [=fencedframetype/automatic beacon
+     data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
      :: |event|'s {{FenceEvent/eventData}} if defined, otherwise empty string
@@ -1748,8 +1724,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
-  1. Let |beacon data| be |config|'s [=fenced frame config instance/fenced frame reporter=]'s
-     [=fenced frame reporter/automatic beacon data map=][|eventType|].
+  1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
+     map=][|eventType|].
 
   1. Let |has header opt in| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacons
      allowed=].
@@ -1854,6 +1830,29 @@ created alongside the {{Window}}.
 </div>
 
 <h3 id=document-extension>Extensions to the {{Document}} interface</h3>
+
+We first establish some preliminary types:
+
+An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the following
+[=struct/items=]:
+     
+<dl dfn-for="automatic beacon data">
+  : <dfn>eventData</dfn>
+  :: a [=string=]
+
+  : <dfn>destination</dfn>
+  :: a [=list=] of {{FenceReportingDestination}}s
+
+  : <dfn>once</dfn>
+  :: a [=boolean=]
+
+  : <dfn>crossOriginExposed</dfn>
+  :: a [=boolean=]
+</dl>
+
+Each {{Document}} object has an associated <dfn for=Document>automatic beacon data map</dfn>, which
+is a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
+[=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 
 Each {{Document}} object has an associated <dfn for=Document>automatic beacons allowed</dfn>, which
 is a [=boolean=], initially false.
@@ -2473,7 +2472,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <h4 id=navigation-changes>Actual navigation changes</h4>
 
 <div algorithm=source-snapshot-param-config>
-  Add five new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
+  Add the following new [=struct/item=]s to the [=source snapshot params=] [=struct=]:
 
   : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
   :: a [=fenced frame config instance=] or null, initially null.
@@ -2490,14 +2489,34 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">automatic beacons allowed</dfn>
   :: an [=boolean=].
 
+  : <dfn for="source snapshot params">automatic beacon data map</dfn>
+  :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
+     [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
+
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
-  It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=fenced frame
-  reporter/automatic beacon data map=] to be sent out if the <{fencedframe}>-initiated navigation
-  succeeds. The [=source snapshot params/target fenced frame config=] on the other hand, is the
+  It is used by the [=attempt to send an automatic beacon=] algorithm to retrieve the [=Document/
+  automatic beacon data map=] to be sent out if the <{fencedframe}>-initiated navigation succeeds.
+  The [=source snapshot params/target fenced frame config=] on the other hand, is the
   non-[=instantiate a config|instantiated=] [=fenced frame config=] that will be loaded into a a
   <{fencedframe}> element for navigations targeting fenced frames. These fields do not interact
-  *together* in any meaningful way.
+  *together* in any meaningful way. <span class="XXX">PAHACER: update this</span>
+</div>
+
+<div algorithm>
+  To <dfn>get the automatic beacon data to use</dfn> given a {{Document}} |sourceDocument|:
+
+  1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
+
+  1. While |current navigable| is not null:
+
+    1. If |current navigable|'s [=navigable/active document=]'s [=Document/automatic beacon data
+       map=] is not [=map/is empty|empty=], return |current navigable|'s [=navigable/active
+       document=]'s [=Document/automatic beacon data map=].
+
+    1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
+
+  1. Return an empty [=map=]. <span class="XXX">PAHACER: is this valid even though I didn't define what the mapping is? Is this too hand-wavey?</span>
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
@@ -2517,6 +2536,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   : [=source snapshot params/automatic beacons allowed=]
   :: |sourceDocument|'s [=Document/automatic beacons allowed=]
+
+  : [=source snapshot params/automatic beacon data map=]
+  :: The result of running [=get the automatic beacon data to use=] on |sourceDocument|.
 
 </div>
 
