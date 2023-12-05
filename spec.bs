@@ -2504,19 +2504,29 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm>
-  To <dfn>get the automatic beacon data to use</dfn> given a {{Document}} |sourceDocument|:
+  To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
 
+  1. Let |automatic beacon data map| be an empty [=map=] whose [=map/keys=] are [=fencedframetype/
+     automatic beacon event type=]s and whose [=map/values=] are null or an [=fencedframetype/
+     automatic beacon data=].
+  
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
 
   1. While |current navigable| is not null:
 
-    1. If |current navigable|'s [=navigable/active document=]'s [=Document/automatic beacon data
-       map=] is not [=map/is empty|empty=], return |current navigable|'s [=navigable/active
-       document=]'s [=Document/automatic beacon data map=].
+    1. [=map/iterate|For each=] |type| → |data| of |current navigable|'s [=navigable/active
+       document=]'s [=Document/automatic beacon data map=]:
+
+      1. If |automatic beacon data map|[|type|] does not [=map/exist=], set
+         |automatic beacon data map|[|type|] to |data|.
+
+      Note: This guarantees that the first ancestor that contains automatic beacon data for a
+      specific type will be usable by the document initiating the navigation. This will also prevent
+      an ancestor blocking a document from using data set in a higher ancestor.
 
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
-  1. Return an empty [=map=].
+  1. Return |automatic beacon data map|.
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
@@ -2538,7 +2548,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   :: |sourceDocument|'s [=Document/automatic beacons allowed=]
 
   : [=source snapshot params/automatic beacon data map=]
-  :: The result of running [=get the automatic beacon data to use=] on |sourceDocument|.
+  :: The result of running [=get the automatic beacon data mapping to use=] on |sourceDocument|.
 
 </div>
 
