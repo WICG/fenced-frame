@@ -1775,8 +1775,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
     /fenced-frame/automatic-beacon-unfenced-top.https.html
     /fenced-frame/automatic-beacon-no-destination.https.html
     /fenced-frame/automatic-beacon-no-opt-in.https.html
-    /fenced-frame/automatic-beacon-cross-origin-false.https.html
     /fenced-frame/automatic-beacon-shared-storage.https.html
+    /fenced-frame/automatic-beacon-cross-origin-false.https.html
     /fenced-frame/automatic-beacon-cross-origin-navigation.https.html
     /fenced-frame/automatic-beacon-cross-origin-no-data.https.html
     /fenced-frame/automatic-beacon-cross-origin-no-opt-in.https.html
