@@ -1006,6 +1006,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   In order to <dfn>report a private aggregation event</dfn> using a [=fencedframetype/fenced frame
   reporter=] |reporter| with a [=string=] |event|, run these steps:
 
+  1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
+
   1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
@@ -1517,6 +1519,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=fenced frame config instance/fenced frame reporter=] with |event|.
 
   1. If |event| is a {{FenceEvent}}:
+
+     1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
 
      1. If |event| has a {{FenceEvent/destinationURL}}:
         1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
