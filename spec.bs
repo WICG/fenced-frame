@@ -761,7 +761,7 @@ following [=struct/items=]:
   :: a [=boolean=], initially false
 </dl>
 
-An <dfn for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
+An <dfn export for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
 for="automatic beacon event type">`reserved.top_navigation_start`</dfn>", "<dfn
 for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>", or "<dfn
 for="automatic beacon event type">`reserved.top_navigation`</dfn>".
