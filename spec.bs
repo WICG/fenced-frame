@@ -1764,7 +1764,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
 
        : [=automatic beacon event/data=]
        :: |beacon data|'s [=automatic beacon data/eventData=] if |beacon data|'s [=automatic beacon
-          data/destinations=] [=list/contains=] |destination|, the empty string otherwise.
+          data/destinations=] [=list/contains=] |destination| and |config|'s [=fenced frame config
+          instance/is ad component=] is false, the empty string otherwise.
 
        : [=automatic beacon event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
