@@ -598,6 +598,8 @@ follows:
   1. [=map/iterate|For each=] |urn| → |config| of |nestedConfigs|:
 
     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
+    
+    1. Set |nestedMapping|[|urn|]'s [=fenced frame config/is ad component=] to true.
 </div>
 
 <div algorithm>
@@ -761,7 +763,7 @@ following [=struct/items=]:
   :: a [=boolean=], initially false
 </dl>
 
-An <dfn for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
+An <dfn export for=fencedframetype>automatic beacon event type</dfn> is either "<dfn
 for="automatic beacon event type">`reserved.top_navigation_start`</dfn>", "<dfn
 for="automatic beacon event type">`reserved.top_navigation_commit`</dfn>", or "<dfn
 for="automatic beacon event type">`reserved.top_navigation`</dfn>".
@@ -987,6 +989,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 <div algorithm>
   In order to <dfn>report a private aggregation event</dfn> using a [=fencedframetype/fenced frame
   reporter=] |reporter| with a [=string=] |event|, run these steps:
+
+  1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
 
   1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
@@ -1489,6 +1493,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
+  
+  1. If |instance|'s [=fenced frame config instance/is ad component=] is true, then return.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
@@ -1500,6 +1506,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=fenced frame config instance/fenced frame reporter=] with |event|.
 
   1. If |event| is a {{FenceEvent}}:
+
+     1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
 
      1. If |event| has a {{FenceEvent/destinationURL}}:
         1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
@@ -1583,7 +1591,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
-     :: |event|'s {{FenceEvent/eventData}} if defined, otherwise empty string
+     :: |event|'s {{FenceEvent/eventData}} if defined and |instance|'s [=fenced frame config
+        instance/is ad component=] is false, otherwise empty [=string=].
 
      : [=automatic beacon data/destination=]
      :: |event|'s {{FenceEvent/destination}}
@@ -1754,8 +1763,9 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
 
        : [=automatic beacon event/data=]
        :: |beacon data|'s [=automatic beacon data/eventData=] if |should send beacon with data| is
-          true and |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=]
-          |destination|, the empty string otherwise.
+          true, |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=]
+          |destination|, and |config|'s [=fenced frame config instance/is ad component=] is false,
+          the empty string otherwise.
 
        : [=automatic beacon event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
