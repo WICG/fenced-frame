@@ -1845,7 +1845,7 @@ created alongside the {{Window}}.
   </wpt>
 </div>
 
-<h3 id=document-extension>Extensions to the {{Document}} interface</h3>
+<h3 id=document-extension>{{Document}} supporting concepts</h3>
 
 We first establish some preliminary types:
 
@@ -2515,16 +2515,14 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   determine which {{FenceReportingDestination}}s to send beacons to, if the
   <{fencedframe}>-initiated navigation succeeds. The [=source snapshot params/target fenced frame
   config=] on the other hand, is the non-[=instantiate a config|instantiated=] [=fenced frame
-  config=] that will be loaded into a a <{fencedframe}> element for navigations targeting fenced
+  config=] that will be loaded into a <{fencedframe}> element for navigations targeting fenced
   frames. These fields do not interact *together* in any meaningful way.
 </div>
 
 <div algorithm>
   To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
-
-  1. Let |automatic beacon data map| be an empty [=map=] whose [=map/keys=] are [=fencedframetype/
-     automatic beacon event type=]s and whose [=map/values=] are null or an [=fencedframetype/
-     automatic beacon data=].
+  
+  1. Let |automatic beacon data map| be a new empty [=Document/automatic beacon data map=].
   
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
 
