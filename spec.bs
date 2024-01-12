@@ -461,15 +461,17 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
        Note: This holds because when the element has been removed from the DOM, its removal steps
        immediately destroy the [=fenced navigable container/fenced navigable=].
 
-  1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if the
+     given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, the given
+     {{FencedFrameConfig}}'s [=fencedframeconfig/urn=] otherwise.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
 
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
-     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
-     |shared storage context|.
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to
+     |navigation url or urn| using |element|'s [=Node/node document=], with [=historyHandling=] set
+     to "<a for="history handling behavior">`replace`</a>", [=referrerPolicy=] set to
+     <a>"`no-referrer`"</a>, and |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
@@ -1297,6 +1299,8 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window, Serializable]
   interface FencedFrameConfig {
+    constructor(USVString url);
+    
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
     readonly attribute FencedFrameConfigSize? contentWidth;
@@ -1306,19 +1310,26 @@ maps to an internal [=fenced frame config=] [=struct=].
   };
 </pre>
 
-Note: Note that {{FencedFrameConfig}}s cannot be constructed manually from JavaScript. They can only
-be created by config-generating APIs. However, some browsers [support a developer-only
-flag](https://github.com/WICG/fenced-frame/issues/94) which help developers test the <{fencedframe}>
-element with arbitrary URLs *not* produced by config-generating APIs for development.
-
 Each {{FencedFrameConfig}} has:
 
+ * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=] or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
  * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>containerHeight</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
+
+<div algorithm>
+  The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
+  are:
+  
+  1. Let |config| be a newly constructed {{FencedFrameConfig}} object.
+
+  2. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
+
+  3. Return |config|.
+</div>
 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are to return [=this=]'s
@@ -1351,6 +1362,8 @@ Each {{FencedFrameConfig}} has:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
   
+  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
+
   1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
   1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
@@ -1375,6 +1388,8 @@ Each {{FencedFrameConfig}} has:
   Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
 
+  1. Initialize |value|'s [=fencedframeconfig/url=] to |serialized|.\[[Url]].
+  
   1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
 
   1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
