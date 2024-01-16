@@ -1024,8 +1024,8 @@ following [=struct/items=]:
   :: a non-negative valid floating point number
 </dl>
 
-An <dfn export for=fencedframetype>shared storage selectURL budget metadata reference</dfn> is a [=struct=] with
-the following [=struct/items=]:
+An <dfn export for=fencedframetype>shared storage selectURL budget metadata reference</dfn> is a [=struct=]
+with the following [=struct/items=]:
 
 <dl export dfn-for="shared storage selectURL budget metadata reference">
   : <dfn>origin</dfn>
