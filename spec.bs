@@ -1071,6 +1071,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="interest group descriptor">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
+    Note: This field is used only to implement Protected Audience's leaveAdInterestGroup().
+
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
@@ -1110,6 +1112,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="fenced frame reporting metadata">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
+    Note: This field is used only to implement event-level reporting.
+
   : <dfn>shared storage selectURL budget metadata</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="shared storage selectURL budget metadata">value</dfn>
@@ -1117,6 +1121,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
 
     : <dfn for="shared storage selectURL budget metadata">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
+
+    Note: This field is used only for Shared Storage selectURL.
 
   : <dfn>nested configs</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -1128,9 +1134,13 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
+
+     Note: This field is used only for Shared Storage selectURL.
   
   : <dfn>is ad component</dfn>
   :: A [=boolean=]. Defaulting to false.
+
+     Note: This field is used only for Protected Audience with event-level reporting.
 </dl>
   
   Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
