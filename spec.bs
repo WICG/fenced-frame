@@ -461,9 +461,11 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
        Note: This holds because when the element has been removed from the DOM, its removal steps
        immediately destroy the [=fenced navigable container/fenced navigable=].
 
-  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if the
-     given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, the given
+  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if
+     the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, and the given
      {{FencedFrameConfig}}'s [=fencedframeconfig/urn=] otherwise.
+
+  1. If |navigation url or urn| is failure, then return.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
@@ -1312,7 +1314,7 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Each {{FencedFrameConfig}} has:
 
- * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=] or null, initially null
+ * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=], failure, or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
  * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
@@ -1324,7 +1326,7 @@ Each {{FencedFrameConfig}} has:
   The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
   are:
   
-  1. Let |config| be a newly constructed {{FencedFrameConfig}} object.
+  1. Let |config| be a [=new=] {{FencedFrameConfig}} object.
 
   2. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
 
