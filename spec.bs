@@ -1795,8 +1795,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
   1. If |beacon data|'s [=automatic beacon data/once=] is true, set |config|'s [=fenced frame
-     config instance/fenced frame reporter=]'s [=fenced frame
-     reporter/automatic beacon data map=][|eventType|] to null.
+     config instance/fenced frame reporter=]'s
+     [=fenced frame reporter/automatic beacon data map=][|eventType|] to null.
 
   <wpt>
     /fenced-frame/automatic-beacon-anchor-click-handler.https.html
