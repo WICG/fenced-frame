@@ -2913,25 +2913,6 @@ directive wouldn't give web sites enough control over their CSP rules. Introduce
   /fenced-frame/embedder-csp-not-propagate.https.html
 </wpt>
 
-<h3 id=flexible-permissions-policy-changes>Flexible Permissions Policies</h3>
-
-<div algorithm>
-  A [=fenced frame config instance=] is considered to have a
-  <dfn for='fenced frame config instance'>fixed permissions policy</dfn> if its
-  [=fenced frame config instance/effective enabled permissions=] are not null.
-</div>
-
-<div algorithm>
-  A [=fenced frame config instance=] is considered to have a
-  <dfn for='fenced frame config instance'>flexible permissions policy</dfn> if its
-  [=fenced frame config instance/effective enabled permissions=] are null.
-</div>
-
-<div algorithm>
-  The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation`",
-  "`shared-storage`", or "`shared-storage-select-url`".
-</div>
-
 <h3 id=permissions-policy-changes>Permissions Policies</h3>
 
 *This introductory sub-section is non-normative.*
@@ -3018,6 +2999,25 @@ config instance/fixed permissions policy=] navigations:
 
 The patches in the below section "fence" the appropriate [[PERMISSIONS-POLICY]] and [[HTML]]
 algorithms to achieve the outcomes described in the above explanatory content.
+
+<h4 id=permissions-policy-definitions>Definitions</h4>
+
+<div algorithm>
+  A [=fenced frame config instance=] is considered to have a
+  <dfn for='fenced frame config instance'>fixed permissions policy</dfn> if its
+  [=fenced frame config instance/effective enabled permissions=] are not null.
+</div>
+
+<div algorithm>
+  A [=fenced frame config instance=] is considered to have a
+  <dfn for='fenced frame config instance'>flexible permissions policy</dfn> if its
+  [=fenced frame config instance/effective enabled permissions=] are null.
+</div>
+
+<div algorithm>
+  The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation`",
+  "`shared-storage`", or "`shared-storage-select-url`".
+</div>
 
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
