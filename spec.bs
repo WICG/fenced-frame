@@ -2521,6 +2521,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <div algorithm>
   To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
   
+  1. [=Assert=] these steps are running on |sourceDocument|'s [=event loop=].
+
   1. Let |automatic beacon data map| be a new empty [=Document/automatic beacon data map=].
   
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
@@ -2540,6 +2542,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
   1. Return |automatic beacon data map|.
+
+  Note: The returned map is meant to hold references to the original {{Document}}'s
+  [=Document/automatic beacon data map=]s that were used to build |automatic beacon data map|. These
+  are later modified in [=attempt to send an automatic beacon=] to clear out any beacon data with
+  [=automatic beacon data/once=] set to true.
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
