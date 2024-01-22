@@ -2913,24 +2913,50 @@ directive wouldn't give web sites enough control over their CSP rules. Introduce
   /fenced-frame/embedder-csp-not-propagate.https.html
 </wpt>
 
+<h3 id=flexible-permissions-policy-changes>Flexible Permissions Policies</h3>
+
+<div algorithm>
+  A [=fenced frame config instance=] is considered to have a
+  <dfn for='fenced frame config instance'>fixed permissions policy</dfn> if its
+  [=fenced frame config instance/effective enabled permissions=] are not null.
+</div>
+
+<div algorithm>
+  A [=fenced frame config instance=] is considered to have a
+  <dfn for='fenced frame config instance'>flexible permissions policy</dfn> if its
+  [=fenced frame config instance/effective enabled permissions=] are null.
+</div>
+
+<div algorithm>
+  The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation`",
+  "`shared-storage`", or "`shared-storage-select-url`".
+</div>
+
 <h3 id=permissions-policy-changes>Permissions Policies</h3>
 
 *This introductory sub-section is non-normative.*
 
-The [=policy-controlled features=] available to {{Document}}s inside of a <{fencedframe}> are
-determined exclusively by the [=fenced frame config=] that the <{fencedframe}> navigates to.
-Specifically, the [=fenced frame config=]'s [=fenced frame config/effective enabled permissions=]
-defines the exclusive list of [=policy-controlled features=] that will be enabled in the
-{{Document}} (all others will be disabled).
+The [=policy-controlled features=] available to {{Document}}s inside of a <{fencedframe}>, as well
+as the manner in which they are calculated, vary depending on how the [=fenced frame config=] that
+the <{fencedframe}> navigates to is constructed.
 
-During navigation, the [=fenced frame config=] [=instantiate a config|instantiates=] a [=browsing
-context/fenced frame config instance=] that is stored on the [=browsing context=] in the [=fenced
-navigable container/fenced navigable=]. This browsing context's [=browsing context/fenced frame
-config instance=]'s [=fenced frame config instance/effective enabled permissions=] is consulted
-[=Should navigation response to navigation request be blocked by Permissions Policy?|during
-navigation=]. A <{fencedframe}> navigation can only succeed if the [=Document/permissions policy=]
-for the navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that
-the [=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
+A {{FencedFrameConfig}} constructed through the web platform will be considered to have a [=fenced
+frame config instance/flexible permissions policy=], and the <{fencedframe}> it naviagtes will be
+allowed to inherit permissions as long as they are part of the [=fenced frame allowed permissions=]
+list. All other permissions-backed features will be disabled.
+
+A [=fenced frame config=] created through an API call that sets its [=fenced frame config/effective
+enabled permissions=] will be considered to have a [=fenced frame config instance/fixed permissions
+policy=], and the <{fencedframe}> it navigates to will have the [=fenced frame config/effective
+enabled permissions=] be the exclusive list of [=policy-controlled features=] that will be enabled
+in the {{Document}} (all others will be disabled).
+
+During a <{fencedframe}> navigation to a [=fenced frame config=] with a [=fenced frame config
+instance/fixed permissions policy=], it checks the [=fenced frame config/effective enabled
+permissions=] in the [=browsing context/fenced frame config instance=] stored in the [=browsing
+context=], and only allows the navigation if the [=Document/permissions policy=] for the
+navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that the
+[=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
 [=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
 is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
 
@@ -2942,7 +2968,8 @@ consideration of whether its [=navigation params/origin=] is [=same origin=] wit
 Therefore a feature can only be enabled inside of a <{fencedframe}> if its embedder *explicitly*
 delegates it via [=the special value *=] [=allowlist=].
 
-Considering all of the above, we get the following interesting implications:
+Considering all of the above, we get the following interesting implications for [=fenced frame
+config instance/fixed permissions policy=] navigations:
 
  * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
    config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
@@ -3013,47 +3040,57 @@ algorithms to achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm>
-  Create a new algorithm, called <dfn>Derive a permissions policy directly from a fenced frame
-  config instance</dfn>.
+  Create a new algorithm, called <dfn>Create a permissions policy for a fenced navigable</dfn>.
 
-  Given null or an [=element=] (|container|), this algorithm returns a new [=permissions policy=].
+  Given null or an [=element=] (|container|) and an [=origin=] (|origin|), this algorithm returns a
+  new [=Permissions Policy=].
 
-  1. Let |inherited policy| be a new [=ordered map=].
+  1. [=Assert=]: if not null, container is a [=fenced navigable container=].
 
-  1. Let |effective permissions| be an empty [=list=].
-  
   1. Let |fenced frame config| be |container|'s [=Node/node document=]'s [=navigable/active browsing
      context=]'s [=browsing context/fenced frame config instance=].
 
-  1. If |fenced frame config| is not null, and |fenced frame config|'s [=fenced frame config/
-     effective enabled permissions=] are not null, set |effective permissions| to
-     |fenced frame config|'s [=fenced frame config/effective enabled permissions=].
+  1. Let |inherited policy| be a new [=ordered map=].
 
-  1. [=list/For each=] |feature| [=supported features|supported=]:
+  1. If |fenced frame config| is not null and |fenced frame config| has a [=fenced frame config
+     instance/fixed permissions policy=], then:
 
-    1. If |effective permissions| [=list/contains=] |feature|, then set |inherited policy|[feature]
-       to "`Enabled`".
-       
-       Otherwise, set |inherited policy|[feature] to "`Disabled`".
+    1. [=list/For each=] |feature| [=supported features|supported=]:
 
+        1. If |fenced frame config|'s [=fenced frame config instance/effective enabled permissions=]
+           [=list/contains=] |feature|, then set |inherited policy|[feature] to "`Enabled`".
+
+           Otherwise, set |inherited policy|[feature] to "`Disabled`".
+
+        Note: While this doesn't take the <{fencedframe/allow}> attribute into consideration, it
+        will have already been checked by the time this is called because of [=Should navigation
+        response to navigation request be blocked by Permissions Policy?=]. Any policy specified in
+        <{fencedframe/allow}> that is too restrictive would have cause the fenced frame to not load,
+        and any policy that is more permissive than what is specified in the [=fenced frame
+        config/effective enabled permissions=] will be ignored.
+
+  1. Otherwise:
+
+    1. [=list/For each=] |feature| [=supported features|supported=]:
+
+      1. If |feature| matches one of the [=fenced frame allowed permissions=], then set
+        |inherited policy|[feature] to the result of running [$Define an inherited policy for
+        feature in container at origin$] given |feature|, |container|, and |origin|.
+
+         Otherwise, set |inherited policy|[feature] to "`Disabled`".
+    
   1. Let |policy| be a new [=permissions policy=], with [=permissions policy/inherited policy=]
-     |inherited policy| and [=permissions policy/declared policy=] a new [=ordered map=].
+     |inherited policy| and [=permissions policy/declared policy=] «[], []».
 
   1. Return |policy|.
 
-  Note: While this algorithm doesn't take the <{fencedframe/allow}> attribute into consideration, it
-  will have already been checked by the time this is called because of [=Should navigation response
-  to navigation request be blocked by Permissions Policy?=]. Any policy specified in
-  <{fencedframe/allow}> that is too restrictive would have cause the fenced frame to not load, and
-  any policy that is more permissive than what is specified in the [=fenced frame config/effective
-  enabled permissions=] will be ignored.
 </div>
 
 <div algorithm=create-permissions-policy>
   Modify the [$Create a Permissions Policy for a navigable$] algorithm:
 
   Given null or an [=element=] (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
-  |fenced| that defaults to false, this algorithm returns a new [=permissions policy=].
+  |match all| that defaults to false, this algorithm returns a new [=permissions policy=].
 
   Rewrite step 1 to read:
 
@@ -3065,7 +3102,7 @@ algorithms to achieve the outcomes described in the above explanatory content.
   4. [=list/For each=] |feature| [=supported features|supported=]:
 
      1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
-        container at origin$] on |feature|, |container|, |origin|, and |fenced|.
+        container at origin$] on |feature|, |container|, |origin|, and |match all|.
 
      1. Set <var ignore>inherited policy</var>[|feature|] to |isInherited|.
 </div>
@@ -3080,7 +3117,7 @@ algorithms to achieve the outcomes described in the above explanatory content.
   Rewrite step 1 to read:
 
   1. If |container| is a [=fenced navigable container=], then let |policy| be the result of running
-     [=derive a permissions policy directly from a fenced frame config instance=] given |container|.
+     [=create a permissions policy for a fenced navigable=] given |container| and |origin|.
 
      Otherwise, Let |policy| be the result of running [$Create a Permissions Policy for a
      navigable$] given |container| and |origin|.
@@ -3131,20 +3168,20 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
   1. Let |permissions policy| be the result of [$Create a Permissions Policy for a navigable|
      creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
-     and <var ignore>fenced</var> set to true.
+     and <var ignore>match all</var> set to true.
 
-     Note: This is almost identical to the [=permissions policy=] that will be [=derive a
-     permissions policy directly from a fenced frame config instance|created=] when the navigation
-     constructs the ultimate {{Document}} for this pending navigation. The difference is that this
-     algorithm, just like when it is called on iframes, will include all of the permissions
-     specified in the <{fencedframe/allow}> attribute, even if that permission isn't specified in
-     the [=fenced frame config=]'s [=fenced frame config/effective enabled permissions=]. We create
-     it now and run tests on it since this is the appropriate time to determine if a navigation will
-     fail, and then throw it away. If the navigation succeeds, it will be recreated and
-     unconditionally installed on the {{Document}}. However, the recreation will not include any
-     additional enabled permissions that are not included in the [=fenced frame config/effective
-     enabled permissions=], effectively locking the enabled permissions to only what is specified in
-     [=fenced frame config/effective enabled permissions=].
+     Note: This is almost identical to the [=permissions policy=] that will be [=create a
+     permissions policy for a fenced navigable|created=] when the navigation constructs the ultimate
+     {{Document}} for this pending navigation. The difference is that this algorithm, just like when
+     it is called on iframes, will include all of the permissions specified in the
+     <{fencedframe/allow}> attribute, even if that permission isn't specified in the [=fenced frame
+     config=]'s [=fenced frame config/effective enabled permissions=]. We create it now and run
+     tests on it since this is the appropriate time to determine if a navigation will fail, and then
+     throw it away. If the navigation succeeds, it will be recreated and unconditionally installed
+     on the {{Document}}. However, the recreation will not include any additional enabled
+     permissions that are not included in the [=fenced frame config/effective enabled permissions=],
+     effectively locking the enabled permissions to only what is specified in [=fenced frame
+     config/effective enabled permissions=].
 
   1. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
 
@@ -3160,22 +3197,22 @@ algorithms to achieve the outcomes described in the above explanatory content.
   read:
 
   Given a feature (|feature|), null or a [=navigable container=] (|container|), an [=origin=] for a
-  document in that container (|origin|), and an optional [=boolean=] |fenced| that defaults to
+  document in that container (|origin|), and an optional [=boolean=] |match all| that defaults to
   false, this algorithm returns the [=permissions policy/inherited policy=] for that feature.
   
   Rewrite step 3 to read:
 
   3. If the result of executing [$Is feature enabled in document for origin?$] on |feature|,
-     |container|'s [=Node/node document=], |origin|, and |fenced| is "Disabled", return
+     |container|'s [=Node/node document=], |origin|, and |match all| is "Disabled", return
      "Disabled".
 
   Note: We don't have to rewrite step 2, which also delegates to the same algorithm, to pass in the
-  |fenced| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
+  |match all| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
   |container|'s [=Node/node document=], not the {{Document}} hosted *inside* |container|.
 
   Rewrite step 7 to read:
 
-  7. If |fenced| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+  7. If |match all| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
      `'self'`, and |origin| is [=same origin=] with |container|'s [=Node/node document=]'s
      origin, return `"Enabled"`.
 </div>
@@ -3184,25 +3221,25 @@ algorithms to achieve the outcomes described in the above explanatory content.
   Modify the [$Is feature enabled in document for origin?$] algorithm to read:
 
   Given a feature (|feature|), a {{Document}} object (|document|), an [=url/origin=] (|origin|), and
-  an optional [=boolean=] |fenced| that defaults to false, this algorithm returns "`Disabled`" if
+  an optional [=boolean=] |match all| that defaults to false, this algorithm returns "`Disabled`" if
   |feature| should be considered disabled, and "`Enabled`" otherwise.
 
   Rewrite step 3 to read:
 
   3. If |feature| is present in |policy|'s [=permissions policy/declared policy=],
 
-    1. If |fenced| is false, and the [=allowlist=] for |feature| in |policy|'s [=permissions policy/
+    1. If |match all| is false, and the [=allowlist=] for |feature| in |policy|'s [=permissions policy/
        declared policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
 
-    1. Otherwise, if |fenced| is true, and the [=allowlist=] for |feature| in |policy|'s
+    1. Otherwise, if |match all| is true, and the [=allowlist=] for |feature| in |policy|'s
        [=permissions policy/declared policy=] is [=the special value *=], then return "`Enabled`".
 
     1. Otherwise, return "`Disabled`".
 
   Rewrite step 5 to read:
 
-  5. If |fenced| is false, |feature|'s [=policy-controlled feature/default allowlist=] is `'self'`,
-     and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
+  5. If |match all| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+     `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
 <wpt>
