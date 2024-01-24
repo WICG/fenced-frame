@@ -647,6 +647,31 @@ Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instan
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
 [=fenced navigable container/fenced navigable=].
 
+<h4 id=fenced-frame-config-use-cases>Use cases</h4>
+
+Rendering an ad created through an ad auction:
+
+An ad auction API runs an auction and determines a winning ad. Details about the winning ad must be
+hidden from the embedder, and the embedding context cannot be allowed to influence the environment
+of the <{fencedframe}>. Either of those will allow for information to flow across the fenced frame
+boundary, which can allow for colluding parties to join cross-site data and build a profile on the
+user. To prevent that, the API constructs a [=fenced frame config=] whose underlying [=URL=] is
+opaque to the embedding context. The [=fenced frame config=] is also constructed with restrictions
+on what the [=fenced frame config/container size=] and [=fenced frame config/content size=] of the
+frame must be and what the [=fenced frame config/effective enabled permissions|permissions policy=]
+of the frame must be, as those can be used as fingerprinting vectors.
+
+Displaying a personalized payment button:
+
+An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. This button includes the
+last 4 digits of the user's credit card number as is saved with the e-commerce platform. At first,
+the {{Document}} hosted in the <{fencedframe}> has no access to the data from the e-commerce
+platform, so information can flow in and out without compromising user privacy. Because of that, the
+fenced frame is constructed directly from the web platform using the {{FencedFrameConfig}}
+constructor. The {{Document}} can only access that credit card data once it turns off all network
+access, preventing the data from flowing out of the fenced frame and preventing it from being joined
+with cross-site data to build a user profile.
+
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
 We now establish some preliminary types:
