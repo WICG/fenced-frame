@@ -655,7 +655,7 @@ An ad auction API runs an auction and determines a winning ad. Details about the
 hidden from the embedder, and the embedding context cannot be allowed to influence the environment
 of the <{fencedframe}>. Either of those would allow for information to flow across the fenced frame
 boundary, which can allow for colluding parties to join cross-site data and build a profile on the
-user. To prevent that, the API constructs a [=fenced frame config=] whose underlying [=URL=] is
+user. To prevent that, the ad auction API constructs a [=fenced frame config=] whose underlying [=URL=] is
 opaque to the embedding context. The [=fenced frame config=] is also constructed with restrictions
 on what the [=fenced frame config/container size=] and [=fenced frame config/content size=] of the
 frame must be and what the [=fenced frame config/effective enabled permissions|permissions policy=]
