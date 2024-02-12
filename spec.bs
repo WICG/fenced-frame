@@ -655,22 +655,24 @@ An ad auction API runs an auction and determines a winning ad. Details about the
 hidden from the embedder, and the embedding context cannot be allowed to influence the environment
 of the <{fencedframe}>. Either of those would allow for information to flow across the fenced frame
 boundary, which can allow for colluding parties to join cross-site data and build a profile on the
-user. To prevent that, the ad auction API constructs a [=fenced frame config=] whose underlying [=URL=] is
-opaque to the embedding context. The [=fenced frame config=] is also constructed with restrictions
-on what the [=fenced frame config/container size=] and [=fenced frame config/content size=] of the
-frame must be and what the [=fenced frame config/effective enabled permissions|permissions policy=]
-of the frame must be, as those can be used as fingerprinting vectors.
+user. To prevent that, the ad auction API constructs a [=fenced frame config=] whose underlying
+[=fenced frame config/mapped url|URL=] is opaque to the embedding context. The [=fenced frame
+config=] is also constructed with restrictions on what the [=fenced frame config/container size=]
+and [=fenced frame config/content size=] of the frame must be and what the [=fenced frame
+config/effective enabled permissions|permissions policy=] of the frame must be, as those can be used
+as fingerprinting vectors.
 
 Displaying a personalized payment button:
 
-An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. This button includes the
-last 4 digits of the user's credit card number as is saved with the e-commerce platform. At first,
-the {{Document}} hosted in the <{fencedframe}> has no access to the data from the e-commerce
-platform, so information can flow in and out without compromising user privacy. Because of that, the
-fenced frame can be constructed directly from the web platform using the {{FencedFrameConfig}}
-constructor without compromising privacy. The {{Document}} can only access that credit card data once it turns off all network
+An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. At first, the {{Document}}
+hosted in the <{fencedframe}> has no 1p cookie/storage access, so information can freely flow in and
+out without risk of cross-site data joining. Because of that, the fenced frame can be constructed
+directly from the web platform using the {{FencedFrameConfig}} constructor without compromising
+privacy. The button at this point has no personalized data in it since it can't access the credit
+card data yet. The {{Document}} can only read that credit card data once it turns off all network
 access, preventing the data from flowing out of the fenced frame and preventing it from being joined
-with cross-site data to build a user profile.
+with cross-site data to build a user profile. Once it does that, the button will then display the
+last 4 digits of the user's credit card number as is saved with the e-commerce platform.
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
