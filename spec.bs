@@ -667,7 +667,7 @@ An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. This bu
 last 4 digits of the user's credit card number as is saved with the e-commerce platform. At first,
 the {{Document}} hosted in the <{fencedframe}> has no access to the data from the e-commerce
 platform, so information can flow in and out without compromising user privacy. Because of that, the
-fenced frame is constructed directly from the web platform using the {{FencedFrameConfig}}
+fenced frame can be constructed directly from the web platform using the {{FencedFrameConfig}}
 constructor. The {{Document}} can only access that credit card data once it turns off all network
 access, preventing the data from flowing out of the fenced frame and preventing it from being joined
 with cross-site data to build a user profile.
