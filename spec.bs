@@ -251,6 +251,9 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
       text: event-source; url: eligibility-event-source
       text: navigation-source; url: eligibility-navigation-source
       text: unset; url: eligibility-unset
+spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
+  type: dfn
+    text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
 </pre>
 
 <style>
@@ -652,27 +655,30 @@ Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instan
 Rendering an ad created through an ad auction:
 
 An ad auction API runs an auction and determines a winning ad. Details about the winning ad must be
-hidden from the embedder, and the embedding context cannot be allowed to influence the environment
-of the <{fencedframe}>. Either of those would allow for information to flow across the fenced frame
+hidden from the embedder, and the embedding context is not allowed to influence the environment of
+the <{fencedframe}>. Either of those would allow for information to flow across the fenced frame
 boundary, which can allow for colluding parties to join cross-site data and build a profile on the
-user. To prevent that, the ad auction API constructs a [=fenced frame config=] whose underlying
-[=fenced frame config/mapped url|URL=] is opaque to the embedding context. The [=fenced frame
-config=] is also constructed with restrictions on what the [=fenced frame config/container size=]
-and [=fenced frame config/content size=] of the frame must be and what the [=fenced frame
-config/effective enabled permissions|permissions policy=] of the frame must be, as those can be used
-as fingerprinting vectors.
+user. To prevent that, the ad auction API [=construct a pending fenced frame config|constructs=] a
+[=fenced frame config=] whose underlying [=fenced frame config/mapped url|URL=] is opaque to the
+embedding context. The [=fenced frame config=] is also constructed with restrictions on what the
+[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must be
+and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the frame
+must be, as those can be used as fingerprinting vectors.
 
 Displaying a personalized payment button:
 
-An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. At first, the {{Document}}
-hosted in the <{fencedframe}> has no 1p cookie/storage access, so information can freely flow in and
-out without risk of cross-site data joining. Because of that, the fenced frame can be constructed
-directly from the web platform using the {{FencedFrameConfig}} constructor without compromising
-privacy. The button at this point has no personalized data in it since it can't access the credit
-card data yet. The {{Document}} can only read that credit card data once it turns off all network
-access, preventing the data from flowing out of the fenced frame and preventing it from being joined
-with cross-site data to build a user profile. Once it does that, the button will then display the
-last 4 digits of the user's credit card number as is saved with the e-commerce platform.
+An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. The e-commerce site stores
+information about the user's credit card on the browser as first-party storage. At first, the
+{{Document}} hosted in the <{fencedframe}> has no first-party cookie/storage access, so information
+can freely flow in and out without risk of the credit card information being joined with cross-site
+data. Because of that, the fenced frame can be constructed directly from the web platform using the
+{{FencedFrameConfig}} constructor without compromising privacy. The button at this point has no
+personalized data in it since it can't access the credit card data yet. The {{Document}} can only
+read that credit card data once it turns off all network access, preventing the data from flowing
+out of the fenced frame and preventing it from being joined with cross-site data to build a user
+profile. Once it does that, the button will then display the last 4 digits of the user's credit card
+number, as it is saved in the browser, inside the first-party storage partition for the ecommerce
+platform's origin.
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
