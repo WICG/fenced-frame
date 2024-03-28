@@ -2947,7 +2947,8 @@ directive wouldn't give web sites enough control over their CSP rules. Introduce
   /fenced-frame/csp-fenced-frame-src-blocked.https.html
   /fenced-frame/csp-frame-src-allowed.https.html
   /fenced-frame/csp-frame-src-blocked.https.html
-  /fenced-frame/csp-transparent-url.https.html
+  /fenced-frame/csp-allowed-transparent.https.html
+  /fenced-frame/csp-blocked-transparent.https.html
   /fenced-frame/csp.https.html
   /fenced-frame/cspee.https.html
   /fenced-frame/embedder-csp-not-propagate.https.html
