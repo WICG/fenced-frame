@@ -1516,6 +1516,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
       undefined reportEvent(optional ReportEventType event = {});
       undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event = {});
       sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
+      Promise&lt;undefined&gt; disableUntrustedNetwork();
   };
 </pre>
 
@@ -1697,6 +1698,19 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     /fenced-frame/get-nested-configs.https.html
     /fenced-frame/config-cross-origin-apis.https.html
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Fence>disableUntrustedNetwork()</dfn> method steps are:
+
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If |instance| is null, then return.
+
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
+     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
+     return.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
