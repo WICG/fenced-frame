@@ -114,9 +114,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       text: browsing context group; url: browsing-context-group
       text: browsing context group set; url: browsing-context-group-set
-      text: creator base url; url: creator-base-url
       text: create a new browsing context and document; url: creating-a-new-browsing-context
       text: create a new browsing context group and document; url: creating-a-new-browsing-context-group
+      text: document base url; url: document-base-url
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
       text: system visibility state; url: system-visibility-state
@@ -1919,7 +1919,7 @@ is a [=boolean=], initially false.
       then:
 
   Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
-  document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
+  document's referrer|referrer=], [=Document/origin=], [=document base url=], [=Document/policy
   container=], across the fenced frame boundary.
 
 
