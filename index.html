@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="71ea5937e6ebd2fc12cf3d9030bfee0c586e9ca4" name="document-revision">
+  <meta content="b1c7abefa3d8f86ed94c263a3ac2f4ffa4d98ada" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-03-28">28 March 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-04-04">4 April 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2470,7 +2470,7 @@ is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="r
       <p>If <var>creator</var> is non-null and <var>embedder</var> is not a <code><a data-link-type="element" href="#elementdef-fencedframe" id="ref-for-elementdef-fencedframe②⑦">fencedframe</a></code> element,
 then:</p>
     </ul>
-    <p class="note" role="note"><span class="marker">Note:</span> This is because we need to ensure that we do not leak <var>creator</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#the-document&apos;s-referrer" id="ref-for-the-document&apos;s-referrer">referrer</a>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#creator-base-url" id="ref-for-creator-base-url">creator base url</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container" id="ref-for-concept-document-policy-container">policy
+    <p class="note" role="note"><span class="marker">Note:</span> This is because we need to ensure that we do not leak <var>creator</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#the-document&apos;s-referrer" id="ref-for-the-document&apos;s-referrer">referrer</a>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#document-base-url" id="ref-for-document-base-url">document base url</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container" id="ref-for-concept-document-policy-container">policy
   container</a>, across the fenced frame boundary.</p>
     <p>Add a substep to step 4 of this algorithm (that was modified above) that reads:</p>
     <ol start="4">
@@ -4145,7 +4145,6 @@ you can consult the following resources:</p>
      <li><span class="dfn-paneled" id="cf54ffeb">create a new browsing context group and document</span>
      <li><span class="dfn-paneled" id="e0e0e7bc">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="07ad3048">create navigation params by fetching</span>
-     <li><span class="dfn-paneled" id="ba57eee5">creator base url</span>
      <li><span class="dfn-paneled" id="53eede33">cross-origin isolation mode</span>
      <li><span class="dfn-paneled" id="f21d6b26">cross-origin-embedder-policy</span>
      <li><span class="dfn-paneled" id="2e493c47">cross-origin-opener-policy</span>
@@ -4154,6 +4153,7 @@ you can consult the following resources:</p>
      <li><span class="dfn-paneled" id="888d7c65">deserialization steps</span>
      <li><span class="dfn-paneled" id="d20bde85">determine navigation params policy container</span>
      <li><span class="dfn-paneled" id="5088ef15">document</span>
+     <li><span class="dfn-paneled" id="0c259df4">document base url</span>
      <li><span class="dfn-paneled" id="092de955">document state</span>
      <li><span class="dfn-paneled" id="06834943">dom anchor</span>
      <li><span class="dfn-paneled" id="317acf49">dom interface</span>
@@ -4928,7 +4928,6 @@ window.dfnpanelData['4861a5f1'] = {"dfnID": "4861a5f1", "url": "https://html.spe
 window.dfnpanelData['cf54ffeb'] = {"dfnID": "cf54ffeb", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#creating-a-new-browsing-context-group", "dfnText": "create a new browsing context group and document", "refSections": [{"refs": [{"id": "ref-for-creating-a-new-browsing-context-group"}], "title": "3.5.3. Nested traversables"}], "external": true};
 window.dfnpanelData['e0e0e7bc'] = {"dfnID": "e0e0e7bc", "url": "https://html.spec.whatwg.org/multipage/browsing-the-web.html#initialise-the-document-object", "dfnText": "create and initialize a document object", "refSections": [{"refs": [{"id": "ref-for-initialise-the-document-object"}], "title": "3.8.3. Actual navigation changes"}], "external": true};
 window.dfnpanelData['07ad3048'] = {"dfnID": "07ad3048", "url": "https://html.spec.whatwg.org/multipage/browsing-the-web.html#create-navigation-params-by-fetching", "dfnText": "create navigation params by fetching", "refSections": [{"refs": [{"id": "ref-for-create-navigation-params-by-fetching"}], "title": "3.4. Policy container inheritance"}, {"refs": [{"id": "ref-for-create-navigation-params-by-fetching\u2460"}], "title": "3.8.2. COOP, COEP, and cross-origin isolation"}, {"refs": [{"id": "ref-for-create-navigation-params-by-fetching\u2461"}], "title": "3.8.3. Actual navigation changes"}], "external": true};
-window.dfnpanelData['ba57eee5'] = {"dfnID": "ba57eee5", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#creator-base-url", "dfnText": "creator base url", "refSections": [{"refs": [{"id": "ref-for-creator-base-url"}], "title": "3.3. Modifications to creating browsing contexts"}], "external": true};
 window.dfnpanelData['53eede33'] = {"dfnID": "53eede33", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#bcg-cross-origin-isolation", "dfnText": "cross-origin isolation mode", "refSections": [{"refs": [{"id": "ref-for-bcg-cross-origin-isolation"}], "title": "3.8.2. COOP, COEP, and cross-origin isolation"}], "external": true};
 window.dfnpanelData['f21d6b26'] = {"dfnID": "f21d6b26", "url": "https://html.spec.whatwg.org/multipage/browsers.html#cross-origin-embedder-policy", "dfnText": "cross-origin-embedder-policy", "refSections": [{"refs": [{"id": "ref-for-cross-origin-embedder-policy"}], "title": "3.8.2. COOP, COEP, and cross-origin isolation"}], "external": true};
 window.dfnpanelData['2e493c47'] = {"dfnID": "2e493c47", "url": "https://html.spec.whatwg.org/multipage/browsers.html#cross-origin-opener-policy-2", "dfnText": "cross-origin-opener-policy", "refSections": [{"refs": [{"id": "ref-for-cross-origin-opener-policy-2"}], "title": "3.8.2. COOP, COEP, and cross-origin isolation"}], "external": true};
@@ -4937,6 +4936,7 @@ window.dfnpanelData['82529e79'] = {"dfnID": "82529e79", "url": "https://html.spe
 window.dfnpanelData['888d7c65'] = {"dfnID": "888d7c65", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps", "dfnText": "deserialization steps", "refSections": [{"refs": [{"id": "ref-for-deserialization-steps"}], "title": "2.3.5. The FencedFrameConfig interface"}], "external": true};
 window.dfnpanelData['d20bde85'] = {"dfnID": "d20bde85", "url": "https://html.spec.whatwg.org/multipage/browsers.html#determining-navigation-params-policy-container", "dfnText": "determine navigation params policy container", "refSections": [{"refs": [{"id": "ref-for-determining-navigation-params-policy-container"}, {"id": "ref-for-determining-navigation-params-policy-container\u2460"}], "title": "3.4. Policy container inheritance"}], "external": true};
 window.dfnpanelData['5088ef15'] = {"dfnID": "5088ef15", "url": "https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-document", "dfnText": "document", "refSections": [{"refs": [{"id": "ref-for-document-state-document"}], "title": "3.5.3. Nested traversables"}], "external": true};
+window.dfnpanelData['0c259df4'] = {"dfnID": "0c259df4", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#document-base-url", "dfnText": "document base url", "refSections": [{"refs": [{"id": "ref-for-document-base-url"}], "title": "3.3. Modifications to creating browsing contexts"}], "external": true};
 window.dfnpanelData['092de955'] = {"dfnID": "092de955", "url": "https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document-state", "dfnText": "document state", "refSections": [{"refs": [{"id": "ref-for-she-document-state"}, {"id": "ref-for-she-document-state\u2460"}], "title": "2.6. Automatic Reporting"}, {"refs": [{"id": "ref-for-she-document-state\u2461"}], "title": "3.4. Policy container inheritance"}, {"refs": [{"id": "ref-for-she-document-state\u2462"}, {"id": "ref-for-she-document-state\u2463"}], "title": "3.5.3. Nested traversables"}], "external": true};
 window.dfnpanelData['06834943'] = {"dfnID": "06834943", "url": "https://html.spec.whatwg.org/multipage/interaction.html#dom-anchor", "dfnText": "dom anchor", "refSections": [{"refs": [{"id": "ref-for-dom-anchor"}], "title": "3.7. Modifications to the focusing algorithms"}], "external": true};
 window.dfnpanelData['317acf49'] = {"dfnID": "317acf49", "url": "https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom", "dfnText": "dom interface", "refSections": [{"refs": [{"id": "ref-for-concept-element-dom"}], "title": "2. The fencedframe element"}], "external": true};
