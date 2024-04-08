@@ -146,9 +146,9 @@ The click listener API is broken into two parts:
 
 ### Changes to HTMLFencedFrameElement
 
-After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when a event with type `click` is fired in the embedded document’s DOM tree. In addition, the `onfencedtreeclick` property will be added to fenced frame elements to mirror other event listeners with this syntax. 
+After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when a event with type `click` is fired in the embedded document’s DOM tree. In addition, the `onfencedtreeclick` property will be added to `HTMLFencedFrameElement` to mirror other event listeners with this syntax. 
 
-To start, the spec draft will only support `fencedtreeclick`, but given that this API relies on existing DOM event listener specification, it would be trivial to support other `fencedtree*` events in the future.
+To start, the spec will only support `fencedtreeclick`, but given that this API relies on existing DOM event listener specification, it would be trivial to support other `fencedtree*` events in the future.
 
 The `fencedtreeclick` event listener callback will receive an event object, but it will contain the minimal amount of information necessary to handle the event. Specifically, it will obey the following rules:
 
@@ -157,7 +157,7 @@ The `fencedtreeclick` event listener callback will receive an event object, but 
 * It will be initialized with `bubbles = true` and `cancellable = false`.
 * All instances of the event object will be initialized with the same static timestamp value in order to mitigate timing side-channel attacks. The timestamp value of the DOM Event interface is a duration represented by `DOMHighResTimeStamp`, 
   so user agents can choose a static value to use, such as the Unix epoch.
-* The event' isTrusted field will be true, to indicate that the event is dispatched by the user agent.
+* The event's isTrusted field will be true, to indicate that the event is dispatched by the user agent.
 * All other attributes of the event object will have the default settings of a newly-constructed event object.
 * When the event object is dispatched, its target will always be the HTMLFencedFrameElement upon which the event listener was registered.
 
@@ -167,10 +167,10 @@ Note that specific click information like mouse coordinates are not included. Th
 
 Once the embedder has registered the `fencedtreeclick` handler on the fenced frame element, the event needs to be fired while handling the corresponding `click` event within the frame’s content document. This will be done via a new method on the `window.fence` interface, `window.fence.notifyEvent(triggering_event)`. This is different from the existing `reportEvent()` method:
 
-* `reportEvent()` communicates data about events to a remote URL and the corresponding beacon also includes data set via `registerAdBeacon` (called by Protected Audience worklets) in the destination URL.
+* `reportEvent()` communicates data about events to a remote URL and the corresponding beacon also includes data set via `registerAdBeacon` (called by Protected Audience worklets) in the destination URL. See the [Protected Audience API explainer](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#reportevent-preregistered-destination-url) for more details.
 * `notifyEvent()` communicates that an event occurred to the embedder, and nothing else. No extra information is added to the event. This API call also acts as an opt-in by the fenced frame document’s origin to allow sending the notification to the embedding site. 
 
-The function takes one argument, `triggering_event`, which is a `click` event object that the frame’s content is currently handling. In order to trigger the `fencedtreeclick` event in the embedder, this object’s `isTrusted` field must be true, the event must currently be dispatching, and the event’s type name must be `click`. These requirements guarantee that the `fencedtreeclick` event will only be fired by user-agent-generated clicks.
+The function takes one argument, `triggering_event`, which is a `click` event object that the frame’s content is currently handling. In order to trigger the `fencedtreeclick` event in the embedder, this object’s `isTrusted` field must be true, the event must currently be dispatching, and the event’s type name must be `click`. These requirements guarantee that the `fencedtreeclick` event will only be fired by user-agent-generated click events in response to user actually clicking as opposed to a script-generated event.
 
 Here's an example of how `window.fence.notifyEvent()` should be used:
 
