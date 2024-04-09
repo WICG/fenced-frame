@@ -1143,11 +1143,14 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
-  
+
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]. Defaulting to false.
+  :: A [=boolean=], defaults to false.
+
+  : <dfn>can disable untrusted network</dfn>
+  :: A [=boolean=], defaults to true.
 </dl>
-  
+
   Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
   used to construct ads composed of multiple pieces. See the <a
   href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
@@ -1196,8 +1199,14 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
-  
+
   : <dfn>is ad component</dfn>
+  :: A [=boolean=]
+
+  : <dfn>can disable untrusted network</dfn>
+  :: A [=boolean=]
+
+  : <dfn>has disabled untrusted network</dfn>
   :: A [=boolean=], initially false.
 </dl>
 
@@ -1280,9 +1289,15 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
-    
+
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
+
+    : [=fenced frame config instance/can disable untrusted network=]
+    :: |config|'s [=fenced frame config/can disable untrusted network=]
+
+    : [=fenced frame config instance/has disabled untrusted network=]
+    :: false
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1708,9 +1723,32 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
+  1. If |instance|'s [=fenced frame config instance/can disable untrusted network=] is false, then
+     return.
+
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
      return.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
+
+     1. <span class=XXX>TODO: Let |credentiallessNonce| be the page credentialless nonce.</span>
+
+     1. <span class=XXX>TODO: Actually revoke the partition nonces |fencedFrameNonce| and
+        |credentiallessNonce|.</span>
+
+     1. <span class=XXX>TODO: Wait on all nested fenced frames to disable network too.</span>
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with {{undefined}}.
+
+  1. Return |p|.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
