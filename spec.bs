@@ -74,6 +74,19 @@ spec: url; for:/; type: dfn; text: url
     "deliveredBy": [
       "https://wicg.io/"
     ]
+  },
+  "anonymous-iframe": {
+    "authors": [
+      "Arthur Sonzogni",
+      "Camille Lamy"
+    ],
+    "href": "https://wicg.github.io/anonymous-iframe/",
+    "title": "Iframe credentialless",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
   }
 }
 </pre>
