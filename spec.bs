@@ -1743,6 +1743,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. <span class=XXX>TODO: Actually revoke the partition nonces |fencedFrameNonce| and
         |credentiallessNonce|.</span>
 
+     1. Set |instance|'s [=fenced frame config instance/has disabled untrusted network=] to true.
+
      1. <span class=XXX>TODO: Wait on all nested fenced frames to disable network too.</span>
 
      1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
