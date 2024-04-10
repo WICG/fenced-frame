@@ -154,7 +154,6 @@ The `fencedtreeclick` event listener callback will receive an event object, but 
 
 * It will be fired using the base DOM Event constructor, rather than a new event subclass.
 * It will be initialized with a type parameter of “fencedtreeclick”
-* It will be initialized with `bubbles = true` and `cancellable = false`.
 * All instances of the event object will be initialized with the same static timestamp value in order to mitigate timing side-channel attacks. The timestamp value of the DOM Event interface is a duration represented by `DOMHighResTimeStamp`, 
   so user agents can choose a static value to use, such as the Unix epoch.
 * The event's isTrusted field will be true, to indicate that the event is dispatched by the user agent.
