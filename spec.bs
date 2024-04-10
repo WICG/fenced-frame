@@ -252,6 +252,8 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
       text: event-source; url: eligibility-event-source
       text: navigation-source; url: eligibility-navigation-source
       text: unset; url: eligibility-unset
+    for: request
+      text: trigger verification metadata; url: request-trigger-verification-metadata
 spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
   type: dfn
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
@@ -893,9 +895,9 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         1. Otherwise, set |attributionReportingEligibility| to "<code>[=eligibility/event-source=]</code>".
 
         1. Set |processResponse| to these steps given a [=response=] |response|:
-
+           1. Let |fenced| be true.
            1. Run [=process an attribution eligible response=] with |event|'s
-              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, and |response|.
+              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, |fenced|, |request|'s [=request/trigger verification metadata=], and |response|.
 
         1. Set |useParallelQueue| to true.
 
