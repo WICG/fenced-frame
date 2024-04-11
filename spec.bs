@@ -75,7 +75,7 @@ spec: url; for:/; type: dfn; text: url
       "https://wicg.io/"
     ]
   },
-  "anonymous-iframe": {
+  "iframe-credentialless": {
     "authors": [
       "Arthur Sonzogni",
       "Camille Lamy"
@@ -3303,6 +3303,10 @@ at the expense of some utility.
     /fenced-frame/scroll-into-view.https.html
   </wpt>
 </div>
+
+<h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
+
+The [[!IFRAME-CREDENTIALLESS]] specification
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
 
