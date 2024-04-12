@@ -139,23 +139,146 @@ Certain privacy preserving aggregated reports can be allowed from the fenced fra
 
 ## Click listener API
 
-The exact surface of the API is still being designed, but at a high level, there will be 2 parts to this API surface: 
+The click listener API is broken into two parts:
 
+*   The embedding context will invoke `addEventListener()` on the `HTMLFencedFrameElement` to listen for a click event on the fenced frame.
+*   A script inside the fenced frame tree will invoke a new method on `window.fence`, which will trigger the embedding context’s click event listener.
 
+### Changes to HTMLFencedFrameElement
 
-*   The embedding context will invoke an API on the fenced frame element to listen for a click event on the fenced frame.
-*   An API that a script inside the fenced frame tree can invoke which will trigger the embedding context’s click event listener.
+After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when an event with type `click` is fired in the embedded document’s DOM tree. A new [event handler](https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-attributes) named `onfencedtreeclick` will also be exposed on all HTML elements, Document objects, and Window objects, to allow fenced frames' parent elements to listen for `fencedtreeclick` events via the `onfencedtreeclick` attribute as well.
 
+To start, the spec will only support `fencedtreeclick`, but given that this API relies on the existing DOM event listener specification, it would be trivial to support other `fencedtree*` events in the future.
+
+The `fencedtreeclick` event listener callback will receive an event object, but it will contain the minimal amount of information necessary to handle the event. Specifically, it will obey the following rules:
+
+* It will be fired using the base DOM Event constructor, rather than a new event subclass.
+* It will be initialized with a type parameter of `'fencedtreeclick'`
+* All instances of the event object will be initialized with the same static timestamp value in order to mitigate timing side-channel attacks. The timestamp value of the DOM Event interface is a duration represented by `DOMHighResTimeStamp`, 
+  so user agents can choose a suitable value to use, such as the Unix epoch.
+* The event's `isTrusted` field will be true, to indicate that the event is dispatched by the user agent.
+* All other attributes of the event object will have the default settings of a newly-constructed event object.
+* When the event object is dispatched, its target will always be the `HTMLFencedFrameElement` upon which the event listener was registered.
+
+Note that specific click information like mouse coordinates are not included. These rules ensure that the event object doesn’t leak information from or about the embedded content.
+
+### Changes to window.fence
+
+Once the embedder has registered the `fencedtreeclick` handler on the fenced frame element, the event needs to be fired while handling the corresponding `click` event within the frame’s content document. This will occur via a new method on the `window.fence` interface, `window.fence.notifyEvent(triggering_event)`. This is different from the existing `reportEvent()` method:
+
+* `reportEvent()` communicates data about events to a remote URL, and the corresponding beacon also includes data set via `registerAdBeacon` (called by Protected Audience worklets) in the destination URL. See the [Protected Audience API explainer](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#reportevent-preregistered-destination-url) for more details.
+* `notifyEvent()` communicates that an event occurred to the embedder, and nothing else. No extra information is added to the event. This API call also acts as an opt-in by the fenced frame document’s origin to allow sending the notification to the embedding site. 
+
+The function takes one argument, `triggering_event`, which is a `click` event object that the frame’s content is currently handling. In order to trigger the `fencedtreeclick` event in the embedder, this object’s `isTrusted` field must be true, the event must currently be dispatching, and the event’s type name must be `click`. These requirements guarantee that the `fencedtreeclick` event will only be fired by user-agent-generated click events in response to user actually clicking as opposed to a script-generated event.
+
+Here's an example of how `window.fence.notifyEvent()` should be used:
+
+```javascript 
+// In the embedder:
+
+// Make a fenced frame
+let fencedframe = ...
+
+fencedframe.addEventListener('fencedtreeclick', () => {
+    alert('hello world!');
+});
+
+// In the embedded content:
+
+document.body.addEventListener('click', (e) => {} {
+    // Fire a "fencedtreeclick" event at the embedder.
+    window.fence.notifyEvent(e);
+});
+```
+
+The `notifyEvent()` method will not be available in iframes (same-origin or cross-origin), and will only be available in the fenced frame root’s document. 
 
 ### Click Privacy considerations
 
 Since this is exfiltrating some information (that a click happened) outside the fenced frame, we will need to consider the following privacy considerations:
 
-
-
-*   The click event that is notified to the embedding frame should not carry any additional data like the click coordinates.
 *   A possible attack using multiple fenced frames: an embedder creates `n` fenced frames, which all disable network and then determine (by predetermined behavior, or through communication over shared storage) which one of them should display nonempty content. Then if a user clicks on the only nonempty fenced frame, this exfiltrates log(n) bits of information through the click notification. Mitigating this will require some rate limits on the number of fenced frames on a page that are allowed to read from shared storage. This is similar to [shared storage’s existing rate limits](https://github.com/WICG/shared-storage#:~:text=per%2Dsite%20(the%20site%20of%20the%20Shared%20Storage%20worklet)%20budget). 
 *   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/). 
+
+
+## Code Example
+
+Now let's take a look at how shared storage, revocation of untrusted network access, and the click listener API can be combined in a real-world example.
+
+This example demonstrates how a third-party payment provider (examplepay.com) might embed a personalized payment button onto a merchant's site. First, the payment provider stores card information in shared storage when a user visits their site in a first-party context. Later, a merchant site uses the provider's API to embed a personalized button, which is rendered in a fenced frame. The fenced frame disables untrusted network access, reads the card information from shared storage, and sets up a click handler on the button to initiate the payment flow.
+
+```javascript
+// When a user navigates to “examplepay.com” and registers their credit card, the last
+// four digits of their card are written to Shared Storage. 
+
+// On https://examplepay.com
+async function registerCard() {
+  // Prepare HTTP request with user-provided card infomation. 
+  let request = createCardRegistrationRequest({number: 'XXXX XXXX XXXX 1234',  
+    expDate: 'MM/YY', ...});
+
+  // Register the card information with examplepay.com.
+  let response = await fetch(request);
+
+  // If the card was registered successfully, write the last 4 digits of the
+  // card number to Shared Storage for origin "examplepay.com." The data to
+  // write could come from the response body, a 1p cookie in a response header,
+  // or somewhere else.
+  if (response.status === 200) {
+    let body = await response.json()
+    await window.sharedStorage.set('last4', body.last4);
+    console.assert(body.last4 === '1234');
+  }
+}
+
+// Once the value has been written to Shared Storage, it can later be read inside a
+// fenced frame, but only when that frame is same-origin to examplepay.com and has
+// its network access restricted. Here’s what that would look like on a merchant page:
+
+// On merchant page
+let example_pay_button = examplePayAPI.createButton();
+document.body.appendChild(example_pay_button);
+
+// In examplePayAPI
+function createButton() {
+  let fenced_frame = document.createElement('fencedframe');
+  // Create a fenced frame config using a URL directly instead of a config-generating 
+  // API like Protected Audience or sharedStorage.selectURL(). Note that the URL is 
+  // same-origin to the site where the card was first registered.
+  fenced_frame.config = new FencedFrameConfig('https://examplepay.com/make_button');
+
+  // Registering a "fencedtreeclick" event handler on the fenced frame element allows
+  // it to respond to a "click" event that fires inside the frame's content.
+  fenced_frame.addEventListener('fencedtreeclick', () => {
+    startPaymentFlow();
+  });
+  return fenced_frame;
+}
+
+// In the "https://examplepay.com/make_button" fenced frame document
+function personalizeButton () {
+  // By waiting for the page to finish loading, we can ensure that there's
+  // no additional JS waiting to execute before revoking network.
+  window.onload = async () => {
+    // First, disable untrusted network access in the fenced frame.
+    await window.fence.disableUntrustedNetwork();
+
+    // Read the last four digits of the card from Shared Storage 
+    // and render them in a button.
+    b = document.createElement('button');
+    b.textContent = await window.sharedStorage.get('last4');         
+
+    // Tell the embedder that the button was clicked, so that the payment flow can be
+    // initiated. This will fire a "fencedtreeclick" event at the fenced frame element
+    // in the embedder, which we previously registered a handler for.
+    b.addEventListener('click', (e) => {
+      window.fence.notifyEvent(e);
+    });
+
+    document.body.appendChild(b);
+  }
+}
+```
 
 
 ## Privacy considerations
@@ -205,7 +328,6 @@ _“We had a long discussion about how the shape of this, changing the relations
 
 _We brainstormed along the lines of a site presenting user-generated content in an iFrame, and the payments processes. Have you explored use cases outside the ones you're citing? And if so, what overlaps are you finding?”_
 
-
 ## Alternatives considered
 
 **Alternatives considered: Cookies**
@@ -225,8 +347,6 @@ The benefits of using cookies for this solution are the following:
 *   If this solution applies to any 1p cookie then it will have the side effect of the user’s personalized data being sent on the network for every request. To avoid that, there will need to be a new attribute introduced, say “fenced”, so that they are not sent on the network and are only accessible inside a fenced frame. As opposed to the shared storage approach being primarily an API enhancement, this will also require enhancement to the cookies, by adding the “fenced” attribute. The getter code and spec will then need to handle the attribute separately such that it isn’t accessible inside an iframe. Also, the setter should not be accessible inside the FF.
 *   The cookies being a default network concept does not align well with this change where the “fenced” cookies have to be JS-only.
 *   Fenced frames by default have a unique and ephemeral partition for cookies and with this change, a given cookie’s value before and after the API resolving will be different, which might lead to confusion. Alternatively, cookie access in the FF before the transition can be blocked.
-
- 
 
 **Alternatives considered: Local Storage**
 
