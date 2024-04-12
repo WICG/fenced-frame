@@ -146,7 +146,7 @@ The click listener API is broken into two parts:
 
 ### Changes to HTMLFencedFrameElement
 
-After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when an event with type `click` is fired in the embedded document’s DOM tree. In addition, the `onfencedtreeclick` property will be added to `HTMLFencedFrameElement` to mirror other event listeners with this syntax. 
+After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when an event with type `click` is fired in the embedded document’s DOM tree. A new [event handler](https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-attributes) named `onfencedtreeclick` will also be exposed on all HTML elements, Document objects, and Window objects, to allow for fenced frames and their parent elements to listen for `fencedtreeclick` events.
 
 To start, the spec will only support `fencedtreeclick`, but given that this API relies on the existing DOM event listener specification, it would be trivial to support other `fencedtree*` events in the future.
 
