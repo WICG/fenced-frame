@@ -27,5 +27,5 @@ The above is an example of a scenario where user id on A and user’s informatio
 
 ## Mitigations
 
-These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [Gnatcatcher](https://github.com/bslassey/ip-blindness), or could have additional specific mitigations for fenced frames such as ad rendering in which all network-loaded resources come from a trusted CDN that does not keep logs of the resources it serves. The privacy model and browser trust mechanism for such a CDN would require further work.
+These issues are not unique to fenced frames and also exist in cross-site navigations today so they could either depend on future solutions to these for cross-site navigations e.g. [IP Protection](https://github.com/GoogleChrome/ip-protection/), or could have additional specific mitigations for fenced frames such as ad rendering in which all network-loaded resources come from a trusted CDN that does not keep logs of the resources it serves. The privacy model and browser trust mechanism for such a CDN would require further work.
 
