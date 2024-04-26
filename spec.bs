@@ -1851,17 +1851,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=navigable=].
   
-  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then
-     throw a {{SecurityError}} {{DOMException}}.
+  1. If any of the following conditions are met, throw a {{SecurityError}} {{DOMException}}:
 
-  1. If |event| is null, then throw a {{SecurityError}} {{DOMException}}.
-  
-  1. If |event|'s {{Event/isTrusted}} is false, then throw a {{SecurityError}} {{DOMException}}.
-  
-  1. If |event|'s [=Event/dispatch flag=] is unset, then throw a {{SecurityError}} {{DOMException}}.
+      1. |navigable| is not a [=fenced navigable container/fenced navigable=].
 
-  1. If |event|'s  {{Event/type}} is not "fencedtreeclick", throw a {{SecurityError}} 
-     {{DOMException}}.
+      1. |event| is null.
+  
+      1. |event|'s {{Event/isTrusted}} is false.
+  
+      1. |event|'s [=Event/dispatch flag=] is unset.
+
+      1. |event|'s  {{Event/type}} is not "fencedtreeclick".
   
   1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
 
