@@ -1145,10 +1145,10 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   :: null, or a [=string=]
   
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]. Defaulting to false.
+  :: A [=boolean=], initially false.
 
   : <dfn>cross-origin reporting allowed</dfn>
-  :: A [=boolean=]. Defaulting to false.
+  :: A [=boolean=], initially false.
 </dl>
   
   Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
@@ -1204,7 +1204,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   :: A [=boolean=], initially false.
 
   : <dfn>cross-origin reporting allowed</dfn>
-  :: A [=boolean=]. Defaulting to false.
+  :: A [=boolean=], initially false.
 </dl>
 
 <div algorithm>
@@ -1499,10 +1499,11 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   };
 
   dictionary FenceEvent {
-    // This dictionary has two mutually exclusive modes:
-
-    // When reporting to a preregistered destination (specified by enum), the
-    // following properties are used:
+    // This dictionary has two mutually exclusive modes that aren't represented as
+    // distinct IDL types due to distinguishability issues:
+    //
+    // When reporting to a preregistered destination (specified by enum), the following
+    // properties are used:
     DOMString eventType;
     DOMString eventData;
     sequence&lt;FenceReportingDestination&gt; destination;
@@ -1517,12 +1518,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
     // When setting event data to be used later in an automatic beacon, the
     // following properties are used:
-    // Determines if the beacon data will be used for only the next automatic
-    // beacon event, or if it will be reused for all subsequent automatic beacons.
     boolean once = false;
 
-    // When reporting to a custom destination URL (with substitution of macros
-    // defined by the buyer), the following property is used:
+    // When reporting to a custom destination URL (with substitution of macros defined by
+    // the Protected Audience buyer), the following property is used:
     USVString destinationURL;
   };
 
@@ -2693,11 +2692,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
          |sharedStorageContext|.
 
-      1. If |response| is non-null, set |config|'s [=fenced frame config/cross-origin reporting
-         allowed=] to the result of running [=header list/get a structured field value=] on
-         |response|'s [=response/header list=] given
-         "<code>Allow-Cross-Origin-Event-Reporting</code>" and "`item`".
-
       1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
          config=] to |config|.
 
@@ -2784,6 +2778,12 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
        Note: This is because embedder-initiated navigations (indicated by |navigationParams|'s
        [=navigation params/fenced frame config instance=] being non-null) always cause a
        [[#bcg-swap]].
+
+    1. Set |navigationParams|'s [=navigation params/fenced frame config instance=]'s [=fenced frame
+       config/cross-origin reporting allowed=] to the result of running [=header list/get a
+       structured field value=] on |navigationParams|'s [=navigation params/response=]'s
+       [=response/header list=] given "<code>Allow-Cross-Origin-Event-Reporting</code>" and
+       "`item`".
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
