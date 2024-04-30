@@ -1549,7 +1549,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |event| is a {{DOMString}}:
 
-     1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
+     1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
         |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
         origin=], then return.
   
@@ -1562,7 +1562,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. If all of the following conditions are true:
 
-        * the [=relevant settings object=]'s [=environment settings object/origin=] and
+        * [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
           |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
           origin=];
         * either |event|'s {{FenceEvent/crossOriginExposed}} is false or |instance|'s
@@ -1652,9 +1652,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     return.
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+     origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
@@ -1688,9 +1688,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     return.
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+     origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
 
