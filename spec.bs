@@ -117,7 +117,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: create a new browsing context and document; url: creating-a-new-browsing-context
       text: create a new browsing context group and document; url: creating-a-new-browsing-context-group
       text: document base url; url: document-base-url
-      text: fully active; url: fully-active
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
       text: system visibility state; url: system-visibility-state
@@ -165,7 +164,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
-      text: transient activation; url: transient-activation 
       text: activation; url: activation
       text: click focusable; url: click-focusable
       text: focusable area; url: focusable-area
@@ -1847,27 +1845,27 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
 
-  1. [=Assert=]: [=this=]'s {{Document}} is [=fully active=].
+  1. [=Assert=]: [=this=]'s {{Document}} is [=Document/fully active=].
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=navigable=].
   
   1. If any of the following conditions are met, throw a {{SecurityError}} {{DOMException}}:
 
-      1. |navigable| is not a [=fenced navigable container/fenced navigable=].
+      * |navigable| is not a [=fenced navigable container/fenced navigable=];
 
-      1. |event| is null.
+      * |event| is null;
   
-      1. |event|'s {{Event/isTrusted}} is false.
+      * |event|'s {{Event/isTrusted}} is false;
   
-      1. |event|'s [=Event/dispatch flag=] is unset.
+      * |event|'s [=Event/dispatch flag=] is unset;
 
-      1. |event|'s  {{Event/type}} is not "fencedtreeclick".
+      * |event|'s {{Event/type}} is not <code>[=fencedtreeclick=]</code>
   
   1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
 
   1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
 
-  1. [=Fire an event=] named "fencedtreeclick" at |navigable|'s 
+  1. [=Fire an event=] named <code>[=fencedtreeclick=]</code> at |navigable|'s 
      [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}}
      attributes to `true`. When running the 
      <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, 
@@ -3001,11 +2999,12 @@ navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
 
 <h3 id=events>Events</h3>
 
-The {{Fence/notifyEvent}} method of the {{Fence}} interface introduces a new event type, `fencedtreeclick`.
+The {{Fence/notifyEvent}} method of the {{Fence}} interface introduces a new event type, <code><dfn>fencedtreeclick</dfn></code>.
 
-The [=event handlers on elements, Document objects, and Window objects=] section of [[HTML]] is modified to 
-include a new row. The [=event handler=] name is `onfencedtreeclick`, and the [=event handler event type=] is
-`fencedtreeclick`.
+The <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
+event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified to 
+include a new row. The [=event handler=] name is <code>onfencedtreeclick</code>, and the [=event handler event type=] is
+<code>[=fencedtreeclick=]</code>.
 
 The {{GlobalEventHandlers}} interface is modified as follows:
 
