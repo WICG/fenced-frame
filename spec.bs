@@ -106,6 +106,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
+      text: event handler content attributes which may be specified on any HTML element; url: global-attributes:event-handler-content-attributes
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -355,6 +356,14 @@ dl, dd {
   background: white;
   border: solid #D50606;
 }
+
+/* Table styling definitions from https://resources.whatwg.org/standard.css */
+table { border-collapse: collapse; border-style: hidden hidden none hidden; margin: 1.25em 0; }
+table thead, table tbody { border-bottom: solid; }
+table tbody th { text-align: left; }
+table tbody th:first-child { border-left: solid; }
+table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
+
 </style>
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
@@ -1845,7 +1854,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
 
-  1. [=Assert=]: [=this=]'s {{Document}} is [=Document/fully active=].
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=navigable=].
   
@@ -1859,7 +1868,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   
       * |event|'s [=Event/dispatch flag=] is unset;
 
-      * |event|'s {{Event/type}} is not <code>[=fencedtreeclick=]</code>
+      * |event|'s {{Event/type}} is not <code>click</code>
   
   1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
 
@@ -2999,12 +3008,52 @@ navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
 
 <h3 id=events>Events</h3>
 
-The {{Fence/notifyEvent}} method of the {{Fence}} interface introduces a new event type, <code><dfn>fencedtreeclick</dfn></code>.
+<h4 id=fencedtreeclick-header><code>fencedtreeclick</code> event type</h4>
+The <a href="https://html.spec.whatwg.org/C#events-2">Events</a> table in the
+<a href="https://html.spec.whatwg.org/multipage/indices.html">Index</a> section of [[HTML]] is
+modified to include a new row.
 
-The <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
-event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified to 
-include a new row. The [=event handler=] name is <code>onfencedtreeclick</code>, and the [=event handler event type=] is
-<code>[=fencedtreeclick=]</code>.
+<table>
+  <thead>
+    <tr>
+      <th>Event</th> 
+      <th>Interface</th> 
+      <th>Interesting targets</th> 
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn export><code>fencedtreeclick</code></dfn></td> 
+      <td>{{Event}}</td> 
+      <td>Elements</td>
+      <td>
+        Fired at a <{fencedframe}> element when its contained content calls {{Fence/notifyEvent}}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id=onfencedtreeclick-header><code>onfencedtreeclick</code> event handler</h4>
+The table in the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
+event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified 
+to include a new row. The [=event handler=] name is <code>onfencedtreeclick</code>, and the 
+[=event handler event type=] is <code>fencedtreeclick</code>.
+
+<table>
+  <thead>
+    <tr>
+      <th>[=Event handler=]</th> 
+      <th>[=Event handler event type=]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn export><code>onfencedtreeclick</code></dfn></td>
+      <td><code>[=fencedtreeclick=]</code></td>
+    </tr>
+  </tbody>
+</table>
 
 The {{GlobalEventHandlers}} interface is modified as follows:
 
@@ -3013,6 +3062,11 @@ The {{GlobalEventHandlers}} interface is modified as follows:
     attribute EventHandler onfencedtreeclick;
   };
 </pre>
+
+Additionally, the list of [=event handler content attributes which may be specified on any HTML element=] 
+in [[HTML]] is modified to include a new row:
+
+* [=onfencedtreeclick=]
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
