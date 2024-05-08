@@ -2495,6 +2495,24 @@ container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
 
 </div>
 
+<h4 id=allow-automatic-beacons>The
+\`<a http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></a>\` HTTP response header</h4>
+
+A {{Document}} that is not [=same origin=] with its [=fenced frame config instance=]'s [=fenced
+frame config instance/mapped url=] can opt into sending an automatic beacon when it navigates by
+using the <dfn http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></dfn> HTTP response
+header. This header is a [=structured header=] whose value must be either the [=string=] "true" or
+"false".
+
+<h4 id=allow-cross-origin-reporting>The
+\`<a http-header><code>Allow-Cross-Origin-Event-Reporting</code></a>\` HTTP response header</h4>
+
+A {{Document}} that is not [=same origin=] with its [=fenced frame config instance=]'s [=fenced
+frame config instance/mapped url=] can opt into cross-origin {{Document}}s in [=child navigables=]
+sending {{Fence/reportEvent()}} beacons by using the <dfn
+http-header><code>Allow-Cross-Origin-Event-Reporting</code></dfn> HTTP response header. This header
+is a [=structured header=] whose value must be either the [=string=] "true" or "false".
+
 <h4 id=coop-coep>COOP, COEP, and cross-origin isolation</h4>
 
 Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Policy</code></a>\`
@@ -2780,10 +2798,10 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
        [[#bcg-swap]].
 
     1. Set |navigationParams|'s [=navigation params/fenced frame config instance=]'s [=fenced frame
-       config/cross-origin reporting allowed=] to the result of running [=header list/get a
+       config/cross-origin reporting allowed=] to true if the result of running [=header list/get a
        structured field value=] on |navigationParams|'s [=navigation params/response=]'s
-       [=response/header list=] given "<code>Allow-Cross-Origin-Event-Reporting</code>" and
-       "`item`".
+       [=response/header list=] given "[:Allow-Cross-Origin-Event-Reporting</code>:]" and
+       "`item`" is "true", false otherwise.
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
@@ -2792,11 +2810,11 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
   10. Let |automaticBeaconsAllowed| be the result of running [=header list/get a structured field
       value=] on |navigationParams|'s [=navigation params/response=]'s [=response/header list=]
-      given "<code>Allow-Fenced-Frame-Automatic-Beacons</code>" and "`item`".
+      given "[:Allow-Fenced-Frame-Automatic-Beacons:]" and "`item`".
   
   Further rewrite step 10 (now step 12) to return a new {{Document}} with an additional parameter:
   : [=Document/automatic beacons allowed=]
-  :: |automaticBeaconsAllowed|
+  :: true if |automaticBeaconsAllowed| is "true", false otherwise.
 </div>
 
 <span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
