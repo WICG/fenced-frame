@@ -1351,9 +1351,9 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
   
   1. Let |config| be a [=new=] {{FencedFrameConfig}} object.
 
-  2. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
+  1. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
 
-  3. Return |config|.
+  1. Return |config|.
 </div>
 
 <div algorithm="containerWidth getter">
