@@ -2507,9 +2507,8 @@ header. This header is a [=structured header=] whose value must be either the [=
 <h4 id=allow-cross-origin-reporting>The
 \`<a http-header><code>Allow-Cross-Origin-Event-Reporting</code></a>\` HTTP response header</h4>
 
-A {{Document}} that is not [=same origin=] with its [=fenced frame config instance=]'s [=fenced
-frame config instance/mapped url=] can opt into cross-origin {{Document}}s in [=child navigables=]
-sending {{Fence/reportEvent()}} beacons by using the <dfn
+A {{Document}} loaded with a [=fenced frame config instance=] can opt into cross-origin
+{{Document}}s in [=child navigables=] sending {{Fence/reportEvent()}} beacons by using the <dfn
 http-header><code>Allow-Cross-Origin-Event-Reporting</code></dfn> HTTP response header. This header
 is a [=structured header=] whose value must be either the [=string=] "true" or "false".
 
