@@ -1301,6 +1301,9 @@ Each {{FencedFrameConfig}} has:
  * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
 
+Note: [=fencedframeconfig/url=] is only null if [=fencedframeconfig/urn=] is not null, and vice
+versa.
+
 <div algorithm>
   The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
   are:
