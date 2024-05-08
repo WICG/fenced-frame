@@ -2498,17 +2498,17 @@ container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
 <h4 id=allow-automatic-beacons>The
 \`<a http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></a>\` HTTP response header</h4>
 
-A {{Document}} that is not [=same origin=] with its [=fenced frame config instance=]'s [=fenced
-frame config instance/mapped url=] can opt into sending an automatic beacon when it navigates by
-using the <dfn http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></dfn> HTTP response
-header. This header is a [=structured header=] whose value must be either the [=string=] "true" or
-"false".
+A {{Document}} that is not [=same origin=] with its [=Document/browsing context=]'s [=fenced frame
+config instance=]'s [=fenced frame config instance/mapped url=] can opt into sending an automatic
+beacon when it navigates by using the <dfn
+http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></dfn> HTTP response header. This
+header is a [=structured header=] whose value must be either the [=string=] "true" or "false".
 
 <h4 id=allow-cross-origin-reporting>The
 \`<a http-header><code>Allow-Cross-Origin-Event-Reporting</code></a>\` HTTP response header</h4>
 
-A {{Document}} loaded with a [=fenced frame config instance=] can opt into cross-origin
-{{Document}}s in [=child navigables=] sending {{Fence/reportEvent()}} beacons by using the <dfn
+A {{Document}} loaded from a [=fenced frame config instance=] can opt into its cross-origin [=child
+navigables=]' {{Document}}s sending {{Fence/reportEvent()}} beacons by using the <dfn
 http-header><code>Allow-Cross-Origin-Event-Reporting</code></dfn> HTTP response header. This header
 is a [=structured header=] whose value must be either the [=string=] "true" or "false".
 
