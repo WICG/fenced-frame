@@ -1856,7 +1856,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
 
-  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=navigable=].
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
   
   1. If any of the following conditions are met, throw a {{SecurityError}} {{DOMException}}:
 
@@ -3024,11 +3024,12 @@ modified to include a new row.
   </thead>
   <tbody>
     <tr>
-      <td><dfn export><code>fencedtreeclick</code></dfn></td> 
+      <td><dfn><code>fencedtreeclick</code></dfn></td> 
       <td>{{Event}}</td> 
       <td>Elements</td>
       <td>
-        Fired at a <{fencedframe}> element when its contained content calls {{Fence/notifyEvent}}
+        Fired at a <{fencedframe}> element asynchronously after its
+        [=fenced navigable container/fenced navigable=]'s {{Document}} calls {{Fence/notifyEvent()}}
       </td>
     </tr>
   </tbody>
@@ -3049,7 +3050,7 @@ to include a new row. The [=event handler=] name is <code>onfencedtreeclick</cod
   </thead>
   <tbody>
     <tr>
-      <td><dfn export><code>onfencedtreeclick</code></dfn></td>
+      <td><dfn><code>onfencedtreeclick</code></dfn></td>
       <td><code>[=fencedtreeclick=]</code></td>
     </tr>
   </tbody>
