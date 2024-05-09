@@ -114,9 +114,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       text: browsing context group; url: browsing-context-group
       text: browsing context group set; url: browsing-context-group-set
-      text: creator base url; url: creator-base-url
       text: create a new browsing context and document; url: creating-a-new-browsing-context
       text: create a new browsing context group and document; url: creating-a-new-browsing-context-group
+      text: document base url; url: document-base-url
       text: initialize the navigable; url: initialize-the-navigable
       text: node navigable; url: node-navigable
       text: system visibility state; url: system-visibility-state
@@ -251,6 +251,9 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
       text: event-source; url: eligibility-event-source
       text: navigation-source; url: eligibility-navigation-source
       text: unset; url: eligibility-unset
+spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
+  type: dfn
+    text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
 </pre>
 
 <style>
@@ -461,15 +464,19 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
        Note: This holds because when the element has been removed from the DOM, its removal steps
        immediately destroy the [=fenced navigable container/fenced navigable=].
 
-  1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if
+     the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, and the given
+     {{FencedFrameConfig}}'s [=fencedframeconfig/urn=] otherwise.
+
+  1. If |navigation url or urn| is failure, then return.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
 
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
-     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
-     |shared storage context|.
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to
+     |navigation url or urn| using |element|'s [=Node/node document=], with [=historyHandling=] set
+     to "<a for="history handling behavior">`replace`</a>", [=referrerPolicy=] set to
+     <a>"`no-referrer`"</a>, and |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
@@ -646,6 +653,36 @@ considered the privacy implications of each field, though they may choose to set
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
 [=fenced navigable container/fenced navigable=].
+
+<h4 id=fenced-frame-config-use-cases>Use cases</h4>
+
+Rendering an ad created through an ad auction:
+
+An ad auction API runs an auction and determines a winning ad. Details about the winning ad must be
+hidden from the embedder, and the embedding context is not allowed to influence the environment of
+the <{fencedframe}>. Either of those would allow for information to flow across the fenced frame
+boundary, which can allow for colluding parties to join cross-site data and build a profile on the
+user. To prevent that, the ad auction API [=construct a pending fenced frame config|constructs=] a
+[=fenced frame config=] whose underlying [=fenced frame config/mapped url|URL=] is opaque to the
+embedding context. The [=fenced frame config=] is also constructed with restrictions on what the
+[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must be
+and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the frame
+must be, as those can be used as fingerprinting vectors.
+
+Displaying a personalized payment button:
+
+An e-commerce site embeds a <{fencedframe}> that has a "Pay now" button. The e-commerce site stores
+information about the user's credit card on the browser as first-party storage. At first, the
+{{Document}} hosted in the <{fencedframe}> has no first-party cookie/storage access, so information
+can freely flow in and out without risk of the credit card information being joined with cross-site
+data. Because of that, the fenced frame can be constructed directly from the web platform using the
+{{FencedFrameConfig}} constructor without compromising privacy. The button at this point has no
+personalized data in it since it can't access the credit card data yet. The {{Document}} can only
+read that credit card data once it turns off all network access, preventing the data from flowing
+out of the fenced frame and preventing it from being joined with cross-site data to build a user
+profile. Once it does that, the button will then display the last 4 digits of the user's credit card
+number, as it is saved in the browser, inside the first-party storage partition for the ecommerce
+platform's origin.
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
@@ -1112,7 +1149,10 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   :: null, or a [=string=]
   
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]. Defaulting to false.
+  :: A [=boolean=], initially false.
+
+  : <dfn>cross-origin reporting allowed</dfn>
+  :: A [=boolean=], initially false.
 </dl>
   
   Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
@@ -1165,6 +1205,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   :: null, or a [=string=]
   
   : <dfn>is ad component</dfn>
+  :: A [=boolean=], initially false.
+
+  : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
 
@@ -1250,6 +1293,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
+
+    : [=fenced frame config instance/cross-origin reporting allowed=]
+    :: |config|'s [=fenced frame config/cross-origin reporting allowed=]
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1276,6 +1322,8 @@ maps to an internal [=fenced frame config=] [=struct=].
 
   [Exposed=Window, Serializable]
   interface FencedFrameConfig {
+    constructor(USVString url);
+    
     readonly attribute FencedFrameConfigSize? containerWidth;
     readonly attribute FencedFrameConfigSize? containerHeight;
     readonly attribute FencedFrameConfigSize? contentWidth;
@@ -1285,19 +1333,28 @@ maps to an internal [=fenced frame config=] [=struct=].
   };
 </pre>
 
-Note: Note that {{FencedFrameConfig}}s cannot be constructed manually from JavaScript. They can only
-be created by config-generating APIs. However, some browsers [support a developer-only
-flag](https://github.com/WICG/fenced-frame/issues/94) which help developers test the <{fencedframe}>
-element with arbitrary URLs *not* produced by config-generating APIs for development.
-
 Each {{FencedFrameConfig}} has:
 
+ * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=], failure, or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
  * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>containerHeight</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
+
+Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig/urn=] is supplied.
+
+<div algorithm>
+  The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
+  are:
+  
+  1. Let |config| be a [=new=] {{FencedFrameConfig}} object.
+
+  1. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
+
+  1. Return |config|.
+</div>
 
 <div algorithm="containerWidth getter">
   The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are to return [=this=]'s
@@ -1330,6 +1387,8 @@ Each {{FencedFrameConfig}} has:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
   
+  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
+
   1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
   1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
@@ -1354,6 +1413,8 @@ Each {{FencedFrameConfig}} has:
   Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
 
+  1. Initialize |value|'s [=fencedframeconfig/url=] to |serialized|.\[[Url]].
+  
   1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
 
   1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
@@ -1465,11 +1526,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     DOMString eventType;
     DOMString eventData;
     sequence&lt;FenceReportingDestination&gt; destination;
-    
+
+    // Determines if this data can be sent in a reportEvent() beacon or automatic
+    // beacon that originates from a document that is cross-origin to the mapped
+    // URL of the fenced frame config that loaded this frame tree.
+    // Note that automatic beacon data can only be set from documents that are
+    // same-origin to the fenced frame config's mapped URL, so this effectively
+    // opts in the data to being used in a cross-origin subframe.
+    boolean crossOriginExposed = false;
+
     // When setting event data to be used later in an automatic beacon, the
     // following properties are used:
     boolean once = false;
-    boolean crossOriginExposed = false;
 
     // When reporting to a custom destination URL (with substitution of macros defined by
     // the Protected Audience buyer), the following property is used:
@@ -1496,18 +1564,30 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   
   1. If |instance|'s [=fenced frame config instance/is ad component=] is true, then return.
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     return.
-
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
-  1. If |event| is a {{DOMString}}, run [=report a private aggregation event=] using |instance|'s
-     [=fenced frame config instance/fenced frame reporter=] with |event|.
+  1. If |event| is a {{DOMString}}:
+
+     1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+        |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+        origin=], then return.
+  
+     1. Run [=report a private aggregation event=] using |instance|'s [=fenced frame config
+        instance/fenced frame reporter=] with |event|.
 
   1. If |event| is a {{FenceEvent}}:
 
      1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
+
+     1. If all of the following conditions are true:
+
+        * [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+          |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+          origin=];
+        * either |event|'s {{FenceEvent/crossOriginExposed}} is false or |instance|'s
+          [=fenced frame config instance/cross-origin reporting allowed=] is false;   
+
+        then return.
 
      1. If |event| has a {{FenceEvent/destinationURL}}:
         1. If |event| has a {{FenceEvent/destination}} or a {{FenceEvent/eventType}} or a
@@ -1562,6 +1642,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   <wpt>
     /fenced-frame/fence-report-event.https.html
     /fenced-frame/fence-report-event-destination-url.https.html
+    /fenced-frame/fence-report-event-cross-origin-content-initiated.https.html 
+    /fenced-frame/fence-report-event-cross-origin-nested-urn-iframe.https.html 
+    /fenced-frame/fence-report-event-cross-origin-nested.https.html 
+    /fenced-frame/fence-report-event-cross-origin-no-embedder-opt-in.https.html 
+    /fenced-frame/fence-report-event-cross-origin-no-subframe-opt-in.https.html 
+    /fenced-frame/fence-report-event-cross-origin-urn-iframe-content-initiated.https.html 
+    /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-embedder-opt-in.https.html 
+    /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-subframe-opt-in.https.html 
+    /fenced-frame/fence-report-event-cross-origin-urn-iframe.https.html 
+    /fenced-frame/fence-report-event-cross-origin.https.html 
+    /fenced-frame/fence-report-event-sub-fencedframe.https.html 
   </wpt>
 </div>
 
@@ -1580,9 +1671,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     return.
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+     origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
@@ -1616,9 +1707,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then return.
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     return.
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+     origin=], then return.
 
   1. If |instance|'s [=fenced frame config instance/nested configs=] is null, then return.
 
@@ -1886,7 +1977,7 @@ is a [=boolean=], initially false.
       then:
 
   Note: This is because we need to ensure that we do not leak <var ignore>creator</var>'s [=the
-  document's referrer|referrer=], [=Document/origin=], [=creator base url=], [=Document/policy
+  document's referrer|referrer=], [=Document/origin=], [=document base url=], [=Document/policy
   container=], across the fenced frame boundary.
 
 
@@ -2521,6 +2612,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <div algorithm>
   To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
   
+  1. [=Assert=] these steps are running on |sourceDocument|'s [=event loop=].
+
   1. Let |automatic beacon data map| be a new empty [=Document/automatic beacon data map=].
   
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
@@ -2540,6 +2633,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
   1. Return |automatic beacon data map|.
+
+  Note: The returned map is meant to hold references to the original {{Document}}'s
+  [=Document/automatic beacon data map=]s that were used to build |automatic beacon data map|. These
+  are later modified in [=attempt to send an automatic beacon=] to clear out any beacon data with
+  [=automatic beacon data/once=] set to true.
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
@@ -2699,6 +2797,12 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
        Note: This is because embedder-initiated navigations (indicated by |navigationParams|'s
        [=navigation params/fenced frame config instance=] being non-null) always cause a
        [[#bcg-swap]].
+
+    1. Set |navigationParams|'s [=navigation params/fenced frame config instance=]'s [=fenced frame
+       config/cross-origin reporting allowed=] to the result of running [=header list/get a
+       structured field value=] on |navigationParams|'s [=navigation params/response=]'s
+       [=response/header list=] given "<code>Allow-Cross-Origin-Event-Reporting</code>" and
+       "`item`".
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
@@ -2907,7 +3011,8 @@ directive wouldn't give web sites enough control over their CSP rules. Introduce
   /fenced-frame/csp-fenced-frame-src-blocked.https.html
   /fenced-frame/csp-frame-src-allowed.https.html
   /fenced-frame/csp-frame-src-blocked.https.html
-  /fenced-frame/csp-transparent-url.https.html
+  /fenced-frame/csp-allowed-transparent.https.html
+  /fenced-frame/csp-blocked-transparent.https.html
   /fenced-frame/csp.https.html
   /fenced-frame/cspee.https.html
   /fenced-frame/embedder-csp-not-propagate.https.html
