@@ -1825,6 +1825,9 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
+  1. If |eventType| is <code>[=automatic beacon event type/reserved.top_navigation_start=]</code>,
+     run steps in |config|'s [=fenced frame config/on navigate callback=].
+
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
 
@@ -2836,9 +2839,6 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
   : [=Document/automatic beacons allowed=]
   :: |automaticBeaconsAllowed|.
 </div>
-
-<span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
-appropriate time.</span>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
 
