@@ -1443,6 +1443,7 @@ typedef (USVString or FencedFrameConfig) UrnOrConfig;
 partial interface Navigator {
   Promise&lt;undefined&gt; deprecatedReplaceInURN(
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numComponents);
 };
 </pre>
 
@@ -1502,6 +1503,43 @@ partial interface Navigator {
 
   <wpt>
     /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
+</div>
+
+Each [=browsing context=] has <dfn for="browsing context">ad auction components</dfn>,
+which is a [=list=] of [=fencedframeconfig/urn=]s or null, initially null.
+
+<div algorithm>
+
+  The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
+  
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If |instance| is null, then throw a {{DOMException}}.
+
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+    |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+    origin=], then then throw a {{DOMException}}.
+
+  1. Let |maxAdComponents| be 20.
+
+  1. If |numAdComponents| is greater than |maxAdComponents|, then set |numAdComponents| to 
+    |maxAdComponents|.
+
+  1. Let |adComponents| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+    [=browsing context/ad auction components=].
+
+  1. Let |result| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+
+  1. [=list/For each=] |i| in [=the range=] from 0 to |numAdComponents|, exclusive::
+
+      1. [=list/Append=] |adComponents|[|i|] to |result|.
+
+  1. Return |result|.
+
+  <wpt>
+    /fenced-frame/config-cross-origin-apis.https.html
   </wpt>
 </div>
 
