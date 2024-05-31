@@ -1443,7 +1443,7 @@ typedef (USVString or FencedFrameConfig) UrnOrConfig;
 partial interface Navigator {
   Promise&lt;undefined&gt; deprecatedReplaceInURN(
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
-  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numComponents);
+  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numAdComponents);
 };
 </pre>
 
