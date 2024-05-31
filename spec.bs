@@ -2804,18 +2804,15 @@ finalized.
   : <dfn for="navigation params">fenced frame config instance</dfn>
   :: A [=fenced frame config instance=] or null, initially null.
 
-     Note: This is only set for embedder-initiated <{fencedframe}> navigations, and if a new
-     {{Document}} is created as a result of such a navigation, this member is transferred to the new
-     [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
-     [=browsing context/fenced frame config instance=] member.
-
   : <dfn for="navigation params">ad auction components</dfn>
   :: A [=list=] of [=fencedframeconfig/urn=]s or null, initially null.
 
-     Note: This is only set for embedder-initiated <{fencedframe}> navigations, and if a new
-     {{Document}} is created as a result of such a navigation, this member is transferred to the new
-     [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
-     [=browsing context/ad auction components=] member.
+     Note: These members are only set for embedder-initiated <{fencedframe}> navigations,
+     and if a new {{Document}} is created as a result of such a navigation, these members are transferred
+     to the new [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]. 
+     In that case they become the new [=fenced navigable container/fenced navigable=]'s 
+     [=navigable/active browsing context=]'s [=browsing context/fenced frame config instance=] and
+     [=browsing context/ad auction components=], respectively.
 </div>
 
 <div algorithm=create-navigation-params-config-instance>
