@@ -1825,9 +1825,6 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
-  1. If |eventType| is <code>[=automatic beacon event type/reserved.top_navigation_start=]</code>,
-     run steps in |config|'s [=fenced frame config/on navigate callback=].
-
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
 
@@ -2741,6 +2738,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          [=URL=] whose [=url/scheme=] is "`https`".
 
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+      1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
