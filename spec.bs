@@ -597,7 +597,7 @@ follows:
 <div algorithm>
   To <dfn for="fenced frame config mapping" export>store nested configs</dfn> in a [=fenced frame
   config mapping=] |mapping| given a [=fenced frame config instance/nested configs=]
-  |nestedConfigs|, run these steps:
+  |nestedConfigs| and an [=origin=] |ad root origin|, run these steps:
 
   1. Let |nestedMapping| be |mapping|'s [=fenced frame config mapping/nested config mapping=].
 
@@ -608,6 +608,8 @@ follows:
     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
     
     1. Set |nestedMapping|[|urn|]'s [=fenced frame config/is ad component=] to true.
+
+    1. Set |nestedMapping|[|urn|]'s [=fenced frame config/ad root origin=] to |ad root origin|.
 </div>
 
 <div algorithm>
@@ -727,12 +729,18 @@ A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the f
 
   : <dfn>event</dfn>
   :: a [=fencedframetype/destination event=]
+
+  : <dfn>request initiator</dfn>
+  :: an [=origin=]
 </dl>
 
 A <dfn export for=fencedframetype>reporting destination info</dfn> is a [=struct=] with the
 following [=struct/items=]:
 
 <dl export dfn-for="reporting destination info">
+  : <dfn>reporting url declarer origin</dfn>
+  :: null, or an [=origin=]
+
   : <dfn>reporting url map</dfn>
   :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=URLs=]
 
@@ -761,10 +769,11 @@ be sent.
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
-  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, a [=map=]
-  |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=], and
-  |macro map|, which is either null or a [=map=] whose [=map/keys=] are [=strings=] and whose
-  [=map/values=] are [=strings=], run these steps:
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, an
+  [=origin=] |reporting url declarer origin|, a [=map=] |destination map| whose [=map/keys=] are
+  [=strings=] and whose [=map/values=] are [=urls=], and |macro map|, which is either null or a
+  [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=strings=], run these
+  steps:
 
   1. [=Assert=] that |reporting map|[|destination|] is a [=list=] (i.e., that |destination|'s
      metadata has not yet been finalized).
@@ -772,6 +781,9 @@ be sent.
   1. Let |pending event list| be |reporting map|[|destination|].
 
   1. [=map/Set=] |reporting map|[|destination|] to a [=struct=] with the following [=struct/items=]:
+       : [=reporting destination info/reporting url declarer origin=]
+       :: |reporting url declarer origin|
+
        : [=reporting destination info/reporting url map=]
        :: |destination map|
 
@@ -780,7 +792,8 @@ be sent.
 
   1. [=list/For each=] |pending event| of |pending event list|:
 
-     1. [=Send a beacon=] with |destination map| and |pending event|'s [=pending event/event=].
+     1. [=Send a beacon=] with |destination map|, |pending event|'s [=pending event/event=], and
+        |pending event|'s [=pending event/request initiator=].
 </div>
 
 A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a [=struct=] with the
@@ -859,7 +872,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
-  |destination info| and a [=fencedframetype/destination event=] |event|, run these steps:
+  |destination info|, a [=fencedframetype/destination event=] |event|, and an [=origin=]
+  |request initiator|, run these steps:
 
   1. Let |destination url| be an empty [=string=].
 
@@ -947,11 +961,11 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
 
     : [=request/origin=]
-    :: <span class=XXX>Get the origin from somewhere, like the [implementation
-       does](https://source.chromium.org/chromium/chromium/src/+/refs/heads/main:content/browser/fenced_frame/fenced_frame_reporter.cc;l=384;drc=183dd920ea5d6aed92e007c40e226f1f840c0567)</span>.
+    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=],
+       |destination info|'s [=reporting destination info/reporting url declarer origin=] otherwise.
 
     : [=request/referrer=]
-    :: `"no-referrer"`
+    :: |request initiator|
 
     : [=request/mode=]
     :: `"cors"`
@@ -974,8 +988,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
-  |reporter| with a {{FenceReportingDestination}} |destination|, and a
-  [=fencedframetype/destination event=] |event|, run these steps:
+  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |request initiator|,
+  and a [=fencedframetype/destination event=] |event|, run these steps:
 
   1. Let |metadata| be |reporter|'s
      [=fenced frame reporter/fenced frame reporting metadata reference=].
@@ -1012,6 +1026,9 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         : [=pending event/event=]
         :: |event|
 
+        : [=pending event/request initiator=]
+        :: |request initiator|
+
      1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
 
      1. Return.
@@ -1021,7 +1038,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
      metadata has been finalized).
 
-  1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
+  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, and |request initiator|.
 </div>
 
 <div algorithm>
@@ -1152,6 +1169,9 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
+  : <dfn>ad root origin</dfn>
+  :: An [=origin=].
+
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
@@ -1207,6 +1227,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
+
+  : <dfn>ad root origin</dfn>
+  :: An [=origin=].
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1294,6 +1317,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
+
+    : [=fenced frame config instance/ad root origin=]
+    :: |config|'s [=fenced frame config/ad root origin=]
 
     : [=fenced frame config instance/cross-origin reporting allowed=]
     :: |config|'s [=fenced frame config/cross-origin reporting allowed=]
@@ -1567,6 +1593,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
+  1. Let |request initiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
+     object/origin=].
+
   1. If |event| is a {{DOMString}}:
 
      1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
@@ -1605,7 +1634,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with {{FenceReportingDestination/buyer}} and a
+           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|, and a
            [=fencedframetype/destination URL event=] that is |event|'s
            {{FenceEvent/destinationURL}}.
 
@@ -1625,8 +1654,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
           1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-             reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
-             following [=struct/items=]:
+             reporter=] with |destination|, |request initiator|, and a [=fencedframetype/destination
+             enum event=] with the following [=struct/items=]:
 
              : [=destination enum event/type=]
              :: |event|'s {{FenceEvent/eventType}}
@@ -1825,6 +1854,9 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
+  1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
+     component=] is false, |config|'s [=fenced frame config instance/ad root origin=] otherwise.
+
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
 
@@ -1847,8 +1879,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination| and an [=fencedframetype/automatic beacon event=] with the
-       following [=struct/items=]:
+       reporter=] with |destination|, |request initiator|, and an [=fencedframetype/automatic beacon
+       event=] with the following [=struct/items=]:
 
        : [=automatic beacon event/type=]
        :: |eventType|
