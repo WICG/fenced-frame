@@ -2799,7 +2799,7 @@ config=], [=instantiate a config|instantiating=] it in preparation for use when 
 finalized.
 
 <div algorithm=navigation-params-config-instance>
-  Add a new [=struct/item=] to the [=navigation params=] [=struct=]:
+  Add new [=struct/item=]s to the [=navigation params=] [=struct=]:
 
   : <dfn for="navigation params">fenced frame config instance</dfn>
   :: A [=fenced frame config instance=] or null, initially null.
@@ -2808,6 +2808,14 @@ finalized.
      {{Document}} is created as a result of such a navigation, this member is transferred to the new
      [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
      [=browsing context/fenced frame config instance=] member.
+
+  : <dfn for="navigation params">ad auction components</dfn>
+  :: A [=list=] of [=fencedframeconfig/urn=]s or null, initially null.
+
+     Note: This is only set for embedder-initiated <{fencedframe}> navigations, and if a new
+     {{Document}} is created as a result of such a navigation, this member is transferred to the new
+     [=fenced navigable container/fenced navigable=]'s [=navigable/active browsing context=]'s
+     [=browsing context/ad auction components=] member.
 </div>
 
 <div algorithm=create-navigation-params-config-instance>
@@ -2863,6 +2871,9 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
+
+    1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
+       |navigationParams|'s [=navigation params/ad auction components=].
 
   Add a new step after step 9 that reads:
 
