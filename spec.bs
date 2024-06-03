@@ -1526,18 +1526,16 @@ partial interface Navigator {
 
   1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
 
-  1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
+  1. [=map/For each=] |urn| → _ of |instance|'s [=fenced frame config instance/nested
      configs=]:
+     
+     1. If |numAdComponents| equals 0, then [=iteration/break=].
 
      1. [=list/Append=] |urn| to |adComponentsURNs|.
 
-  1. Let |result| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+     1. Decrement |numAdComponents| by 1.
 
-  1. [=list/For each=] |i| in [=the range=] from 0 to |numAdComponents|, exclusive::
-
-      1. [=list/Append=] |adComponentsURNs|[|i|] to |result|.
-
-  1. Return |result|.
+  1. Return |adComponentsURNs|.
 
 </div>
 
