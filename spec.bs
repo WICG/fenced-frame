@@ -2799,7 +2799,7 @@ config=], [=instantiate a config|instantiating=] it in preparation for use when 
 finalized.
 
 <div algorithm=navigation-params-config-instance>
-  Add new [=struct/item=]s to the [=navigation params=] [=struct=]:
+  Add a new [=struct/item=] to the [=navigation params=] [=struct=]:
 
   : <dfn for="navigation params">fenced frame config instance</dfn>
   :: A [=fenced frame config instance=] or null, initially null.
