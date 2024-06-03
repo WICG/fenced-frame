@@ -1539,9 +1539,6 @@ partial interface Navigator {
 
   1. Return |result|.
 
-  <wpt>
-    /fenced-frame/config-cross-origin-apis.https.html
-  </wpt>
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
