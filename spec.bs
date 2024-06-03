@@ -1506,9 +1506,6 @@ partial interface Navigator {
   </wpt>
 </div>
 
-Each [=browsing context=] has <dfn for="browsing context">ad auction components</dfn>,
-which is a [=list=] of [=fencedframeconfig/urn=]s or null, initially null.
-
 <div algorithm>
 
   The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
@@ -1527,14 +1524,18 @@ which is a [=list=] of [=fencedframeconfig/urn=]s or null, initially null.
   1. If |numAdComponents| is greater than |maxAdComponents|, then set |numAdComponents| to 
     |maxAdComponents|.
 
-  1. Let |adComponents| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
-    [=browsing context/ad auction components=].
+  1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+
+  1. [=map/For each=] |urn| → |config| of |instance|'s [=fenced frame config instance/nested
+     configs=]:
+
+     1. [=list/Append=] |urn| to |adComponentsURNs|.
 
   1. Let |result| be an empty [=list=] of [=fencedframeconfig/urn=]s.
 
   1. [=list/For each=] |i| in [=the range=] from 0 to |numAdComponents|, exclusive::
 
-      1. [=list/Append=] |adComponents|[|i|] to |result|.
+      1. [=list/Append=] |adComponentsURNs|[|i|] to |result|.
 
   1. Return |result|.
 
@@ -2863,9 +2864,6 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
-
-    1. Set |browsingContext|'s [=browsing context/ad auction components=] to the result of running
-        X on |navigationParams|'s [=navigation params/fenced frame config instance=]'s X.
 
   Add a new step after step 9 that reads:
 
