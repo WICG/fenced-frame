@@ -1474,7 +1474,8 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+  1. If |urn| is not a valid [=urn uuid=] (i.e. won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. [=map/For each=] |key| → _ of |replacements|:
      1. If |key| does not [=string/start with=] <code>${</code> or <code>%%</code>,
@@ -1488,7 +1489,7 @@ partial interface Navigator {
 
   1. Run the following steps [=in parallel=]:
 
-     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
         [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
@@ -1523,7 +1524,8 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is <span class=XXX>TODO invalid</span>, then [=exception/throw=] a {{TypeError}}.
+  1. If |urn| is not a valid [=urn uuid=] (i.e. won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. Let |p| be [=a new promise=].
 
