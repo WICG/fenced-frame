@@ -1523,7 +1523,7 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+  1. If |urn| is <span class=XXX>TODO invalid</span>, then [=exception/throw=] a {{TypeError}}.
 
   1. Let |p| be [=a new promise=].
 
