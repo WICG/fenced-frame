@@ -1531,7 +1531,7 @@ partial interface Navigator {
 
   1. Run the following steps [=in parallel=]:
 
-     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
         [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. If |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|], does not
