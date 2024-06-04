@@ -1535,7 +1535,7 @@ partial interface Navigator {
         [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. If |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|], does not
-        [=map/exist=], [=queue a global task=] on the [=DOM manipulation task source=]
+        [=map/exist=], then [=queue a global task=] on the [=DOM manipulation task source=]
         given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
 
      1. Let |config| be |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|].
