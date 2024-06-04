@@ -1515,8 +1515,8 @@ partial interface Navigator {
 </div>
 
 <div algorithm>
-  The <dfn method for=Navigator>deprecatedURNtoURL(|urnOrConfig|, |send_reports|)</dfn>
-  method steps are:
+  The <dfn method for=Navigator>deprecatedURNtoURL(|urnOrConfig|, |send_reports|)</dfn> method
+  steps are:
 
   1. Let |urn| be null.
 
