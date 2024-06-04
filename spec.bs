@@ -1521,19 +1521,18 @@ partial interface Navigator {
 
   1. Let |maxAdComponents| be 40.
 
-  1. If |numAdComponents| is greater than |maxAdComponents|, then set |numAdComponents| to 
-    |maxAdComponents|.
+  1. If |numAdComponents| &gt; |maxAdComponents|, then set |numAdComponents| to |maxAdComponents|.
 
   1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
 
-  1. [=map/For each=] |urn| → _ of |instance|'s [=fenced frame config instance/nested
-     configs=]:
+  1. [=map/For each=] |urn| → <var ignore>config</var> of |instance|'s 
+     [=fenced frame config instance/nested configs=]:
      
      1. If |numAdComponents| equals 0, then [=iteration/break=].
 
      1. [=list/Append=] |urn| to |adComponentsURNs|.
 
-     1. Decrement |numAdComponents| by 1.
+     1. Set |numAdComponents| to |numAdComponents| &minus; 1.
 
   1. Return |adComponentsURNs|.
 
