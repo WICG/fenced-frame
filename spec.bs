@@ -1018,7 +1018,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
        Note: The pending event will be sent asynchronously.
 
-  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
+  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
   1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
@@ -1475,7 +1475,7 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is not a valid [=urn uuid=] (i.e. won't pass the ABNF in Section 3 of
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
      [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. [=map/For each=] |key| → _ of |replacements|:
