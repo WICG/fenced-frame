@@ -1451,6 +1451,7 @@ partial interface Navigator {
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
   Promise&lt;USVString&gt; deprecatedURNtoURL(
     UrnOrConfig urnOrConfig, optional boolean send_reports = false);
+  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numAdComponents);
 };
 </pre>
 
@@ -1553,6 +1554,36 @@ partial interface Navigator {
   <wpt>
     /fenced-frame/deprecated-config-apis.https.html
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
+  
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If |instance| is null, then throw a {{DOMException}}.
+
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+    |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+    origin=], then then throw a {{DOMException}}.
+
+  1. Let |maxAdComponents| be 40.
+
+  1. If |numAdComponents| &gt; |maxAdComponents|, then set |numAdComponents| to |maxAdComponents|.
+
+  1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+
+  1. [=map/For each=] |urn| → <var ignore>config</var> of |instance|'s 
+     [=fenced frame config instance/nested configs=]:
+     
+     1. If |numAdComponents| equals 0, then [=iteration/break=].
+
+     1. [=list/Append=] |urn| to |adComponentsURNs|.
+
+     1. Set |numAdComponents| to |numAdComponents| &minus; 1.
+
+  1. Return |adComponentsURNs|.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -2789,6 +2820,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
+      1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+
   <wpt>
     /fenced-frame/frame-navigation.https.html
   </wpt>
@@ -2886,9 +2919,6 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
   : [=Document/automatic beacons allowed=]
   :: |automaticBeaconsAllowed|.
 </div>
-
-<span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
-appropriate time.</span>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
 
