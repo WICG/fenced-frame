@@ -1525,7 +1525,7 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is not a valid [=urn uuid=] (i.e. won't pass the ABNF in Section 3 of
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
      [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. Let |p| be [=a new promise=].
