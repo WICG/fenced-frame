@@ -597,7 +597,7 @@ follows:
 <div algorithm>
   To <dfn for="fenced frame config mapping" export>store nested configs</dfn> in a [=fenced frame
   config mapping=] |mapping| given a [=fenced frame config instance/nested configs=]
-  |nestedConfigs| and an [=origin=] |ad root origin|, run these steps:
+  |nestedConfigs|, run these steps:
 
   1. Let |nestedMapping| be |mapping|'s [=fenced frame config mapping/nested config mapping=].
 
@@ -608,8 +608,6 @@ follows:
     1. [=map/Set=] |nestedMapping|[|urn|] to |config|.
     
     1. Set |nestedMapping|[|urn|]'s [=fenced frame config/is ad component=] to true.
-
-    1. Set |nestedMapping|[|urn|]'s [=fenced frame config/ad root origin=] to |ad root origin|.
 </div>
 
 <div algorithm>
@@ -1169,9 +1167,6 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
-  : <dfn>ad root origin</dfn>
-  :: An [=origin=].
-
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
@@ -1227,9 +1222,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
-
-  : <dfn>ad root origin</dfn>
-  :: An [=origin=].
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1317,9 +1309,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
-
-    : [=fenced frame config instance/ad root origin=]
-    :: |config|'s [=fenced frame config/ad root origin=]
 
     : [=fenced frame config instance/cross-origin reporting allowed=]
     :: |config|'s [=fenced frame config/cross-origin reporting allowed=]
@@ -1855,7 +1844,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      <{fencedframe}>.
 
   1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
-     component=] is false, |config|'s [=fenced frame config instance/ad root origin=] otherwise.
+     component=] is false, |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor root
+     origin=] otherwise.
 
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
@@ -2256,8 +2246,6 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
   [=traversable navigable/unfenced parent=] are both null.
 </div>
 
-<br>
-
 <div algorithm>
   To get the <dfn noexport for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
 
@@ -2279,6 +2267,27 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
 
 Note: With these new definitions, a [=top-level traversable=] is essentially "unfenced" as described
 in the [[#nested-traversables-intro]].
+
+The algorithm as it exists today is a "fenced" algorithm, which will be re-introduced as a "fenced"
+variant as follows:
+
+<div algorithm>
+  A <dfn>fenced top-level traversable</dfn> is a [=traversable navigable=] with a null
+  [=navigable/parent=].
+</div>
+
+<div algorithm>
+  To get the <dfn noexport for="navigable">fenced top-level traversable</dfn> of a [=navigable=]
+  |inputNavigable|:
+
+    1. Let |navigable| be |inputNavigable|.
+
+    1. [=iteration/While=] |navigable|'s [=navigable/parent=] is not null, set |navigable| to
+       |navigable|'s [=navigable/parent=].
+
+    1. Return |navigable|.
+</div>
+
 
 <h3 id=navigable-traversing-algorithms>Modifications to navigable-traversing algorithms</h3>
 
@@ -2635,6 +2644,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
   :: a [=fenced frame config instance=] or null, initially null.
 
+  : <dfn for="source snapshot params">initiator ancestor root origin</dfn>
+  :: an [=origin=] or null, initially null.
+
   : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
 
@@ -2653,12 +2665,14 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
   config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
-  It is used by the [=attempt to send an automatic beacon=] algorithm to compare [=origin=]s and
-  determine which {{FenceReportingDestination}}s to send beacons to, if the
-  <{fencedframe}>-initiated navigation succeeds. The [=source snapshot params/target fenced frame
-  config=] on the other hand, is the non-[=instantiate a config|instantiated=] [=fenced frame
-  config=] that will be loaded into a <{fencedframe}> element for navigations targeting fenced
-  frames. These fields do not interact *together* in any meaningful way.
+  The [=source snapshot params/initiator ancestor root origin=], for component ads, is the origin of
+  the top-level ad container, if any exists. They are used by the [=attempt to send an automatic
+  beacon=] algorithm to compare [=origin=]s and determine which {{FenceReportingDestination}}s to
+  send beacons and with what information, if the <{fencedframe}>-initiated navigation succeeds. The
+  [=source snapshot params/target fenced frame config=] on the other hand, is the non-[=instantiate
+  a config|instantiated=] [=fenced frame config=] that will be loaded into a <{fencedframe}> element
+  for navigations targeting fenced frames. These fields do not interact *together* in any meaningful
+  way.
 </div>
 
 <div algorithm>
@@ -2699,6 +2713,13 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : [=source snapshot params/initiator fenced frame config instance=]
   :: |sourceDocument|'s [=browsing context=]'s [=browsing context/fenced frame
      config instance=]
+
+  : [=source snapshot params/initiator ancestor root origin=]
+
+  :: |sourceDocument|'s [=node navigable=]'s [=fenced top-level traversable=]'s [=navigable/unfenced
+     parent=]'s [=fenced top-level traversable=]'s associated {{Document}}'s [=Document/origin=] if
+     |sourceDocument|'s [=node navigable=]'s [=fenced top-level traversable=]'s [=navigable/unfenced
+     parent=] is not null, null otherwise.
 
   : [=source snapshot params/attribution reporting enabled=]
   :: The result of determining whether |sourceDocument| is [=allowed to use=] the
