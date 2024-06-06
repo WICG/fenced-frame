@@ -1733,7 +1733,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-embedder-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-subframe-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe.https.html 
-    /fenced-frame/fence-report-event-cross-origin.https.html 
+    /fenced-frame/fence-report-event-cross-origin.sub.https.html 
     /fenced-frame/fence-report-event-sub-fencedframe.https.html 
   </wpt>
 </div>
