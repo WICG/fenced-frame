@@ -1,6 +1,7 @@
 
 # **Permission policy for API backed fenced frames**
 
+> **_NOTE:_** There are currently no plans to implement this feature at this time.
 
 # **Introduction**
 
