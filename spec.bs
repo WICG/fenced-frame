@@ -737,7 +737,7 @@ following [=struct/items=]:
 
 <dl export dfn-for="reporting destination info">
   : <dfn>reporting url declarer origin</dfn>
-  :: null, or an [=origin=]
+  :: an [=origin=]
 
   : <dfn>reporting url map</dfn>
   :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=URLs=]
@@ -959,11 +959,21 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
 
     : [=request/origin=]
-    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=],
+    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=], and
        |destination info|'s [=reporting destination info/reporting url declarer origin=] otherwise.
+
+       Note: The reporting destination for a [=fencedframetype/destination URL event=] is determined
+       by the {{Document}} that calls {{Fence/reportEvent()}}, as opposed to a [=fencedframetype/
+       destination enum event=] or [=fencedframetype/automatic beacon event=] whose reporting
+       destinations are determined in the worklet that created the [=fenced frame config=] that
+       loaded this {{Document}}. We set the [=request/origin=] to the [=origin=] of the {{Document}}
+       or worklet that determined the reporting destination to prevent cross-site request forgery.
 
     : [=request/referrer=]
     :: |request initiator|
+
+    : [=request/referrer policy=]
+    :: `"origin"`
 
     : [=request/mode=]
     :: `"cors"`
@@ -1844,8 +1854,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      <{fencedframe}>.
 
   1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
-     component=] is false, |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor root
-     origin=] otherwise.
+     component=] is false, and |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor
+     root origin=] otherwise.
 
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
@@ -2268,26 +2278,8 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
 Note: With these new definitions, a [=top-level traversable=] is essentially "unfenced" as described
 in the [[#nested-traversables-intro]].
 
-The algorithm as it exists today is a "fenced" algorithm, which will be re-introduced as a "fenced"
-variant as follows:
-
-<div algorithm>
-  A <dfn>fenced top-level traversable</dfn> is a [=traversable navigable=] with a null
-  [=navigable/parent=].
-</div>
-
-<div algorithm>
-  To get the <dfn noexport for="navigable">fenced top-level traversable</dfn> of a [=navigable=]
-  |inputNavigable|:
-
-    1. Let |navigable| be |inputNavigable|.
-
-    1. [=iteration/While=] |navigable|'s [=navigable/parent=] is not null, set |navigable| to
-       |navigable|'s [=navigable/parent=].
-
-    1. Return |navigable|.
-</div>
-
+[=Top-level traversable=] as it exists today is already "fenced", and will be re-named to
+<dfn>fenced top-level traversable</dfn>.
 
 <h3 id=navigable-traversing-algorithms>Modifications to navigable-traversing algorithms</h3>
 
@@ -2650,6 +2642,17 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
 
+  Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
+  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
+  The [=source snapshot params/initiator ancestor root origin=], for component ads, is the origin of
+  the top-level ad container, if any exists. They are used by the [=attempt to send an automatic
+  beacon=] algorithm to compare [=origin=]s and determine which {{FenceReportingDestination}}s to
+  send beacons and with what information, if the <{fencedframe}>-initiated navigation succeeds. The
+  [=source snapshot params/target fenced frame config=] on the other hand, is the non-[=instantiate
+  a config|instantiated=] [=fenced frame config=] that will be loaded into a <{fencedframe}> element
+  for navigations targeting fenced frames. These fields do not interact *together* in any meaningful
+  way.
+
   : <dfn for="source snapshot params">attribution reporting enabled</dfn>
   :: a [=boolean=].
 
@@ -2663,16 +2666,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
      [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 
-  Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
-  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
-  The [=source snapshot params/initiator ancestor root origin=], for component ads, is the origin of
-  the top-level ad container, if any exists. They are used by the [=attempt to send an automatic
-  beacon=] algorithm to compare [=origin=]s and determine which {{FenceReportingDestination}}s to
-  send beacons and with what information, if the <{fencedframe}>-initiated navigation succeeds. The
-  [=source snapshot params/target fenced frame config=] on the other hand, is the non-[=instantiate
-  a config|instantiated=] [=fenced frame config=] that will be loaded into a <{fencedframe}> element
-  for navigations targeting fenced frames. These fields do not interact *together* in any meaningful
-  way.
 </div>
 
 <div algorithm>
