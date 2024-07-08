@@ -1792,7 +1792,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Wait on all nested fenced frames to disable network too.
 
      Issue: Spec this waiting more formally.
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
+     (<a href="https://github.com/WICG/fenced-frame/issues/168">WICG/fenced-frame#168</a>)
 
      1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
         [=resolve=] |p| with {{undefined}}.
