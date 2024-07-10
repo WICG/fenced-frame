@@ -1743,10 +1743,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      Issue: the page credentialless nonce
      (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
 
-     1. Revoke the partition nonces |fencedFrameNonce| and |credentiallessNonce|.
+     1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
 
-     Issue: Spec the revocation process.
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
+     1. Invoke [=revoke network for a partition nonce=] on |credentiallessNonce|.
 
      1. Set |instance|'s [=fenced frame config instance/has disabled untrusted network=] to true.
 
@@ -1759,6 +1758,38 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         [=resolve=] |p| with {{undefined}}.
 
   1. Return |p|.
+</div>
+
+<div algorithm>
+  In order to <dfn>revoke network for a partition nonce</dfn> using a
+  [=fenced frame config instance/partition nonce=] |nonce|, run these steps:
+
+  1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
+
+  1. <span class=XXX>TODO: Fill this in</span>
+</div>
+
+<div algorithm>
+  To determine whether fetching a [=request=] |request| <dfn>should be blocked due to a revoked
+  partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|, run these
+  steps:
+
+  1. <span class=XXX>TODO: Fill this in</span>
+</div>
+
+<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
+
+The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
+
+<div algorithm=network-revocation-check-patch>
+  In the [=main fetch=] algorithm, step 7, where it says:
+
+    > If should request be blocked due to a bad port, should fetching request be blocked as mixed
+    > content, or should request be blocked by Content Security Policy returns blocked, then set
+    > response to a network error.
+
+  Add "[=should request be blocked due to a revoked partition nonce=]" to the conditions after
+  "should request be blocked by Content Security Policy".
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
