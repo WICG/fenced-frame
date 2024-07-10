@@ -53,7 +53,7 @@ For COEP, If the fenced frame’s embedding page enables COEP then the fenced fr
 ## Opt-in header
 Since fenced frames allow a document to have many constraints in place, an opt-in mechanism is a good way for the document to accept those restrictions. The opt-in will make use of the Supports-Loading-Mode proposed [here](https://github.com/WICG/nav-speculation/blob/main/opt-in.md).
 
-It is also important for sites to opt-in due to security reasons. Due to privacy reasons, a fenced frame does not honor headers like frame-ancestors and x-frame-options all the way up to the primary top-level frame but only till the fenced frame root.
+It is also important for sites to opt-in due to security reasons, e.g. csp:frame-ancestors behavior. Frame ancestors checks will stop at the Fenced Frame root for Protected Audience fenced frames. All other fenced frames (e.g., for selectURL or created via FencedFrameConfig) will check all the way up to the primary top-level frame. Protected Audience is different because it is only allowed to have k-anonymous information flow into the fenced frame, and the primary top-level frame’s origin may not be k-anonymous.
 
 ## Fetch metadata integration
 To let a server know that a document is being requested for rendering in a fenced frame, a new Sec-Fetch-Dest HTTP Request Header value of `fencedframe` will be sent in the request.
