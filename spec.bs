@@ -2278,9 +2278,6 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
 Note: With these new definitions, a [=top-level traversable=] is essentially "unfenced" as described
 in the [[#nested-traversables-intro]].
 
-[=Top-level traversable=] as it exists today is already "fenced", and will be re-named to
-<dfn>fenced top-level traversable</dfn>.
-
 <h3 id=navigable-traversing-algorithms>Modifications to navigable-traversing algorithms</h3>
 
 <div algorithm="inclusive-descendant-navigables-patch">
@@ -2699,6 +2696,32 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   [=automatic beacon data/once=] set to true.
 </div>
 
+<div algorithm=get-initiator-ancestor-root-origin>
+  To <dfn>get the initiator ancestor root origin</dfn> of a given {{Document}} |sourceDocument|:
+
+  1. Let |navigable| be |sourceDocument|'s [=node navigable=].
+
+  1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+     navigable=]:
+  
+    1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+  1. If |navigable| is null, return null.
+
+  1. Otherwise:
+
+    1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
+
+    1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+      navigable=]:
+
+      1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+    1. If |navigable| is null, return null.
+
+       Otherwise, return |navigable|'s associated {{Document}}'s [=Document/origin=].
+</div>
+
 <div algorithm=snapshot-source-snapshot-params>
   Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
   with these additional fields:
@@ -2709,10 +2732,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   : [=source snapshot params/initiator ancestor root origin=]
 
-  :: |sourceDocument|'s [=node navigable=]'s [=fenced top-level traversable=]'s [=navigable/unfenced
-     parent=]'s [=fenced top-level traversable=]'s associated {{Document}}'s [=Document/origin=] if
-     |sourceDocument|'s [=node navigable=]'s [=fenced top-level traversable=]'s [=navigable/unfenced
-     parent=] is not null, null otherwise.
+  :: The result of running [=get the initiator ancestor root origin=] on |sourceDocument|.
 
   : [=source snapshot params/attribution reporting enabled=]
   :: The result of determining whether |sourceDocument| is [=allowed to use=] the
