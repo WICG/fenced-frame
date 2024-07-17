@@ -1760,21 +1760,34 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. Return |p|.
 </div>
 
+A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
+[=partition nonces=], and a <dfn>network revocation exemption map</dfn>, which is a [=map=] whose
+[=map/keys=] are [=partition nonces=] and [=map/values=] are [=sets=] of [=URLs=].
+
+Note: The network revocation exemption map is used only for web platform tests; in normal usage
+it is always empty.
+
 <div algorithm>
   In order to <dfn>revoke network for a partition nonce</dfn> using a
   [=fenced frame config instance/partition nonce=] |nonce|, run these steps:
 
-  1. If |event|'s {{FenceEvent/eventType}} [=string/starts with=] "`reserved.`", then return.
+  1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. <span class=XXX>TODO: Cancel requests in progress.</span>
 </div>
 
 <div algorithm>
   To determine whether fetching a [=request=] |request| <dfn>should be blocked due to a revoked
-  partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|, run these
-  steps:
+  partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce| and a
+  [=URL=] |requestURL|, run these steps:
 
-  1. <span class=XXX>TODO: Fill this in</span>
+  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
+     |requestURL| [=set/exists=] in it, return <b>allowed</b>.
+
+  1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return
+     <b>blocked</b>.
+
+  1. Return <b>allowed</b>.
 </div>
 
 <h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
@@ -1784,9 +1797,12 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 <div algorithm=network-revocation-check-patch>
   In the [=main fetch=] algorithm, step 7, where it says:
 
-    > If should request be blocked due to a bad port, should fetching request be blocked as mixed
-    > content, or should request be blocked by Content Security Policy returns blocked, then set
-    > response to a network error.
+    > If <a lt="block bad port">should <var>request</var> be blocked due to a bad port</a>,
+    > <a lt="should fetching request be blocked as mixed content?">
+    > should fetching <var>request</var> be blocked as mixed content</a>, or
+    > <a lt="should request be blocked by Content Security Policy?">should <var>request</var>
+    > be blocked by Content Security Policy</a> returns <b>blocked</b>, then set
+    > <var>response</var> to a <a>network error</a>.
 
   Add "[=should request be blocked due to a revoked partition nonce=]" to the conditions after
   "should request be blocked by Content Security Policy".
