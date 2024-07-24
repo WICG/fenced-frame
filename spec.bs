@@ -2704,22 +2704,28 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
      navigable=]:
   
-    1. Set |navigable| to |navigable|'s [=navigable/parent=].
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
 
   1. If |navigable| is null, return null.
 
   1. Otherwise:
 
-    1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
+     1. [=Assert=]: |navigable| is a [=fenced navigable container/fenced navigable=].
 
-    1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
-      navigable=]:
+     1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
 
-      1. Set |navigable| to |navigable|'s [=navigable/parent=].
+     1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+        navigable=]:
 
-    1. If |navigable| is null, return null.
+        1. Set |navigable| to |navigable|'s [=navigable/parent=].
 
-       Otherwise, return |navigable|'s associated {{Document}}'s [=Document/origin=].
+     1. If |navigable| is null, return null.
+
+     1. Otherwise, return |navigable|'s [=navigable/active document=]'s [=Document/origin=].
+
+  Note: This algorithm is used to get the [=origin=] of the [=fenced navigable container/fenced
+  navigable=] whose descendant [=fenced navigable container/fenced navigable=]'s descendant is
+  |sourceDocument|, if one exists.
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
