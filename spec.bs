@@ -718,6 +718,10 @@ following [=struct/items=]:
 An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
 set=].
 
+A <dfn export for=fencedframetype>permissions policy behavior</dfn> is either "<dfn export
+for="permissions policy behavior">`fixed`</dfn>" or "<dfn export for="permissions policy
+behavior">`flexible`</dfn>".
+
 A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
 [=struct/items=]:
 
@@ -1186,6 +1190,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>effective sandbox flags</dfn>
   :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
 
+  : <dfn>permissions policy behavior</dfn>
+  :: a [=fencedframetype/permissions policy behavior=]
+
   : <dfn>effective enabled permissions</dfn>
   :: null, or a [=list=] of [=policy-controlled features=]
 
@@ -1236,6 +1243,10 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/effective sandbox flags=]
     :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
        [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
+
+    : [=fenced frame config instance/permissions policy behavior=]
+    :: [=permissions policy behavior/flexible=] if |config|'s [=fenced frame config/effective
+       enabled permissions=] is null, [=permissions policy behavior/fixed=] otherwise.
 
     : [=fenced frame config instance/effective enabled permissions=]
     :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
@@ -3125,25 +3136,28 @@ The [=policy-controlled features=] available to {{Document}}s inside of a <{fenc
 as the manner in which they are calculated, vary depending on how the [=fenced frame config=] that
 the <{fencedframe}> navigates to is constructed.
 
-A {{FencedFrameConfig}} constructed through the web platform will be considered to have a [=fenced
-frame config instance/flexible permissions policy=], and the <{fencedframe}> it naviagtes will be
-allowed to inherit permissions as long as they are part of the [=fenced frame allowed permissions=]
-list. All other permissions-backed features will be disabled.
+A [=fenced frame config instance=] created via the {{FencedFrameConfig}} constructor on the web
+platform will be considered to have a [=permissions policy behavior/flexible=]
+[=fencedframetype/permissions policy behavior=], and the inner {{Document}} of the <{fencedframe}>
+it navigates will be allowed to inherit permissions as long as they are part of the [=fenced frame
+allowed permissions=] list. All other permissions-backed features will be disabled.
 
-A [=fenced frame config=] created through an API call that sets its [=fenced frame config/effective
-enabled permissions=] will be considered to have a [=fenced frame config instance/fixed permissions
-policy=], and the <{fencedframe}> it navigates to will have the [=fenced frame config/effective
-enabled permissions=] be the exclusive list of [=policy-controlled features=] that will be enabled
-in the {{Document}} (all others will be disabled).
+A [=fenced frame config instance=] created via a config-generating API call that sets its [=fenced
+frame config/effective enabled permissions=] will be considered to have a [=permissions policy
+behavior/fixed=] [=fencedframetype/permissions policy behavior=], and the inner {{Document}} of the
+<{fencedframe}> it navigates to will have the [=fenced frame config/effective enabled permissions=]
+be the exclusive list of [=policy-controlled features=] that will be enabled in the {{Document}}
+(all others will be disabled).
 
-During a <{fencedframe}> navigation to a [=fenced frame config=] with a [=fenced frame config
-instance/fixed permissions policy=], it checks the [=fenced frame config/effective enabled
-permissions=] in the [=browsing context/fenced frame config instance=] stored in the [=browsing
-context=], and only allows the navigation if the [=Document/permissions policy=] for the
-navigation's resulting {{Document}} has an [=permissions policy/inherited policy=] such that the
-[=inherited policy for a feature|inherited policy value=] is "`Enabled`" for each feature in the
-[=fenced frame config/effective enabled permissions=]. Otherwise the environment the <{fencedframe}>
-is embedded in is deemed unsuitable for the [=fenced frame config=], and the navigation is blocked.
+During a <{fencedframe}> navigation to a [=fenced frame config instance=] with a [=permissions
+policy behavior/fixed=] [=fencedframetype/permissions policy behavior=], it checks the [=fenced
+frame config instance/effective enabled permissions=] in the [=browsing context/fenced frame config
+instance=] stored in the [=browsing context=], and only allows the navigation if the
+[=Document/permissions policy=] for the navigation's resulting {{Document}} has an [=permissions
+policy/inherited policy=] such that the [=inherited policy for a feature|inherited policy value=] is
+"`Enabled`" for each feature in the [=fenced frame config/effective enabled permissions=]. Otherwise
+the environment the <{fencedframe}> is embedded in is deemed unsuitable for the [=fenced frame
+config=], and the navigation is blocked.
 
 At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
 in the frame based on that navigation's [=navigation params/origin=] (since the origin is derived
@@ -3153,8 +3167,8 @@ consideration of whether its [=navigation params/origin=] is [=same origin=] wit
 Therefore a feature can only be enabled inside of a <{fencedframe}> if its embedder *explicitly*
 delegates it via [=the special value *=] [=allowlist=].
 
-Considering all of the above, we get the following interesting implications for [=fenced frame
-config instance/fixed permissions policy=] navigations:
+Considering all of the above, we get the following interesting implications for [=permissions policy
+behavior/fixed=] [=fencedframetype/permissions policy behavior=] navigations:
 
  * If a [=policy-controlled feature|feature=] that [=list/exists=] in the [=fenced frame
    config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
@@ -3206,22 +3220,8 @@ algorithms to achieve the outcomes described in the above explanatory content.
 
 <h4 id=permissions-policy-definitions>Definitions</h4>
 
-<div algorithm>
-  A [=fenced frame config instance=] is considered to have a
-  <dfn for='fenced frame config instance'>fixed permissions policy</dfn> if its
-  [=fenced frame config instance/effective enabled permissions=] are not null.
-</div>
-
-<div algorithm>
-  A [=fenced frame config instance=] is considered to have a
-  <dfn for='fenced frame config instance'>flexible permissions policy</dfn> if its
-  [=fenced frame config instance/effective enabled permissions=] are null.
-</div>
-
-<div algorithm>
-  The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation`",
-  "`shared-storage`", or "`shared-storage-select-url`".
-</div>
+The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation`",
+"`shared-storage`", or "`shared-storage-select-url`".
 
 <h4 id=permissions-policy-patches>Algorithm patches</h4>
 
@@ -3246,18 +3246,18 @@ algorithms to achieve the outcomes described in the above explanatory content.
 <div algorithm>
   Create a new algorithm, called <dfn>Create a permissions policy for a fenced navigable</dfn>.
 
-  Given null or an [=element=] (|container|) and an [=origin=] (|origin|), this algorithm returns a
+  Given an [=element=] (|container|) and an [=origin=] (|origin|), this algorithm returns a
   new [=Permissions Policy=].
 
-  1. [=Assert=]: if not null, container is a [=fenced navigable container=].
+  1. [=Assert=]: |container| is a [=fenced navigable container=].
 
   1. Let |fenced frame config| be |container|'s [=Node/node document=]'s [=navigable/active browsing
      context=]'s [=browsing context/fenced frame config instance=].
 
   1. Let |inherited policy| be a new [=ordered map=].
 
-  1. If |fenced frame config| is not null and |fenced frame config| has a [=fenced frame config
-     instance/fixed permissions policy=], then:
+  1. If |fenced frame config| is not null and |fenced frame config|'s [=fenced frame config
+     instance/permissions policy behavior=] is [=permissions policy behavior/fixed=], then:
 
     1. [=list/For each=] |feature| [=supported features|supported=]:
 
