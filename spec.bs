@@ -218,6 +218,7 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+      text: boolean; url: boolean
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -1017,7 +1018,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
        Note: The pending event will be sent asynchronously.
 
-  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
+  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
   1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
@@ -1436,12 +1437,21 @@ the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allow
 macros into the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
 {{FencedFrameConfig}}.
 
+Note: To help with ease of adoption,
+[until third party cookie deprecation](https://developers.google.com/privacy-sandbox/relevance/protected-audience-api/feature-status#fenced_frames)
+we will support the API {{Window/navigator}}.{{Navigator/deprecatedURNtoURL()}}, which returns
+the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
+{{FencedFrameConfig}}.
+
 <pre class=idl>
 typedef (USVString or FencedFrameConfig) UrnOrConfig;
 
 partial interface Navigator {
   Promise&lt;undefined&gt; deprecatedReplaceInURN(
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+  Promise&lt;USVString&gt; deprecatedURNtoURL(
+    UrnOrConfig urnOrConfig, optional boolean send_reports = false);
+  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numAdComponents);
 };
 </pre>
 
@@ -1465,7 +1475,8 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. [=map/For each=] |key| → _ of |replacements|:
      1. If |key| does not [=string/start with=] <code>${</code> or <code>%%</code>,
@@ -1479,7 +1490,7 @@ partial interface Navigator {
 
   1. Run the following steps [=in parallel=]:
 
-     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
         [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
@@ -1502,6 +1513,77 @@ partial interface Navigator {
   <wpt>
     /fenced-frame/deprecated-config-apis.https.html
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>deprecatedURNtoURL(|urnOrConfig|, |send_reports|)</dfn> method
+  steps are:
+
+  1. Let |urn| be null.
+
+  1. If |urnOrConfig| is a {{USVString}}, set |urn| to |urnOrConfig|.
+
+  1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
+
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
+        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+     1. If |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|], does not
+        [=map/exist=], then [=queue a global task=] on the [=DOM manipulation task source=]
+        given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
+
+     1. Let |config| be |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|].
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+     1. If |send_reports| is true, then run the steps in |config|'s
+        [=fenced frame config/on navigate callback=].
+
+  1. Return |p|.
+
+  <wpt>
+    /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
+  
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If |instance| is null, then throw a {{DOMException}}.
+
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+    |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+    origin=], then then throw a {{DOMException}}.
+
+  1. Let |maxAdComponents| be 40.
+
+  1. If |numAdComponents| &gt; |maxAdComponents|, then set |numAdComponents| to |maxAdComponents|.
+
+  1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+
+  1. [=map/For each=] |urn| → <var ignore>config</var> of |instance|'s 
+     [=fenced frame config instance/nested configs=]:
+     
+     1. If |numAdComponents| equals 0, then [=iteration/break=].
+
+     1. [=list/Append=] |urn| to |adComponentsURNs|.
+
+     1. Set |numAdComponents| to |numAdComponents| &minus; 1.
+
+  1. Return |adComponentsURNs|.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -1651,7 +1733,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-embedder-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-subframe-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe.https.html 
-    /fenced-frame/fence-report-event-cross-origin.https.html 
+    /fenced-frame/fence-report-event-cross-origin.sub.https.html 
     /fenced-frame/fence-report-event-sub-fencedframe.https.html 
   </wpt>
 </div>
@@ -2514,6 +2596,25 @@ container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
 
 </div>
 
+<h4 id=allow-automatic-beacons>The
+\`<a http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></a>\` HTTP response header</h4>
+
+Serving a document resource that gets loaded into a {{Document}} that is not [=same origin=] with
+its [=Document/browsing context=]'s [=fenced frame config instance=]'s [=fenced frame config
+instance/mapped url=] with the <dfn
+http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></dfn> HTTP response header opts in the
+{{Document}} to having automatic beacon events trigger when it performs navigations. This header is
+a [=structured header=] whose value must be a [=structured header/boolean=].
+
+<h4 id=allow-cross-origin-reporting>The
+\`<a http-header><code>Allow-Cross-Origin-Event-Reporting</code></a>\` HTTP response header</h4>
+
+Serving a document resource that gets loaded into a <{fencedframe}> by a [=fenced frame config
+instance=] with the <dfn http-header><code>Allow-Cross-Origin-Event-Reporting</code></dfn> HTTP
+response header opts in the {{Document}}'s cross-origin [=child navigables=] to be able to send
+{{Fence/reportEvent()}} beacons. This header is a [=structured header=] whose value must be a
+[=structured header/boolean=].
+
 <h4 id=coop-coep>COOP, COEP, and cross-origin isolation</h4>
 
 Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Policy</code></a>\`
@@ -2719,6 +2820,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
+      1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+
   <wpt>
     /fenced-frame/frame-navigation.https.html
   </wpt>
@@ -2801,8 +2904,7 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
     1. Set |navigationParams|'s [=navigation params/fenced frame config instance=]'s [=fenced frame
        config/cross-origin reporting allowed=] to the result of running [=header list/get a
        structured field value=] on |navigationParams|'s [=navigation params/response=]'s
-       [=response/header list=] given "<code>Allow-Cross-Origin-Event-Reporting</code>" and
-       "`item`".
+       [=response/header list=] given [:Allow-Cross-Origin-Event-Reporting:] and "`item`".
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
@@ -2811,15 +2913,12 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
   10. Let |automaticBeaconsAllowed| be the result of running [=header list/get a structured field
       value=] on |navigationParams|'s [=navigation params/response=]'s [=response/header list=]
-      given "<code>Allow-Fenced-Frame-Automatic-Beacons</code>" and "`item`".
+      given [:Allow-Fenced-Frame-Automatic-Beacons:] and "`item`".
   
   Further rewrite step 10 (now step 12) to return a new {{Document}} with an additional parameter:
   : [=Document/automatic beacons allowed=]
-  :: |automaticBeaconsAllowed|
+  :: |automaticBeaconsAllowed|.
 </div>
-
-<span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
-appropriate time.</span>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
 

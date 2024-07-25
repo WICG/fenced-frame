@@ -296,7 +296,7 @@ An additional element of user privacy is the ability to control this feature via
 
 ## Security considerations 
 
-This new variant of fenced frames (constructed with a normal URL instead of an config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
+This new variant of fenced frames (constructed with a normal URL instead of a config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
 
 
 ### Permissions delegation
@@ -311,10 +311,13 @@ Fenced frames constructed using the non-opaque URL constructor do not have to wo
 Given the above, we would do an audit to see which features are safe to allow in this variant. In the initial launch though, we will likely go with a minimal list of features that we know are necessary for the personalized payment button to work, e.g. shared storage and Aggregate Reporting APIs.
 
 
-### Ongoing technical considerations
+### Process Isolation
 
-There are ongoing technical considerations, which we will be updating here once the design is crystallized. Specifically, we would like to revisit the fenced frames [process isolation model](https://github.com/WICG/fenced-frame/blob/master/explainer/process_isolation.md) for this variant.
+Fenced frames, like Shared Storage worklets, follow Chrome's [Site Isolation](https://www.chromium.org/Home/chromium-security/site-isolation/) model. As Site Isolation improves, so will the security provided to fenced frames.
 
+### CSP:frame-ancestors
+CSP:frame-ancestors response header only checks up to the fenced frame root in information flows where the embedder’s origin cannot be known inside the fenced frame (e.g., Protected Audience fenced frames). For the information flow in this proposal, since the embedder’s information could be available inside the FF via the src url, it is not a privacy concern to let the CSP:frame-ancestors response header be checked all the way up to the outermost main frame. 
+With this behavior, the fenced frame can then allowlist origins via CSP:frame-ancestors header that it is ok to be embedded in and exclude others.
 
 ## Stakeholder Feedback / Opposition
 
