@@ -111,6 +111,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: embedder-content-other.html
       text: width; url: attr-dim-width
       text: height; url: attr-dim-height
+    urlPrefix: document-lifecycle.html
+      text: abort a document; url: abort-a-document
     urlPrefix: document-sequences.html
       text: browsing context group; url: browsing-context-group
       text: browsing context group set; url: browsing-context-group-set
@@ -138,6 +140,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
+      text: completionSteps; url: attempt-to-populate-completion-steps
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
       for: navigation params
@@ -448,8 +451,13 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 </div>
 
 <div algorithm=destroy>
-  When a <{fencedframe}> element is [=removed from a document=], the user agent <p class=XXX>TODO:
-  destroy the nested traversable</p>.
+  When a <{fencedframe}> element is [=removed from a document=], the user agent must run the
+  following steps:
+  
+  1. <p class=XXX>TODO: destroy the nested traversable.</p>
+
+  1. [=Recalculate the untrusted network status of all frames=] given the {{Document}}'s [=node
+     navigable=]'s [=navigable/top-level traversable=].
 </div>
 
 The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are to return
@@ -758,6 +766,11 @@ fenced frame reporting map=], they can mark certain destinations as pending usin
 a reporting destination=] through the reference it kept, it will handle all of the pending events
 stored in the [=list=]. If the destination is never finalized, then the pending events will never
 be sent.
+
+An <dfn for=fencedframetype>untrusted network status</dfn> is either "<dfn export for='untrusted
+network status'>`enabled`</dfn>", "<dfn export for='untrusted network status'>`disabled for this
+tree`</dfn>", or "<dfn export for='untrusted network status'>`disabled for this and descendant
+trees`</dfn>".
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
@@ -1152,19 +1165,19 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>is ad component</dfn>
   :: A [=boolean=], defaults to false.
 
+  Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
+  used to construct ads composed of multiple pieces. See the <a
+  href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
+  Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
+  href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
+  Frame Ads Reporting explainer</a> that describes this.
+
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], defaults to false.
 
   : <dfn>can disable untrusted network</dfn>
   :: A [=boolean=], defaults to true.
 </dl>
-
-  Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
-  used to construct ads composed of multiple pieces. See the <a
-  href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
-  Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
-  href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
-  Frame Ads Reporting explainer</a> that describes this.
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
 
@@ -1214,8 +1227,12 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>can disable untrusted network</dfn>
   :: A [=boolean=]
 
-  : <dfn>has disabled untrusted network</dfn>
-  :: A [=boolean=], initially false.
+  : <dfn>untrusted network status</dfn>
+  :: An [=fencedframetype/untrusted network status=], initially [=untrusted network
+     status/enabled=].
+
+  : <dfn>on network disabled promises</dfn>
+  :: A [=list=] of {{Promise|Promises}}.
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1310,8 +1327,11 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/can disable untrusted network=]
     :: |config|'s [=fenced frame config/can disable untrusted network=]
 
-    : [=fenced frame config instance/has disabled untrusted network=]
-    :: false
+    : [=fenced frame config instance/untrusted network status=]
+    :: [=untrusted network status/enabled=]
+
+    : [=fenced frame config instance/on network disabled promises=]
+    :: an empty [=list=]
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1887,17 +1907,77 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. Invoke [=revoke network for a partition nonce=] on |credentiallessNonce|.
 
-     1. Set |instance|'s [=fenced frame config instance/has disabled untrusted network=] to true.
+     1. Set |instance|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
+        network status/disabled for this tree=].
 
-     1. Wait on all nested fenced frames to disable network too.
+     1. [=list/Append=] |p| to |instance|'s [=fenced frame config instance/on network disabled
+        promises=].
 
-     Issue: Spec this waiting more formally.
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
-
-     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
-        [=resolve=] |p| with {{undefined}}.
+     1. [=Recalculate the untrusted network status of all frames=] given |global|'s
+        [=Window/browsing context=]'s [=browsing context/top-level traversable=].
 
   1. Return |p|.
+</div>
+
+<div algorithm>
+  To <dfn>Recalculate the untrusted network status of all frames</dfn> given a [=top-level
+  traversable=] |topLevelTraversable|, run these steps:
+
+  1. Let |navigables| be |topLevelTraversable|'s [=navigable/active document=]'s
+     [=Document/inclusive descendant navigables=] with [=inclusive-dn-unfenced|unfenced=] set to
+     true.
+  
+  1. Let |i| be |navigables|' [=list/size=] - 1.
+
+  1. Let |navigablesWithNetworkChildren| be an empty [=set=].
+
+  1. While |i| > 0:
+
+     1. Let |currentNavigable| be |navigables|[|i|].
+
+     1. Set |i| to |i| - 1.
+
+     1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=], then
+        [=iteration/continue=].
+
+     1. Let |config| be |currentNavigable|'s [=navigable/active browsing context=]'s [=browsing
+        context/fenced frame config instance=].
+
+     1. If |config| is null, then [=iteration/continue=].
+
+     1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
+        network status/disabled for this and descendant trees=], then [=iteration/continue=].
+
+     1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
+        |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
+        is [=untrusted network status/disabled for this tree=], false otherwise.
+
+     1. If |networkCutoffReady| is true:
+
+        1. Set |config|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
+           network status/disabled for this and descendant trees=].
+
+        1. Let |global| be |currentNavigable|'s [=navigable/active window=].
+
+        1. For each |promise| in |config|'s [=fenced frame config instance/on network disabled
+           promises=]:
+
+           1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+              [=resolve=] |promise| with {{undefined}}.
+
+        1. [=list/Empty=] |config|'s [=fenced frame config instance/on network disabled promises=].
+
+     1. Otherwise:
+
+        1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/unfenced parent=].
+
+        1. While |ancestorFencedRoot| is not null and |ancestorFencedRoot| is not a [=fenced
+           navigable container/fenced navigable=]:
+
+           1. Set |ancestorFencedRoot| to |ancestorFencedRoot|'s [=navigable/parent=].
+        
+        1. If |ancestorFencedRoot| is not null, [=set/append=] |ancestorFencedRoot| to
+           |navigablesWithNetworkChildren|.
 </div>
 
 A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
@@ -1917,7 +1997,7 @@ it is always empty.
 </div>
 
 <div algorithm>
-  To determine whether fetching a [=request=] |request| <dfn>should be blocked due to a revoked
+  To determine whether fetching a [=request=] <var ignore>request</var> <dfn>should request be blocked due to a revoked
   partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce| and a
   [=URL=] |requestURL|, run these steps:
 
@@ -1930,22 +2010,39 @@ it is always empty.
   1. Return <b>allowed</b>.
 </div>
 
-<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
+<h3 id=revocation-patches>Monkeypatches for network revocation</h3>
 
 The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
 
 <div algorithm=network-revocation-check-patch>
-  In the [=main fetch=] algorithm, step 7, where it says:
+  In the [=fetch=] algorithm, step 7, where it says:
 
     > If <a lt="block bad port">should <var>request</var> be blocked due to a bad port</a>,
     > <a lt="should fetching request be blocked as mixed content?">
     > should fetching <var>request</var> be blocked as mixed content</a>, or
     > <a lt="should request be blocked by Content Security Policy?">should <var>request</var>
     > be blocked by Content Security Policy</a> returns <b>blocked</b>, then set
-    > <var>response</var> to a <a>network error</a>.
+    > <var ignore>response</var> to a <a>network error</a>.
 
   Add "[=should request be blocked due to a revoked partition nonce=]" to the conditions after
   "should request be blocked by Content Security Policy".
+</div>
+
+The network revocation mechanism requires the following monkeypatches to the [[HTML]] Standard.
+
+<div algorithm=network-status-document-abort>
+  Add a new step to the [=abort a document=] algorithm after step 4 that says:
+
+  5. [=Recalculate the untrusted network status of all frames=] given <var ignore>document</var>'s
+     [=node navigable=]'s [=navigable/top-level traversable=].
+</div>
+
+<div algorithm=network-status-navigate>
+  Modify the call to [=attempt to populate the history entry's document=] in the [=navigate=]
+  algorithm. Update the [=completionSteps=] to include the following new step:
+
+  2. [=Recalculate the untrusted network status of all frames=] given <var ignore>navigable</var>'s
+     [=navigable/top-level traversable=].
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
