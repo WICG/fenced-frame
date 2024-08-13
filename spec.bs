@@ -1156,7 +1156,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   :: A [=boolean=], initially false.
 </dl>
   
-  Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
+  Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
   used to construct ads composed of multiple pieces. See the <a
   href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
   Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
