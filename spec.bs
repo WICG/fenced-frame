@@ -894,9 +894,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
         1. Set |processResponse| to these steps given a [=response=] |response|:
            1. Let |fenced| be true.
-           1. Let |triggerVerificationMetadata| be null.
            1. Run [=process an attribution eligible response=] with |event|'s
-              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, |fenced|, |triggerVerificationMetadata|, and |response|.
+              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, |fenced|, and |response|.
 
         1. Set |useParallelQueue| to true.
 
