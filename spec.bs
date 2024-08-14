@@ -227,10 +227,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: the special value *; url: the-special-value
     text: permissions policy; url: permissions-policy
     text: policy directive; url: policy-directive
-    for: allowlist
-      text: src-origin; url: src-origin
-    for: declared policy
-      text: declarations; url: declared-policy-declarations
+    text: declared origin; url: declared-origin
     for: permissions policy
       text: declared policy; url: permissions-policy-declared-policy
       text: inherited policy; url: permissions-policy-inherited-policy
@@ -2894,9 +2891,9 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
 <div algorithm=create-and-initialize-document-patch>
   Modify [[!HTML]]'s [=create and initialize a Document object=] algorithm to insert one step after
-  step 3 that reads:
+  step 2 that reads:
 
-  4. If |navigationParams|'s [=navigation params/fenced frame config instance=] is not null:
+  3. If |navigationParams|'s [=navigation params/fenced frame config instance=] is not null:
 
     1. [=Assert=]: |browsingContext| does not equal |navigationParams|'s [=navigation
        params/navigable=]'s [=navigable/active browsing context=].
@@ -2912,10 +2909,6 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
-
-    1. Set |permissionsPolicy| to the result of running [=substitute the src-origin allowlist in
-       permissions declarations=] given |permissionsPolicy| and |navigationParams|'s [=navigation
-       params/fenced frame config instance=]'s [=fenced frame config/mapped url=]'s [=url/origin=].
 
   Add a new step after step 9 that reads:
 
@@ -3417,22 +3410,17 @@ algorithms to achieve the outcomes described in the above explanatory content.
      and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
-<div algorithm>
-  To <dfn>substitute the src-origin allowlist in permissions declarations</dfn> given a
-  [=permissions policy=] |permissionsPolicy| and an [=url/origin=] |originToSubstitute|, run these
-  steps:
+<div algorithm=declared-origin-patch>
+Modify the [=declared origin=] algorithm. Add a new step after step 3 that reads:
 
-  1. [=list/For each=] |feature| → |allowlist| of |permissionsPolicy|'s [=permissions
-     policy/declared policy=]'s [=declared policy/declarations=]:
+4. If |node|'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/fenced
+   frame config instance=] is not null, then return |node|'s [=Node/node document=]'s
+   [=Document/browsing context=]'s [=browsing context/fenced frame config instance=]'s [=fenced
+   frame config instance/mapped url=].
 
-     1. If |allowlist|'s [=allowlist/src-origin=] is not null:
-        
-        1. Set |allowlist|'s [=allowlist/src-origin=] to |originToSubstitute|.
-
-        1. Set |permissionsPolicy|'s [=permissions policy/declared policy=]'s [=declared
-           policy/declarations=][|feature|] to |allowlist|.
-
-  1. Return |permissionsPolicy|.
+Note: This ensures that the `'src'` [=allowlist=] that can be set in the <{fencedframe/allow}>
+attribute works when using a [=fenced frame config=] to navigate a <{fencedframe}> (or a urn that
+maps to a [=fenced frame config=] to navigate an <{iframe}>).
 </div>
 
 <wpt>
