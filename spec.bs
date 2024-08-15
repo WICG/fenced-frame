@@ -882,9 +882,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
      1. Set |destination url| to |destination map|[|eventType|].
 
-    1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true and the result
-       of [=getting supported registrars=] is not [=list/is empty|empty=] and |event|'s
-       [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
+    1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true
+        and |event|'s [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
 
         1. If |event|'s {{FenceEvent/eventType}} matches one of the [=fencedframetype/automatic
            beacon event type=] values, set |attributionReportingEligibility| to
