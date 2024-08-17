@@ -2806,13 +2806,20 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
   optional [=string=] |sharedStorageContext| (default null).
 
-  Modify step 12 of [[HTML]]'s [=navigate=] algorithm to read:
+  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
 
-  12. If [=the navigation must be a replace=] given |url| and |navigable|, then set
-      <var ignore>historyHandling</var> to "<a for="history handling behavior">`replace`</a>".
+    * |navigable| is a [=fenced navigable container/fenced navigable=];
 
-  Modify step 13 of the same algorithm (If all of the following are true:) to include the following
-  condition:
+      Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
+      for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
+
+  <wpt>
+    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
+    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
+    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+  </wpt>
+
+  Modify step 8 of the same algorithm to include the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2824,7 +2831,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 22, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
@@ -2855,9 +2862,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
-    /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
-    /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
-    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
   </wpt>
 
   Rewrite the step starting with "Let |unloadPromptCanceled| be the result of" to:
