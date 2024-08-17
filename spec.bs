@@ -3351,10 +3351,10 @@ algorithms to achieve the outcomes described in the above explanatory content.
   Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add the
   following conditions to step 6.4 (Otherwise, if any of the following are true:) that say:
   
-  - The result of [=should navigation response to navigation request be blocked by Permissions
+  * The result of [=should navigation response to navigation request be blocked by Permissions
     Policy?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
-  - The result of [=should navigation response to navigation request be blocked by sandboxing
+  * The result of [=should navigation response to navigation request be blocked by sandboxing
     flags?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
   Note: If any of these algorithms returns "`Blocked`", the pre-existing {{Document}} in the
