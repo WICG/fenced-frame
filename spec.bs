@@ -93,6 +93,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
       text: determine navigation params policy container; url: determining-navigation-params-policy-container
       text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      text: determine the creation sandboxing flags; url: determining-the-creation-sandboxing-flags
+      text: iframe sandboxing flag set; url: iframe-sandboxing-flag-set
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
     urlPrefix: dom.html
@@ -106,6 +108,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
+      text: is initial about:blank; url: is-initial-about-blank
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -145,6 +148,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: navigable; url: navigation-params-navigable
         text: origin; url: navigation-params-origin
         text: COOP enforcement result; url: navigation-params-coop-enforcement-result
+        text: final sandboxing flag set; url: navigation-params-sandboxing
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -161,6 +165,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: step; url: she-step
       for: source snapshot params
         text: has transient activation; url: source-snapshot-params-activation
+      text: the navigation must be a replace; url: the-navigation-must-be-a-replace
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -411,6 +416,7 @@ interface HTMLFencedFrameElement : HTMLElement {
   [CEReactions] attribute FencedFrameConfig? config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
+  [SameObject, PutForwards=value] readonly attribute DOMTokenList sandbox;
   [CEReactions] attribute DOMString allow;
 };
 </xmp>
@@ -424,6 +430,22 @@ Descendants of <{fencedframe}> elements represent nothing.
 Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
 
+Each <{fencedframe}> has a <dfn for=fencedframe>fencedframe sandboxing flag set</dfn>, which is a
+[=sandboxing flag set=]. Which flags in a [=fencedframe/fencedframe sandboxing flag set=] are set
+at any particular time is determined by the <{fencedframe}> element's <{fencedframe/sandbox}>
+attribute.
+
+<div algorithm=determine-sandbox-flags-patch>
+  Modify the [=determine the creation sandboxing flags=] algorithm. Rewrite the second step in the
+  union to be the following 2 steps:
+
+  * If |embedder| is an <{iframe}> element, then: the flags set on |embedder|'s [=iframe sandboxing
+    flag set=].
+
+  * If |embedder| is an <{fencedframe}> element, then: the flags set on |embedder|'s [=fencedframe/
+    fencedframe sandboxing flag set=].
+</div>
+
 <div algorithm=insertion>
   When a <{fencedframe}> element |element| is [=node is inserted into a document|inserted into a
   document=] whose [=Document/browsing context=] is non-null, run these steps:
@@ -433,7 +455,8 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 
   1. Set |nested traversable|'s [=navigable/loading mode=] to "`fencedframe`".
 
-  1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
+  1. If |element| has a <{fencedframe/sandbox}> attribute, then [=parse a sandboxing directive=]
+     given the attribute's value and |element|'s [=fencedframe/fencedframe sandboxing flag set=].
 
   Issue: It's not necessary to call the <a
   href=https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps>URL
@@ -492,8 +515,26 @@ The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, det
 in the <{fencedframe}>'s [=fenced navigable container/fenced navigable=] is initialized. Its value
 must be a [=serialized permissions policy=]. [[!PERMISSIONS-POLICY]]
 
-The IDL attribute <dfn attribute for=HTMLFencedFrameElement>allow</dfn> must [=reflect=] the
-respective content attribute of the same name.
+The <dfn element-attr for=fencedframe>sandbox</dfn> attribute, when specified, enables a set of
+extra restrictions on any content hosted by the <{fencedframe}>. Its value must be an [=unordered
+set of unique space-separated tokens=] that are [=ASCII case-insensitive=]. The allowed values are
+the same as the allowed values for the <{iframe}>'s <{iframe/sandbox}> attribute.
+
+When an <{fencedframe}> element's <{fencedframe/sandbox}> attribute is set or changed while it has a
+non-null [=fenced navigable container/fenced navigable=], the user agent must [=parse a sandboxing
+directive=] given the attribute's value and the <{fencedframe}> element's [=fencedframe/fencedframe
+sandboxing flag set=].
+
+When an <{fencedframe}> element's <{fencedframe/sandbox}> attribute is removed while it has a
+non-null [=fenced navigable container/fenced navigable=], the user agent must empty the
+<{fencedframe}> element's [=fencedframe/fencedframe sandboxing flag set=].
+
+The IDL attributes <dfn attribute for=HTMLFencedFrameElement>allow</dfn> and <dfn attribute
+for=HTMLFencedFrameElement>sandbox</dfn> must [=reflect=] the respective content attribute of the
+same name.
+
+The supported tokens for {{HTMLFencedFrameElement/sandbox}}'s {{DOMTokenList}} are the allowed
+values defined in the <{fencedframe/sandbox}> attribute and supported by the user agent.
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -714,9 +755,6 @@ following [=struct/items=]:
   : <dfn>name</dfn>
   :: a [=string=]
 </dl>
-
-An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
-set=].
 
 A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
 [=struct/items=]:
@@ -1094,12 +1132,12 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
-  : <dfn>effective sandbox flags</dfn>
+  : <dfn>effective sandboxing flags</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
-    : <dfn for="effective sandbox flags">value</dfn>
-    :: an [=fencedframetype/exhaustive set of sandbox flags=]
+    : <dfn for="effective sandboxing flags">value</dfn>
+    :: a [=sandboxing flag set=]
 
-    : <dfn for="effective sandbox flags">visibility</dfn>
+    : <dfn for="effective sandboxing flags">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
   : <dfn>effective enabled permissions</dfn>
@@ -1183,8 +1221,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
-  : <dfn>effective sandbox flags</dfn>
-  :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
+  : <dfn>effective sandboxing flags</dfn>
+  :: null, or a [=sandboxing flag set=]
 
   : <dfn>effective enabled permissions</dfn>
   :: null, or a [=list=] of [=policy-controlled features=]
@@ -1233,9 +1271,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/on navigate callback=]
     :: |config|'s [=fenced frame config/on navigate callback=]
 
-    : [=fenced frame config instance/effective sandbox flags=]
-    :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
-       [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
+    : [=fenced frame config instance/effective sandboxing flags=]
+    :: |config|'s [=fenced frame config/effective sandboxing flags=] if null, otherwise |config|'s
+       [=fenced frame config/effective sandboxing flags=]'s [=effective sandboxing flags/value=]
 
     : [=fenced frame config instance/effective enabled permissions=]
     :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
@@ -2156,8 +2194,8 @@ traversable|created=] or [=navigated=], it <span class=allow-2119>must</span> <a
 href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inherit</a> its embedder
 {{Document}}'s [=Document/active sandboxing flag set=] as is standard for {{Document}}s in normal
 [=child navigables=]. If we did not do this, then the <{fencedframe}> element would be a trivial
-sandbox bypass. Because <{fencedframe}> sandbox flag inheritance behaves similarly to how it does in
-<{iframe}> elements, we consider sandbox inheritance to be *unfenced*.</p>
+sandbox bypass. Because <{fencedframe}> sandboxing flag inheritance behaves similarly to how it does
+in <{iframe}> elements, we consider sandbox inheritance to be *unfenced*.</p>
 
 To provide the isolation mentioned above, and its conditional relaxation, this specification defines
 a new kind of parent for [=traversable navigables=] called an [=traversable navigable/unfenced
@@ -2764,11 +2802,17 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 </div>
 
-<div algorithm=navigate>
-  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] |sharedStorageContext| (default null).
+<div algorithm=navigation-must-replace-patch>
+  Modify [=the navigation must be a replace=] algorithm. Rewrite the definition to read:
 
-  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
+  [=The navigation must be a replace=], given a [=URL=] <var ignore>url</var> and a [=navigable=]
+  |navigable|, if any of the following are true:
+
+  Further rewrite the second condition to read:
+
+    * |navigable|'s [=navigable/active document=]'s [=is initial about:blank=] is true.
+
+  Add the new condition:
 
     * |navigable| is a [=fenced navigable container/fenced navigable=];
 
@@ -2780,8 +2824,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
     /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
   </wpt>
+</div>
 
-  Modify step 8 of the same algorithm to include the following condition:
+<div algorithm=navigate>
+  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
+  optional [=string=] |sharedStorageContext| (default null).
+
+  Modify step 12 of [[HTML]]'s [=navigate=] algorithm to read:
+
+  12. If [=the navigation must be a replace=] given |url| and |navigable|, then set
+      <var ignore>historyHandling</var> to "<a for="history handling behavior">`replace`</a>".
+
+  Modify step 13 of the same algorithm (If all of the following are true:) to include the following
+  condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2793,7 +2848,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 22, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
@@ -2831,6 +2886,20 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. Let |unloadPromptCanceled| be false if |navigable| is a [=fenced navigable container/fenced
        navigable=], or the result of [=checking if unloading is user-canceled=] for |navigable|'s
        [=navigable/active document=]'s [=Document/inclusive descendant navigables=] otherwise.
+
+  Add a step after step 22.8.2 (Let |finalSandboxFlags| be the [=set/union=]...) that reads:
+
+  3. If |sourceSnapshotParams|' [=source snapshot params/target fenced frame config=] is not null,
+     and if |sourceSnapshotParams|' [=source snapshot params/target fenced frame config=]'s [=fenced
+     frame config/effective sandboxing flags=] is not null, then set |finalSandboxFlags| to the
+     [=set/union=] of |finalSandboxFlags| and |sourceSnapshotParams|' [=source snapshot
+     params/target fenced frame config=]'s [=fenced frame config/effective sandboxing flags=]'
+     [=effective sandboxing flags/value=].
+
+     Note: This ensures that the |finalSandboxFlags| are *at least* as restrictive as the [=fenced
+     frame config/effective sandboxing flags=] defined in the [=source snapshot params/target fenced
+     frame config=]. A separate check will make sure that |finalSandboxFlags| is not more
+     restrictive than the [=fenced frame config/effective sandboxing flags=].
 
   <wpt>
     /fenced-frame/before-unload.https.html
@@ -3298,21 +3367,21 @@ algorithms to achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm=attempt-populate-history-patches>
-  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
-  before the step inside the [=queue a task|queued task=] starting with "If
-  |failure| is true, then:" that reads:
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add the
+  following conditions to step 6.4 (Otherwise, if any of the following are true:) that say:
+  
+  - The result of [=should navigation response to navigation request be blocked by Permissions
+    Policy?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
-  8. Otherwise, if the result of [=should navigation response to navigation request be blocked by
-    Permissions Policy?=] given <var ignore>navigationParams</var> is "`Blocked`", then set 
-    |failure| to true.
+  - The result of [=should navigation response to navigation request be blocked by sandboxing
+    flags?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
-  Note: If this algorithm returns "`Blocked`", the pre-existing {{Document}} in the <{fencedframe}>
-  does not stick around; an error page will be loaded.
+  Note: If any of these algorithms returns "`Blocked`", the pre-existing {{Document}} in the
+  <{fencedframe}> does not stick around; an error page will be loaded.
 </div>
 
-<div algorithm=permissions-policy-block-request>
-  Create a new algorithm called <dfn>should navigation response to navigation request be blocked by
-  Permissions Policy?</dfn> in [[!HTML]].
+<div algorithm>
+  <dfn>Should navigation response to navigation request be blocked by Permissions Policy?</dfn>
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
   "`Allowed`":
@@ -3357,6 +3426,34 @@ algorithms to achieve the outcomes described in the above explanatory content.
     1. If |inherited policy|[|effective permission|] is "Disabled", return "`Blocked`".
 
   1. Return "`Allowed`."
+</div>
+
+<div algorithm>
+  <dfn>Should navigation response to navigation request be blocked by sandboxing flags?</dfn>
+
+  Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
+  "`Allowed`":
+
+  1. Let |navigable| be |navigationParams|'s [=navigation params/navigable=].
+
+  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return
+     "`Allowed`".
+
+  1. Let |effectiveSandboxingFlags| be the |navigable|'s [=navigable/active browsing context=]'s
+     [=browsing context/fenced frame config instance=]'s [=fenced frame config instance/effective
+     sandboxing flags=].
+
+  1. If |navigationParams|' [=navigation params/final sandboxing flag set=] is not a [=set/subset=]
+     of |effectiveSandboxingFlags|, then return "`Blocked`".
+
+     Note: This means that the [=navigation params/final sandboxing flag set=] cannot restrict a
+     feature that isn't already restricted in the [=fenced frame config instance/effective
+     sandboxing flags=], as the extra restrictions can be used as a communication channel. By this
+     point, the [=navigation params/final sandboxing flag set=] will already have been set to
+     something *at least* as restrictive as the [=fenced frame config instance/effective sandboxing
+     flags=].
+
+  1. Otherwise, return "`Allowed`".
 </div>
 
 <div algorithm=define-inherited-policy-in-container-patches>
