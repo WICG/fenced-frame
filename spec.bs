@@ -108,7 +108,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
-      text: is initial about:blank; url: is-initial-about-blank
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -165,7 +164,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: step; url: she-step
       for: source snapshot params
         text: has transient activation; url: source-snapshot-params-activation
-      text: the navigation must be a replace; url: the-navigation-must-be-a-replace
     urlPrefix: interaction.html
       text: activation notification; url: activation-notification
       text: consume user activation; url: consume-user-activation
@@ -2194,8 +2192,8 @@ traversable|created=] or [=navigated=], it <span class=allow-2119>must</span> <a
 href=https://html.spec.whatwg.org/#sandboxing:active-sandboxing-flag-set-3>inherit</a> its embedder
 {{Document}}'s [=Document/active sandboxing flag set=] as is standard for {{Document}}s in normal
 [=child navigables=]. If we did not do this, then the <{fencedframe}> element would be a trivial
-sandbox bypass. Because <{fencedframe}> sandboxing flag inheritance behaves similarly to how it does
-in <{iframe}> elements, we consider sandbox inheritance to be *unfenced*.</p>
+sandbox bypass. Because <{fencedframe}> sandbox flag inheritance behaves similarly to how it does in
+<{iframe}> elements, we consider sandbox inheritance to be *unfenced*.</p>
 
 To provide the isolation mentioned above, and its conditional relaxation, this specification defines
 a new kind of parent for [=traversable navigables=] called an [=traversable navigable/unfenced
