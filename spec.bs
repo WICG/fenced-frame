@@ -147,6 +147,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsing-the-web.html
       text: create and initialize a Document object; url: initialise-the-document-object
       text: create navigation params by fetching; url: create-navigation-params-by-fetching
+      text: process a navigate fetch; url: process-a-navigate-fetch
       text: document state; url: she-document-state
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
@@ -217,6 +218,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: fire a click event; url: fire-a-click-event
     urlPrefix: urls-and-fetching.html
       text: about:srcdoc; url: about:srcdoc
+    urlPrefix: document-lifestyle.html
+      text: initialize the document object; url: initialise-the-document-object
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -267,6 +270,9 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
 spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
   type: dfn
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
+spec: iframe-credentialless; urlPrefix: https://wicg.github.io/anonymous-iframe/
+  type: dfn
+    text: credentialless; url: navigation-params-credentialless
 </pre>
 
 <style>
@@ -3306,19 +3312,19 @@ at the expense of some utility.
 
 <h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
 
-Note: The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the
+The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the
 [=page credentialless nonce=]. At a high level, the
 [=fenced frame config instance/partition nonce=] serves the same purpose as the
 [=page credentialless nonce=] (partitioning storage and network), but scoped to each fenced
 frame rather than to each credentialless iframe. The
 [=fenced frame config instance/partition nonce=] is also used to revoke network access in fenced
-frames.
+frames. Perform the following monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
 
 Add the following algorithm:
 
 <div algorithm>
   To <dfn for="browsing context">compute the effective partition nonce</dfn> given a
-  boolean |isCredentialless| and [=fenced frame config instance/partition nonce=] or null
+  boolean |credentialless| and [=fenced frame config instance/partition nonce=] or null
   |newFencedFrameNonce|:
 
   1. If |credentialless| is true, return |this|'s [=top-level browsing context=]'s
@@ -3336,16 +3342,19 @@ Add the following algorithm:
 <div algorithm="process a navigate fetch">
   Modify the step added to [=process a navigate fetch=] to read:
 
-  13. Let |partitionNonce| be the result of [=computing the effective partition nonce=] on
-      |browsingContext| given |credentialless| and |sourceSnapshotParams|'s
+  13. Let <var ignore>partitionNonce</var> be the result of
+      [=browsing context/computing the effective partition nonce=] on
+      <var ignore>browsingContext</var> given <var ignore>credentialless</var> and
+      <var ignore>sourceSnapshotParams</var>'s
       [=source snapshot params/target fenced frame config=].
 </div>
 
 <div algorithm="initialize the document object">
   Modify the step added to [=initialize the document object=] to read:
 
-  6.9. Let |partitionNonce| be the result of [=computing the effective partition nonce=] on
-       |browsingContext| given |navigationParams|'s [=credentialless=] and null if
+  6.9. Let <var ignore>partitionNonce</var> be the result of
+       [=browsing context/computing the effective partition nonce=] on
+       <var ignore>browsingContext</var> given |navigationParams|'s [=credentialless=] and null if
        |navigationParams|'s [=navigation params/fenced frame config instance=] is null else
        |navigationParams|'s [=navigation params/fenced frame config instance=]'s
        [=fenced frame config instance/partition nonce=].
