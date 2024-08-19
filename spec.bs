@@ -523,8 +523,8 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
      1. If |instance|'s [=fenced frame config instance/untrusted network status=] is not 
         [=untrusted network status/enabled=], then return.
 
-     Note: Embedder-initiated navigations of fenced frame roots are not allowed after the
-     embedder's network has been disabled.
+     1. If |instance|'s [=fenced frame config instance/has disabled untrusted network=] is true,
+        then return.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
