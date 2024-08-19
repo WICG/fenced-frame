@@ -3330,7 +3330,7 @@ algorithms to achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm>
-  <dfn>should navigation response to navigation request be blocked by Permissions Policy?</dfn>
+  <dfn>Should navigation response to navigation request be blocked by Permissions Policy?</dfn>
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
   "`Allowed`":
