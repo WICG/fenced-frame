@@ -106,6 +106,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
+      text: is initial about:blank; url: is-initial-about-blank
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -140,6 +141,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
+      text: the navigation must be a replace; url: the-navigation-must-be-a-replace
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
@@ -2764,11 +2766,17 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 </div>
 
-<div algorithm=navigate>
-  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] |sharedStorageContext| (default null).
+<div algorithm=navigation-must-replace-patch>
+  Modify [=the navigation must be a replace=] algorithm. Rewrite the definition to read:
 
-  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
+  [=The navigation must be a replace=], given a [=URL=] <var ignore>url</var> and a [=navigable=]
+  |navigable|, if any of the following are true:
+
+  Further rewrite the second condition to read:
+
+    * |navigable|'s [=navigable/active document=]'s [=is initial about:blank=] is true.
+
+  Add the new condition:
 
     * |navigable| is a [=fenced navigable container/fenced navigable=];
 
@@ -2780,8 +2788,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
     /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
   </wpt>
+</div>
 
-  Modify step 8 of the same algorithm to include the following condition:
+<div algorithm=navigate>
+  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
+  optional [=string=] |sharedStorageContext| (default null).
+
+  Modify step 12 of [[HTML]]'s [=navigate=] algorithm to read:
+
+  12. If [=the navigation must be a replace=] given |url| and |navigable|, then set
+      <var ignore>historyHandling</var> to "<a for="history handling behavior">`replace`</a>".
+
+  Modify step 13 of the same algorithm (If all of the following are true:) to include the following
+  condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2793,7 +2812,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 22, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
@@ -3310,9 +3329,8 @@ algorithms to achieve the outcomes described in the above explanatory content.
   does not stick around; an error page will be loaded.
 </div>
 
-<div algorithm=permissions-policy-block-request>
-  Create a new algorithm called <dfn>should navigation response to navigation request be blocked by
-  Permissions Policy?</dfn> in [[!HTML]].
+<div algorithm>
+  <dfn>should navigation response to navigation request be blocked by Permissions Policy?</dfn>
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
   "`Allowed`":
