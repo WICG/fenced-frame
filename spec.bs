@@ -440,7 +440,7 @@ attribute.
   * If |embedder| is an <{iframe}> element, then: the flags set on |embedder|'s [=iframe sandboxing
     flag set=].
 
-  * If |embedder| is an <{fencedframe}> element, then: the flags set on |embedder|'s [=fencedframe/
+  * If |embedder| is a <{fencedframe}> element, then: the flags set on |embedder|'s [=fencedframe/
     fencedframe sandboxing flag set=].
 </div>
 
@@ -515,17 +515,21 @@ must be a [=serialized permissions policy=]. [[!PERMISSIONS-POLICY]]
 
 The <dfn element-attr for=fencedframe>sandbox</dfn> attribute, when specified, enables a set of
 extra restrictions on any content hosted by the <{fencedframe}>. Its value must be an [=unordered
-set of unique space-separated tokens=] that are [=ASCII case-insensitive=]. The allowed values are
-the same as the allowed values for the <{iframe}>'s <{iframe/sandbox}> attribute.
+set of unique space-separated tokens=] that are [=ASCII case-insensitive=]. The allowed values are:
 
-When an <{fencedframe}> element's <{fencedframe/sandbox}> attribute is set or changed while it has a
-non-null [=fenced navigable container/fenced navigable=], the user agent must [=parse a sandboxing
-directive=] given the attribute's value and the <{fencedframe}> element's [=fencedframe/fencedframe
-sandboxing flag set=].
-
-When an <{fencedframe}> element's <{fencedframe/sandbox}> attribute is removed while it has a
-non-null [=fenced navigable container/fenced navigable=], the user agent must empty the
-<{fencedframe}> element's [=fencedframe/fencedframe sandboxing flag set=].
+* <{iframe/sandbox/allow-downloads}>
+* <{iframe/sandbox/allow-forms}>
+* <{iframe/sandbox/allow-modals}>
+* <{iframe/sandbox/allow-orientation-lock}>
+* <{iframe/sandbox/allow-pointer-lock}>
+* <{iframe/sandbox/allow-popups}>
+* <{iframe/sandbox/allow-popups-to-escape-sandbox}>
+* <{iframe/sandbox/allow-presentation}>
+* <{iframe/sandbox/allow-same-origin}>
+* <{iframe/sandbox/allow-scripts}>
+* <{iframe/sandbox/allow-top-navigation}>
+* <{iframe/sandbox/allow-top-navigation-by-user-activation}>
+* <{iframe/sandbox/allow-top-navigation-to-custom-protocols}>
 
 The IDL attributes <dfn attribute for=HTMLFencedFrameElement>allow</dfn> and <dfn attribute
 for=HTMLFencedFrameElement>sandbox</dfn> must [=reflect=] the respective content attribute of the
@@ -533,6 +537,23 @@ same name.
 
 The supported tokens for {{HTMLFencedFrameElement/sandbox}}'s {{DOMTokenList}} are the allowed
 values defined in the <{fencedframe/sandbox}> attribute and supported by the user agent.
+
+<div algorithm=fencedframe-attribute-change>
+The following [=attribute change steps=], given |element|, |localName|, |oldValue|, |value|, and
+|namespace| are used for all <{fencedframe}> elements:
+
+1. [=Assert=]: |namespace| is the [=HTML namespace=].
+
+1. If |localName| is <{fencedframe/sandbox}>, then:
+
+   1. If |value| is null, then [=set/empty=] |element|'s [=fencedframe/fencedframe sandboxing flag
+      set=].
+
+   1. Otherwise, run [=parse a sandboxing directive=] given the |value| and |element|'s
+      [=fencedframe/fencedframe sandboxing flag set=].
+
+|element|, |localName|, |oldValue|, |value|, and |namespace|
+</div>
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -2870,17 +2891,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   Add a step after step 22.8.2 (Let |finalSandboxFlags| be the [=set/union=]...) that reads:
 
-  3. If |sourceSnapshotParams|' [=source snapshot params/target fenced frame config=] is not null,
-     and if |sourceSnapshotParams|' [=source snapshot params/target fenced frame config=]'s [=fenced
-     frame config/effective sandboxing flags=] is not null, then set |finalSandboxFlags| to the
-     [=set/union=] of |finalSandboxFlags| and |sourceSnapshotParams|' [=source snapshot
+  3. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is not null,
+     and if |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]'s
+     [=fenced frame config/effective sandboxing flags=] is not null, then set |finalSandboxFlags| to
+     the [=set/union=] of |finalSandboxFlags| and |sourceSnapshotParams|'s [=source snapshot
      params/target fenced frame config=]'s [=fenced frame config/effective sandboxing flags=]'
      [=effective sandboxing flags/value=].
 
      Note: This ensures that the |finalSandboxFlags| are *at least* as restrictive as the [=fenced
      frame config/effective sandboxing flags=] defined in the [=source snapshot params/target fenced
-     frame config=]. A separate check will make sure that |finalSandboxFlags| is not more
-     restrictive than the [=fenced frame config/effective sandboxing flags=].
+     frame config=]. A separate check in the [=should navigation response to navigation request be
+     blocked by sandboxing flags?|blocked by sandboxing flags?=] algorithm will make sure that
+     |finalSandboxFlags| is not more restrictive than the [=fenced frame config/effective sandboxing
+     flags=].
 
   <wpt>
     /fenced-frame/before-unload.https.html
@@ -3355,7 +3378,8 @@ algorithms to achieve the outcomes described in the above explanatory content.
     Policy?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
   * The result of [=should navigation response to navigation request be blocked by sandboxing
-    flags?=] given <var ignore>navigationParams</var> is "`Blocked`";
+    flags?=] given <var ignore>navigationParams</var> and <var ignore>sourceSnapshotParams</var> is
+    "`Blocked`";
 
   Note: If any of these algorithms returns "`Blocked`", the pre-existing {{Document}} in the
   <{fencedframe}> does not stick around; an error page will be loaded.
@@ -3413,19 +3437,18 @@ algorithms to achieve the outcomes described in the above explanatory content.
 <div algorithm>
   <dfn>Should navigation response to navigation request be blocked by sandboxing flags?</dfn>
 
-  Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
-  "`Allowed`":
+  Given a [=navigation params=] (|navigationParams|) and a [=source snapshot params=]
+  (|sourceSnapshotParams|), this algorithm returns "`Blocked`" or "`Allowed`":
 
   1. Let |navigable| be |navigationParams|'s [=navigation params/navigable=].
 
   1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return
      "`Allowed`".
 
-  1. Let |effectiveSandboxingFlags| be the |navigable|'s [=navigable/active browsing context=]'s
-     [=browsing context/fenced frame config instance=]'s [=fenced frame config instance/effective
-     sandboxing flags=].
+  1. Let |effectiveSandboxingFlags| be the |sourceSnapshotParams|'s [=source snapshot params/target
+     fenced frame config=]'s [=fenced frame config/effective sandboxing flags=].
 
-  1. If |navigationParams|' [=navigation params/final sandboxing flag set=] is not a [=set/subset=]
+  1. If |navigationParams|'s [=navigation params/final sandboxing flag set=] is not a [=set/subset=]
      of |effectiveSandboxingFlags|, then return "`Blocked`".
 
      Note: This means that the [=navigation params/final sandboxing flag set=] cannot restrict a
