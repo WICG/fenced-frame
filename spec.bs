@@ -539,8 +539,8 @@ The supported tokens for {{HTMLFencedFrameElement/sandbox}}'s {{DOMTokenList}} a
 values defined in the <{fencedframe/sandbox}> attribute and supported by the user agent.
 
 <div algorithm=fencedframe-attribute-change>
-The following [=attribute change steps=], given |element|, |localName|, |oldValue|, |value|, and
-|namespace| are used for all <{fencedframe}> elements:
+The following [=attribute change steps=], given |element|, |localName|, <var ignore>oldValue</var>,
+|value|, and |namespace| are used for all <{fencedframe}> elements:
 
 1. [=Assert=]: |namespace| is the [=HTML namespace=].
 
@@ -552,7 +552,6 @@ The following [=attribute change steps=], given |element|, |localName|, |oldValu
    1. Otherwise, run [=parse a sandboxing directive=] given the |value| and |element|'s
       [=fencedframe/fencedframe sandboxing flag set=].
 
-|element|, |localName|, |oldValue|, |value|, and |namespace|
 </div>
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
