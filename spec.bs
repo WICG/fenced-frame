@@ -2823,18 +2823,10 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm=navigation-must-replace-patch>
-  Modify [=the navigation must be a replace=] algorithm. Rewrite the definition to read:
+  Modify [=the navigation must be a replace=] algorithm. Add the following new condition:
 
-  [=The navigation must be a replace=], given a [=URL=] <var ignore>url</var> and a [=navigable=]
-  |navigable|, if any of the following are true:
-
-  Further rewrite the second condition to read:
-
-    * |navigable|'s [=navigable/active document=]'s [=is initial about:blank=] is true.
-
-  Add the new condition:
-
-    * |navigable| is a [=fenced navigable container/fenced navigable=];
+    * <var ignore>document</var>'s [=relevant global object=]'s [=Window/navigable=] is a [=fenced
+      navigable container/fenced navigable=];
 
       Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
       for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
@@ -2848,15 +2840,10 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 <div algorithm=navigate>
   Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] |sharedStorageContext| (default null).
+  optional [=string=] <dfn for=navigate>sharedStorageContext</dfn> (default null).
 
-  Modify step 12 of [[HTML]]'s [=navigate=] algorithm to read:
-
-  12. If [=the navigation must be a replace=] given |url| and |navigable|, then set
-      <var ignore>historyHandling</var> to "<a for="history handling behavior">`replace`</a>".
-
-  Modify step 13 of the same algorithm (If all of the following are true:) to include the following
-  condition:
+  Modify step 13 of [[HTML]]'s [=navigate=] algorithm (If all of the following are true:) to include
+  the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2885,7 +2872,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
-         |sharedStorageContext|.
+         [=navigate/sharedStorageContext=].
 
       1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
          config=] to |config|.
