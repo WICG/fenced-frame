@@ -465,18 +465,19 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
        Note: This holds because when the element has been removed from the DOM, its removal steps
        immediately destroy the [=fenced navigable container/fenced navigable=].
 
-  1. Let |navigationUrn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if
+     the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, and the given
+     {{FencedFrameConfig}}'s [=fencedframeconfig/urn=] otherwise.
 
-  1. If |navigationUrn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
-     [=urn uuid=]), then return.
+  1. If |navigation url or urn| is failure, then return.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
 
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |navigationUrn|
-     using |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history
-     handling behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
-     |shared storage context|.
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to
+     |navigation url or urn| using |element|'s [=Node/node document=], with [=historyHandling=] set
+     to "<a for="history handling behavior">`replace`</a>", [=referrerPolicy=] set to
+     <a>"`no-referrer`"</a>, and |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
@@ -573,25 +574,6 @@ follows:
   1. [=Assert=]: |urn| does not [=map/exist=] in |pendingMapping|.
 
   1. [=map/Set=] |pendingMapping|[|urn|] to |config|.
-  
-  1. Return |urn|.
-</div>
-
-<div algorithm>
-  To <dfn for="fenced frame config mapping" export>store a finalized config</dfn> in a [=fenced
-  frame config mapping=] |mapping| given a [=fenced frame config=] |config|, run these steps:
-
-  1. Let |finalizedMapping| be |mapping|'s [=fenced frame config mapping/pending config mapping=].
-
-  1. If the [=map/size=] of |finalizedMapping| + the [=map/size=] of |mapping|'s [=fenced frame
-     config mapping/pending config mapping=] ≥ |mapping|'s [=fenced frame config mapping/maximum
-     number of configs=], return failure.
-
-  1. Let |urn| be a randomly generated [=urn uuid=].
-
-  1. [=Assert=]: |urn| does not [=map/exist=] in |finalizedMapping|.
-
-  1. [=map/Set=] |finalizedMapping|[|urn|] to |config|.
   
   1. Return |urn|.
 </div>
@@ -1365,6 +1347,7 @@ maps to an internal [=fenced frame config=] [=struct=].
 
 Each {{FencedFrameConfig}} has:
 
+ * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=], failure, or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
  * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
@@ -1372,48 +1355,15 @@ Each {{FencedFrameConfig}} has:
  * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
  * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
 
+Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig/urn=] is supplied.
+
 <div algorithm>
   The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
   are:
   
   1. Let |config| be a [=new=] {{FencedFrameConfig}} object.
 
-  1. Let |parsedUrl| be the result of running the [=URL parser=] on |url|.
-
-  1. If |parsedUrl| is not failure:
-
-     1. Let |global| be [=this=]'s [=relevant global object=].
-
-     1. Let |mapping| be |global|'s [=Window/navigable=]'s
-        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
-
-     1. Let |configStruct| be a new [=fenced frame config=] with the following [=struct/items=]:
-
-        : [=fenced frame config/mapped url=]
-        :: a [=struct=] with the following [=struct/items=]:
-        
-           : [=mapped url/value=]
-           :: |parsedUrl|
-
-           : [=mapped url/visibility=]
-           :: [=visibility/transparent=]
-
-        : [=fenced frame config/effective sandbox flags=]
-        :: a [=struct=] with the following [=struct/items=]:
-        
-           : [=effective sandbox flags/value=]
-           :: The [=fencedframetype/default fenced frame effective sandboxing flags=].
-
-           : [=effective sandbox flags/visibility=]
-           :: [=visibility/opaque=]
-
-        : [=fenced frame config/effective enabled permissions=]
-        :: null
-
-     1. Let |urn| be the result of running [=fenced frame config mapping/store a finalized config=]
-        given |mapping| and |configStruct|.
-
-     1. Set |config|'s [=fencedframeconfig/urn=] to |urn|.
+  1. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
 
   1. Return |config|.
 </div>
@@ -1448,6 +1398,8 @@ Each {{FencedFrameConfig}} has:
   |value|, |serialized|, and |forStorage| are:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
+
+  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
   
   1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
@@ -1472,6 +1424,8 @@ Each {{FencedFrameConfig}} has:
 <div algorithm="FencedFrameConfig deserializer">
   Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
+  
+  1. Initialize |value|'s [=fencedframeconfig/url=] to |serialized|.\[[Url]].
   
   1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
 
@@ -2878,6 +2832,35 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+  
+    1. If |url| is a [=url=], |navigable| is a [=fenced navigable container/fenced navigable=], and
+       <var ignore>sourceDocument</var>'s [=node navigable=] is not |navigable|:
+
+      1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
+
+        : [=fenced frame config/mapped url=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=mapped url/value=]
+           :: |url|
+
+           : [=mapped url/visibility=]
+           :: [=visibility/transparent=]
+
+        : [=fenced frame config/effective sandbox flags=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=effective sandbox flags/value=]
+           :: The [=fencedframetype/default fenced frame effective sandboxing flags=].
+
+           : [=effective sandbox flags/visibility=]
+           :: [=visibility/opaque=]
+
+        : [=fenced frame config/effective enabled permissions=]
+        :: null
+
+      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+         config=] to |config|.
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
