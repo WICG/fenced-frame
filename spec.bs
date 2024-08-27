@@ -2903,13 +2903,13 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
            : [=mapped url/visibility=]
            :: [=visibility/transparent=]
 
-        : [=fenced frame config/effective sandbox flags=]
+        : [=fenced frame config/effective sandboxing flags=]
         :: a [=struct=] with the following [=struct/items=]:
 
-           : [=effective sandbox flags/value=]
+           : [=effective sandboxing flags/value=]
            :: The [=fencedframetype/default fenced frame effective sandboxing flags=].
 
-           : [=effective sandbox flags/visibility=]
+           : [=effective sandboxing flags/visibility=]
            :: [=visibility/opaque=]
 
         : [=fenced frame config/effective enabled permissions=]
