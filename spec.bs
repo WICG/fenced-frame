@@ -1454,9 +1454,9 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
   |value|, |serialized|, and |forStorage| are:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
-
-  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
   
+  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
+
   1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
   1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
@@ -1480,7 +1480,7 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
 <div algorithm="FencedFrameConfig deserializer">
   Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
-  
+
   1. Initialize |value|'s [=fencedframeconfig/url=] to |serialized|.\[[Url]].
   
   1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
