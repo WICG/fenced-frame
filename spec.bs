@@ -1309,9 +1309,6 @@ maps to an internal [=fenced frame config=] [=struct=].
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
-  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef USVString FencedFrameConfigURL;
-
   [Exposed=Window, Serializable]
   interface FencedFrameConfig {
     constructor(USVString url);
