@@ -725,9 +725,9 @@ boundary, which can allow for colluding parties to join cross-site data and buil
 user. To prevent that, the ad auction API [=construct a pending fenced frame config|constructs=] a
 [=fenced frame config=] whose underlying [=fenced frame config/mapped url|URL=] is opaque to the
 embedding context. The [=fenced frame config=] is also constructed with restrictions on what the
-[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must be
-and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the frame
-must be, as those can be used as fingerprinting vectors.
+[=fenced frame config/content size=] of the frame must be and what the [=fenced frame config/
+effective enabled permissions|permissions policy=] of the frame must be, as those can be used as 
+fingerprinting vectors.
 
 Displaying a personalized payment button:
 
@@ -1127,9 +1127,6 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="mapped url">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
-  : <dfn>container size</dfn>
-  :: null, or a [=fencedframetype/size=]
-
   : <dfn>content size</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="content size">value</dfn>
@@ -1226,9 +1223,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>mapped url</dfn>
   :: a [=URL=]
 
-  : <dfn>container size</dfn>
-  :: null, or a [=fencedframetype/size=]
-
   : <dfn>content size</dfn>
   :: null, or a [=fencedframetype/size=]
 
@@ -1273,9 +1267,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/mapped url=]
     :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
-
-    : [=fenced frame config instance/container size=]
-    :: |config|'s [=fenced frame config/container size=]
 
     : [=fenced frame config instance/content size=]
     :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
@@ -1373,18 +1364,9 @@ maps to an internal [=fenced frame config=] [=struct=].
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
-  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef USVString FencedFrameConfigURL;
-
   [Exposed=Window, Serializable]
   interface FencedFrameConfig {
     constructor(USVString url);
-    
-    readonly attribute FencedFrameConfigSize? containerWidth;
-    readonly attribute FencedFrameConfigSize? containerHeight;
-    readonly attribute FencedFrameConfigSize? contentWidth;
-    readonly attribute FencedFrameConfigSize? contentHeight;
-
     undefined setSharedStorageContext(DOMString contextString);
   };
 </pre>
@@ -1394,10 +1376,6 @@ Each {{FencedFrameConfig}} has:
  * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=], failure, or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
- * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>containerHeight</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
 
 Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig/urn=] is supplied.
 
@@ -1410,26 +1388,6 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
   1. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
 
   1. Return |config|.
-</div>
-
-<div algorithm="containerWidth getter">
-  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/containerWidth=].
-</div>
-
-<div algorithm="containerHeight getter">
-  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/containerHeight=].
-</div>
-
-<div algorithm="contentWidth getter">
-  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/contentWidth=].
-</div>
-
-<div algorithm="contentHeight getter">
-  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/contentHeight=].
 </div>
 
 <div algorithm>
@@ -1449,20 +1407,6 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
 
   1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
      sharedStorageContext=].
-
-  1. Set |serialized|.\[[ContainerWidth]] to |value|'s [=fencedframeconfig/
-     containerWidth=].
-
-  1. Set |serialized|.\[[ContainerHeight]] to |value|'s [=fencedframeconfig/
-     containerHeight=].
-
-  1. Set |serialized|.\[[ContentWidth]] to |value|'s [=fencedframeconfig/
-     contentWidth=].
-
-  1. Set |serialized|.\[[ContentHeight]] to |value|'s [=fencedframeconfig/
-     contentHeight=].
-
-
 </div>
 
 <div algorithm="FencedFrameConfig deserializer">
@@ -1475,15 +1419,6 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
 
   1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
      |serialized|.\[[SharedStorageContext]].
-
-  1. Initialize |value|'s [=fencedframeconfig/containerWidth=] to |serialized|.\[[ContainerWidth]].
-
-  1. Initialize |value|'s [=fencedframeconfig/containerHeight=] to
-     |serialized|.\[[ContainerHeight]].
-
-  1. Initialize |value|'s [=fencedframeconfig/contentWidth=] to |serialized|.\[[ContentWidth]].
-
-  1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
 </div>
 
 Note: To help with ease of adoption,
@@ -1863,26 +1798,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         : [=fencedframeconfig/sharedStorageContext=]
         :: |config|'s [=fenced frame config/embedder shared storage context=]
-
-        : [=fencedframeconfig/containerWidth=]
-        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
-           [=fenced frame config/container size=]'s [=size/width=]
-
-        : [=fencedframeconfig/containerHeight=]
-        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
-           [=fenced frame config/container size=]'s [=size/height=]
-
-        : [=fencedframeconfig/contentWidth=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
-           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
-           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
-           config/content size=]'s [=size/width=]
-
-        : [=fencedframeconfig/contentHeight=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
-           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
-           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
-           config/content size=]'s [=size/height=]
 
      1. [=list/Append=] |newConfig| to |results|.
 
