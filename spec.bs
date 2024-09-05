@@ -725,9 +725,9 @@ boundary, which can allow for colluding parties to join cross-site data and buil
 user. To prevent that, the ad auction API [=construct a pending fenced frame config|constructs=] a
 [=fenced frame config=] whose underlying [=fenced frame config/mapped url|URL=] is opaque to the
 embedding context. The [=fenced frame config=] is also constructed with restrictions on what the
-[=fenced frame config/content size=] of the frame must be and what the [=fenced frame config/
-effective enabled permissions|permissions policy=] of the frame must be, as those can be used as 
-fingerprinting vectors.
+[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must 
+be and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the 
+frame must be, as those can be used as fingerprinting vectors.
 
 Displaying a personalized payment button:
 
@@ -1127,6 +1127,9 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="mapped url">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
+  : <dfn>container size</dfn>
+  :: null, or a [=fencedframetype/size=]
+
   : <dfn>content size</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
     : <dfn for="content size">value</dfn>
@@ -1223,6 +1226,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>mapped url</dfn>
   :: a [=URL=]
 
+  : <dfn>container size</dfn>
+  :: null, or a [=fencedframetype/size=]
+
   : <dfn>content size</dfn>
   :: null, or a [=fencedframetype/size=]
 
@@ -1267,6 +1273,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/mapped url=]
     :: |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=]
+
+    : [=fenced frame config instance/container size=]
+    :: |config|'s [=fenced frame config/container size=]
 
     : [=fenced frame config instance/content size=]
     :: |config|'s [=fenced frame config/content size=] if null, otherwise |config|'s [=fenced frame
