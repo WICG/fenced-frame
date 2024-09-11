@@ -1163,7 +1163,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   :: null, or a [=string=]
 
   : <dfn>is ad component</dfn>
-  :: A [=boolean=], defaults to false.
+  :: A [=boolean=], initially false.
 
   Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
   used to construct ads composed of multiple pieces. See the <a
@@ -1173,10 +1173,10 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   Frame Ads Reporting explainer</a> that describes this.
 
   : <dfn>cross-origin reporting allowed</dfn>
-  :: A [=boolean=], defaults to false.
+  :: A [=boolean=], initially false.
 
   : <dfn>can disable untrusted network</dfn>
-  :: A [=boolean=], defaults to true.
+  :: A [=boolean=], initially true.
 </dl>
 
 <h4 id=fenced-frame-config-instance-struct>The [=fenced frame config instance=] [=struct=]</h4>
