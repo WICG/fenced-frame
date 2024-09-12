@@ -1179,17 +1179,18 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="effective enabled permissions">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
-    Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator of
-    this config relies on exclusively being enabled inside the <{fencedframe}> that navigates to
-    this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
-    enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
-    [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
-    this config for the navigation to succeed. The features in this list are not force-enabled, but
-    rather are used to check that the embedder environment that influences the aforementioned
-    [=permissions policy/inherited policy=] is relaxed enough to support these essential features.
-    If the [=inherited policy for a feature|inherited policy value=] for any of these features is
-    "`Disabled`", the navigation to this config will fail. Any [=policy-controlled feature=] *not*
-    in this list will not be "`Disabled`" in the <{fencedframe}> that navigates to this config.
+       Note: When non-null, this is a [=list=] of [=policy-controlled features=] that the generator
+       of this config relies on exclusively being enabled inside the <{fencedframe}> that navigates
+       to this config. Specifically, each feature in this list <span class=allow-2119>must</span> be
+       enabled by the <{fencedframe}>'s [=fenced navigable container/fenced navigable=]'s
+       [=Document/permissions policy=]'s [=permissions policy/inherited policy=] when navigating to
+       this config for the navigation to succeed. The features in this list are not force-enabled,
+       but rather are used to check that the embedder environment that influences the aforementioned
+       [=permissions policy/inherited policy=] is relaxed enough to support these essential
+       features. If the [=inherited policy for a feature|inherited policy value=] for any of these
+       features is "`Disabled`", the navigation to this config will fail. Any [=policy-controlled
+       feature=] *not* in this list will not be "`Disabled`" in the <{fencedframe}> that navigates
+       to this config.
 
   : <dfn>fenced frame reporting metadata</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -1221,12 +1222,12 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
-  Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
-  used to construct ads composed of multiple pieces. See the <a
-  href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
-  Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
-  href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
-  Frame Ads Reporting explainer</a> that describes this.
+     Note: When true, this [=fenced frame config=] represents an ad component. An ad component can
+     be used to construct ads composed of multiple pieces. See the <a
+     href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
+     Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
+     href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
+     Frame Ads Reporting explainer</a> that describes this.
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1388,6 +1389,13 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/on network disabled promises=]
     :: an empty [=list=]
+
+       Note: This stores the callback {{Promise|Promises}} that were created during
+       {{Fence/disableUntrustedNetwork()}}. This is populated when
+       {{Fence/disableUntrustedNetwork()}} is first invoked, and all {{Promise|Promises}} in this
+       [=list=] are resolved at once when the <{fencedframe}> and its descendants have their network
+       access fully revoked (i.e. the [=fenced frame config instance/untrusted network status=] is
+       [=untrusted network status/disabled for this and descendant trees=]).
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
