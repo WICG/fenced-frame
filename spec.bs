@@ -2203,9 +2203,9 @@ Similar to [=navigable containers=] and their respective [=navigable container/c
 other elements (so far, only the <{fencedframe}> element) present a more isolated [=navigable=] to
 the user. These elements are called <dfn>fenced navigable containers</dfn>.
 
-A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
-which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
-parent=], or null. It is initially null.
+A [=fenced navigable container=] has a <dfn export for="fenced navigable container">fenced
+navigable</dfn>, which is either a [=traversable navigable=] with a non-null [=traversable
+navigable/unfenced parent=], or null. It is initially null.
 
 <wpt>
   /fenced-frame/window-frameElement.https.html
