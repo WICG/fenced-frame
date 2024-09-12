@@ -1208,9 +1208,6 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
-  : <dfn>can disable untrusted network</dfn>
-  :: A [=boolean=], initially true.
-
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
@@ -1265,9 +1262,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   :: null, or a [=string=]
 
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]
-
-  : <dfn>can disable untrusted network</dfn>
   :: A [=boolean=]
 
   : <dfn>has disabled untrusted network</dfn>
@@ -1359,9 +1353,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
-
-    : [=fenced frame config instance/can disable untrusted network=]
-    :: |config|'s [=fenced frame config/can disable untrusted network=]
 
     : [=fenced frame config instance/has disabled untrusted network=]
     :: false
@@ -1845,8 +1836,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then [=resolve=] |p| with {{undefined}} and return |p|.
 
-  1. If |instance|'s [=fenced frame config instance/can disable untrusted network=] is false, then
-     [=resolve=] |p| with {{undefined}} and return |p|.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s [=navigable/traversable
+     navigable=] is not a [=fenced navigable container/fenced navigable=], then [=resolve=] |p| with
+     {{undefined}} and return |p|.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
      [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
