@@ -1,3 +1,5 @@
+# Obsolete: This file's contents are obsolete. Instead please look at https://github.com/WICG/fenced-frame/blob/master/explainer/use_cases.md
+
 ## Use-cases/Key scenarios
 
 Following are the use cases for fenced frames loading [ads with opaque urls](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md#opaque-ads). 
