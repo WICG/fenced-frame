@@ -1210,9 +1210,6 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
-
-  : <dfn>can disable untrusted network</dfn>
-  :: A [=boolean=], defaults to true.
 </dl>
   
   Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
@@ -1265,9 +1262,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   :: null, or a [=string=]
 
   : <dfn>is ad component</dfn>
-  :: A [=boolean=]
-
-  : <dfn>can disable untrusted network</dfn>
   :: A [=boolean=]
 
   : <dfn>has disabled untrusted network</dfn>
@@ -1362,9 +1356,6 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/cross-origin reporting allowed=]
     :: |config|'s [=fenced frame config/cross-origin reporting allowed=]
-
-    : [=fenced frame config instance/can disable untrusted network=]
-    :: |config|'s [=fenced frame config/can disable untrusted network=]
 
     : [=fenced frame config instance/has disabled untrusted network=]
     :: false
@@ -1845,12 +1836,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then [=resolve=] |p| with {{undefined}} and return |p|.
 
-  1. If |instance|'s [=fenced frame config instance/can disable untrusted network=] is false, then
-     [=resolve=] |p| with {{undefined}} and return |p|.
+  1. [=Assert=]: the [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are [=same origin=].
 
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     [=resolve=] |p| with {{undefined}} and return |p|.
+     Note: Only contexts that are [=same origin=] to the [=fenced frame config instance/mapped url=]
+     described in the [=fenced frame config instance=] are allowed to call this API.
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s [=navigable/traversable
+     navigable=] is not a [=fenced navigable container/fenced navigable=], then [=resolve=] |p| with
+     {{undefined}} and return |p|.
 
   1. Let |global| be [=this=]'s [=relevant global object=].
 
@@ -1861,7 +1855,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Let |credentiallessNonce| be
 
      Issue: the page credentialless nonce
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
+     (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
 
      1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
 
