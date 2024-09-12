@@ -93,6 +93,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: queue a cross-origin embedder policy inheritance violation; url: queue-a-cross-origin-embedder-policy-inheritance-violation
       text: determine navigation params policy container; url: determining-navigation-params-policy-container
       text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      text: determine the creation sandboxing flags; url: determining-the-creation-sandboxing-flags
+      text: iframe sandboxing flag set; url: iframe-sandboxing-flag-set
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
     urlPrefix: dom.html
@@ -145,6 +147,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: navigable; url: navigation-params-navigable
         text: origin; url: navigation-params-origin
         text: COOP enforcement result; url: navigation-params-coop-enforcement-result
+        text: final sandboxing flag set; url: navigation-params-sandboxing
       for: history handling behavior
         text: replace; url: hh-replace
       for: document state
@@ -218,6 +221,7 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: structured header; url: #section-1
     for: structured header
       text: token; url: name-tokens
+      text: boolean; url: boolean
 spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions-policy
   type: dfn
     text: ASCII-serialized policy directive; url: serialized-policy-directive
@@ -226,6 +230,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: the special value *; url: the-special-value
     text: permissions policy; url: permissions-policy
     text: policy directive; url: policy-directive
+    text: declared origin; url: declared-origin
     for: permissions policy
       text: declared policy; url: permissions-policy-declared-policy
       text: inherited policy; url: permissions-policy-inherited-policy
@@ -410,6 +415,7 @@ interface HTMLFencedFrameElement : HTMLElement {
   [CEReactions] attribute FencedFrameConfig? config;
   [CEReactions] attribute DOMString width;
   [CEReactions] attribute DOMString height;
+  [SameObject, PutForwards=value] readonly attribute DOMTokenList sandbox;
   [CEReactions] attribute DOMString allow;
 };
 </xmp>
@@ -423,6 +429,22 @@ Descendants of <{fencedframe}> elements represent nothing.
 Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 {{FencedFrameConfig}} or null. It is initially null.
 
+Each <{fencedframe}> has a <dfn for=fencedframe>fencedframe sandboxing flag set</dfn>, which is a
+[=sandboxing flag set=]. Which flags in a [=fencedframe/fencedframe sandboxing flag set=] are set
+at any particular time is determined by the <{fencedframe}> element's <{fencedframe/sandbox}>
+attribute.
+
+<div algorithm=determine-sandbox-flags-patch>
+  Modify the [=determine the creation sandboxing flags=] algorithm. Rewrite the second step in the
+  union to be the following 2 steps:
+
+  * If |embedder| is an <{iframe}> element, then: the flags set on |embedder|'s [=iframe sandboxing
+    flag set=].
+
+  * If |embedder| is a <{fencedframe}> element, then: the flags set on |embedder|'s [=fencedframe/
+    fencedframe sandboxing flag set=].
+</div>
+
 <div algorithm=insertion>
   When a <{fencedframe}> element |element| is [=node is inserted into a document|inserted into a
   document=] whose [=Document/browsing context=] is non-null, run these steps:
@@ -432,7 +454,8 @@ Each <{fencedframe}> has a <dfn for=fencedframe>config</dfn>, which is either a
 
   1. Set |nested traversable|'s [=navigable/loading mode=] to "`fencedframe`".
 
-  1. <span class=XXX>Parse the sandbox attributes, once it exists</span>
+  1. If |element| has a <{fencedframe/sandbox}> attribute, then [=parse a sandboxing directive=]
+     given the attribute's value and |element|'s [=fencedframe/fencedframe sandboxing flag set=].
 
   Issue: It's not necessary to call the <a
   href=https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps>URL
@@ -464,15 +487,19 @@ The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter 
        Note: This holds because when the element has been removed from the DOM, its removal steps
        immediately destroy the [=fenced navigable container/fenced navigable=].
 
-  1. Let |urn uuid| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/urn=].
+  1. Let |navigation url or urn| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] if
+     the given {{FencedFrameConfig}}'s [=fencedframeconfig/url=] is not null, and the given
+     {{FencedFrameConfig}}'s [=fencedframeconfig/urn=] otherwise.
+
+  1. If |navigation url or urn| is failure, then return.
 
   1. Let |shared storage context| be the given {{FencedFrameConfig}}'s [=fencedframeconfig/
      sharedStorageContext=].
 
-  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to |urn uuid| using
-     |element|'s [=Node/node document=], with [=historyHandling=] set to "<a for="history handling
-     behavior">`replace`</a>", [=referrerPolicy=] set to <a>"`no-referrer`"</a>, and
-     |shared storage context|.
+  1. [=Navigate=] |element|'s [=fenced navigable container/fenced navigable=] to
+     |navigation url or urn| using |element|'s [=Node/node document=], with [=historyHandling=] set
+     to "<a for="history handling behavior">`replace`</a>", [=referrerPolicy=] set to
+     <a>"`no-referrer`"</a>, and |shared storage context|.
 
      Note: See [[#navigation-changes]] for the <{fencedframe}>-specific changes to the ordinary
      navigation flow.
@@ -487,8 +514,46 @@ The <dfn element-attr for=fencedframe>allow</dfn> attribute, when specified, det
 in the <{fencedframe}>'s [=fenced navigable container/fenced navigable=] is initialized. Its value
 must be a [=serialized permissions policy=]. [[!PERMISSIONS-POLICY]]
 
-The IDL attribute <dfn attribute for=HTMLFencedFrameElement>allow</dfn> must [=reflect=] the
-respective content attribute of the same name.
+The <dfn element-attr for=fencedframe>sandbox</dfn> attribute, when specified, enables a set of
+extra restrictions on any content hosted by the <{fencedframe}>. Its value must be an [=unordered
+set of unique space-separated tokens=] that are [=ASCII case-insensitive=]. The allowed values are:
+
+* <{iframe/sandbox/allow-downloads}>
+* <{iframe/sandbox/allow-forms}>
+* <{iframe/sandbox/allow-modals}>
+* <{iframe/sandbox/allow-orientation-lock}>
+* <{iframe/sandbox/allow-pointer-lock}>
+* <{iframe/sandbox/allow-popups}>
+* <{iframe/sandbox/allow-popups-to-escape-sandbox}>
+* <{iframe/sandbox/allow-presentation}>
+* <{iframe/sandbox/allow-same-origin}>
+* <{iframe/sandbox/allow-scripts}>
+* <{iframe/sandbox/allow-top-navigation}>
+* <{iframe/sandbox/allow-top-navigation-by-user-activation}>
+* <{iframe/sandbox/allow-top-navigation-to-custom-protocols}>
+
+The IDL attributes <dfn attribute for=HTMLFencedFrameElement>allow</dfn> and <dfn attribute
+for=HTMLFencedFrameElement>sandbox</dfn> must [=reflect=] the respective content attribute of the
+same name.
+
+The supported tokens for {{HTMLFencedFrameElement/sandbox}}'s {{DOMTokenList}} are the allowed
+values defined in the <{fencedframe/sandbox}> attribute and supported by the user agent.
+
+<div algorithm=fencedframe-attribute-change>
+The following [=attribute change steps=], given |element|, |localName|, <var ignore>oldValue</var>,
+|value|, and |namespace| are used for all <{fencedframe}> elements:
+
+1. [=Assert=]: |namespace| is the [=HTML namespace=].
+
+1. If |localName| is <{fencedframe/sandbox}>, then:
+
+   1. If |value| is null, then [=set/empty=] |element|'s [=fencedframe/fencedframe sandboxing flag
+      set=].
+
+   1. Otherwise, run [=parse a sandboxing directive=] given the |value| and |element|'s
+      [=fencedframe/fencedframe sandboxing flag set=].
+
+</div>
 
 <h3 id=dimension-attributes>Dimension attributes</h3>
 
@@ -661,9 +726,9 @@ boundary, which can allow for colluding parties to join cross-site data and buil
 user. To prevent that, the ad auction API [=construct a pending fenced frame config|constructs=] a
 [=fenced frame config=] whose underlying [=fenced frame config/mapped url|URL=] is opaque to the
 embedding context. The [=fenced frame config=] is also constructed with restrictions on what the
-[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must be
-and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the frame
-must be, as those can be used as fingerprinting vectors.
+[=fenced frame config/container size=] and [=fenced frame config/content size=] of the frame must 
+be and what the [=fenced frame config/effective enabled permissions|permissions policy=] of the 
+frame must be, as those can be used as fingerprinting vectors.
 
 Displaying a personalized payment button:
 
@@ -709,9 +774,6 @@ following [=struct/items=]:
   : <dfn>name</dfn>
   :: a [=string=]
 </dl>
-
-An <dfn export for=fencedframetype>exhaustive set of sandbox flags</dfn> is a [=sandboxing flag
-set=].
 
 A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
 [=struct/items=]:
@@ -877,9 +939,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
      1. Set |destination url| to |destination map|[|eventType|].
 
-    1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true and the result
-       of [=getting supported registrars=] is not [=list/is empty|empty=] and |event|'s
-       [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
+    1. If |event|'s [=destination enum event/attributionReportingEnabled=] is true
+        and |event|'s [=destination enum event/attributionReportingContextOrigin=] [=check if an origin is suitable|is suitable=]:
 
         1. If |event|'s {{FenceEvent/eventType}} matches one of the [=fencedframetype/automatic
            beacon event type=] values, set |attributionReportingEligibility| to
@@ -888,9 +949,9 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         1. Otherwise, set |attributionReportingEligibility| to "<code>[=eligibility/event-source=]</code>".
 
         1. Set |processResponse| to these steps given a [=response=] |response|:
-
+           1. Let |fenced| be true.
            1. Run [=process an attribution eligible response=] with |event|'s
-              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, and |response|.
+              [=destination enum event/attributionReportingContextOrigin=], |attributionReportingEligibility|, |fenced|, and |response|.
 
         1. Set |useParallelQueue| to true.
 
@@ -1013,7 +1074,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
        Note: The pending event will be sent asynchronously.
 
-  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e. that |destination|'s
+  1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
   1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
@@ -1089,12 +1150,12 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
-  : <dfn>effective sandbox flags</dfn>
+  : <dfn>effective sandboxing flags</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
-    : <dfn for="effective sandbox flags">value</dfn>
-    :: an [=fencedframetype/exhaustive set of sandbox flags=]
+    : <dfn for="effective sandboxing flags">value</dfn>
+    :: a [=sandboxing flag set=]
 
-    : <dfn for="effective sandbox flags">visibility</dfn>
+    : <dfn for="effective sandboxing flags">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
   : <dfn>effective enabled permissions</dfn>
@@ -1153,8 +1214,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
-
-  Note: When true, this [=fenced frame config=] reprsents an ad component. An ad component can be
+  
+  Note: When true, this [=fenced frame config=] represents an ad component. An ad component can be
   used to construct ads composed of multiple pieces. See the <a
   href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
   Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
@@ -1181,8 +1242,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
-  : <dfn>effective sandbox flags</dfn>
-  :: null, or an [=fencedframetype/exhaustive set of sandbox flags=]
+  : <dfn>effective sandboxing flags</dfn>
+  :: null, or a [=sandboxing flag set=]
 
   : <dfn>effective enabled permissions</dfn>
   :: null, or a [=list=] of [=policy-controlled features=]
@@ -1237,9 +1298,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     : [=fenced frame config instance/on navigate callback=]
     :: |config|'s [=fenced frame config/on navigate callback=]
 
-    : [=fenced frame config instance/effective sandbox flags=]
-    :: |config|'s [=fenced frame config/effective sandbox flags=] if null, otherwise |config|'s
-       [=fenced frame config/effective sandbox flags=]'s [=effective sandbox flags/value=]
+    : [=fenced frame config instance/effective sandboxing flags=]
+    :: |config|'s [=fenced frame config/effective sandboxing flags=] if null, otherwise |config|'s
+       [=fenced frame config/effective sandboxing flags=]'s [=effective sandboxing flags/value=]
 
     : [=fenced frame config instance/effective enabled permissions=]
     :: |config|'s [=fenced frame config/effective enabled permissions=] if null, otherwise
@@ -1328,52 +1389,30 @@ maps to an internal [=fenced frame config=] [=struct=].
 <pre class=idl>
   enum OpaqueProperty {"opaque"};
 
-  typedef (unsigned long or OpaqueProperty) FencedFrameConfigSize;
-  typedef USVString FencedFrameConfigURL;
-
   [Exposed=Window, Serializable]
   interface FencedFrameConfig {
-    readonly attribute FencedFrameConfigSize? containerWidth;
-    readonly attribute FencedFrameConfigSize? containerHeight;
-    readonly attribute FencedFrameConfigSize? contentWidth;
-    readonly attribute FencedFrameConfigSize? contentHeight;
-
+    constructor(USVString url);
     undefined setSharedStorageContext(DOMString contextString);
   };
 </pre>
 
-Note: Note that {{FencedFrameConfig}}s cannot be constructed manually from JavaScript. They can only
-be created by config-generating APIs. However, some browsers [support a developer-only
-flag](https://github.com/WICG/fenced-frame/issues/94) which help developers test the <{fencedframe}>
-element with arbitrary URLs *not* produced by config-generating APIs for development.
-
 Each {{FencedFrameConfig}} has:
 
+ * A <dfn for=fencedframeconfig>url</dfn>, a [=URL=], failure, or null, initially null
  * A <dfn for=fencedframeconfig>urn</dfn>, a [=urn uuid=]
  * A <dfn for=fencedframeconfig>sharedStorageContext</dfn>, a [=string=]
- * A <dfn for=fencedframeconfig>containerWidth</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>containerHeight</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>contentWidth</dfn>, a {{FencedFrameConfigSize}} or null
- * A <dfn for=fencedframeconfig>contentHeight</dfn>, a {{FencedFrameConfigSize}} or null
 
-<div algorithm="containerWidth getter">
-  The {{FencedFrameConfig/containerWidth}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/containerWidth=].
-</div>
+Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig/urn=] is supplied.
 
-<div algorithm="containerHeight getter">
-  The {{FencedFrameConfig/containerHeight}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/containerHeight=].
-</div>
+<div algorithm>
+  The <dfn constructor for=FencedFrameConfig>FencedFrameConfig(|url|)</dfn> constructor method steps
+  are:
+  
+  1. Let |config| be a [=new=] {{FencedFrameConfig}} object.
 
-<div algorithm="contentWidth getter">
-  The {{FencedFrameConfig/contentWidth}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/contentWidth=].
-</div>
+  1. Set |config|'s [=fencedframeconfig/url=] to the result of running the [=URL parser=] on |url|.
 
-<div algorithm="contentHeight getter">
-  The {{FencedFrameConfig/contentHeight}} IDL attribute getter steps are to return [=this=]'s
-  [=fencedframeconfig/contentHeight=].
+  1. Return |config|.
 </div>
 
 <div algorithm>
@@ -1387,43 +1426,24 @@ Each {{FencedFrameConfig}} has:
 
   1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
   
+  1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
+
   1. Set |serialized|.\[[Urn]] to |value|'s [=fencedframeconfig/urn=].
 
   1. Set |serialized|.\[[SharedStorageContext]] to |value|'s [=fencedframeconfig/
      sharedStorageContext=].
-
-  1. Set |serialized|.\[[ContainerWidth]] to |value|'s [=fencedframeconfig/
-     containerWidth=].
-
-  1. Set |serialized|.\[[ContainerHeight]] to |value|'s [=fencedframeconfig/
-     containerHeight=].
-
-  1. Set |serialized|.\[[ContentWidth]] to |value|'s [=fencedframeconfig/
-     contentWidth=].
-
-  1. Set |serialized|.\[[ContentHeight]] to |value|'s [=fencedframeconfig/
-     contentHeight=].
-
-
 </div>
 
 <div algorithm="FencedFrameConfig deserializer">
   Their [=deserialization steps=], given |serialized|, |value|, and <var ignore> targetRealm</var>
   are:
 
+  1. Initialize |value|'s [=fencedframeconfig/url=] to |serialized|.\[[Url]].
+  
   1. Initialize |value|'s [=fencedframeconfig/urn=] to |serialized|.\[[Urn]].
 
   1. Initialize |value|'s [=fencedframeconfig/sharedStorageContext=] to
      |serialized|.\[[SharedStorageContext]].
-
-  1. Initialize |value|'s [=fencedframeconfig/containerWidth=] to |serialized|.\[[ContainerWidth]].
-
-  1. Initialize |value|'s [=fencedframeconfig/containerHeight=] to
-     |serialized|.\[[ContainerHeight]].
-
-  1. Initialize |value|'s [=fencedframeconfig/contentWidth=] to |serialized|.\[[ContentWidth]].
-
-  1. Initialize |value|'s [=fencedframeconfig/contentHeight=] to |serialized|.\[[ContentHeight]].
 </div>
 
 Note: To help with ease of adoption,
@@ -1432,12 +1452,21 @@ the API {{Window/navigator}}.{{Navigator/deprecatedReplaceInURN()}}, which allow
 macros into the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
 {{FencedFrameConfig}}.
 
+Note: To help with ease of adoption,
+[until third party cookie deprecation](https://developers.google.com/privacy-sandbox/relevance/protected-audience-api/feature-status#fenced_frames)
+we will support the API {{Window/navigator}}.{{Navigator/deprecatedURNtoURL()}}, which returns
+the [=fenced frame config/mapped url=] corresponding to a given [=urn uuid=] or
+{{FencedFrameConfig}}.
+
 <pre class=idl>
 typedef (USVString or FencedFrameConfig) UrnOrConfig;
 
 partial interface Navigator {
   Promise&lt;undefined&gt; deprecatedReplaceInURN(
     UrnOrConfig urnOrConfig, record&lt;USVString, USVString&gt; replacements);
+  Promise&lt;USVString&gt; deprecatedURNtoURL(
+    UrnOrConfig urnOrConfig, optional boolean send_reports = false);
+  sequence&lt;USVString&gt; adAuctionComponents(unsigned short numAdComponents);
 };
 </pre>
 
@@ -1461,7 +1490,8 @@ partial interface Navigator {
 
   1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
 
-  1. If |urn| is <span class=XXX>TODO invalid</span>, [=exception/throw=] a {{TypeError}}.
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
 
   1. [=map/For each=] |key| → _ of |replacements|:
      1. If |key| does not [=string/start with=] <code>${</code> or <code>%%</code>,
@@ -1475,7 +1505,7 @@ partial interface Navigator {
 
   1. Run the following steps [=in parallel=]:
 
-     1. Let |mapping| be |global|'s [=associated Document=]'s [=node navigable=]'s
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
         [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
 
      1. Let |config| be the result of [=fenced frame config mapping/finding a config=] in |mapping|
@@ -1498,6 +1528,77 @@ partial interface Navigator {
   <wpt>
     /fenced-frame/deprecated-config-apis.https.html
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>deprecatedURNtoURL(|urnOrConfig|, |send_reports|)</dfn> method
+  steps are:
+
+  1. Let |urn| be null.
+
+  1. If |urnOrConfig| is a {{USVString}}, set |urn| to |urnOrConfig|.
+
+  1. Otherwise, set |urn| to |urnOrConfig|'s [=fencedframeconfig/urn=].
+
+  1. If |urn| is not a valid [=urn uuid=] (i.e., won't pass the ABNF in Section 3 of
+     [=urn uuid=]), [=exception/throw=] a {{TypeError}}.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |mapping| be |global|'s [=Window/navigable=]'s
+        [=navigable/traversable navigable=]'s [=traversable navigable/fenced frame config mapping=].
+
+     1. If |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|], does not
+        [=map/exist=], then [=queue a global task=] on the [=DOM manipulation task source=]
+        given |global|, to [=resolve=] |p| with {{undefined}}, and abort these steps.
+
+     1. Let |config| be |mapping|'s [=fenced frame config mapping/finalized config mapping=][|urn|].
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
+
+     1. If |send_reports| is true, then run the steps in |config|'s
+        [=fenced frame config/on navigate callback=].
+
+  1. Return |p|.
+
+  <wpt>
+    /fenced-frame/deprecated-config-apis.https.html
+  </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
+  
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If |instance| is null, then throw a {{DOMException}}.
+
+  1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
+    |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+    origin=], then then throw a {{DOMException}}.
+
+  1. Let |maxAdComponents| be 40.
+
+  1. If |numAdComponents| &gt; |maxAdComponents|, then set |numAdComponents| to |maxAdComponents|.
+
+  1. Let |adComponentsURNs| be an empty [=list=] of [=fencedframeconfig/urn=]s.
+
+  1. [=map/For each=] |urn| → <var ignore>config</var> of |instance|'s 
+     [=fenced frame config instance/nested configs=]:
+     
+     1. If |numAdComponents| equals 0, then [=iteration/break=].
+
+     1. [=list/Append=] |urn| to |adComponentsURNs|.
+
+     1. Set |numAdComponents| to |numAdComponents| &minus; 1.
+
+  1. Return |adComponentsURNs|.
 </div>
 
 <h3 id=fence-interface>The {{Fence}} interface</h3>
@@ -1648,7 +1749,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-embedder-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe-no-subframe-opt-in.https.html 
     /fenced-frame/fence-report-event-cross-origin-urn-iframe.https.html 
-    /fenced-frame/fence-report-event-cross-origin.https.html 
+    /fenced-frame/fence-report-event-cross-origin.sub.https.html 
     /fenced-frame/fence-report-event-sub-fencedframe.https.html 
   </wpt>
 </div>
@@ -1723,26 +1824,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         : [=fencedframeconfig/sharedStorageContext=]
         :: |config|'s [=fenced frame config/embedder shared storage context=]
-
-        : [=fencedframeconfig/containerWidth=]
-        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
-           [=fenced frame config/container size=]'s [=size/width=]
-
-        : [=fencedframeconfig/containerHeight=]
-        :: null if |config|'s [=fenced frame config/container size=] is null, otherwise |config|'s
-           [=fenced frame config/container size=]'s [=size/height=]
-
-        : [=fencedframeconfig/contentWidth=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
-           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
-           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
-           config/content size=]'s [=size/width=]
-
-        : [=fencedframeconfig/contentHeight=]
-        :: null if |config|'s [=fenced frame config/content size=] is null, the `"opaque"`
-           {{OpaqueProperty}} if |config|'s [=fenced frame config/content size=]'s [=content
-           size/visibility=] is [=visibility/opaque=], otherwise |config|'s [=fenced frame
-           config/content size=]'s [=size/height=]
 
      1. [=list/Append=] |newConfig| to |results|.
 
@@ -2184,9 +2265,9 @@ Similar to [=navigable containers=] and their respective [=navigable container/c
 other elements (so far, only the <{fencedframe}> element) present a more isolated [=navigable=] to
 the user. These elements are called <dfn>fenced navigable containers</dfn>.
 
-A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
-which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
-parent=], or null. It is initially null.
+A [=fenced navigable container=] has a <dfn export for="fenced navigable container">fenced
+navigable</dfn>, which is either a [=traversable navigable=] with a non-null [=traversable
+navigable/unfenced parent=], or null. It is initially null.
 
 <wpt>
   /fenced-frame/window-frameElement.https.html
@@ -2557,6 +2638,25 @@ container/fenced navigable=] will fail, as outlined in [[#navigation-patch]].
 
 </div>
 
+<h4 id=allow-automatic-beacons>The
+\`<a http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></a>\` HTTP response header</h4>
+
+Serving a document resource that gets loaded into a {{Document}} that is not [=same origin=] with
+its [=Document/browsing context=]'s [=fenced frame config instance=]'s [=fenced frame config
+instance/mapped url=] with the <dfn
+http-header><code>Allow-Fenced-Frame-Automatic-Beacons</code></dfn> HTTP response header opts in the
+{{Document}} to having automatic beacon events trigger when it performs navigations. This header is
+a [=structured header=] whose value must be a [=structured header/boolean=].
+
+<h4 id=allow-cross-origin-reporting>The
+\`<a http-header><code>Allow-Cross-Origin-Event-Reporting</code></a>\` HTTP response header</h4>
+
+Serving a document resource that gets loaded into a <{fencedframe}> by a [=fenced frame config
+instance=] with the <dfn http-header><code>Allow-Cross-Origin-Event-Reporting</code></dfn> HTTP
+response header opts in the {{Document}}'s cross-origin [=child navigables=] to be able to send
+{{Fence/reportEvent()}} beacons. This header is a [=structured header=] whose value must be a
+[=structured header/boolean=].
+
 <h4 id=coop-coep>COOP, COEP, and cross-origin isolation</h4>
 
 Outside of this specification, the \`<a http-header><code>Cross-Origin-Opener-Policy</code></a>\`
@@ -2762,6 +2862,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
+      1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+
   <wpt>
     /fenced-frame/frame-navigation.https.html
   </wpt>
@@ -2771,6 +2873,22 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. Let |unloadPromptCanceled| be false if |navigable| is a [=fenced navigable container/fenced
        navigable=], or the result of [=checking if unloading is user-canceled=] for |navigable|'s
        [=navigable/active document=]'s [=Document/inclusive descendant navigables=] otherwise.
+
+  Add a step after step 22.8.2 (Let |finalSandboxFlags| be the [=set/union=]...) that reads:
+
+  3. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is not null,
+     and if |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]'s
+     [=fenced frame config/effective sandboxing flags=] is not null, then set |finalSandboxFlags| to
+     the [=set/union=] of |finalSandboxFlags| and |sourceSnapshotParams|'s [=source snapshot
+     params/target fenced frame config=]'s [=fenced frame config/effective sandboxing flags=]'
+     [=effective sandboxing flags/value=].
+
+     Note: This ensures that the |finalSandboxFlags| are *at least* as restrictive as the [=fenced
+     frame config/effective sandboxing flags=] defined in the [=source snapshot params/target fenced
+     frame config=]. A separate check in the [=should navigation response to navigation request be
+     blocked by sandboxing flags?|blocked by sandboxing flags?=] algorithm will make sure that
+     |finalSandboxFlags| is not more restrictive than the [=fenced frame config/effective sandboxing
+     flags=].
 
   <wpt>
     /fenced-frame/before-unload.https.html
@@ -2844,8 +2962,7 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
     1. Set |navigationParams|'s [=navigation params/fenced frame config instance=]'s [=fenced frame
        config/cross-origin reporting allowed=] to the result of running [=header list/get a
        structured field value=] on |navigationParams|'s [=navigation params/response=]'s
-       [=response/header list=] given "<code>Allow-Cross-Origin-Event-Reporting</code>" and
-       "`item`".
+       [=response/header list=] given [:Allow-Cross-Origin-Event-Reporting:] and "`item`".
 
     1. Set |browsingContext|'s [=browsing context/fenced frame config instance=] to
        |navigationParams|'s [=navigation params/fenced frame config instance=].
@@ -2854,15 +2971,12 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 
   10. Let |automaticBeaconsAllowed| be the result of running [=header list/get a structured field
       value=] on |navigationParams|'s [=navigation params/response=]'s [=response/header list=]
-      given "<code>Allow-Fenced-Frame-Automatic-Beacons</code>" and "`item`".
+      given [:Allow-Fenced-Frame-Automatic-Beacons:] and "`item`".
   
   Further rewrite step 10 (now step 12) to return a new {{Document}} with an additional parameter:
   : [=Document/automatic beacons allowed=]
-  :: |automaticBeaconsAllowed|
+  :: |automaticBeaconsAllowed|.
 </div>
-
-<span class=XXX>TODO: Call the [=fenced frame config instance/on navigate callback=] at the
-appropriate time.</span>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
 
@@ -3242,16 +3356,18 @@ algorithms to achieve the outcomes described in the above explanatory content.
 </div>
 
 <div algorithm=attempt-populate-history-patches>
-  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add a step
-  before the step inside the [=queue a task|queued task=] starting with "If
-  |failure| is true, then:" that reads:
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm. Add the
+  following conditions to step 6.4 (Otherwise, if any of the following are true:) that say:
+  
+  * The result of [=should navigation response to navigation request be blocked by Permissions
+    Policy?=] given <var ignore>navigationParams</var> is "`Blocked`";
 
-  8. Otherwise, if the result of [=should navigation response to navigation request be blocked by
-    Permissions Policy?=] given <var ignore>navigationParams</var> is "`Blocked`", then set 
-    |failure| to true.
+  * The result of [=should navigation response to navigation request be blocked by sandboxing
+    flags?=] given <var ignore>navigationParams</var> and <var ignore>sourceSnapshotParams</var> is
+    "`Blocked`";
 
-  Note: If this algorithm returns "`Blocked`", the pre-existing {{Document}} in the <{fencedframe}>
-  does not stick around; an error page will be loaded.
+  Note: If any of these algorithms returns "`Blocked`", the pre-existing {{Document}} in the
+  <{fencedframe}> does not stick around; an error page will be loaded.
 </div>
 
 <div algorithm=permissions-policy-block-request>
@@ -3301,6 +3417,33 @@ algorithms to achieve the outcomes described in the above explanatory content.
     1. If |inherited policy|[|effective permission|] is "Disabled", return "`Blocked`".
 
   1. Return "`Allowed`."
+</div>
+
+<div algorithm>
+  <dfn>Should navigation response to navigation request be blocked by sandboxing flags?</dfn>
+
+  Given a [=navigation params=] (|navigationParams|) and a [=source snapshot params=]
+  (|sourceSnapshotParams|), this algorithm returns "`Blocked`" or "`Allowed`":
+
+  1. Let |navigable| be |navigationParams|'s [=navigation params/navigable=].
+
+  1. If |navigable| is not a [=fenced navigable container/fenced navigable=], then return
+     "`Allowed`".
+
+  1. Let |effectiveSandboxingFlags| be the |sourceSnapshotParams|'s [=source snapshot params/target
+     fenced frame config=]'s [=fenced frame config/effective sandboxing flags=].
+
+  1. If |navigationParams|'s [=navigation params/final sandboxing flag set=] is not a [=set/subset=]
+     of |effectiveSandboxingFlags|, then return "`Blocked`".
+
+     Note: This means that the [=navigation params/final sandboxing flag set=] cannot restrict a
+     feature that isn't already restricted in the [=fenced frame config instance/effective
+     sandboxing flags=], as the extra restrictions can be used as a communication channel. By this
+     point, the [=navigation params/final sandboxing flag set=] will already have been set to
+     something *at least* as restrictive as the [=fenced frame config instance/effective sandboxing
+     flags=].
+
+  1. Otherwise, return "`Allowed`".
 </div>
 
 <div algorithm=define-inherited-policy-in-container-patches>
@@ -3353,7 +3496,21 @@ algorithms to achieve the outcomes described in the above explanatory content.
      and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
+<div algorithm=declared-origin-patch>
+Modify the [=declared origin=] algorithm. Add a new step after step 3 that reads:
+
+4. If |node|'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/fenced
+   frame config instance=] is not null, then return |node|'s [=Node/node document=]'s
+   [=Document/browsing context=]'s [=browsing context/fenced frame config instance=]'s [=fenced
+   frame config instance/mapped url=].
+
+Note: This ensures that the `'src'` [=allowlist=] that can be set in the <{fencedframe/allow}>
+attribute works when using a [=fenced frame config=] to navigate a <{fencedframe}> (or a urn that
+maps to a [=fenced frame config=] to navigate an <{iframe}>).
+</div>
+
 <wpt>
+  /fenced-frame/allow-attribute-src.https.html
   /fenced-frame/default-enabled-features-allow-all.https.html
   /fenced-frame/default-enabled-features-allow-none.https.html
   /fenced-frame/default-enabled-features-allow-self.https.html
