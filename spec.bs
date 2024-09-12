@@ -1898,7 +1898,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Let |credentiallessNonce| be
 
      Issue: the page credentialless nonce
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
+     (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
 
      1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
 
