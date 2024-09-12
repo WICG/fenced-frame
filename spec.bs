@@ -1879,13 +1879,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If |instance| is null, then [=resolve=] |p| with {{undefined}} and return |p|.
 
+  1. [=Assert=]: the [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are [=same origin=].
+
+     Note: Only contexts that are [=same origin=] to the [=fenced frame config instance/mapped url=]
+     described in the [=fenced frame config instance=] are allowed to call this API.
+
   1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s [=navigable/traversable
      navigable=] is not a [=fenced navigable container/fenced navigable=], then [=resolve=] |p| with
      {{undefined}} and return |p|.
-
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and |instance|'s
-     [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same origin=], then
-     [=resolve=] |p| with {{undefined}} and return |p|.
 
   1. Let |global| be [=this=]'s [=relevant global object=].
 
