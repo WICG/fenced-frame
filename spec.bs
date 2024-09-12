@@ -1969,8 +1969,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/Empty=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
      1. Otherwise:
-        1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/unfenced parent=]'s
-           [=navigable/active document=]'s [=Document/ancestor navigables=][0].
+        1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
+           parent=]'s [=navigable/traversable navigable=].
 
         1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
            [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
