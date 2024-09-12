@@ -233,6 +233,7 @@ spec: permissions-policy; urlPrefix: https://w3c.github.io/webappsec-permissions
     text: the special value *; url: the-special-value
     text: permissions policy; url: permissions-policy
     text: policy directive; url: policy-directive
+    text: declared origin; url: declared-origin
     for: permissions policy
       text: declared policy; url: permissions-policy-declared-policy
       text: inherited policy; url: permissions-policy-inherited-policy
@@ -2423,9 +2424,9 @@ Similar to [=navigable containers=] and their respective [=navigable container/c
 other elements (so far, only the <{fencedframe}> element) present a more isolated [=navigable=] to
 the user. These elements are called <dfn>fenced navigable containers</dfn>.
 
-A [=fenced navigable container=] has a <dfn for="fenced navigable container">fenced navigable</dfn>,
-which is either a [=traversable navigable=] with a non-null [=traversable navigable/unfenced
-parent=], or null. It is initially null.
+A [=fenced navigable container=] has a <dfn export for="fenced navigable container">fenced
+navigable</dfn>, which is either a [=traversable navigable=] with a non-null [=traversable
+navigable/unfenced parent=], or null. It is initially null.
 
 <wpt>
   /fenced-frame/window-frameElement.https.html
@@ -3654,7 +3655,21 @@ algorithms to achieve the outcomes described in the above explanatory content.
      and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
+<div algorithm=declared-origin-patch>
+Modify the [=declared origin=] algorithm. Add a new step after step 3 that reads:
+
+4. If |node|'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/fenced
+   frame config instance=] is not null, then return |node|'s [=Node/node document=]'s
+   [=Document/browsing context=]'s [=browsing context/fenced frame config instance=]'s [=fenced
+   frame config instance/mapped url=].
+
+Note: This ensures that the `'src'` [=allowlist=] that can be set in the <{fencedframe/allow}>
+attribute works when using a [=fenced frame config=] to navigate a <{fencedframe}> (or a urn that
+maps to a [=fenced frame config=] to navigate an <{iframe}>).
+</div>
+
 <wpt>
+  /fenced-frame/allow-attribute-src.https.html
   /fenced-frame/default-enabled-features-allow-all.https.html
   /fenced-frame/default-enabled-features-allow-none.https.html
   /fenced-frame/default-enabled-features-allow-self.https.html
