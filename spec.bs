@@ -1289,6 +1289,13 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>on network disabled promises</dfn>
   :: A [=list=] of {{Promise|Promises}}.
 
+  Note: This stores the callback {{Promise|Promises}} that were created during
+  {{Fence/disableUntrustedNetwork()}}. This is populated when {{Fence/disableUntrustedNetwork()}} is
+  first invoked, and all {{Promise|Promises}} in this [=list=] are resolved at once when the
+  <{fencedframe}> and its descendants have their network access fully revoked (i.e. the [=fenced
+  frame config instance/untrusted network status=] is [=untrusted network status/disabled for this
+  and descendant trees=]).
+
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
 </dl>
