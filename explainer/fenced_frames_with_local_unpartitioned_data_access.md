@@ -77,7 +77,7 @@ Let’s first go through the requirements on the data, taking the example of exa
 *   **Size:** As per the current use case feedback, the data itself is not very large, is text-only and can fit in a normal cookie size. This is subject to change though, e.g. if a payment provider wants to also show the user's profile picture in the personalized button.
 *   **Unpartitioned:** The data only needs to be accessed in the unpartitioned state and not in a partitioned (by top-level site i.e. the merchant site for payment providers) state.
 
-Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate:** read from a fenced frame after network revocation**.
+Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate: **read from a fenced frame after network revocation**.
 
 Some of the enhancements needed for shared storage to be used for this proposal are:
 
