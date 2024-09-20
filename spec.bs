@@ -2778,7 +2778,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm=get-initiator-ancestor-root-origin>
-  To <dfn>get the initiator ancestor root origin</dfn> of a given {{Document}} |sourceDocument|:
+  To <dfn>get the initiator's fenced grand-ancestor's origin</dfn> of a given {{Document}}
+  |sourceDocument|:
 
   1. Let |navigable| be |sourceDocument|'s [=node navigable=].
 
@@ -2789,45 +2790,44 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   1. If |navigable| is null, return null.
 
-  1. Otherwise:
+  1. [=Assert=]: |navigable| is a [=fenced navigable container/fenced navigable=].
 
-     1. [=Assert=]: |navigable| is a [=fenced navigable container/fenced navigable=].
+  1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
 
-     1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
+  1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+     navigable=]:
 
-     1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
-        navigable=]:
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
 
-        1. Set |navigable| to |navigable|'s [=navigable/parent=].
+  1. If |navigable| is null, return null.
 
-     1. If |navigable| is null, return null.
+  1. Otherwise, return |navigable|'s [=navigable/active document=]'s [=Document/origin=].
 
-     1. Otherwise, return |navigable|'s [=navigable/active document=]'s [=Document/origin=].
+  <div id="get-initiator-ancestor-root-origin-example" class="example">
+    Given a {{Document}} embedded inside of a <{fencedframe}>, this algorithm gets the origin of the
+    document's nearest fenced frame ancestor's nearest fenced frame ancestor. If no such "fenced
+    frame grand-ancestor" exists, the algorithm returns null. Therefore, this algorithm only returns
+    an origin when given a Document that is, at a minimum, in a fenced frame which is itself in a
+    fenced frame. For example, for the given frame tree structure:
 
-  *The rest of this section is non-normative*.
+    ```
+    Main frame (origin A)
+      <fencedframe> (origin B)
+        <iframe> (origin C)
+          <fencedframe> (origin D)
+            <iframe> (origin E)
+              <fencedframe> (origin F)
+    ```
 
-  Given a {{Document}} embedded inside of a <{fencedframe}>, this algorithm gets the origin
-  for the fenced frame root's ancestor fenced frame root. If there is no fenced frame root (for
-  either of fenced frame roots the algorithm looks for), the algorithm will return null. For
-  example, for the given frame tree structure:
+    The algorithm will return the following given each document:
 
-  ```
-  Main frame (origin A)
-    <fencedframe> (origin B)
-      <iframe> (origin C)
-        <fencedframe> (origin D)
-          <iframe> (origin E)
-            <fencedframe> (origin F)
-  ```
-
-  The algorithm will return the following given each document:
-
-  - `Main frame (origin A)` will return `null`.
-  - `<fencedframe> (origin B)` will return `null`.
-  - `<iframe> (origin C)` will return `null`.
-  - `<fencedframe> (origin D)` will return `<fencedframe> (origin B)`.
-  - `<iframe> (origin E)` will return `<fencedframe> (origin B)`.
-  - `<fencedframe> (origin F)` will return `<fencedframe> (origin D)`.
+    - `Main frame (origin A)` will return `null`.
+    - `<fencedframe> (origin B)` will return `null`.
+    - `<iframe> (origin C)` will return `null`.
+    - `<fencedframe> (origin D)` will return `<fencedframe> (origin B)`.
+    - `<iframe> (origin E)` will return `<fencedframe> (origin B)`.
+    - `<fencedframe> (origin F)` will return `<fencedframe> (origin D)`.
+  </div>
 </div>
 
 <div algorithm=snapshot-source-snapshot-params>
@@ -2840,7 +2840,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
   : [=source snapshot params/initiator ancestor root origin=]
 
-  :: The result of running [=get the initiator ancestor root origin=] on |sourceDocument|.
+  :: The result of running [=get the initiator's fenced grand-ancestor's origin=] on
+     |sourceDocument|.
 
   : [=source snapshot params/attribution reporting enabled=]
   :: The result of determining whether |sourceDocument| is [=allowed to use=] the
