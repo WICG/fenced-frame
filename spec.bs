@@ -2879,7 +2879,10 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
          |sharedStorageContext|.
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+      1. Assert: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is
+         null.
+
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame
          config=] to |config|.
 
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
@@ -2889,7 +2892,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
   
-    1. If |url| is a [=url=], |navigable| is a [=fenced navigable container/fenced navigable=], and
+    1. If |navigable| is a [=fenced navigable container/fenced navigable=], and
        <var ignore>sourceDocument</var>'s [=node navigable=] is not |navigable|:
 
       1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
@@ -2914,9 +2917,12 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
         : [=fenced frame config/effective enabled permissions=]
         :: null
+      
+      1. Assert: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is
+         null.
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
-         config=] to |config|.
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] to
+         |config|.
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
