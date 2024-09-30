@@ -2892,8 +2892,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
   
-    1. If |navigable| is a [=fenced navigable container/fenced navigable=], and
-       <var ignore>sourceDocument</var>'s [=node navigable=] is not |navigable|:
+    1. If |navigable| is a [=fenced navigable container/fenced navigable=] and
+       <var ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s
+       [=navigable/active document=]'s [=Document/ancestor navigables=]:
 
       1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
 
