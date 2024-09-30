@@ -77,7 +77,7 @@ Let’s first go through the requirements on the data, taking the example of exa
 *   **Size:** As per the current use case feedback, the data itself is not very large, is text-only and can fit in a normal cookie size. This is subject to change though, e.g. if a payment provider wants to also show the user's profile picture in the personalized button.
 *   **Unpartitioned:** The data only needs to be accessed in the unpartitioned state and not in a partitioned (by top-level site i.e. the merchant site for payment providers) state.
 
-Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate:** read from a fenced frame after network revocation**.
+Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate: **read from a fenced frame after network revocation**.
 
 Some of the enhancements needed for shared storage to be used for this proposal are:
 
@@ -198,8 +198,8 @@ The `notifyEvent()` method will not be available in iframes (same-origin or cros
 Since this is exfiltrating some information (that a click happened) outside the fenced frame, we will need to consider the following privacy considerations:
 
 *   A possible attack using multiple fenced frames: an embedder creates `n` fenced frames, which all disable network and then determine (by predetermined behavior, or through communication over shared storage) which one of them should display nonempty content. Then if a user clicks on the only nonempty fenced frame, this exfiltrates log(n) bits of information through the click notification. Mitigating this will require some rate limits on the number of fenced frames on a page that are allowed to read from shared storage. This is similar to [shared storage’s existing rate limits](https://github.com/WICG/shared-storage#:~:text=per%2Dsite%20(the%20site%20of%20the%20Shared%20Storage%20worklet)%20budget). 
-*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/). 
-
+*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/).
+*   One potential concern around the `notifyEvent()` API shape is that a single trusted `click` event could be cached by the JS running in the fenced frame and reused in additional `notifyEvent()` calls. However, the requirement that the trusted event *must be dispatching* mitigates this concern. Once the dispatch initiated by the browser completes, `notifyEvent()` will no longer accept the cached event object. If JavaScript on the page then tries to manually re-dispatch the cached event, the object will no longer be trusted (its `isTrusted` field will be set to false).
 
 ## Code Example
 
@@ -296,7 +296,7 @@ An additional element of user privacy is the ability to control this feature via
 
 ## Security considerations 
 
-This new variant of fenced frames (constructed with a normal URL instead of an config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
+This new variant of fenced frames (constructed with a normal URL instead of a config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
 
 
 ### Permissions delegation
@@ -311,10 +311,13 @@ Fenced frames constructed using the non-opaque URL constructor do not have to wo
 Given the above, we would do an audit to see which features are safe to allow in this variant. In the initial launch though, we will likely go with a minimal list of features that we know are necessary for the personalized payment button to work, e.g. shared storage and Aggregate Reporting APIs.
 
 
-### Ongoing technical considerations
+### Process Isolation
 
-There are ongoing technical considerations, which we will be updating here once the design is crystallized. Specifically, we would like to revisit the fenced frames [process isolation model](https://github.com/WICG/fenced-frame/blob/master/explainer/process_isolation.md) for this variant.
+Fenced frames, like Shared Storage worklets, follow Chrome's [Site Isolation](https://www.chromium.org/Home/chromium-security/site-isolation/) model. As Site Isolation improves, so will the security provided to fenced frames.
 
+### CSP:frame-ancestors
+CSP:frame-ancestors response header only checks up to the fenced frame root in information flows where the embedder’s origin cannot be known inside the fenced frame (e.g., Protected Audience fenced frames). For the information flow in this proposal, since the embedder’s information could be available inside the FF via the src url, it is not a privacy concern to let the CSP:frame-ancestors response header be checked all the way up to the outermost main frame. 
+With this behavior, the fenced frame can then allowlist origins via CSP:frame-ancestors header that it is ok to be embedded in and exclude others.
 
 ## Stakeholder Feedback / Opposition
 

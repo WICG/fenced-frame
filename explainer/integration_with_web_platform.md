@@ -53,7 +53,7 @@ For COEP, If the fenced frame’s embedding page enables COEP then the fenced fr
 ## Opt-in header
 Since fenced frames allow a document to have many constraints in place, an opt-in mechanism is a good way for the document to accept those restrictions. The opt-in will make use of the Supports-Loading-Mode proposed [here](https://github.com/WICG/nav-speculation/blob/main/opt-in.md).
 
-It is also important for sites to opt-in due to security reasons. Due to privacy reasons, a fenced frame does not honor headers like frame-ancestors and x-frame-options all the way up to the primary top-level frame but only till the fenced frame root.
+It is also important for sites to opt-in due to security reasons, e.g. csp:frame-ancestors behavior. Frame ancestors checks will stop at the Fenced Frame root for Protected Audience fenced frames. All other fenced frames (e.g., for selectURL or created via FencedFrameConfig) will check all the way up to the primary top-level frame. Protected Audience is different because it is only allowed to have k-anonymous information flow into the fenced frame, and the primary top-level frame’s origin may not be k-anonymous.
 
 ## Fetch metadata integration
 To let a server know that a document is being requested for rendering in a fenced frame, a new Sec-Fetch-Dest HTTP Request Header value of `fencedframe` will be sent in the request.
@@ -95,6 +95,23 @@ The [MediaDevices interface](https://w3c.github.io/mediacapture-main/#mediadevic
 "To ensure stored identifiers are recognized, the identifier MUST be the same in Documents of the same origin in top-level traversables. In child navigables, the decision of whether or not the identifier is the same across documents, MUST follow the User Agent's partitioning rules for storage (such as localStorage), if any, to not interfere with mitigations for cross-site correlation."
 
 Fenced frames partition storage using a unique nonce, so that no other frame can access the same partitioned storage as a given fenced frame. As a result, deviceID values will always be different within two fenced frames and similarly the value in a fenced frame will always differ with that in other iframes/top-level frames, even if their origin is the same.
+
+## WebRTC
+[WebRTC](https://webrtc.org/) ([spec](https://www.w3.org/TR/webrtc/#intro)) is an open standard and set of APIs with two primary purposes:
+
+1. Enable media capture of cameras, microphones, and displays.  
+1. Facilitate peer-to-peer communication between clients for the purpose of sharing captured media or other arbitrary data. 
+
+WebRTC enables critical use cases of the web today, like audio and video chat, and we need to ensure that fenced frames account for its usage. And in a way, they already do. Capture of cameras, microphones, and displays are gated behind permissions policies, and in fenced frames, **those policy-gated features are [unconditionally disallowed](https://github.com/WICG/fenced-frame/blob/master/explainer/permissions_policy_for_API_backed_fenced_frames.md#introduction).** This means that many primary use cases enabled by WebRTC are not supported, and there are no plans to support them unless necessary use cases are identified. 
+
+However, WebRTC peer connections via  `RTCPeerConnection` and `RTCDataChannel` are still enabled. This means that for fenced frames in the [local unpartitioned data access mode](https://github.com/WICG/fenced-frame/blob/46c479e01d741dfab8429bc18e5f3193e4fd6db0/explainer/fenced_frames_with_local_unpartitioned_data_access.md#revoking-network-access), we would have to spec and build behavior to disable WebRTC peer connections after calling `window.fence.disableUntrustedNetwork()`. We’ve decided against doing so, and will instead **disable `RTCPeerConnection` construction in all fenced frames, regardless of whether network access has been voluntarily disabled or not**. We have a few reasons for making this choice:
+
+1. Utility: We have not yet identified any use cases for fenced frames that would require WebRTC peer connections.  
+   1. A significant amount of WebRTC utility is already hampered by the disabled media capture permissions.  
+1. Privacy: Network communications of any kind present a [privacy side-channel](https://github.com/WICG/fenced-frame/blob/46c479e01d741dfab8429bc18e5f3193e4fd6db0/explainer/network_side_channel.md#network-side-channel), and we should take the opportunity to close these channels where we can.  
+1. Complexity: Network revocation for `RTCPeerConnection` would likely be more involved than other types of requests, for potentially little benefit given 1 and 2.
+
+Navigation, subresource fetches, and Websockets will still be enabled in fenced frames by default, but disabled after a call to `window.fence.disableUntrustedNetwork()`.  
 
 ## Chromium implementation: Top-level browsing context using MPArch
 Chromium is implementing [Multiple Page Architecture](https://docs.google.com/document/d/1NginQ8k0w3znuwTiJ5qjYmBKgZDekvEPC22q0I4swxQ/edit?usp=sharing) for various use-cases including [back/forward-cache](https://web.dev/bfcache/), [portals](https://wicg.github.io/portals/), prerendering etc. This architecture aligns with fenced frames requirement to be a top-level browsing context as MPArch enables one WebContents to host multiple pages. Additionally, those pages could be nested, as is the requirement for fenced frames. 
