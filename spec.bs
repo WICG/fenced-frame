@@ -1001,7 +1001,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
   |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |request initiator|,
-  a [=referrer policy=] |initiator referrer policy| and a [=fencedframetype/destination event=]
+  a [=referrer policy=] |initiator referrer policy|, and a [=fencedframetype/destination event=]
   |event|, run these steps:
 
   1. Let |metadata| be |reporter|'s
@@ -2831,22 +2831,22 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     fenced frame. For example, for the given frame tree structure:
 
     ```
-    Main frame (A)
-      <fencedframe> (B)
-        <iframe> (C)
-          <fencedframe> (D)
-            <iframe> (E)
-              <fencedframe> (F)
+    Main frame (origin A)
+      <fencedframe> (origin B)
+        <iframe> (origin C)
+          <fencedframe> (origin D)
+            <iframe> (origin E)
+              <fencedframe> (origin F)
     ```
 
     The algorithm will return the following given each document:
 
-    - `Main frame (A)` will return `null`.
-    - `<fencedframe> (B)` will return `null`.
-    - `<iframe> (C)` will return `null`.
-    - `<fencedframe> (D)` will return `<fencedframe> (B)`.
-    - `<iframe> (E)` will return `<fencedframe> (B)`.
-    - `<fencedframe> (F)` will return `<fencedframe> (D)`.
+    - `Main frame (origin A)` will return `null`.
+    - `<fencedframe> (origin B)` will return `null`.
+    - `<iframe> (origin C)` will return `null`.
+    - `<fencedframe> (origin D)` will return `<fencedframe> (origin B)`.
+    - `<iframe> (origin E)` will return `<fencedframe> (origin B)`.
+    - `<fencedframe> (origin F)` will return `<fencedframe> (origin D)`.
   </div>
 </div>
 
