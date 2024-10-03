@@ -2436,6 +2436,45 @@ in the [[#nested-traversables-intro]].
   1. Return |navigables|.
 </div>
 
+<div algorithm="inclusive-ancestor-navigables-patch">
+  Modify the [=Document/inclusive ancestor navigables=] algorithm to take a new optional
+  [=boolean=] argument <var><dfn lt="inclusive-an-unfenced">unfenced</dfn></var> that defaults to
+  false.
+
+  Further rewrite step 1 of this algorithm to:
+
+  1. Let <var ignore>navigables</var> be <var ignore>document</var>'s [=Document/ancestor
+     navigables=] with [=an-unfenced|unfenced=] set to
+     <var>[=inclusive-an-unfenced|unfenced=]</var>.
+</div>
+
+<div algorithm="ancestor-navigables-patch">
+  Modify the [=Document/ancestor navigables=] algorithm to take a new optional [=boolean=]
+  argument <dfn lt="an-unfenced">unfenced</dfn> that defaults to false, and rewrite the algorithm
+  like so:
+
+  1. Let |navigable| be |document|'s [=node navigable=]'s [=navigable/parent=].
+  
+  1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to |document|'s
+     [=node navigable=]'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+     parent=].
+
+  1. Let |ancestors| be an empty list.
+
+  1. While |navigable| is not null:
+
+     1. [=list/Prepend=] |navigable| to |ancestors|.
+
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+     1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to
+        |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+        parent=].
+
+  1. Return |ancestors|.
+
+</div>
+
 <h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
 
 The [[HTML]] standard defines how to handle focusing elements and {{Window}}s, both by user gesture
@@ -2863,8 +2902,10 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
-    1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
-       navigable=]:
+    1. If |url| is a [=urn uuid=], |navigable| is a [=fenced navigable container/fenced navigable=],
+       and <var ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s
+       [=navigable/active document=]'s [=Document/ancestor navigables=] with [=an-unfenced|
+       unfenced=] set to true:
 
       1. Let |config| be the result of [=fenced frame config mapping/finding a
          config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
@@ -2879,8 +2920,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
          |sharedStorageContext|.
 
-      1. Assert: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is
-         null.
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
 
       1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame
          config=] to |config|.
@@ -2892,9 +2933,9 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
   
-    1. If |navigable| is a [=fenced navigable container/fenced navigable=] and
-       <var ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s
-       [=navigable/active document=]'s [=Document/ancestor navigables=]:
+    1. If |navigable| is a [=fenced navigable container/fenced navigable=] and <var
+       ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s [=navigable/active
+       document=]'s [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to true:
 
       1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
 
@@ -2919,8 +2960,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
         : [=fenced frame config/effective enabled permissions=]
         :: null
       
-      1. Assert: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is
-         null.
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
 
       1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] to
          |config|.
