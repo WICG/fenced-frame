@@ -2902,10 +2902,15 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
-    1. If |url| is a [=urn uuid=], |navigable| is a [=fenced navigable container/fenced navigable=],
-       and <var ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s
-       [=navigable/active document=]'s [=Document/ancestor navigables=] with [=an-unfenced|
-       unfenced=] set to true:
+    1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
+       navigable=]:
+
+       Issue: If a fenced frame generates a FencedFrameConfig using a config-generating API, and
+       then correctly guesses the urn:uuid of that config, it can currently navigate itself to that
+       config, even though this is meant to only allow embedders to navigate fenced frames to
+       configs. This algorithm should be patched to be able to take in a FencedFrameConfig and use
+       that as the check to determine if this path is followed. See:
+       [issue #194](https://github.com/WICG/fenced-frame/issues/194)
 
       1. Let |config| be the result of [=fenced frame config mapping/finding a
          config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
