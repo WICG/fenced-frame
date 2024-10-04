@@ -1848,18 +1848,20 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   
       * |event|'s [=Event/dispatch flag=] is unset;
 
-      * |event|'s {{Event/type}} is not <code>click</code>
+      * |event|'s {{Event/type}} is not "<code>click</code>"
   
   1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
 
   1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
 
-  1. [=Fire an event=] named <code>[=fencedtreeclick=]</code> at |navigable|'s 
-     [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}}
-     attributes to `true`. When running the 
-     <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, 
-     set the <var ignore=''>time</var> to a user-agent-defined value that is consistent across all 
-     invocations of this method.
+  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
+     [=navigable/active window=] to fire a "<code>[=fencedtreeclick=]</code>" event:
+  
+     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
+        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to a user-agent-defined value that is consistent across all invocations of this method.
 
   <wpt>
     /fenced-frame/notify-event-iframe.https.html
@@ -3004,38 +3006,9 @@ navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
 
 <h3 id=events>Events</h3>
 
-<h4 id=fencedtreeclick-header><code>fencedtreeclick</code> event type</h4>
-The <a href="https://html.spec.whatwg.org/C#events-2">Events</a> table in the
-<a href="https://html.spec.whatwg.org/multipage/indices.html">Index</a> section of [[HTML]] is
-modified to include a new row.
-
-<table>
-  <thead>
-    <tr>
-      <th>Event</th> 
-      <th>Interface</th> 
-      <th>Interesting targets</th> 
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><dfn><code>fencedtreeclick</code></dfn></td> 
-      <td>{{Event}}</td> 
-      <td>Elements</td>
-      <td>
-        Fired at a <{fencedframe}> element asynchronously after its
-        [=fenced navigable container/fenced navigable=]'s {{Document}} calls {{Fence/notifyEvent()}}
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<h4 id=onfencedtreeclick-header><code>onfencedtreeclick</code> event handler</h4>
+<h4 id=onfencedtreeclick-header><code>[=onfencedtreeclick=]</code> event handler</h4>
 The table in the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
-event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified 
-to include a new row. The [=event handler=] name is <code>onfencedtreeclick</code>, and the 
-[=event handler event type=] is <code>fencedtreeclick</code>.
+event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified to include a new row.
 
 <table>
   <thead>
@@ -3064,6 +3037,33 @@ Additionally, the list of [=event handler content attributes which may be specif
 in [[HTML]] is modified to include a new row:
 
 * [=onfencedtreeclick=]
+
+<h4 id=fencedtreeclick-header><code>[=fencedtreeclick=]</code> event type</h4>
+The <a href="https://html.spec.whatwg.org/C#events-2">Events</a> table in the
+<a href="https://html.spec.whatwg.org/multipage/indices.html">Index</a> section of [[HTML]] is
+modified to include a new row.
+
+<table>
+  <thead>
+    <tr>
+      <th>Event</th> 
+      <th>Interface</th> 
+      <th>Interesting targets</th> 
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn><code>fencedtreeclick</code></dfn></td> 
+      <td>{{Event}}</td> 
+      <td>Elements</td>
+      <td>
+        Fired at a <{fencedframe}> element asynchronously after its
+        [=fenced navigable container/fenced navigable=]'s {{Document}} calls {{Fence/notifyEvent()}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
