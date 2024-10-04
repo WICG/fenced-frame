@@ -2436,18 +2436,6 @@ in the [[#nested-traversables-intro]].
   1. Return |navigables|.
 </div>
 
-<div algorithm="inclusive-ancestor-navigables-patch">
-  Modify the [=Document/inclusive ancestor navigables=] algorithm to take a new optional
-  [=boolean=] argument <var><dfn lt="inclusive-an-unfenced">unfenced</dfn></var> that defaults to
-  false.
-
-  Further rewrite step 1 of this algorithm to:
-
-  1. Let <var ignore>navigables</var> be <var ignore>document</var>'s [=Document/ancestor
-     navigables=] with [=an-unfenced|unfenced=] set to
-     <var>[=inclusive-an-unfenced|unfenced=]</var>.
-</div>
-
 <div algorithm="ancestor-navigables-patch">
   Modify the [=Document/ancestor navigables=] algorithm to take a new optional [=boolean=]
   argument <dfn lt="an-unfenced">unfenced</dfn> that defaults to false, and rewrite the algorithm
