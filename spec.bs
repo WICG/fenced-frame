@@ -775,6 +775,17 @@ following [=struct/items=]:
   :: a [=string=]
 </dl>
 
+The <dfn export for=fencedframetype>default fenced frame effective sandboxing flags</dfn> are a
+[=sandboxing flag set=] with the following flags:
+
+* The [=sandboxed downloads browsing context flag=]
+* The [=sandboxed modals flag=]
+* The [=sandboxed navigation browsing context flag=]
+* The [=sandboxed orientation lock browsing context flag=]
+* The [=sandboxed pointer lock browsing context flag=]
+* The [=sandboxed presentation browsing context flag=]
+* The [=sandboxed top-level navigation without user activation browsing context flag=]
+
 A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
 [=struct/items=]:
 
@@ -2396,6 +2407,33 @@ in the [[#nested-traversables-intro]].
   1. Return |navigables|.
 </div>
 
+<div algorithm="ancestor-navigables-patch">
+  Modify the [=Document/ancestor navigables=] algorithm to take a new optional [=boolean=]
+  argument <dfn lt="an-unfenced">unfenced</dfn> that defaults to false, and rewrite the algorithm
+  like so:
+
+  1. Let |navigable| be |document|'s [=node navigable=]'s [=navigable/parent=].
+  
+  1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to |document|'s
+     [=node navigable=]'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+     parent=].
+
+  1. Let |ancestors| be an empty list.
+
+  1. While |navigable| is not null:
+
+     1. [=list/Prepend=] |navigable| to |ancestors|.
+
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+     1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to
+        |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+        parent=].
+
+  1. Return |ancestors|.
+
+</div>
+
 <h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
 
 The [[HTML]] standard defines how to handle focusing elements and {{Window}}s, both by user gesture
@@ -2901,6 +2939,15 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
        navigable=]:
 
+       Issue: The above condition is not as tight as it needs to be. For example, if a
+       <{fencedframe}> generates a {{FencedFrameConfig}} using a config-generating API, and then
+       correctly guesses the config's [=fencedframeconfig/urn|urn:uuid=], it can theoretically
+       navigate itself to that config by passing the guessed urn into the navigate algorithm as a
+       [=URL=], via something like the {{Window/location}} API. This is bad, because the purpose of
+       a {{FencedFrameConfig}} is to ensure that only an embedder can navigate a <{fencedframe}> to
+       the resource represented by the config, by using the config object directly. See <a
+       href=https://github.com/WICG/fenced-frame/issues/194>#194</a> for thoughts on fixing this.
+
       1. Let |config| be the result of [=fenced frame config mapping/finding a
          config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
          navigable=]'s [=traversable navigable/fenced frame config mapping=].
@@ -2914,7 +2961,10 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
          |sharedStorageContext|.
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
+
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame
          config=] to |config|.
 
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
@@ -2923,6 +2973,39 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+  
+    1. If |navigable| is a [=fenced navigable container/fenced navigable=] and <var
+       ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s [=navigable/active
+       document=]'s [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to true:
+
+      1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
+
+        : [=fenced frame config/mapped url=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=mapped url/value=]
+           :: |url|
+
+           : [=mapped url/visibility=]
+           :: [=visibility/transparent=]
+
+        : [=fenced frame config/effective sandboxing flags=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=effective sandboxing flags/value=]
+           :: The [=fencedframetype/default fenced frame effective sandboxing flags=].
+
+           : [=effective sandboxing flags/visibility=]
+           :: [=visibility/opaque=]
+
+        : [=fenced frame config/effective enabled permissions=]
+        :: null
+      
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
+
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] to
+         |config|.
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
