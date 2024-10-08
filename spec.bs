@@ -1644,7 +1644,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
       undefined reportEvent(optional ReportEventType event = {});
       undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event = {});
       sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
-      undefined notifyEvent(optional Event event = {});
+      undefined notifyEvent(Event event);
   };
 </pre>
 
@@ -1841,8 +1841,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If any of the following conditions are met, throw a {{SecurityError}} {{DOMException}}:
 
       * |navigable| is not a [=fenced navigable container/fenced navigable=];
-
-      * |event| is null;
   
       * |event|'s {{Event/isTrusted}} is false;
   
@@ -1857,13 +1855,13 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
 
   1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
-     [=navigable/active window=] to fire a "<code>[=fencedtreeclick=]</code>" event:
+     [=navigable/active window=] to run these steps:
   
      1. Perform the [=activation notification=] steps.
 
      1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
         [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
-        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to a user-agent-defined value that is consistent across all invocations of this method.
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
 
   <wpt>
     /fenced-frame/notify-event-iframe.https.html
