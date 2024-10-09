@@ -18,7 +18,9 @@ Different fenced frame configurations still need permissions-backed features to 
 *   Fenced frames that guarantee k-anonymity (i.e. fenced frames loaded with opaque URNs created through an API like Protected Audience) have a fixed list of permissions that must be delegated to it by the embedder in order for it to load. This forces the embedding context to have the same permissions bitmap as any other embedding context the fenced frame would be loaded in, removing that fingerprinting channel while also preventing privilege escalation. There is [a proposal to add permissions more flexibly rather than relying on a fixed list](https://github.com/WICG/fenced-frame/blob/master/explainer/permissions_policy_for_API_backed_fenced_frames.md), but this change is not currently planned on being implemented.
 *   Fenced frames that do not guarantee k-anonymity (i.e. developer-created fenced frames loaded with a transparent URL) can inherit permissions from its embedder, since the fingerprinting vector is not a concern. Because the data exfiltration channel is still a concern, we only allow select permissions-backed features that do not have data exfiltration risks.
 
-Permissions-backed features themselves can still introduce data leaks when enabled. [This document](https://chromium-review.googlesource.com/c/chromium/src/+/5462443) outlines that in greater depth, and includes an audit of which features are safe to enable for what kinds of fenced frames.
+See [this permissions policy file](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/common/frame/fenced_frame_permissions_policies.h) for a full list of the fixed permissions (for the k-anon case) or the list of permissions that can be enabled (for the non k-anon case).
+
+Permissions-backed features themselves can still introduce data leaks when enabled. [This document](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/fenced_frame/PERMISSIONS_POLICIES.md) outlines that in greater depth, and includes an audit of which features are safe to enable for what kinds of fenced frames.
 
 ### Summary
 
