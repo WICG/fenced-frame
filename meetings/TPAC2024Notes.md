@@ -1,27 +1,5 @@
-<!-- Output copied to clipboard! -->
 
-<!-----
-NEW: Check the "Suppress top comment" to remove this info from the output.
-
-Conversion time: 2.833 seconds.
-
-
-Using this Markdown file:
-
-1. Cut and paste this output into your source file.
-2. See the notes and action items below regarding this conversion run.
-3. Check the rendered output (headings, lists, code blocks, tables) for proper
-   formatting and use a linkchecker before you publish this page.
-
-Conversion notes:
-
-* GDC version 1.1.19 r36
-* Mon Oct 14 2024 07:30:20 GMT-0700 (Pacific Daylight Time)
-* Source doc: https://docs.google.com/open?id=1aGd04Q_JNeFDWevFK1tWrmcKiT7uXITDfYuwnoRwSf4&resourcekey=0-p6-DEUcyYKgcNhw9LaJczw
------>
-
-
-Breakout notes for https://github.com/w3c/tpac2024-breakouts/issues/40
+**Breakout notes for https://github.com/w3c/tpac2024-breakouts/issues/40**
 
 Attendees
 
