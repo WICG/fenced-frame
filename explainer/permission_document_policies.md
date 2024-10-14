@@ -41,7 +41,7 @@ Relatedly, [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Pe
 
 Document policy allows the top-level page to configure features on a frame via the ‘policy’ attribute. The embedded frame’s document request will then go on the network with a  `Sec-Required-Document-Policy` header and the frame will only load if the response comes back with the same or stricter document policy. Since this depends on delegation, it has the same issues as the permissions policy or CSPEE with respect to being used as a communication channel. Since this is applied per-document (vs per origin in permissions policy), it is closer to CSPEE.
 
-Similar to [CSPEE handling in fenced frames](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md), the embedding site should treat fenced frames differently and assume that the presence of a fenced frame on the site implies no control on the policies of that frame via the policy attribute.  
+Similar to [CSPEE handling in fenced frames](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md), the embedding site should treat fenced frames differently and assume that the presence of a fenced frame on the site implies no control on the policies of that frame via the policy attribute.  
 
 The escalation of privileges attack mentioned above for permissions policy does not apply to document policy since this is delegated per-embedded frame and not per-origin and the embedding site can clearly distinguish between which frames can and cannot be controlled via delegation. 
 

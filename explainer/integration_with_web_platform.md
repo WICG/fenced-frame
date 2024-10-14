@@ -2,10 +2,10 @@
 This document goes into the various ways in which fenced frame interacts with the platform. The web platform is massive and so we expect this document to be a running document with ongoing additions.
 
 ## Source url
-The initial source url for the fenced frame is subjected to various restrictons or no restrictions depending on the use case for the fenced frame. Refer to the use cases document [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md) that discusses the source url for each of those.
+The initial source url for the fenced frame is subjected to various restrictons or no restrictions depending on the use case for the fenced frame. Refer to the use cases document [here](https://github.com/WICG/fenced-frame/blob/master/explainer/use_cases.md) that discusses the source url for each of those.
 
 ## Origin
-The origin of the fenced frame will be the regular origin that it got navigated to. For opaque src, the origin will be that of the url was mapped to by the browser. Any origin-keyed storage and communication channels with other same-origin frames outside the fenced frame tree will be disallowed by using a partitioning key with a nonce. The storage key will use the same nonce for the nested iframes and the root fenced frame, so that same-origin channels can still work within the fenced frame tree. Essentially, along with the storage partitioning effort, the storage and broadcast channel access will be keyed on <fenced-frame-root-site, fenced-frame-root-origin, nonce> for the root frame and <fenced-frame-root-site, nested-iframe-origin, nonce> for a nested iframe. More details related to this can be found [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/storage_cookies_network_state.md).
+The origin of the fenced frame will be the regular origin that it got navigated to. For opaque src, the origin will be that of the url was mapped to by the browser. Any origin-keyed storage and communication channels with other same-origin frames outside the fenced frame tree will be disallowed by using a partitioning key with a nonce. The storage key will use the same nonce for the nested iframes and the root fenced frame, so that same-origin channels can still work within the fenced frame tree. Essentially, along with the storage partitioning effort, the storage and broadcast channel access will be keyed on <fenced-frame-root-site, fenced-frame-root-origin, nonce> for the root frame and <fenced-frame-root-site, nested-iframe-origin, nonce> for a nested iframe. More details related to this can be found [here](https://github.com/WICG/fenced-frame/blob/master/explainer/storage_cookies_network_state.md).
 
 ## Size
 The API that generates a fenced frame config can pick the initial size that the fenced frame document sees, subject to whatever restrictions it deems necessary for its privacy model. If the initial size is fixed, then any changes the embedder makes to the width and height attributes of the <fencedframe> will not be reflected inside the fenced frame.
@@ -15,7 +15,7 @@ Viewability events using APIs like [Intersection Observer](https://developer.moz
 Viewability events are important information in the ads workflow for conversion reports and billing; therefore, Intersection Observer will be fully supported in fenced frames and it will be phased out only if/when an alternative mechanism is launched. In the meantime, we plan to add metrics to understand honest use and detect abuse, to help guide the need/development of these eventual mechanisms or mitigations.
 
 ## Visibility
-APIs like [visibilityState](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilityState) and the corresponding [visibilityChange event](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) determine the visibility of the tab based on user actions like backgrounding etc. A fenced frame and the main page could join server-side on the basis of when they lose and gain visibility. This kind of joining is also possible with other joining ids like the fenced frame creation time. The network side channel and future mitigations are described more [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
+APIs like [visibilityState](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilityState) and the corresponding [visibilityChange event](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event) determine the visibility of the tab based on user actions like backgrounding etc. A fenced frame and the main page could join server-side on the basis of when they lose and gain visibility. This kind of joining is also possible with other joining ids like the fenced frame creation time. The network side channel and future mitigations are described more [here](https://github.com/WICG/fenced-frame/blob/master/explainer/network_side_channel.md).
 
 ## Accessibility
 For accessibility, fenced frames will behave like iframes, they will be part of the accessibility tree and a11y users can navigate through its contents with a screen reader.
@@ -26,7 +26,7 @@ Fenced frames would have normal user-interactivity as an iframe would.
 
 ## Focus
 Since fenced frames require interactivity, they would need to get system focus. It could be a privacy concern in the following ways:
-* A fenced frame and the main page could join server-side on the basis of when one lost focus and another gained focus. The network side channel and future mitigations are described more [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md) 
+* A fenced frame and the main page could join server-side on the basis of when one lost focus and another gained focus. The network side channel and future mitigations are described more [here](https://github.com/WICG/fenced-frame/blob/master/explainer/network_side_channel.md) 
 * For programmatic focus, calling element.focus() might invoke blur() on an element that is in the embedding page thus making a channel from the fenced frame to the embedding page. So the mitigations there would be:
   * Only allow programmatic focus()/blur() to be successful if the fenced frame already has system focus.
   * Only allow system focus to move to a FF on a user gesture including hitting the tab key and not because of calling focus().
@@ -38,10 +38,10 @@ A fenced frame does not allow communication via PostMessage between the embeddin
 Fenced frames can navigate but their history is not part of the browser back/forward list as that could be a communication channel from the fenced frame to the embedding page. Additionally, fenced frames will always have a replacement-only navigation (back/forward list of length 1) which is a simpler model since it doesn't imply that there's a hidden list of back/forward entries for the nested page, only accessible via history APIs and not via the back/forward buttons, etc. This is also consistent with the iframes new opt-in mode for disjoint session history as discussed in https://github.com/whatwg/html/issues/6501.
 
 ## Content Security Policy
-Fenced frames ineractions with CSP are detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md).
+Fenced frames ineractions with CSP are detailed [here](https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md).
 
 ## Permissions and policies
-This is discussed in more detail [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
+This is discussed in more detail [here](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md).
 
 ## COOP and COEP
 Although COOP is only defined for top-level documents, it has impacts on popups opened by subframes in the page. Because COOP is crucial to the web exposed mitigation against Spectre, Fenced Frames must support COOP in one way or another. Because COOP contains a reporting endpoint, we cannot actually pass the COOP value to the Fenced Frame. So to support COOP, we have two options:
