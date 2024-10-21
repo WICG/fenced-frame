@@ -192,8 +192,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       for: environment
         text: target browsing context; url: concept-environment-target-browsing-context
       text: navigation and traversal task source
-      text: event handlers on elements, document objects, and window objects; url: event-handlers-on-elements,-document-objects,-and-window-objects
-      text: idl definitions; url: idl-definitions
     urlPrefix: document-sequences.html
       for: browsing context
         text: active document; url: active-document
@@ -1838,7 +1836,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
   
-  1. If any of the following conditions are met, throw a {{SecurityError}} {{DOMException}}:
+  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
 
       * |navigable| is not a [=fenced navigable container/fenced navigable=];
   
