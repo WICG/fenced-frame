@@ -943,7 +943,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
   |destination info|, a [=fencedframetype/destination event=] |event|, an [=origin=]
-  |request initiator|, and a [=referrer policy=] |initiator referrer policy| run these steps:
+  |requestInitiator|, and a [=referrer policy=] |initiatorReferrerPolicy| run these steps:
 
   1. Let |destination url| be an empty [=string=].
 
@@ -1030,7 +1030,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
 
     : [=request/origin=]
-    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=], and
+    :: |requestInitiator| if |event| is a [=fencedframetype/destination URL event=], and
        |destination info|'s [=reporting destination info/reporting url declarer origin=] otherwise.
 
        Note: The reporting destination for a [=fencedframetype/destination URL event=] is determined
@@ -1041,10 +1041,10 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        or worklet that determined the reporting destination to prevent cross-site request forgery.
 
     : [=request/referrer=]
-    :: |request initiator|
+    :: |requestInitiator|
 
     : [=request/referrer policy=]
-    :: |initiator referrer policy|
+    :: |initiatorReferrerPolicy|
 
     : [=request/mode=]
     :: `"cors"`
@@ -1067,8 +1067,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
-  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |request initiator|,
-  a [=referrer policy=] |initiator referrer policy|, and a [=fencedframetype/destination event=]
+  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |requestInitiator|,
+  a [=referrer policy=] |initiatorReferrerPolicy|, and a [=fencedframetype/destination event=]
   |event|, run these steps:
 
   1. Let |metadata| be |reporter|'s
@@ -1107,10 +1107,10 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         :: |event|
 
         : [=pending event/request initiator=]
-        :: |request initiator|
+        :: |requestInitiator|
 
         : [=pending event/initiator referrer policy=]
-        :: |initiator referrer policy|
+        :: |initiatorReferrerPolicy|
 
      1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
 
@@ -1121,8 +1121,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
-  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, |request initiator|, and
-     |initiator referrer policy|.
+  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, |requestInitiator|, and
+     |initiatorReferrerPolicy|.
 </div>
 
 <div algorithm>
@@ -1695,10 +1695,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
 
-  1. Let |request initiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
+  1. Let |requestInitiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
      object/origin=].
 
-  1. Let |initiator referrer policy| be |document|'s [=Document/policy container=]'s [=policy
+  1. Let |initiatorReferrerPolicy| be |document|'s [=Document/policy container=]'s [=policy
      container/referrer policy=].
 
   1. If |event| is a {{DOMString}}:
@@ -1739,9 +1739,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|, |initiator
-           referrer policy| and a [=fencedframetype/destination URL event=] that is |event|'s
-           {{FenceEvent/destinationURL}}.
+           reporter=] with {{FenceReportingDestination/buyer}}, |requestInitiator|,
+           |initiatorReferrerPolicy|, and a [=fencedframetype/destination URL event=] that is
+           |event|'s {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
         1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
@@ -1757,7 +1757,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
           1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-             reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and a
+             reporter=] with |destination|, |requestInitiator|, |initiatorReferrerPolicy|, and a
              [=fencedframetype/destination enum event=] with the following [=struct/items=]:
 
              : [=destination enum event/type=]
@@ -1806,13 +1806,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
-     origin=], then return.
+     origin=]:
+
+     1. If |instance|'s [=fenced frame config instance/cross-origin
+        reporting allowed=] is false, then return.
+     
+     1. If |event|'s {{FenceEvent/crossOriginExposed}} is false, then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
   1. Set [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=Document/automatic
-     beacon data map=][|event|'s {{FenceEvent/eventType}}] to an [=fencedframetype/automatic beacon
-     data=] with the following [=struct/items=]:
+     beacon data mapping=][|event|'s {{FenceEvent/eventType}}] to an [=fencedframetype/automatic
+     beacon data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
      :: |event|'s {{FenceEvent/eventData}} if defined and |instance|'s [=fenced frame config
@@ -1937,30 +1942,34 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
-  1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
+  1. Let |requestInitiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
      component=] is false, and |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor
      root origin=] otherwise.
 
-  1. Let |initiator referrer policy| be |sourceSnapshotParams|'s [=source snapshot params/source
+  1. Let |initiatorReferrerPolicy| be |sourceSnapshotParams|'s [=source snapshot params/source
      policy container=]'s [=policy container/referrer policy=] if |config|'s [=fenced frame config
      instance/is ad component=] is false, and |sourceSnapshotParams|'s [=source snapshot
      params/initiator ancestor root referrer policy=] otherwise.
 
-  1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
-     map=][|eventType|].
+  1. Let |isCrossOrigin| be true if |sourceOrigin| is not [=same origin=] with |config|'s [=fenced
+     frame config instance/mapped url=]'s [=url/origin=], false otherwise.
+
+  1. Let |beaconMapping| be |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic
+     beacon mapping=]'s [=snapshot automatic beacon mapping/data mapping=] if |isCrossOrigin| is
+     true, |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic beacon mapping=]'s
+     [=snapshot automatic beacon mapping/cross-origin exposed data mapping=] otherwise.
+
+  1. Let |beaconData| be |beaconMapping|[|eventType|].
 
   1. Let |has header opt in| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacons
      allowed=].
 
-  1. If |beacon data| is null and |has header opt in| is false, abort these steps.
+  1. If |beaconData| is null and |has header opt in| is false, abort these steps.
 
-  1. Let |is cross origin| be true if |sourceOrigin| is not [=same origin=] with |config|'s [=fenced
-     frame config instance/mapped url=]'s [=url/origin=], false otherwise.
+  1. If |isCrossOrigin| is true and |has header opt in| is false, abort these steps.
 
-  1. If |is cross origin| is true and |has header opt in| is false, abort these steps.
-
-  1. Let |should send beacon with data| be true if |beacon data| is not null and either
-     |is cross origin| is false or |beacon data|'s [=automatic beacon data/crossOriginExposed=] is
+  1. Let |should send beacon with data| be true if |beaconData| is not null and either
+     |isCrossOrigin| is false or |beaconData|'s [=automatic beacon data/crossOriginExposed=] is
      true, false otherwise.
 
   1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame
@@ -1968,15 +1977,15 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and an
+       reporter=] with |destination|, |requestInitiator|, |initiatorReferrerPolicy|, and an
        [=fencedframetype/automatic beacon event=] with the following [=struct/items=]:
 
        : [=automatic beacon event/type=]
        :: |eventType|
 
        : [=automatic beacon event/data=]
-       :: |beacon data|'s [=automatic beacon data/eventData=] if |should send beacon with data| is
-          true, |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=]
+       :: |beaconData|'s [=automatic beacon data/eventData=] if |should send beacon with data| is
+          true, |beaconData|'s [=automatic beacon data/destinations=] [=list/contains=]
           |destination|, and |config|'s [=fenced frame config instance/is ad component=] is false,
           the empty string otherwise.
 
@@ -1986,8 +1995,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
        : [=automatic beacon event/attributionReportingContextOrigin=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
-  1. If |beacon data|'s [=automatic beacon data/once=] is true, set |sourceSnapshotParams|'s
-     [=source snapshot params/automatic beacon data map=][|eventType|] to null.
+  1. If |beaconData|'s [=automatic beacon data/once=] is true, set |beaconMapping|[|eventType|] to
+     null.
 
   <wpt>
     /fenced-frame/automatic-beacon-anchor-click-handler.https.html
@@ -2004,6 +2013,11 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
     /fenced-frame/automatic-beacon-cross-origin-no-opt-in.https.html
     /fenced-frame/automatic-beacon-use-ancestor-data.https.html
   </wpt>
+
+  TODO: Add the following tests:
+  /fenced-frame/automatic-beacon-data-cross-origin-ancestor.sub.https.html
+  /fenced-frame/automatic-beacon-data-set-by-sibling.https.html
+  /fenced-frame/automatic-beacon-data-multiple-ancestors.https.html
 </div>
 
 <div algorithm="top_navigation_start beacon patch">
@@ -2078,9 +2092,23 @@ An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the
   :: a [=boolean=]
 </dl>
 
-Each {{Document}} object has an associated <dfn for=Document>automatic beacon data map</dfn>, which
-is a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
-[=map/values=] are null or an [=fencedframetype/automatic beacon data=]
+An <dfn for=fencedframetype>automatic beacon data mapping</dfn> is a [=map=] whose [=map/keys=] are
+[=fencedframetype/automatic beacon event type=]s and whose [=map/values=] are null or an
+[=fencedframetype/automatic beacon data=].
+
+An <dfn for=fencedframetype>snapshot automatic beacon mapping</dfn> is a [=struct=] with the
+following [=struct/items=]:
+
+<dl dfn-for="snapshot automatic beacon mapping">
+  : <dfn>data mapping</dfn>
+  :: an [=fencedframetype/automatic beacon data mapping=]
+
+  : <dfn>cross-origin exposed data mapping</dfn>
+  :: an [=fencedframetype/automatic beacon data mapping=]
+</dl>
+
+Each {{Document}} object has an associated <dfn for=Document>automatic beacon data mapping</dfn>,
+which is an [=fencedframetype/automatic beacon data mapping=].
 
 Each {{Document}} object has an associated <dfn for=Document>automatic beacons allowed</dfn>, which
 is a [=boolean=], initially false.
@@ -2780,41 +2808,47 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">automatic beacons allowed</dfn>
   :: an [=boolean=].
 
-  : <dfn for="source snapshot params">automatic beacon data map</dfn>
-  :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
-     [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
+  : <dfn for="source snapshot params">snapshot automatic beacon mapping</dfn>
+  :: an [=fencedframetype/snapshot automatic beacon mapping=].
 
 </div>
 
 <div algorithm>
-  To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
+  To <dfn>snapshot the automatic beacon data mapping</dfn> given a {{Document}} |sourceDocument|:
   
   1. [=Assert=] these steps are running on |sourceDocument|'s [=event loop=].
 
-  1. Let |automatic beacon data map| be a new empty [=Document/automatic beacon data map=].
+  1. Let |info| be a new empty [=fencedframetype/snapshot automatic beacon mapping=].
+
+  1. Let |mapping| be |info|'s [=snapshot automatic beacon mapping/data mapping=].
+
+  1. Let |crossOriginMapping| be |info|'s [=snapshot automatic beacon mapping/cross-origin exposed
+     data mapping=].
   
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
 
   1. While |current navigable| is not null:
 
     1. [=map/iterate|For each=] |type| → |data| of |current navigable|'s [=navigable/active
-       document=]'s [=Document/automatic beacon data map=]:
+       document=]'s [=Document/automatic beacon data mapping=]:
 
-      1. If |automatic beacon data map|[|type|] does not [=map/exist=], set
-         |automatic beacon data map|[|type|] to |data|.
+      1. If |mapping|[|type|] does not [=map/exist=], set |mapping|[|type|] to |data|.
 
       Note: This guarantees that the first ancestor that contains automatic beacon data for a
       specific type will be usable by the document initiating the navigation. This will also prevent
       an ancestor blocking a document from using data set in a higher ancestor.
 
+      1. If |crossOriginMapping|[|type|] does not [=map/exist=] and |data|'s [=automatic beacon
+         data/crossOriginExposed=] is true, set |crossOriginMapping|[|type|] to |data|.
+
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
-  1. Return |automatic beacon data map|.
+  1. Return |info|.
 
-  Note: The returned map is meant to hold references to the original {{Document}}'s
-  [=Document/automatic beacon data map=]s that were used to build |automatic beacon data map|. These
-  are later modified in [=attempt to send an automatic beacon=] to clear out any beacon data with
-  [=automatic beacon data/once=] set to true.
+  Note: The maps stored in |info| are meant to hold references to the original {{Document}}'s
+  [=Document/automatic beacon data mapping=]s that were used to build |info|. These are later
+  modified in [=attempt to send an automatic beacon=] to clear out any beacon data with [=automatic
+  beacon data/once=] set to true.
 </div>
 
 <div algorithm=get-initiator-ancestor>
@@ -2899,8 +2933,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : [=source snapshot params/automatic beacons allowed=]
   :: |sourceDocument|'s [=Document/automatic beacons allowed=]
 
-  : [=source snapshot params/automatic beacon data map=]
-  :: The result of running [=get the automatic beacon data mapping to use=] on |sourceDocument|.
+  : [=source snapshot params/snapshot automatic beacon mapping=]
+  :: The result of running [=snapshot the automatic beacon data mapping=] on |sourceDocument|.
 
 </div>
 
