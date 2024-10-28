@@ -77,7 +77,7 @@ Let’s first go through the requirements on the data, taking the example of exa
 *   **Size:** As per the current use case feedback, the data itself is not very large, is text-only and can fit in a normal cookie size. This is subject to change though, e.g. if a payment provider wants to also show the user's profile picture in the personalized button.
 *   **Unpartitioned:** The data only needs to be accessed in the unpartitioned state and not in a partitioned (by top-level site i.e. the merchant site for payment providers) state.
 
-Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate:** read from a fenced frame after network revocation**.
+Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate: **read from a fenced frame after network revocation**.
 
 Some of the enhancements needed for shared storage to be used for this proposal are:
 
@@ -198,8 +198,8 @@ The `notifyEvent()` method will not be available in iframes (same-origin or cros
 Since this is exfiltrating some information (that a click happened) outside the fenced frame, we will need to consider the following privacy considerations:
 
 *   A possible attack using multiple fenced frames: an embedder creates `n` fenced frames, which all disable network and then determine (by predetermined behavior, or through communication over shared storage) which one of them should display nonempty content. Then if a user clicks on the only nonempty fenced frame, this exfiltrates log(n) bits of information through the click notification. Mitigating this will require some rate limits on the number of fenced frames on a page that are allowed to read from shared storage. This is similar to [shared storage’s existing rate limits](https://github.com/WICG/shared-storage#:~:text=per%2Dsite%20(the%20site%20of%20the%20Shared%20Storage%20worklet)%20budget). 
-*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/). 
-
+*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/).
+*   One potential concern around the `notifyEvent()` API shape is that a single trusted `click` event could be cached by the JS running in the fenced frame and reused in additional `notifyEvent()` calls. However, the requirement that the trusted event *must be dispatching* mitigates this concern. Once the dispatch initiated by the browser completes, `notifyEvent()` will no longer accept the cached event object. If JavaScript on the page then tries to manually re-dispatch the cached event, the object will no longer be trusted (its `isTrusted` field will be set to false).
 
 ## Code Example
 
