@@ -2973,11 +2973,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 </div>
 
 <div algorithm=navigate>
-  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] <dfn for=navigate>sharedStorageContext</dfn> (default null).
+  Modify [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an optional [=string=]
+  <dfn for=navigate>sharedStorageContext</dfn> (default null).
 
-  Modify step 13 of [[HTML]]'s [=navigate=] algorithm (If all of the following are true:) to include
-  the following condition:
+  Modify step 13 of [[HTML]]'s [=navigate=] algorithm ("If all of the following are true:") to
+  include the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
