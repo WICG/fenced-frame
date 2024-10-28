@@ -1888,6 +1888,47 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm>
+  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+  
+  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
+
+      * |navigable| is not a [=fenced navigable container/fenced navigable=];
+  
+      * |event|'s {{Event/isTrusted}} is false;
+  
+      * |event|'s [=Event/dispatch flag=] is unset;
+
+      * |event|'s {{Event/type}} is not "<code>click</code>"
+  
+  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
+
+  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
+
+  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
+     [=navigable/active window=] to run these steps:
+  
+     1. Perform the [=activation notification=] steps.
+
+     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
+        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
+
+  <wpt>
+    /fenced-frame/notify-event-iframe.https.html
+    /fenced-frame/notify-event-invalid.https.html
+    /fenced-frame/notify-event-nested-fenced-frames.https.html
+    /fenced-frame/notify-event-success.https.html
+    /fenced-frame/notify-event-transient-user-activation.https.html
+  </wpt>
+</div>
+
+<div algorithm>
   The <dfn method for=Fence>disableUntrustedNetwork()</dfn> method steps are:
 
   1. Let |p| be [=a new promise=].
@@ -1984,47 +2025,6 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 
   Add "[=must be blocked due to a revoked partition nonce=]" to the conditions after
   "should request be blocked by Content Security Policy".
-</div>
-
-<div algorithm>
-  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
-
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
-
-  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
-  
-  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
-
-      * |navigable| is not a [=fenced navigable container/fenced navigable=];
-  
-      * |event|'s {{Event/isTrusted}} is false;
-  
-      * |event|'s [=Event/dispatch flag=] is unset;
-
-      * |event|'s {{Event/type}} is not "<code>click</code>"
-  
-  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
-
-  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
-
-  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
-
-  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
-     [=navigable/active window=] to run these steps:
-  
-     1. Perform the [=activation notification=] steps.
-
-     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
-        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
-        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
-
-  <wpt>
-    /fenced-frame/notify-event-iframe.https.html
-    /fenced-frame/notify-event-invalid.https.html
-    /fenced-frame/notify-event-nested-fenced-frames.https.html
-    /fenced-frame/notify-event-success.https.html
-    /fenced-frame/notify-event-transient-user-activation.https.html
-  </wpt>
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
