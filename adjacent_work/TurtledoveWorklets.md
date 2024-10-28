@@ -43,9 +43,7 @@ Let’s dive deeper into how this environment will be used by looking at the end
 *   **Communication with the page**: Since the worklet has access to user’s interest groups, it cannot share that with the embedding page and thus communication to the embedding page is not allowed.
 *   **Restricted Outputs**: The winning ad output from the worklet needs to be further worked upon by the TURTLEDOVE API for the following aspects:
     *   Confirm if the output is k-anonymous i.e. the same ad is seen by ‘n’ other browsers. If not, re-run the auction logic.
-    *   Map the winning ad url to an opaque url before passing it back to the publisher page. This is detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/OpaqueSrc.md). 
-
-Here's a [sequence diagram](https://github.com/shivanigithub/fenced-frame/blob/master/TurtledoveSequenceDiagram.png)
+    *   Map the winning ad url to an opaque url before passing it back to the publisher page.
 
 ## Isolation characteristics
 

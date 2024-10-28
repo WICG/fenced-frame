@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This document goes into the details of promptless unpartitioned storage access as a potential use case of fenced frames ([privacyCG discussion](https://github.com/privacycg/storage-access/issues/41)). For fenced frames concept and design please see the [explainer](https://github.com/shivanigithub/fenced-frame).
+This document goes into the details of promptless unpartitioned storage access as a potential use case of fenced frames ([privacyCG discussion](https://github.com/privacycg/storage-access/issues/41)). For fenced frames concept and design please see the [explainer](https://github.com/WICG/fenced-frame).
 
 
 ## Unpartitioned storage access
@@ -27,7 +27,7 @@ Although many of these use cases could be handled with a combination of user ide
 
 ### Challenges
 
-requestStorageAccess is used to provide access to unpartitioned storage. When invoked within fenced frames, the goal is to not show a permission prompt, thanks to the communication isolation of a fenced frame. However, that is dependent on mitigating challenges like link decoration, network timing etc. as discussed in the explainer [here](https://github.com/shivanigithub/fenced-frame#challenges) and the thread [here](https://github.com/privacycg/storage-access/issues/41#issuecomment-673057755).
+requestStorageAccess is used to provide access to unpartitioned storage. When invoked within fenced frames, the goal is to not show a permission prompt, thanks to the communication isolation of a fenced frame. However, that is dependent on mitigating challenges like link decoration, network timing etc. as discussed in the thread [here](https://github.com/privacycg/storage-access/issues/41#issuecomment-673057755).
 
 
 ## Alternative state machine considered
