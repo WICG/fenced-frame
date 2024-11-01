@@ -108,6 +108,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
+      text: event handler content attributes which may be specified on any HTML element; url: global-attributes:event-handler-content-attributes
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -142,6 +143,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
+      text: the navigation must be a replace; url: the-navigation-must-be-a-replace
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
@@ -357,6 +359,14 @@ dl, dd {
   background: white;
   border: solid #D50606;
 }
+
+/* Table styling definitions from https://resources.whatwg.org/standard.css */
+table { border-collapse: collapse; border-style: hidden hidden none hidden; margin: 1.25em 0; }
+table thead, table tbody { border-bottom: solid; }
+table tbody th { text-align: left; }
+table tbody th:first-child { border-left: solid; }
+table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
+
 </style>
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
@@ -775,6 +785,17 @@ following [=struct/items=]:
   :: a [=string=]
 </dl>
 
+The <dfn export for=fencedframetype>default fenced frame effective sandboxing flags</dfn> are a
+[=sandboxing flag set=] with the following flags:
+
+* The [=sandboxed downloads browsing context flag=]
+* The [=sandboxed modals flag=]
+* The [=sandboxed navigation browsing context flag=]
+* The [=sandboxed orientation lock browsing context flag=]
+* The [=sandboxed pointer lock browsing context flag=]
+* The [=sandboxed presentation browsing context flag=]
+* The [=sandboxed top-level navigation without user activation browsing context flag=]
+
 A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the following
 [=struct/items=]:
 
@@ -784,12 +805,21 @@ A <dfn export for=fencedframetype>pending event</dfn> is a [=struct=] with the f
 
   : <dfn>event</dfn>
   :: a [=fencedframetype/destination event=]
+
+  : <dfn>request initiator</dfn>
+  :: an [=origin=]
+
+  : <dfn>initiator referrer policy</dfn>
+  :: a [=referrer policy=]
 </dl>
 
 A <dfn export for=fencedframetype>reporting destination info</dfn> is a [=struct=] with the
 following [=struct/items=]:
 
 <dl export dfn-for="reporting destination info">
+  : <dfn>reporting url declarer origin</dfn>
+  :: an [=origin=]
+
   : <dfn>reporting url map</dfn>
   :: a [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=URLs=]
 
@@ -818,10 +848,11 @@ be sent.
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
-  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, a [=map=]
-  |destination map| whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=urls=], and
-  |macro map|, which is either null or a [=map=] whose [=map/keys=] are [=strings=] and whose
-  [=map/values=] are [=strings=], run these steps:
+  frame reporting map=] |reporting map|, a {{FenceReportingDestination}} |destination|, an
+  [=origin=] |reporting url declarer origin|, a [=map=] |destination map| whose [=map/keys=] are
+  [=strings=] and whose [=map/values=] are [=urls=], and |macro map|, which is either null or a
+  [=map=] whose [=map/keys=] are [=strings=] and whose [=map/values=] are [=strings=], run these
+  steps:
 
   1. [=Assert=] that |reporting map|[|destination|] is a [=list=] (i.e., that |destination|'s
      metadata has not yet been finalized).
@@ -829,6 +860,9 @@ be sent.
   1. Let |pending event list| be |reporting map|[|destination|].
 
   1. [=map/Set=] |reporting map|[|destination|] to a [=struct=] with the following [=struct/items=]:
+       : [=reporting destination info/reporting url declarer origin=]
+       :: |reporting url declarer origin|
+
        : [=reporting destination info/reporting url map=]
        :: |destination map|
 
@@ -837,7 +871,9 @@ be sent.
 
   1. [=list/For each=] |pending event| of |pending event list|:
 
-     1. [=Send a beacon=] with |destination map| and |pending event|'s [=pending event/event=].
+     1. [=Send a beacon=] with |destination map|, |pending event|'s [=pending event/event=],
+        |pending event|'s [=pending event/request initiator=], and |pending event|'s [=pending
+        event/initiator referrer policy=].
 </div>
 
 A <dfn export for=fencedframetype>fenced frame reporting metadata</dfn> is a [=struct=] with the
@@ -916,7 +952,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
-  |destination info| and a [=fencedframetype/destination event=] |event|, run these steps:
+  |destination info|, a [=fencedframetype/destination event=] |event|, an [=origin=]
+  |request initiator|, and a [=referrer policy=] |initiator referrer policy| run these steps:
 
   1. Let |destination url| be an empty [=string=].
 
@@ -1003,11 +1040,21 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
 
     : [=request/origin=]
-    :: <span class=XXX>Get the origin from somewhere, like the [implementation
-       does](https://source.chromium.org/chromium/chromium/src/+/refs/heads/main:content/browser/fenced_frame/fenced_frame_reporter.cc;l=384;drc=183dd920ea5d6aed92e007c40e226f1f840c0567)</span>.
+    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=], and
+       |destination info|'s [=reporting destination info/reporting url declarer origin=] otherwise.
+
+       Note: The reporting destination for a [=fencedframetype/destination URL event=] is determined
+       by the {{Document}} that calls {{Fence/reportEvent()}}, as opposed to a [=fencedframetype/
+       destination enum event=] or [=fencedframetype/automatic beacon event=] whose reporting
+       destinations are determined in the worklet that created the [=fenced frame config=] that
+       loaded this {{Document}}. We set the [=request/origin=] to the [=origin=] of the {{Document}}
+       or worklet that determined the reporting destination to prevent cross-site request forgery.
 
     : [=request/referrer=]
-    :: `"no-referrer"`
+    :: |request initiator|
+
+    : [=request/referrer policy=]
+    :: |initiator referrer policy|
 
     : [=request/mode=]
     :: `"cors"`
@@ -1030,8 +1077,9 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
-  |reporter| with a {{FenceReportingDestination}} |destination|, and a
-  [=fencedframetype/destination event=] |event|, run these steps:
+  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |request initiator|,
+  a [=referrer policy=] |initiator referrer policy|, and a [=fencedframetype/destination event=]
+  |event|, run these steps:
 
   1. Let |metadata| be |reporter|'s
      [=fenced frame reporter/fenced frame reporting metadata reference=].
@@ -1068,6 +1116,12 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         : [=pending event/event=]
         :: |event|
 
+        : [=pending event/request initiator=]
+        :: |request initiator|
+
+        : [=pending event/initiator referrer policy=]
+        :: |initiator referrer policy|
+
      1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
 
      1. Return.
@@ -1077,7 +1131,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
-  1. [=Send a beacon=] with |reporting map|[|destination|] and |event|.
+  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, |request initiator|, and
+     |initiator referrer policy|.
 </div>
 
 <div algorithm>
@@ -1640,6 +1695,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
       undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event = {});
       sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
       Promise&lt;undefined&gt; disableUntrustedNetwork();
+      undefined notifyEvent(Event event);
   };
 </pre>
 
@@ -1654,6 +1710,14 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |instance|'s [=fenced frame config instance/is ad component=] is true, then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
+
+  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
+
+  1. Let |request initiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
+     object/origin=].
+
+  1. Let |initiator referrer policy| be |document|'s [=Document/policy container=]'s [=policy
+     container/referrer policy=].
 
   1. If |event| is a {{DOMString}}:
 
@@ -1693,8 +1757,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with {{FenceReportingDestination/buyer}} and a
-           [=fencedframetype/destination URL event=] that is |event|'s
+           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|, |initiator
+           referrer policy| and a [=fencedframetype/destination URL event=] that is |event|'s
            {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
@@ -1702,8 +1766,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            {{FenceEvent/eventType}}:
 
            1. [=exception/Throw=] a {{TypeError}}.
-
-        1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
 
         1. Let |attributionReportingEnabled| be the result of determining whether |document| is
            [=allowed to use=] the "<code>{{PermissionPolicy/attribution-reporting}}</code>" feature.
@@ -1713,8 +1775,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
           1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-             reporter=] with |destination| and a [=fencedframetype/destination enum event=] with the
-             following [=struct/items=]:
+             reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and a
+             [=fencedframetype/destination enum event=] with the following [=struct/items=]:
 
              : [=destination enum event/type=]
              :: |event|'s {{FenceEvent/eventType}}
@@ -1872,6 +1934,47 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Return |p|.
 </div>
+  
+<div algorithm>
+  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+  
+  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
+
+      * |navigable| is not a [=fenced navigable container/fenced navigable=];
+  
+      * |event|'s {{Event/isTrusted}} is false;
+  
+      * |event|'s [=Event/dispatch flag=] is unset;
+
+      * |event|'s {{Event/type}} is not "<code>click</code>"
+  
+  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
+
+  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
+
+  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
+     [=navigable/active window=] to run these steps:
+  
+     1. Perform the [=activation notification=] steps.
+
+     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
+        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
+
+  <wpt>
+    /fenced-frame/notify-event-iframe.https.html
+    /fenced-frame/notify-event-invalid.https.html
+    /fenced-frame/notify-event-nested-fenced-frames.https.html
+    /fenced-frame/notify-event-success.https.html
+    /fenced-frame/notify-event-transient-user-activation.https.html
+  </wpt>
+</div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
@@ -1940,6 +2043,15 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
+  1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
+     component=] is false, and |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor
+     root origin=] otherwise.
+
+  1. Let |initiator referrer policy| be |sourceSnapshotParams|'s [=source snapshot params/source
+     policy container=]'s [=policy container/referrer policy=] if |config|'s [=fenced frame config
+     instance/is ad component=] is false, and |sourceSnapshotParams|'s [=source snapshot
+     params/initiator ancestor root referrer policy=] otherwise.
+
   1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
      map=][|eventType|].
 
@@ -1962,8 +2074,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination| and an [=fencedframetype/automatic beacon event=] with the
-       following [=struct/items=]:
+       reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and an
+       [=fencedframetype/automatic beacon event=] with the following [=struct/items=]:
 
        : [=automatic beacon event/type=]
        :: |eventType|
@@ -2339,8 +2451,6 @@ To mend the intended distinction between [=top-level traversables=] and [=fenced
   [=traversable navigable/unfenced parent=] are both null.
 </div>
 
-<br>
-
 <div algorithm>
   To get the <dfn noexport for="navigable">top-level traversable</dfn> of a [=navigable=] |inputNavigable|:
 
@@ -2401,6 +2511,33 @@ in the [[#nested-traversables-intro]].
        <var>[=dn-unfenced|unfenced=]</var>.
 
   1. Return |navigables|.
+</div>
+
+<div algorithm="ancestor-navigables-patch">
+  Modify the [=Document/ancestor navigables=] algorithm to take a new optional [=boolean=]
+  argument <dfn lt="an-unfenced">unfenced</dfn> that defaults to false, and rewrite the algorithm
+  like so:
+
+  1. Let |navigable| be |document|'s [=node navigable=]'s [=navigable/parent=].
+  
+  1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to |document|'s
+     [=node navigable=]'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+     parent=].
+
+  1. Let |ancestors| be an empty list.
+
+  1. While |navigable| is not null:
+
+     1. [=list/Prepend=] |navigable| to |ancestors|.
+
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+     1. If |navigable| is null and [=an-unfenced|unfenced=] is true, set |navigable| to
+        |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+        parent=].
+
+  1. Return |ancestors|.
+
 </div>
 
 <h3 id=focusing-changes>Modifications to the focusing algorithms</h3>
@@ -2718,8 +2855,27 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">initiator fenced frame config instance</dfn>
   :: a [=fenced frame config instance=] or null, initially null.
 
+  : <dfn for="source snapshot params">initiator ancestor root origin</dfn>
+  :: an [=origin=] or null, initially null.
+
+  : <dfn for="source snapshot params">initiator ancestor root referrer policy</dfn>
+  :: an [=referrer policy=] or null, initially null.
+
   : <dfn for="source snapshot params">target fenced frame config</dfn>
   :: a [=fenced frame config=] or null, initially null.
+
+  Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
+  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
+  The [=source snapshot params/initiator ancestor root origin=], for component ads, is the origin of
+  the top-level ad container, if any exists. The [=source snapshot params/initiator ancestor root
+  referrer policy=], for component ads, is the referrer policy of the top-level ad container, if any
+  exists. They are used by the [=attempt to send an automatic beacon=] algorithm to compare
+  [=origin=]s and determine which {{FenceReportingDestination}}s to send beacons and with what
+  information, if the <{fencedframe}>-initiated navigation succeeds. The [=source snapshot
+  params/target fenced frame config=] on the other hand, is the non-[=instantiate a
+  config|instantiated=] [=fenced frame config=] that will be loaded into a <{fencedframe}> element
+  for navigations targeting fenced frames. These fields do not interact *together* in any meaningful
+  way.
 
   : <dfn for="source snapshot params">attribution reporting enabled</dfn>
   :: a [=boolean=].
@@ -2734,14 +2890,6 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
      [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
 
-  Note: The [=source snapshot params/initiator fenced frame config instance=] is the [=fenced frame
-  config instance=] that's loaded into a navigation initiator's [=browsing context=], if any exists.
-  It is used by the [=attempt to send an automatic beacon=] algorithm to compare [=origin=]s and
-  determine which {{FenceReportingDestination}}s to send beacons to, if the
-  <{fencedframe}>-initiated navigation succeeds. The [=source snapshot params/target fenced frame
-  config=] on the other hand, is the non-[=instantiate a config|instantiated=] [=fenced frame
-  config=] that will be loaded into a <{fencedframe}> element for navigations targeting fenced
-  frames. These fields do not interact *together* in any meaningful way.
 </div>
 
 <div algorithm>
@@ -2775,6 +2923,57 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   [=automatic beacon data/once=] set to true.
 </div>
 
+<div algorithm=get-initiator-ancestor>
+  To <dfn>get the initiator's fenced grand-ancestor's navigable</dfn> of a given {{Document}}
+  |sourceDocument|:
+
+  1. Let |navigable| be |sourceDocument|'s [=node navigable=].
+
+  1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+     navigable=]:
+  
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+  1. If |navigable| is null, return null.
+
+  1. [=Assert=]: |navigable| is a [=fenced navigable container/fenced navigable=].
+
+  1. Set |navigable| to |navigable|'s [=navigable/unfenced parent=].
+
+  1. While |navigable| is not null and |navigable| is not a [=fenced navigable container/fenced
+     navigable=]:
+
+     1. Set |navigable| to |navigable|'s [=navigable/parent=].
+
+  1. Return |navigable|.
+
+  <div id="get-initiator-ancestor-root-origin-example" class="example">
+    Given a {{Document}} embedded inside of a <{fencedframe}>, this algorithm gets the navigable of
+    the document's nearest fenced frame ancestor's nearest fenced frame ancestor. If no such "fenced
+    frame grand-ancestor" exists, the algorithm returns null. Therefore, this algorithm only returns
+    a navigable when given a Document that is, at a minimum, in a fenced frame which is itself in a
+    fenced frame. For example, for the given frame tree structure:
+
+    ```
+    Main frame (origin A)
+      <fencedframe> (origin B)
+        <iframe> (origin C)
+          <fencedframe> (origin D)
+            <iframe> (origin E)
+              <fencedframe> (origin F)
+    ```
+
+    The algorithm will return the following given each document:
+
+    - `Main frame (origin A)` will return `null`.
+    - `<fencedframe> (origin B)` will return `null`.
+    - `<iframe> (origin C)` will return `null`.
+    - `<fencedframe> (origin D)` will return `<fencedframe> (origin B)`.
+    - `<iframe> (origin E)` will return `<fencedframe> (origin B)`.
+    - `<fencedframe> (origin F)` will return `<fencedframe> (origin D)`.
+  </div>
+</div>
+
 <div algorithm=snapshot-source-snapshot-params>
   Modify the [=snapshot source snapshot params=] algorithm to return a [=source snapshot params=]
   with these additional fields:
@@ -2782,6 +2981,19 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : [=source snapshot params/initiator fenced frame config instance=]
   :: |sourceDocument|'s [=browsing context=]'s [=browsing context/fenced frame
      config instance=]
+
+  : [=source snapshot params/initiator ancestor root origin=]
+  :: null if the result of running [=get the initiator's fenced grand-ancestor's navigable=] on
+     |sourceDocument| is null. Otherwise, |sourceDocument|'s [=get the initiator's fenced
+     grand-ancestor's navigable|initiator's fenced grand-ancestor's navigable=]'s
+     [=navigable/active document=]'s [=Document/origin=].
+
+  : [=source snapshot params/initiator ancestor root referrer policy=]
+  :: null if the result of running [=get the initiator's fenced grand-ancestor's navigable=] on
+     |sourceDocument| is null. Otherwise, |sourceDocument|'s [=get the initiator's fenced
+     grand-ancestor's navigable|initiator's fenced grand-ancestor's navigable=]'s
+     [=navigable/active document=]'s [=Document/policy container=]'s [=policy container/referrer
+     policy=].
 
   : [=source snapshot params/attribution reporting enabled=]
   :: The result of determining whether |sourceDocument| is [=allowed to use=] the
@@ -2798,13 +3010,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 </div>
 
-<div algorithm=navigate>
-  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] |sharedStorageContext| (default null).
+<div algorithm=navigation-must-replace-patch>
+  Modify [=the navigation must be a replace=] algorithm. Add the following new condition:
 
-  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
-
-    * |navigable| is a [=fenced navigable container/fenced navigable=];
+    * <var ignore>document</var>'s [=relevant global object=]'s [=Window/navigable=] is a [=fenced
+      navigable container/fenced navigable=];
 
       Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
       for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
@@ -2814,8 +3024,14 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
     /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
   </wpt>
+</div>
 
-  Modify step 8 of the same algorithm to include the following condition:
+<div algorithm=navigate>
+  Modify [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an optional [=string=]
+  <dfn for=navigate>sharedStorageContext</dfn> (default null).
+
+  Modify step 13 of [[HTML]]'s [=navigate=] algorithm ("If all of the following are true:") to
+  include the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2827,11 +3043,20 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 22, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
        navigable=]:
+
+       Issue: The above condition is not as tight as it needs to be. For example, if a
+       <{fencedframe}> generates a {{FencedFrameConfig}} using a config-generating API, and then
+       correctly guesses the config's [=fencedframeconfig/urn|urn:uuid=], it can theoretically
+       navigate itself to that config by passing the guessed urn into the navigate algorithm as a
+       [=URL=], via something like the {{Window/location}} API. This is bad, because the purpose of
+       a {{FencedFrameConfig}} is to ensure that only an embedder can navigate a <{fencedframe}> to
+       the resource represented by the config, by using the config object directly. See <a
+       href=https://github.com/WICG/fenced-frame/issues/194>#194</a> for thoughts on fixing this.
 
       1. Let |config| be the result of [=fenced frame config mapping/finding a
          config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
@@ -2844,9 +3069,12 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
-         |sharedStorageContext|.
+         [=navigate/sharedStorageContext=].
 
-      1. Set <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/target fenced frame
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
+
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame
          config=] to |config|.
 
       1. [=Assert=] |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=] is a
@@ -2855,6 +3083,39 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
       1. Set |url| to |config|'s [=fenced frame config/mapped url=]'s [=mapped url/value=].
 
       1. Run steps in |config|'s [=fenced frame config/on navigate callback=].
+  
+    1. If |navigable| is a [=fenced navigable container/fenced navigable=] and <var
+       ignore>sourceDocument</var>'s [=node navigable=] is in |navigable|'s [=navigable/active
+       document=]'s [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to true:
+
+      1. Let |config| be a new [=fenced frame config=] with the following [=struct/items=]:
+
+        : [=fenced frame config/mapped url=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=mapped url/value=]
+           :: |url|
+
+           : [=mapped url/visibility=]
+           :: [=visibility/transparent=]
+
+        : [=fenced frame config/effective sandboxing flags=]
+        :: a [=struct=] with the following [=struct/items=]:
+
+           : [=effective sandboxing flags/value=]
+           :: The [=fencedframetype/default fenced frame effective sandboxing flags=].
+
+           : [=effective sandboxing flags/visibility=]
+           :: [=visibility/opaque=]
+
+        : [=fenced frame config/effective enabled permissions=]
+        :: null
+      
+      1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
+         is null.
+
+      1. Set |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] to
+         |config|.
 
   <wpt>
     /fenced-frame/frame-navigation.https.html
@@ -3004,6 +3265,67 @@ The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> se
 modified such that the first step of the algorithm that runs when a user-agent changes a
 [=traversable navigable=]'s [=system visibility state=] calls the [=Document/inclusive descendant
 navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
+
+<h3 id=events>Events</h3>
+
+<h4 id=onfencedtreeclick-header><code>[=onfencedtreeclick=]</code> event handler</h4>
+The table in the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
+event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified to include a new row.
+
+<table>
+  <thead>
+    <tr>
+      <th>[=Event handler=]</th> 
+      <th>[=Event handler event type=]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn><code>onfencedtreeclick</code></dfn></td>
+      <td><code>[=fencedtreeclick=]</code></td>
+    </tr>
+  </tbody>
+</table>
+
+The {{GlobalEventHandlers}} interface is modified as follows:
+
+<pre class=idl>
+  partial interface mixin GlobalEventHandlers {
+    attribute EventHandler onfencedtreeclick;
+  };
+</pre>
+
+Additionally, the list of [=event handler content attributes which may be specified on any HTML element=] 
+in [[HTML]] is modified to include a new row:
+
+* [=onfencedtreeclick=]
+
+<h4 id=fencedtreeclick-header><code>[=fencedtreeclick=]</code> event type</h4>
+The <a href="https://html.spec.whatwg.org/C#events-2">Events</a> table in the
+<a href="https://html.spec.whatwg.org/multipage/indices.html">Index</a> section of [[HTML]] is
+modified to include a new row.
+
+<table>
+  <thead>
+    <tr>
+      <th>Event</th> 
+      <th>Interface</th> 
+      <th>Interesting targets</th> 
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn><code>fencedtreeclick</code></dfn></td> 
+      <td>{{Event}}</td> 
+      <td>Elements</td>
+      <td>
+        Fired at a <{fencedframe}> element asynchronously after its
+        [=fenced navigable container/fenced navigable=]'s {{Document}} calls {{Fence/notifyEvent()}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
@@ -3362,9 +3684,8 @@ algorithms to achieve the outcomes described in the above explanatory content.
   <{fencedframe}> does not stick around; an error page will be loaded.
 </div>
 
-<div algorithm=permissions-policy-block-request>
-  Create a new algorithm called <dfn>should navigation response to navigation request be blocked by
-  Permissions Policy?</dfn> in [[!HTML]].
+<div algorithm>
+  <dfn>Should navigation response to navigation request be blocked by Permissions Policy?</dfn>
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
   "`Allowed`":
