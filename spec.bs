@@ -1434,14 +1434,13 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     :: [=untrusted network status/enabled=]
 
     : [=fenced frame config instance/on network disabled promises=]
-    :: an empty [=list=]
+    :: A [=list=] of {{Promise|Promises}}, initially empty.
 
-       Note: This stores the callback {{Promise|Promises}} that were created during
-       {{Fence/disableUntrustedNetwork()}}. This is populated when
-       {{Fence/disableUntrustedNetwork()}} is first invoked, and all {{Promise|Promises}} in this
-       [=list=] are resolved at once when the <{fencedframe}> and its descendants have their network
-       access fully revoked (i.e. the [=fenced frame config instance/untrusted network status=] is
-       [=untrusted network status/disabled for this and descendant trees=]).
+       Note: This stores various {{Promise|Promises}} from various globals that were created during
+       {{Fence/disableUntrustedNetwork()}}. We store them here so that we can resolve all of them at
+       once when the <{fencedframe}> and its descendants have their network access fully revoked
+       (i.e., the [=fenced frame config instance/untrusted network status=] is [=untrusted network
+       status/disabled for this and descendant trees=]).
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1648,11 +1647,8 @@ partial interface Navigator {
 <div algorithm>
   The <dfn method for=Navigator>adAuctionComponents(|numAdComponents|)</dfn>
   
-  1. Let |context| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=].
-
-  1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
-
-  1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then throw a {{DOMException}}.
 
@@ -1733,11 +1729,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
-  1. Let |context| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=].
-
-  1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
-
-  1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
   
@@ -1851,11 +1844,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |event|'s {{FenceEvent/eventType}} does not match one of the [=fencedframetype/automatic
      beacon event type=] values, return.
 
-  1. Let |context| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=].
-
-  1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
-
-  1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -1890,11 +1880,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>getNestedConfigs()</dfn> method steps are:
 
-  1. Let |context| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=].
-
-  1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
-
-  1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
   1. If |instance| is null, then return.
 
@@ -1939,7 +1926,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
 
-  1. If |instance| is null, then [=resolve=] |p| with {{undefined}} and return |p|.
+  1. [=Assert=]: |instance| is not null.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
@@ -1955,14 +1942,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
 
-     1. Let |credentiallessNonce| be
-
-     Issue: the page credentialless nonce
-     (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
+     1. Let |credentiallessNonce| be |global|'s [=page credentialless nonce=].
 
      1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
 
-     1. Invoke [=revoke network for a partition nonce=] on |credentiallessNonce|.
+     1. If |credentiallessNonce| is non-null, invoke [=revoke network for a partition nonce=] on
+        |credentiallessNonce|.
 
      1. Set |instance|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
         network status/disabled for this tree=].
@@ -1988,9 +1973,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   
   1. Let |navigablesWithNetworkChildren| be an empty [=set=].
 
-  1. [=iteration/While=] |navigables| is not [=queue/empty=]:
+  1. [=iteration/While=] |navigables| is not [=stack/empty=]:
 
-     1. Let |currentNavigable| be the result of [=queue/dequeue|dequeuing=] from |navigables|.
+     1. Let |currentNavigable| be the result of [=stack/pop|popping=] from |navigables|.
 
      1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=], then
         [=iteration/continue=].
@@ -1998,14 +1983,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Let |config| be |currentNavigable|'s [=navigable/active browsing context=]'s [=browsing
         context/fenced frame config instance=].
 
-     1. If |config| is null, then [=iteration/continue=].
-
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
         network status/disabled for this and descendant trees=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
         is [=untrusted network status/disabled for this tree=], false otherwise.
+
+        Note: A frame is added to |navigablesWithNetworkChildren| when a child fenced frame is
+        determined to not be ready for network cutoff.
 
      1. If |networkCutoffReady| is true:
 
@@ -2081,6 +2067,10 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 
   Add "[=must be blocked due to a revoked partition nonce=]" to the conditions after
   "should request be blocked by Content Security Policy".
+
+  Issue: This needs to be passed in both the fenced frame nonce as well as the iframe credentialless
+  nonce, if it exists.
+  (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
 </div>
 
 The network revocation mechanism requires the following monkeypatches to the [[HTML]] Standard.
