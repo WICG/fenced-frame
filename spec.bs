@@ -1936,8 +1936,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
 
-  1. If |instance| is null, then [=resolve=] |p| with {{undefined}} and return |p|.
-
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
      origin=], then [=reject=] |p| with a {{TypeError}}.
