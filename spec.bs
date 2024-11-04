@@ -1916,6 +1916,47 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm>
+  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+  
+  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
+
+      * |navigable| is not a [=fenced navigable container/fenced navigable=];
+  
+      * |event|'s {{Event/isTrusted}} is false;
+  
+      * |event|'s [=Event/dispatch flag=] is unset;
+
+      * |event|'s {{Event/type}} is not "<code>click</code>"
+  
+  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
+
+  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
+
+  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
+     [=navigable/active window=] to run these steps:
+  
+     1. Perform the [=activation notification=] steps.
+
+     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
+        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
+
+  <wpt>
+    /fenced-frame/notify-event-iframe.https.html
+    /fenced-frame/notify-event-invalid.https.html
+    /fenced-frame/notify-event-nested-fenced-frames.https.html
+    /fenced-frame/notify-event-success.https.html
+    /fenced-frame/notify-event-transient-user-activation.https.html
+  </wpt>
+</div>
+
+<div algorithm>
   The <dfn method for=Fence>disableUntrustedNetwork()</dfn> method steps are:
 
   1. Let |p| be [=a new promise=].
@@ -1925,8 +1966,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
 
   1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
-
-  1. [=Assert=]: |instance| is not null.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
@@ -2051,7 +2090,7 @@ Issue: This will require a RFC to add a test-only function to the WPT web driver
   1. Return <b>allowed</b>.
 </div>
 
-<h3 id=revocation-patches>Monkeypatches for network revocation</h3>
+<h3 id=disable-fetch>Monkeypatches for network revocation</h3>
 
 The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
 
@@ -2088,144 +2127,6 @@ The network revocation mechanism requires the following monkeypatches to the [[H
 
   2. [=Recalculate the untrusted network status of all fenced frame descendants=] given <var
      ignore>navigable</var>'s [=navigable/top-level traversable=].
-</div>
-
-<div algorithm>
-  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
-
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
-
-  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
-  
-  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
-
-      * |navigable| is not a [=fenced navigable container/fenced navigable=];
-  
-      * |event|'s {{Event/isTrusted}} is false;
-  
-      * |event|'s [=Event/dispatch flag=] is unset;
-
-      * |event|'s {{Event/type}} is not "<code>click</code>"
-  
-  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
-
-  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
-
-  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
-
-  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
-     [=navigable/active window=] to run these steps:
-  
-     1. Perform the [=activation notification=] steps.
-
-     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
-        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
-        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
-
-  <wpt>
-    /fenced-frame/notify-event-iframe.https.html
-    /fenced-frame/notify-event-invalid.https.html
-    /fenced-frame/notify-event-nested-fenced-frames.https.html
-    /fenced-frame/notify-event-success.https.html
-    /fenced-frame/notify-event-transient-user-activation.https.html
-  </wpt>
-</div>
-
-<div algorithm>
-  The <dfn method for=Fence>disableUntrustedNetwork()</dfn> method steps are:
-
-  1. Let |p| be [=a new promise=].
-
-  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
-     [=browsing context/fenced frame config instance=].
-
-  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
-     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
-     origin=], then [=reject=] |p| with a {{TypeError}}.
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s [=navigable/traversable
-     navigable=] is not a [=fenced navigable container/fenced navigable=], then [=resolve=] |p| with
-     {{undefined}} and return |p|.
-
-  1. Let |global| be [=this=]'s [=relevant global object=].
-
-  1. Run the following steps [=in parallel=]:
-
-     1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
-
-     1. Let |credentiallessNonce| be
-
-     Issue: the page credentialless nonce
-     (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
-
-     1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
-
-     1. Invoke [=revoke network for a partition nonce=] on |credentiallessNonce|.
-
-     1. Set |instance|'s [=fenced frame config instance/has disabled untrusted network=] to true.
-
-     1. Wait on all nested fenced frames to disable network too.
-
-     Issue: Spec this waiting more formally.
-     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
-
-     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
-        [=resolve=] |p| with {{undefined}}.
-
-  1. Return |p|.
-</div>
-
-A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
-[=partition nonces=], and a <dfn>network revocation exemption map</dfn>, which is a [=map=] whose
-[=map/keys=] are [=partition nonces=] and [=map/values=] are [=sets=] of [=URLs=].
-
-Note: The [=network revocation exemption map=] is used only for web platform tests; in normal usage
-it is always empty. This list is modified directly in web platform tests by a function call to
-exempt specific URLs from network revocation.
-
-Issue: This will require a RFC to add a test-only function to the WPT web driver.
-(<a href="https://github.com/WICG/fenced-frame/issues/192">WICG/fenced-frame#192</a>)
-
-<div algorithm>
-  To <dfn>revoke network for a partition nonce</dfn> using a [=fenced frame config
-  instance/partition nonce=] |nonce|, run these steps:
-
-  1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
-
-  1. [=fetch group/terminated|Terminate=] [=this=]'s [=relevant settings object=]'s
-     [=fetch/fetch group=].
-</div>
-
-<div algorithm>
-  To determine whether fetching a [=request=] <var ignore>request</var> <dfn>must be blocked due to
-  a revoked partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|
-  and a [=URL=] |requestURL|, run these steps:
-
-  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
-     |requestURL| [=set/exists=] in it, return <b>allowed</b>.
-
-  1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return
-     <b>blocked</b>.
-
-  1. Return <b>allowed</b>.
-</div>
-
-<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
-
-The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
-
-<div algorithm=network-revocation-check-patch>
-  In the [=fetch=] algorithm, step 7, where it says:
-
-    > If <a lt="block bad port">should <var>request</var> be blocked due to a bad port</a>,
-    > <a lt="should fetching request be blocked as mixed content?">
-    > should fetching <var>request</var> be blocked as mixed content</a>, or
-    > <a lt="should request be blocked by Content Security Policy?">should <var>request</var>
-    > be blocked by Content Security Policy</a> returns <b>blocked</b>, then set
-    > <var ignore>response</var> to a <a>network error</a>.
-
-  Add "[=must be blocked due to a revoked partition nonce=]" to the conditions after
-  "should request be blocked by Content Security Policy".
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
