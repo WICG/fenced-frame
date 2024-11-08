@@ -2474,25 +2474,6 @@ nested traversables in [[HTML]]'s <a
 href=https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversables>Top-level
 traversables</a> section.
 
-<div algorithm>
-  To get the <dfn for=navigable>fenced navigable ancestor</dfn> of a [=navigable=] |navigable|:
-
-  1. Let |currentNavigable| be |navigable|. 
-  
-  1. While |currentNavigable| is not null:
-
-      1. If |currentNavigable| is a [=fenced navigable container/fenced navigable=], return 
-         |currentNavigable|.
-  
-      1. Set |currentNavigable| to |currentNavigable|'s [=navigable/parent=].
-
-  1. Return |currentNavigable|.
-
-  Note: Some Web Platform algorithms will have additional restrictions if the 
-  [=relevant global object=]'s [=Window/navigable=] has a [=navigable/fenced navigable ancestor=]. 
-  For an example, see the [[#webrtc-monkeypatch]] section below.     
-</div>
-
 <h4 id=top-level-traversables>Top-level traversables</h4>
 
 The [[HTML]] Standard currently defines a [=top-level traversable=] as a [=traversable navigable=]
@@ -3939,11 +3920,11 @@ at the expense of some utility.
 
 <h3 id=webrtc-monkeypatch>WebRTC</h3>
 
-The [[WEBRTC]] specification defines "ECMAScript APIs in WebIDL to allow media and generic 
-application data to be sent to and received from another browser or device implementing the 
-appropriate set of real-time protocols." The interface which facilitates connections to peers
-is {{RTCPeerConnection}}. Construction of this interface, and therefore connection to peers 
-via WebRTC, is disallowed in fenced frames.
+The [[WEBRTC]] specification defines "ECMAScript APIs in WebIDL to allow media and generic
+application data to be sent to and received from another browser or device implementing the
+appropriate set of real-time protocols." The interface which facilitates connections to peers is
+{{RTCPeerConnection}}. Construction of this interface, and therefore connection to peers via
+WebRTC, is disallowed in fenced frames.
 
 <div algorithm=webrtc-constructor>
   Modify the {{RTCPeerConnection}} {{RTCPeerConnection/constructor}} algorithm to add new first and
@@ -3951,8 +3932,8 @@ via WebRTC, is disallowed in fenced frames.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
 
-  1. If |navigable| has a [=navigable/fenced navigable ancestor=], throw a {{NotAllowedError}}
-     {{DOMException}}. 
+  1. If |navigable|'s [=traversable navigable=] is a [=fenced navigable container/fenced
+     navigable=], throw a {{NotAllowedError}} {{DOMException}}.
 </div>
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
