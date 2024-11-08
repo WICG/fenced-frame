@@ -3918,6 +3918,24 @@ at the expense of some utility.
   </wpt>
 </div>
 
+<h3 id=webrtc-monkeypatch>WebRTC</h3>
+
+The [[WEBRTC]] specification defines "ECMAScript APIs in WebIDL to allow media and generic
+application data to be sent to and received from another browser or device implementing the
+appropriate set of real-time protocols." The interface which facilitates connections to peers is
+{{RTCPeerConnection}}. Construction of this interface, and therefore connection to peers via
+WebRTC, is disallowed in fenced frames.
+
+<div algorithm=webrtc-constructor>
+  Modify the {{RTCPeerConnection}} {{RTCPeerConnection/constructor}} algorithm to add new first and
+  second steps that read:
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+
+  1. If |navigable|'s [=traversable navigable=] is a [=fenced navigable container/fenced
+     navigable=], throw a {{NotAllowedError}} {{DOMException}}.
+</div>
+
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
 
 This material is being upstreamed from our explainer into this specification, and in the meantime
