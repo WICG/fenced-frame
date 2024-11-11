@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 742f3d674, updated Mon Nov 4 14:56:54 2024 -0800" name="generator">
   <link href="https://wicg.github.io/fenced-frame/" rel="canonical">
-  <meta content="a22434ff2c213545410499c55d293d083546e347" name="revision">
+  <meta content="a5ecf625e6b531fb2245601563b6e264396cbd05" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -979,7 +979,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Fenced Frame</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-11-08">8 November 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-11-11">11 November 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -4293,8 +4293,7 @@ WebRTC, is disallowed in fenced frames.</p>
      <li data-md>
       <p>Let <var>navigable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑤">navigable</a>.</p>
      <li data-md>
-      <p>If <var>navigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①⑨">traversable navigable</a> is a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable⑥⑤">fenced
- navigable</a>, throw a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code> <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException④">DOMException</a></code>.</p>
+      <p>If <var>navigable</var> is not null and <var>navigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable①⑨">traversable navigable</a> is a <a data-link-type="dfn" href="#fenced-navigable-container-fenced-navigable" id="ref-for-fenced-navigable-container-fenced-navigable⑥⑤">fenced navigable</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw⑧">throw</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code> <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException④">DOMException</a></code>.</p>
     </ol>
    </div>
    <h2 class="heading settled" data-level="5" id="security-and-privacy"><span class="secno">5. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
@@ -5789,7 +5788,7 @@ let dfnPanelData = {
 "b36452d7": {"dfnID":"b36452d7","dfnText":"source expression","external":true,"refSections":[{"refs":[{"id":"ref-for-source-expression"}],"title":"4.2. Content Security Policy"}],"url":"https://w3c.github.io/webappsec-csp/#source-expression"},
 "b43a01e9": {"dfnID":"b43a01e9","dfnText":"directive value","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-value"},{"id":"ref-for-directive-value\u2460"}],"title":"4.2.1. Algorithms"}],"url":"https://w3c.github.io/webappsec-csp/#directive-value"},
 "b4c5b3f7": {"dfnID":"b4c5b3f7","dfnText":"RequestDestination","external":true,"refSections":[{"refs":[{"id":"ref-for-requestdestination"}],"title":"2.6. New request destination"}],"url":"https://fetch.spec.whatwg.org/#requestdestination"},
-"b4cfa5ce": {"dfnID":"b4cfa5ce","dfnText":"throw","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-throw"},{"id":"ref-for-dfn-throw\u2460"},{"id":"ref-for-dfn-throw\u2461"},{"id":"ref-for-dfn-throw\u2462"}],"title":"2.3.5. The FencedFrameConfig interface"},{"refs":[{"id":"ref-for-dfn-throw\u2463"},{"id":"ref-for-dfn-throw\u2464"},{"id":"ref-for-dfn-throw\u2465"},{"id":"ref-for-dfn-throw\u2466"}],"title":"2.4. The Fence interface"}],"url":"https://webidl.spec.whatwg.org/#dfn-throw"},
+"b4cfa5ce": {"dfnID":"b4cfa5ce","dfnText":"throw","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-throw"},{"id":"ref-for-dfn-throw\u2460"},{"id":"ref-for-dfn-throw\u2461"},{"id":"ref-for-dfn-throw\u2462"}],"title":"2.3.5. The FencedFrameConfig interface"},{"refs":[{"id":"ref-for-dfn-throw\u2463"},{"id":"ref-for-dfn-throw\u2464"},{"id":"ref-for-dfn-throw\u2465"},{"id":"ref-for-dfn-throw\u2466"}],"title":"2.4. The Fence interface"},{"refs":[{"id":"ref-for-dfn-throw\u2467"}],"title":"4.5. WebRTC"}],"url":"https://webidl.spec.whatwg.org/#dfn-throw"},
 "b565078e": {"dfnID":"b565078e","dfnText":"active session history entry","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-active-history-entry"}],"title":"3.5.3. Nested traversables"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-active-history-entry"},
 "b79e50d6": {"dfnID":"b79e50d6","dfnText":"user activation","external":true,"refSections":[{"refs":[{"id":"ref-for-tracking-user-activation"},{"id":"ref-for-tracking-user-activation\u2460"},{"id":"ref-for-tracking-user-activation\u2461"},{"id":"ref-for-tracking-user-activation\u2462"},{"id":"ref-for-tracking-user-activation\u2463"}],"title":"3.5.1. Introduction"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation"},
 "b7c21a86": {"dfnID":"b7c21a86","dfnText":"Content-Security-Policy","external":true,"refSections":[{"refs":[{"id":"ref-for-header-content-security-policy"},{"id":"ref-for-header-content-security-policy\u2460"},{"id":"ref-for-header-content-security-policy\u2461"}],"title":"4.2.2. New fenced-frame-src [CSP] directive"}],"url":"https://w3c.github.io/webappsec-csp/#header-content-security-policy"},
