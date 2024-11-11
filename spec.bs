@@ -3342,8 +3342,7 @@ this column is the same as "ordinary effect". Then, add two rows which read:
     <tr>          
       <th><code data-x="">sandbox=""</code></th>
       <th><code data-x="">sandbox="allow-top-navigation"</code></th>
-    <tr>
-   
+    </tr>
   </thead>
 
   <tbody>
