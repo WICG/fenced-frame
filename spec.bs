@@ -3454,24 +3454,6 @@ at the expense of some utility.
   </wpt>
 </div>
 
-<h3 id=unfencedtop-monkeypatch>_unfencedTop</h3>
-
-Fenced frames use an additional reserved navigation target `_unfencedTop` to navigate. This section patches the "Navigation and session history" spec to add `_unfencedTop`.
-
-Extend [=valid navigable target name or keyword=] to include `_unfencedTop`.
-
-In the following paragraph, "outermost top" is the top of nested navigables
-
-In the table below, add a column for "Effect in a fenced frame"
-
-The value for all other rows is the same as "ordinary effect".
-
-Add rows for "_unfencedTop if outermost top is current" and "_unfencedTop if outermost top is not current", and make the rows like the top rows, but replacing top with outermost top.
-
-Add an extra step to [=The rules for choosing a navigable=] between the current steps 6 and 7:
-
-6.5. Otherwise, if name is an ASCII case-insensitive match for "_unfencedTop" and |currentNavigable| is in a fenced frame, set |chosen| to |currentNavigable|'s outermost navigable.
-
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
 
 This material is being upstreamed from our explainer into this specification, and in the meantime
