@@ -3932,8 +3932,8 @@ WebRTC, is disallowed in fenced frames.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
 
-  1. If |navigable|'s [=traversable navigable=] is a [=fenced navigable container/fenced
-     navigable=], throw a {{NotAllowedError}} {{DOMException}}.
+  1. If |navigable| is not null and |navigable|'s [=traversable navigable=] is a [=fenced navigable
+     container/fenced navigable=], [=exception/throw=] a {{NotAllowedError}} {{DOMException}}.
 </div>
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
