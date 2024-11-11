@@ -97,6 +97,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: iframe sandboxing flag set; url: iframe-sandboxing-flag-set
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
+    urlPrefix: document-sequences.html
+      text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
+      text: the rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -3308,6 +3311,65 @@ left over to be leaked to the next {{Document}}.
      instead of piggybacking off of the COOP mechanism which was designed without fenced frames in
      mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
+
+<h4 id=unfenced-top-navigation-target>The "<code>_unfencedTop</code>" Navigation Target</h4>
+
+Fenced frames use an additional reserved navigation target "<code>_unfencedTop</code>" to navigate.
+This section patches the relevant portions of the [[HTML]] spec to add <code>_unfencedTop</code>.
+
+Extend [=valid navigable target name or keyword=] to include <code>_unfencedTop</code> as one of
+the explicitly-listed possible matches.
+
+In the following paragraph, change "top" to refer to the [=navigable/traversable navigable=] of the
+[=navigable=] that the link or script is in. Add an additional clause to the same sentence that
+reads: "outermost top" is the [=top-level traversable=] of the [=navigable=] that the link or
+script is in.
+
+Note: This change is necessary because this spec adds a distinction between [=navigable/traversable
+navigable=] and [=top-level traversable=], which were previously functionally equivalent.
+
+In the table below, add a column named "Effect in a fenced frame". The value for all rows in
+this column is the same as "ordinary effect". Then, add two rows which read:
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan=2>Keyword</th>
+      <th rowspan=2>Ordinary effect</th>
+      <th colspan=2>Effect in an <code>iframe</code> with...</th>
+      <th rowspan=2>Effect in a fenced frame</th>
+    </tr>
+    <tr>          
+      <th><code data-x="">sandbox=""</code></th>
+      <th><code data-x="">sandbox="allow-top-navigation"</code></th>
+    <tr>
+   
+  </thead>
+
+  <tbody>
+    <tr>
+      <td><code>_unfencedTop</code> if outermost top is current</td>
+      <td>current</td>
+      <td>current</td>
+      <td>current</td>
+      <td>current</td>
+    </tr>
+    <tr>
+      <td><code>_unfencedTop</code> if outermost top is not current</td>
+      <td>outermost top</td>
+      <td>none</td>
+      <td>outermost top</td>
+      <td>outermost top</td>
+    </tr>
+  </tbody>
+</table>
+
+Add an extra step to [=the rules for choosing a navigable=] between the current steps 6 and 7, that
+reads:
+
+6.5. Otherwise, if name is an ASCII case-insensitive match for "_unfencedTop" and 
+|currentNavigable|'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+navigable=], set <var ignore=''>chosen</var> to |currentNavigable|'s [=top-level traversable=].
 
 <h3 id=page-visibility>Page visibility</h3>
 
