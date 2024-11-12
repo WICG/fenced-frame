@@ -3312,13 +3312,13 @@ left over to be leaked to the next {{Document}}.
      mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
 
-<h4 id=unfenced-top-navigation-target>The "<code>_unfencedTop</code>" Navigation Target</h4>
+<h4 id=unfenced-top-navigation-target>The "<code>_unfencedTop</code>" navigation target</h4>
 
 Fenced frames use an additional reserved navigation target "<code>_unfencedTop</code>" to navigate.
 This section patches the relevant portions of the [[HTML]] spec to add <code>_unfencedTop</code>.
 
-Extend [=valid navigable target name or keyword=] to include <code>_unfencedTop</code> as one of
-the explicitly-listed possible matches.
+Extend [=valid navigable target name or keyword=] to include a new keyword named <code>_unfencedTop
+</code>.
 
 In the following paragraph, change "top" to refer to the [=navigable/traversable navigable=] of the
 [=navigable=] that the link or script is in. Add an additional clause to the same sentence that
