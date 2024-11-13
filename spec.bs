@@ -3317,58 +3317,68 @@ left over to be leaked to the next {{Document}}.
 Fenced frames use an additional reserved navigation target "<code>_unfencedTop</code>" to navigate.
 This section patches the relevant portions of the [[HTML]] spec to add <code>_unfencedTop</code>.
 
-Extend [=valid navigable target name or keyword=] to include a new keyword named <code>_unfencedTop
-</code>.
+<div algorithm="unfenced-top-keyword">
+  Modify [=valid navigable target name or keyword=] to include a new keyword named <code>
+  _unfencedTop</code>.
 
-In the following paragraph, change "top" to refer to the [=navigable/traversable navigable=] of the
-[=navigable=] that the link or script is in. Add an additional clause to the same sentence that
-reads: "outermost top" is the [=top-level traversable=] of the [=navigable=] that the link or
-script is in.
+  Modify the below paragraph to replace the following text:
 
-Note: This change is necessary because this spec adds a distinction between [=navigable/traversable
-navigable=] and [=top-level traversable=], which were previously functionally equivalent.
+    * "top" means the [=top-level traversable=] of the [=navigable=] that the link or script is in,
 
-In the table below, add a column named "Effect in a fenced frame". The value for all rows in
-this column is the same as "ordinary effect". Then, add two rows which read:
+  with: 
 
-<table>
-  <thead>
-    <tr>
-      <th rowspan=2>Keyword</th>
-      <th rowspan=2>Ordinary effect</th>
-      <th colspan=2>Effect in an <code>iframe</code> with...</th>
-      <th rowspan=2>Effect in a fenced frame</th>
-    </tr>
-    <tr>          
-      <th><code data-x="">sandbox=""</code></th>
-      <th><code data-x="">sandbox="allow-top-navigation"</code></th>
-    </tr>
-  </thead>
+    * "top" means the [=navigable/traversable navigable=] of the [=navigable=] that the link or
+      script is in, "outermost top" means the [=top-level traversable=] of the [=navigable=] that
+      the link or script is in, 
 
-  <tbody>
-    <tr>
-      <td><code>_unfencedTop</code> if outermost top is current</td>
-      <td>current</td>
-      <td>current</td>
-      <td>current</td>
-      <td>current</td>
-    </tr>
-    <tr>
-      <td><code>_unfencedTop</code> if outermost top is not current</td>
-      <td>outermost top</td>
-      <td>none</td>
-      <td>outermost top</td>
-      <td>outermost top</td>
-    </tr>
-  </tbody>
-</table>
+  Note: This change is necessary because this spec adds a distinction between
+  [=navigable/traversable navigable=] and [=top-level traversable=], which were previously
+  functionally equivalent.
 
-Add an extra step to [=the rules for choosing a navigable=] between the current steps 6 and 7, that
-reads:
+  In the table below, add a column named "Effect in a fenced frame". The value for all existing
+  rows in this column is the same as "ordinary effect". Then, add two rows which read:
 
-6.5. Otherwise, if name is an ASCII case-insensitive match for "_unfencedTop" and 
-|currentNavigable|'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
-navigable=], set <var ignore=''>chosen</var> to |currentNavigable|'s [=top-level traversable=].
+  <table>
+    <thead>
+      <tr>
+        <th rowspan=2>Keyword</th>
+        <th rowspan=2>Ordinary effect</th>
+        <th colspan=2>Effect in an <code>iframe</code> with...</th>
+        <th rowspan=2>Effect in a fenced frame</th>
+      </tr>
+      <tr>          
+        <th><code data-x="">sandbox=""</code></th>
+        <th><code data-x="">sandbox="allow-top-navigation"</code></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><code>_unfencedTop</code> if outermost top is current</td>
+        <td>current</td>
+        <td>current</td>
+        <td>current</td>
+        <td>current</td>
+      </tr>
+      <tr>
+        <td><code>_unfencedTop</code> if outermost top is not current</td>
+        <td>outermost top</td>
+        <td>none</td>
+        <td>outermost top</td>
+        <td>outermost top</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div algorithm="unfenced-top-rules">
+  Add an extra step to [=the rules for choosing a navigable=] between the current steps 6 and 7, 
+  that reads:
+
+  6.5. Otherwise, if name is an ASCII case-insensitive match for "_unfencedTop" and
+  |currentNavigable|'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+  navigable=], set <var ignore=''>chosen</var> to |currentNavigable|'s [=top-level traversable=].
+</div>
 
 <h3 id=page-visibility>Page visibility</h3>
 
