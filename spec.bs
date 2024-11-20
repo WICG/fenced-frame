@@ -3315,11 +3315,12 @@ left over to be leaked to the next {{Document}}.
 <h4 id=unfenced-top-navigation-target>The "<code>_unfencedTop</code>" navigation target</h4>
 
 Fenced frames use an additional reserved navigation target "<code>_unfencedTop</code>" to navigate.
-This section patches the relevant portions of the [[HTML]] spec to add <code>_unfencedTop</code>.
+This section patches the relevant portions of the [[HTML]] spec to add support for this new
+reserved keyword.
 
 <div algorithm="unfenced-top-keyword">
-  Modify [=valid navigable target name or keyword=] to include a new keyword named <code>
-  _unfencedTop</code>.
+  Modify [=valid navigable target name or keyword=] to include a new keyword named
+  <code>_unfencedTop</code>.
 
   Modify the below paragraph to replace the following text:
 
@@ -3344,7 +3345,7 @@ This section patches the relevant portions of the [[HTML]] spec to add <code>_un
         <th rowspan=2>Keyword</th>
         <th rowspan=2>Ordinary effect</th>
         <th colspan=2>Effect in an <code>iframe</code> with...</th>
-        <th rowspan=2>Effect in a fenced frame</th>
+        <th rowspan=2>Effect in a <code>fencedframe</code>></th>
       </tr>
       <tr>          
         <th><code data-x="">sandbox=""</code></th>
@@ -3355,16 +3356,16 @@ This section patches the relevant portions of the [[HTML]] spec to add <code>_un
     <tbody>
       <tr>
         <td><code>_unfencedTop</code> if outermost top is current</td>
-        <td>current</td>
-        <td>current</td>
-        <td>current</td>
+        <td>new</td>
+        <td>maybe new</td>
+        <td>maybe new</td>
         <td>current</td>
       </tr>
       <tr>
         <td><code>_unfencedTop</code> if outermost top is not current</td>
-        <td>outermost top</td>
-        <td>none</td>
-        <td>outermost top</td>
+        <td>new</td>
+        <td>maybe new</td>
+        <td>maybe new</td>
         <td>outermost top</td>
       </tr>
     </tbody>
@@ -3375,7 +3376,7 @@ This section patches the relevant portions of the [[HTML]] spec to add <code>_un
   Add an extra step to [=the rules for choosing a navigable=] between the current steps 6 and 7, 
   that reads:
 
-  6.5. Otherwise, if name is an ASCII case-insensitive match for "_unfencedTop" and
+  6.5. Otherwise, if name is an ASCII case-insensitive match for <code>"_unfencedTop"</code> and
   |currentNavigable|'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
   navigable=], set <var ignore=''>chosen</var> to |currentNavigable|'s [=top-level traversable=].
 </div>
