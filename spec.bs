@@ -3320,7 +3320,7 @@ reserved keyword.
 
 <div algorithm="unfenced-top-keyword">
   Modify [=valid navigable target name or keyword=] to include a new keyword named
-  <code>_unfencedTop</code>.
+  "<code>_unfencedTop</code>".
 
   Modify the below paragraph to replace the following text:
 
