@@ -3,7 +3,7 @@
 
 ## Introduction
 
-For use cases involving APIs that access cross-site data, we need to be able to load a fenced frame with content determined by the API without revealing information about the content to the embedding context. For example, with interest-based ads in [FLEDGE](https://github.com/WICG/turtledove), the winning ad that's returned from the auction depends on the user's cross-site interest group data, which we don't want to expose to the site that calls the auction. This document proposes a web-platform way of loading content into a fenced frame using an opaque object.
+For use cases involving APIs that access cross-site data, we need to be able to load a fenced frame with content determined by the API without revealing information about the content to the embedding context. For example, with interest-based ads in [Protected Audience](https://github.com/WICG/turtledove), the winning ad that's returned from the auction depends on the user's cross-site interest group data, which we don't want to expose to the site that calls the auction. This document proposes a web-platform way of loading content into a fenced frame using an opaque object.
 
 
 ## Proposed solution
@@ -13,9 +13,9 @@ For use cases involving APIs that access cross-site data, we need to be able to 
 In order to hide information as described above, the browser _redacts_ `FencedFrameConfig` before sending it to the embedder. This means that certain fields which are sensitive, like the ad url, are replaced with a string `opaque`. The embedder may see whether there is a value defined for that field, but not what the value is. Likewise, when the embedder requests that a config be loaded into the fenced frame, the browser is responsible for looking up the config in a data structure in order to access the unredacted information.
 
   
-### Turtledove Example
+### Protected Audience Example
 
-When the SSP JS invokes the Turtledove API to run the ad auction, it gets back the `FencedFrameConfig` as the result, which is then used for rendering the fenced frame. This `FencedFrameConfig` has an opaque `src`, which maps to an actual ad url which is part of the interest group.
+When the SSP JS invokes the Protected Audience API to run the ad auction, it gets back the `FencedFrameConfig` as the result, which is then used for rendering the fenced frame. This `FencedFrameConfig` has an opaque `src`, which maps to an actual ad url which is part of the interest group.
 
 
 ```
@@ -33,6 +33,7 @@ navigator.runAdAuction(myAuctionConfig).then((auctionWinnerConfig) => {
 ## Backwards compatibility
   
 Previously we used a [`urn:uuid`](https://tools.ietf.org/html/rfc4122) and the `src` attribute to accomplish this same behavior. We will continue to support `urn:uuid` and `src` for a transition period.
+Update: The `src` attribute is no longer supported on fenced frames.
 
 ## Embedder context
 
