@@ -153,7 +153,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsing-the-web.html
       text: create and initialize a Document object; url: initialise-the-document-object
       text: create navigation params by fetching; url: create-navigation-params-by-fetching
-      text: process a navigate fetch; url: process-a-navigate-fetch
       text: document state; url: she-document-state
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
@@ -227,7 +226,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: urls-and-fetching.html
       text: about:srcdoc; url: about:srcdoc
     urlPrefix: document-lifestyle.html
-      text: initialize the document object; url: initialise-the-document-object
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -282,7 +280,8 @@ spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
 spec: iframe-credentialless; urlPrefix: https://wicg.github.io/anonymous-iframe/
   type: dfn
-    text: credentialless; url: navigation-params-credentialless
+    for: navigation params
+      text: credentialless; url: navigation-params-credentialless
 </pre>
 
 <style>
@@ -4011,35 +4010,34 @@ at the expense of some utility.
 
 <h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
 
-The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the
-[=page credentialless nonce=]. At a high level, the
-[=fenced frame config instance/partition nonce=] serves the same purpose as the
-[=page credentialless nonce=] (partitioning storage and network), but scoped to each fenced
-frame rather than to each credentialless iframe. The
-[=fenced frame config instance/partition nonce=] is also used to revoke network access in fenced
-frames. Perform the following monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
+The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless 
+nonce=]. At a high level, the [=fenced frame config instance/partition nonce=] serves the same
+purpose as the [=page credentialless nonce=] (partitioning storage and network), but scoped to each
+fenced frame rather than to each credentialless iframe. The [=fenced frame config instance/
+partition nonce=] is also used to revoke network access in fenced frames. Perform the following
+monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
 
 Add the following algorithm:
 
 <div algorithm>
   To <dfn for="browsing context">compute the effective partition nonce</dfn> given a
-  boolean |credentialless| and [=fenced frame config instance/partition nonce=] or null
+  boolean |credentialless| and [=fenced frame config instance/partition nonce=]-or-null
   |newFencedFrameNonce|:
 
-  1. If |credentialless| is true, return |this|'s [=top-level browsing context=]'s
-     [=page credentialless nonce=].
+  1. If |credentialless| is true, return the associated browsing context's [=page credentialless
+     nonce=].
 
   1. If |newFencedFrameNonce| is not null, return |newFencedFrameNonce|.
 
   1. Let |instance| be |this|'s [=browsing context/fenced frame config instance=].
 
-  1. If |instance| is null, return null.
-
-  1. Return |instance|'s [=fenced frame config instance/partition nonce=].
+  1. Return |instance|'s [=fenced frame config instance/partition nonce=] if |instance| is not
+     null, and return null otherwise.
 </div>
 
 <div algorithm="process a navigate fetch">
-  Modify the step added to [=process a navigate fetch=] to read:
+  Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-navigation-partition-nonce>
+  process a navigate fetch</a> to read:
 
   13. Let <var ignore>partitionNonce</var> be the result of
       [=browsing context/computing the effective partition nonce=] on
@@ -4049,14 +4047,15 @@ Add the following algorithm:
 </div>
 
 <div algorithm="initialize the document object">
-  Modify the step added to [=initialize the document object=] to read:
+  Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-window-partition-nonce>
+  initialize the document object</a> to read:
 
   6.9. Let <var ignore>partitionNonce</var> be the result of
        [=browsing context/computing the effective partition nonce=] on
-       <var ignore>browsingContext</var> given |navigationParams|'s [=credentialless=] and null if
-       |navigationParams|'s [=navigation params/fenced frame config instance=] is null else
-       |navigationParams|'s [=navigation params/fenced frame config instance=]'s
-       [=fenced frame config instance/partition nonce=].
+       <var ignore>browsingContext</var> given |navigationParams|'s [=navigation params/
+       credentialless=] and null if |navigationParams|'s [=navigation params/fenced frame
+       config instance=] is null else |navigationParams|'s [=navigation params/fenced frame
+       config instance=]'s [=fenced frame config instance/partition nonce=].
 </div>
 
 <h3 id=webrtc-monkeypatch>WebRTC</h3>
