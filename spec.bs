@@ -225,7 +225,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: fire a click event; url: fire-a-click-event
     urlPrefix: urls-and-fetching.html
       text: about:srcdoc; url: about:srcdoc
-    urlPrefix: document-lifestyle.html
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -4024,12 +4023,13 @@ Add the following algorithm:
   boolean |credentialless| and [=fenced frame config instance/partition nonce=]-or-null
   |newFencedFrameNonce|:
 
-  1. If |credentialless| is true, return the associated browsing context's [=page credentialless
-     nonce=].
+  1. If |credentialless| is true, return the associated [=browsing context=]'s [=top-level
+     browsing context=]'s [=page credentialless nonce=].
 
   1. If |newFencedFrameNonce| is not null, return |newFencedFrameNonce|.
 
-  1. Let |instance| be |this|'s [=browsing context/fenced frame config instance=].
+  1. Let |instance| be the associated [=browsing context=]'s [=browsing context/fenced frame
+     config instance=].
 
   1. Return |instance|'s [=fenced frame config instance/partition nonce=] if |instance| is not
      null, and return null otherwise.
