@@ -4019,8 +4019,8 @@ monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
 Add the following algorithm:
 
 <div algorithm>
-  To <dfn for="browsing context">compute the effective partition nonce</dfn> given a
-  boolean |credentialless| and [=fenced frame config instance/partition nonce=]-or-null
+  To <dfn for="browsing context">compute the effective partition nonce</dfn> given a boolean 
+  |credentialless| and [=fenced frame config instance/partition nonce=]-or-null
   |newFencedFrameNonce|:
 
   1. If |credentialless| is true, return the associated [=browsing context=]'s [=top-level
@@ -4039,23 +4039,21 @@ Add the following algorithm:
   Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-navigation-partition-nonce>
   process a navigate fetch</a> to read:
 
-  13. Let <var ignore>partitionNonce</var> be the result of
-      [=browsing context/computing the effective partition nonce=] on
-      <var ignore>browsingContext</var> given <var ignore>credentialless</var> and
-      <var ignore>sourceSnapshotParams</var>'s
-      [=source snapshot params/target fenced frame config=].
+  13. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
+      effective partition nonce=] on <var ignore>browsingContext</var> given <var ignore>
+      credentialless</var> and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/
+      target fenced frame config=].
 </div>
 
 <div algorithm="initialize the document object">
   Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-window-partition-nonce>
   initialize the document object</a> to read:
 
-  6.9. Let <var ignore>partitionNonce</var> be the result of
-       [=browsing context/computing the effective partition nonce=] on
-       <var ignore>browsingContext</var> given |navigationParams|'s [=navigation params/
-       credentialless=] and null if |navigationParams|'s [=navigation params/fenced frame
-       config instance=] is null else |navigationParams|'s [=navigation params/fenced frame
-       config instance=]'s [=fenced frame config instance/partition nonce=].
+  6.9. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
+       effective partition nonce=] on <var ignore>browsingContext</var> given |navigationParams|'s
+       [=navigation params/credentialless=] and null if |navigationParams|'s [=navigation params/
+       fenced frame config instance=] is null else |navigationParams|'s [=navigation params/fenced
+       frame config instance=]'s [=fenced frame config instance/partition nonce=].
 </div>
 
 <h3 id=webrtc-monkeypatch>WebRTC</h3>
