@@ -201,6 +201,18 @@ Since this is exfiltrating some information (that a click happened) outside the 
 *   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/).
 *   One potential concern around the `notifyEvent()` API shape is that a single trusted `click` event could be cached by the JS running in the fenced frame and reused in additional `notifyEvent()` calls. However, the requirement that the trusted event *must be dispatching* mitigates this concern. Once the dispatch initiated by the browser completes, `notifyEvent()` will no longer accept the cached event object. If JavaScript on the page then tries to manually re-dispatch the cached event, the object will no longer be trusted (its `isTrusted` field will be set to false).
 
+### User Activation
+
+When a user clicks on a fenced frame, the fenced frame window will have [user activation](https://developer.mozilla.org/en-US/docs/Web/API/UserActivation). User activation is frequently used to [gate access](https://developer.mozilla.org/en-US/docs/Web/Security/User_activation) to powerful Web Platform features unless the user has interacted with the page. In response to a click on a fenced frame, the embedder might want to use one of these features. For example, a personalized third-party payment button is rendered in a fenced frame, and when it’s clicked the first-party merchant site then engages their payment flow. This might involve opening a new window via `window.open()`, or using the `PaymentRequest` API directly, both of which are gated on the transient form of user activation. However, fenced frames don’t automatically propagate user activation to their embedder in the same way that other frames propagate it to their parent. This means that `window.fence.notifyEvent()` has to provide user activation to the embedder manually. 
+
+When `window.fence.notifyEvent(triggering_event)` is called in the fenced frame, three actions will occur related to user activation:
+
+1. First, we’ll ensure that the fenced frame currently has *transient* activation. If all of the requirements on `triggering_event` are met (as described [above](#changes-to-windowfence)), this will likely be true already, but it still must be confirmed explicitly.  
+2. Transient activation will be consumed in the fenced frame. This is to ensure that only one transient-activation-gated API can be used in response to a single click, and the fenced frame is delegating that one API call to its embedder.  
+3. An [activation notification](https://html.spec.whatwg.org/multipage/interaction.html#activation-notification) will be applied in the embedding frame, so that it may call an activation-gated API instead of the fenced frame. The embedding frame will receive both *transient* and *sticky* user activation.
+
+Transient activation will expire after a set amount of time if it is not consumed by a relevant API (in Chromium, this value is 5 seconds). An embedder document and a fenced frame document could cooperate in an attempt to extend this timeout, by waiting to call `notifyEvent()` until immediately before the expiration time. This would give the embedder an additional few seconds to use an activation-gated API. However, because `notifyEvent()` consumes transient activation in the fenced frame, this still only allows a single transient-activation-gated API call to be made.
+
 ## Code Example
 
 Now let's take a look at how shared storage, revocation of untrusted network access, and the click listener API can be combined in a real-world example.
@@ -293,6 +305,11 @@ Click privacy considerations are already described in the [earlier section](#cli
 
 An additional element of user privacy is the ability to control this feature via user agent settings. UAs should ensure that users are able to control this capability in alignment with controls for similar cross-site storage capabilities.
 
+### New Permissions Policy: fenced-unpartitioned-storage-read
+
+When a fenced frame accesses unpartitioned data like Shared Storage, a delegation of trust occurs between the embedding context and the fenced frame origin. If the embedder does not trust the content rendered in the fenced frame, it should be able to prevent script in the fenced frame from accessing unpartitioned data. We accomplish this via a new [Permissions Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy) directive, which we call `fenced-unpartitioned-storage-read`.
+
+The `fenced-unpartitioned-storage-read` allowlist will default to `*`, similar to the [`shared-storage` permission](https://wicg.github.io/shared-storage/#permission). If an embedding site wants to restrict a fenced frame’s access to Shared Storage, it can do so by setting a stricter allowlist for that frame, such as `self` or a specific list of origins. 
 
 ## Security considerations 
 
