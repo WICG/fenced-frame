@@ -97,6 +97,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: iframe sandboxing flag set; url: iframe-sandboxing-flag-set
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
+    urlPrefix: document-sequences.html
+      text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
+      text: the rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -108,6 +111,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: dom interface; url: concept-element-dom
       text: accessibility considerations; url: concept-element-accessibility-considerations
       text: represents; url: represents
+      text: event handler content attributes which may be specified on any HTML element; url: global-attributes:event-handler-content-attributes
     urlPrefix: common-dom-interfaces.html
       text: reflect; url: reflect
     urlPrefix: embedder-content-other.html
@@ -142,6 +146,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
+      text: the navigation must be a replace; url: the-navigation-must-be-a-replace
       for: navigation params
         text: response; url: navigation-params-response
         text: navigable; url: navigation-params-navigable
@@ -357,6 +362,14 @@ dl, dd {
   background: white;
   border: solid #D50606;
 }
+
+/* Table styling definitions from https://resources.whatwg.org/standard.css */
+table { border-collapse: collapse; border-style: hidden hidden none hidden; margin: 1.25em 0; }
+table thead, table tbody { border-bottom: solid; }
+table tbody th { text-align: left; }
+table tbody th:first-child { border-left: solid; }
+table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
+
 </style>
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
@@ -1253,7 +1266,7 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
-  
+
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
@@ -1312,8 +1325,11 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
-  
+
   : <dfn>is ad component</dfn>
+  :: A [=boolean=]
+
+  : <dfn>has disabled untrusted network</dfn>
   :: A [=boolean=], initially false.
 
   : <dfn>cross-origin reporting allowed</dfn>
@@ -1403,12 +1419,15 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/embedder shared storage context=]
     :: |config|'s [=fenced frame config/embedder shared storage context=]
-    
+
     : [=fenced frame config instance/is ad component=]
     :: |config|'s [=fenced frame config/is ad component=]
 
     : [=fenced frame config instance/cross-origin reporting allowed=]
     :: |config|'s [=fenced frame config/cross-origin reporting allowed=]
+
+    : [=fenced frame config instance/has disabled untrusted network=]
+    :: false
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1689,6 +1708,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
       undefined reportEvent(optional ReportEventType event = {});
       undefined setReportEventDataForAutomaticBeacons(optional FenceEvent event = {});
       sequence&lt;FencedFrameConfig&gt; getNestedConfigs();
+      Promise&lt;undefined&gt; disableUntrustedNetwork();
+      undefined notifyEvent(Event event);
   };
 </pre>
 
@@ -1879,6 +1900,144 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
     /fenced-frame/get-nested-configs.https.html
     /fenced-frame/config-cross-origin-apis.https.html
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+  
+  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
+
+      * |navigable| is not a [=fenced navigable container/fenced navigable=];
+  
+      * |event|'s {{Event/isTrusted}} is false;
+  
+      * |event|'s [=Event/dispatch flag=] is unset;
+
+      * |event|'s {{Event/type}} is not "<code>click</code>"
+  
+  1. If [=this=]'s [=relevant global object=] does not have [=transient activation=], then return.
+
+  1. [=Consume user activation=] for [=this=]'s [=relevant global object=].
+
+  1. Let |parentNavigable| be |navigable|'s [=navigable/unfenced parent=].
+
+  1. [=Queue a global task=] on the [=DOM manipulation task source=] given |parentNavigable|'s     
+     [=navigable/active window=] to run these steps:
+  
+     1. Perform the [=activation notification=] steps.
+
+     1. [=Fire an event=] named "<code>[=fencedtreeclick=]</code>" at |navigable|'s 
+        [=fenced navigable container=]. Initialize the event's {{Event/bubbles}} and {{Event/cancelable}} attributes to `true`. When running the 
+        <a href="https://dom.spec.whatwg.org/#inner-event-creation-steps">inner event creation steps</a>, set the <var ignore=''>time</var> to an [=implementation-defined=] value that is consistent across all invocations of this method.
+
+  <wpt>
+    /fenced-frame/notify-event-iframe.https.html
+    /fenced-frame/notify-event-invalid.https.html
+    /fenced-frame/notify-event-nested-fenced-frames.https.html
+    /fenced-frame/notify-event-success.https.html
+    /fenced-frame/notify-event-transient-user-activation.https.html
+  </wpt>
+</div>
+
+<div algorithm>
+  The <dfn method for=Fence>disableUntrustedNetwork()</dfn> method steps are:
+
+  1. Let |p| be [=a new promise=].
+
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
+
+  1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
+     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
+     origin=], then [=reject=] |p| with a {{TypeError}}.
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=]'s [=navigable/traversable
+     navigable=] is not a [=fenced navigable container/fenced navigable=], then [=resolve=] |p| with
+     {{undefined}} and return |p|.
+
+  1. Let |global| be [=this=]'s [=relevant global object=].
+
+  1. Run the following steps [=in parallel=]:
+
+     1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
+
+     1. Let |credentiallessNonce| be
+
+     Issue: the page credentialless nonce
+     (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
+
+     1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
+
+     1. Invoke [=revoke network for a partition nonce=] on |credentiallessNonce|.
+
+     1. Set |instance|'s [=fenced frame config instance/has disabled untrusted network=] to true.
+
+     1. Wait on all nested fenced frames to disable network too.
+
+     Issue: Spec this waiting more formally.
+     (<a href="https://github.com/WICG/fenced-frame/issues/151">WICG/fenced-frame#151</a>)
+
+     1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+        [=resolve=] |p| with {{undefined}}.
+
+  1. Return |p|.
+</div>
+
+A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
+[=partition nonces=], and a <dfn>network revocation exemption map</dfn>, which is a [=map=] whose
+[=map/keys=] are [=partition nonces=] and [=map/values=] are [=sets=] of [=URLs=].
+
+Note: The [=network revocation exemption map=] is used only for web platform tests; in normal usage
+it is always empty. This list is modified directly in web platform tests by a function call to
+exempt specific URLs from network revocation.
+
+Issue: This will require a RFC to add a test-only function to the WPT web driver.
+(<a href="https://github.com/WICG/fenced-frame/issues/192">WICG/fenced-frame#192</a>)
+
+<div algorithm>
+  To <dfn>revoke network for a partition nonce</dfn> using a [=fenced frame config
+  instance/partition nonce=] |nonce|, run these steps:
+
+  1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
+
+  1. [=fetch group/terminated|Terminate=] [=this=]'s [=relevant settings object=]'s
+     [=fetch/fetch group=].
+</div>
+
+<div algorithm>
+  To determine whether fetching a [=request=] <var ignore>request</var> <dfn>must be blocked due to
+  a revoked partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|
+  and a [=URL=] |requestURL|, run these steps:
+
+  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
+     |requestURL| [=set/exists=] in it, return <b>allowed</b>.
+
+  1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return
+     <b>blocked</b>.
+
+  1. Return <b>allowed</b>.
+</div>
+
+<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
+
+The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
+
+<div algorithm=network-revocation-check-patch>
+  In the [=fetch=] algorithm, step 7, where it says:
+
+    > If <a lt="block bad port">should <var>request</var> be blocked due to a bad port</a>,
+    > <a lt="should fetching request be blocked as mixed content?">
+    > should fetching <var>request</var> be blocked as mixed content</a>, or
+    > <a lt="should request be blocked by Content Security Policy?">should <var>request</var>
+    > be blocked by Content Security Policy</a> returns <b>blocked</b>, then set
+    > <var ignore>response</var> to a <a>network error</a>.
+
+  Add "[=must be blocked due to a revoked partition nonce=]" to the conditions after
+  "should request be blocked by Content Security Policy".
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -2915,13 +3074,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 
 </div>
 
-<div algorithm=navigate>
-  Modify the definition of [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an
-  optional [=string=] |sharedStorageContext| (default null).
+<div algorithm=navigation-must-replace-patch>
+  Modify [=the navigation must be a replace=] algorithm. Add the following new condition:
 
-  Modify step 7 of [[HTML]]'s [=navigate=] algorithm to include the following condition:
-
-    * |navigable| is a [=fenced navigable container/fenced navigable=];
+    * <var ignore>document</var>'s [=relevant global object=]'s [=Window/navigable=] is a [=fenced
+      navigable container/fenced navigable=];
 
       Note: This ensures that *all* navigations inside of a <{fencedframe}> are made with the "<a
       for="history handling behavior">`replace`</a>" mode, regardless of the initiator.
@@ -2931,8 +3088,14 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
     /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
   </wpt>
+</div>
 
-  Modify step 8 of the same algorithm to include the following condition:
+<div algorithm=navigate>
+  Modify [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an optional [=string=]
+  <dfn for=navigate>sharedStorageContext</dfn> (default null).
+
+  Modify step 13 of [[HTML]]'s [=navigate=] algorithm ("If all of the following are true:") to
+  include the following condition:
 
     * <var ignore>sourceDocument</var>'s [=node navigable=] is not a [=fenced navigable container=]
       while at the same time |navigable| is a [=fenced navigable container/fenced navigable=].
@@ -2944,7 +3107,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/fragment-navigation.https.html
   </wpt>
 
-  Insert these steps immediately after step 20, the step that goes [=in parallel=], so that what
+  Insert these steps immediately after step 22, the step that goes [=in parallel=], so that what
   follows are the first steps that run [=in parallel=] in the patched algorithm:
 
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
@@ -2970,7 +3133,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
          occur, by the usual mechanism that tracks the [=navigable/ongoing navigation=].
 
       1. Set |config|'s [=fenced frame config/embedder shared storage context=] to
-         |sharedStorageContext|.
+         [=navigate/sharedStorageContext=].
 
       1. [=Assert=]: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=]
          is null.
@@ -3160,12 +3323,142 @@ left over to be leaked to the next {{Document}}.
      mind, and could evolve in ways that give this specification unwanted side-effects.
 </div>
 
+<h4 id=unfenced-top-navigation-target>The "<code>_unfencedTop</code>" navigation target</h4>
+
+Fenced frames use an additional reserved navigation target "<code>_unfencedTop</code>" to navigate.
+This section patches the relevant portions of the [[HTML]] spec to add support for this new
+reserved keyword.
+
+<div algorithm="unfenced-top-keyword">
+  Modify [=valid navigable target name or keyword=] to include a new keyword named
+  "<code>_unfencedTop</code>".
+
+  Modify the below paragraph to replace the following text:
+
+    * "top" means the [=top-level traversable=] of the [=navigable=] that the link or script is in,
+
+  with: 
+
+    * "top" means the [=navigable/traversable navigable=] of the [=navigable=] that the link or
+      script is in, "outermost top" means the [=top-level traversable=] of the [=navigable=] that
+      the link or script is in, 
+
+  Note: This change is necessary because this spec adds a distinction between
+  [=navigable/traversable navigable=] and [=top-level traversable=], which were previously
+  functionally equivalent.
+
+  In the table below, add a column named "Effect in a fenced frame". The value for all existing
+  rows in this column is the same as "ordinary effect". Then, add two rows which read:
+
+  <table>
+    <thead>
+      <tr>
+        <th rowspan=2>Keyword</th>
+        <th rowspan=2>Ordinary effect</th>
+        <th colspan=2>Effect in an <code>iframe</code> with...</th>
+        <th rowspan=2>Effect in a <code>fencedframe</code>></th>
+      </tr>
+      <tr>          
+        <th><code data-x="">sandbox=""</code></th>
+        <th><code data-x="">sandbox="allow-top-navigation"</code></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><code>_unfencedTop</code> if outermost top is current</td>
+        <td>new</td>
+        <td>maybe new</td>
+        <td>maybe new</td>
+        <td>current</td>
+      </tr>
+      <tr>
+        <td><code>_unfencedTop</code> if outermost top is not current</td>
+        <td>new</td>
+        <td>maybe new</td>
+        <td>maybe new</td>
+        <td>outermost top</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div algorithm="unfenced-top-rules">
+  Add an extra step to [=the rules for choosing a navigable=] between the current steps 6 and 7, 
+  that reads:
+
+  6.5. Otherwise, if name is an ASCII case-insensitive match for <code>"_unfencedTop"</code> and
+  |currentNavigable|'s [=navigable/traversable navigable=] is a [=fenced navigable container/fenced
+  navigable=], set <var ignore=''>chosen</var> to |currentNavigable|'s [=top-level traversable=].
+</div>
+
 <h3 id=page-visibility>Page visibility</h3>
 
 The <a href=https://html.spec.whatwg.org/#page-visibility>Page visibility</a> section of [[HTML]] is
 modified such that the first step of the algorithm that runs when a user-agent changes a
 [=traversable navigable=]'s [=system visibility state=] calls the [=Document/inclusive descendant
 navigables=] algorithm with [=inclusive-dn-unfenced|unfenced=] set to true.
+
+<h3 id=events>Events</h3>
+
+<h4 id=onfencedtreeclick-header><code>[=onfencedtreeclick=]</code> event handler</h4>
+The table in the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handlers-on-elements,-document-objects,-and-window-objects">
+event handlers on elements, Document objects, and Window objects</a> section of [[HTML]] is modified to include a new row.
+
+<table>
+  <thead>
+    <tr>
+      <th>[=Event handler=]</th> 
+      <th>[=Event handler event type=]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn><code>onfencedtreeclick</code></dfn></td>
+      <td><code>[=fencedtreeclick=]</code></td>
+    </tr>
+  </tbody>
+</table>
+
+The {{GlobalEventHandlers}} interface is modified as follows:
+
+<pre class=idl>
+  partial interface mixin GlobalEventHandlers {
+    attribute EventHandler onfencedtreeclick;
+  };
+</pre>
+
+Additionally, the list of [=event handler content attributes which may be specified on any HTML element=] 
+in [[HTML]] is modified to include a new row:
+
+* [=onfencedtreeclick=]
+
+<h4 id=fencedtreeclick-header><code>[=fencedtreeclick=]</code> event type</h4>
+The <a href="https://html.spec.whatwg.org/C#events-2">Events</a> table in the
+<a href="https://html.spec.whatwg.org/multipage/indices.html">Index</a> section of [[HTML]] is
+modified to include a new row.
+
+<table>
+  <thead>
+    <tr>
+      <th>Event</th> 
+      <th>Interface</th> 
+      <th>Interesting targets</th> 
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><dfn><code>fencedtreeclick</code></dfn></td> 
+      <td>{{Event}}</td> 
+      <td>Elements</td>
+      <td>
+        Fired at a <{fencedframe}> element asynchronously after its
+        [=fenced navigable container/fenced navigable=]'s {{Document}} calls {{Fence/notifyEvent()}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="interaction-with-other-specs">Interactions with other specifications</h2>
 
@@ -3550,9 +3843,8 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
   <{fencedframe}> does not stick around; an error page will be loaded.
 </div>
 
-<div algorithm=permissions-policy-block-request>
-  Create a new algorithm called <dfn>should navigation response to navigation request be blocked by
-  Permissions Policy?</dfn> in [[!HTML]].
+<div algorithm>
+  <dfn>Should navigation response to navigation request be blocked by Permissions Policy?</dfn>
 
   Given a [=navigation params=] (|navigationParams|), this algorithm returns "`Blocked`" or
   "`Allowed`":
@@ -3733,6 +4025,24 @@ at the expense of some utility.
   <wpt>
     /fenced-frame/scroll-into-view.https.html
   </wpt>
+</div>
+
+<h3 id=webrtc-monkeypatch>WebRTC</h3>
+
+The [[WEBRTC]] specification defines "ECMAScript APIs in WebIDL to allow media and generic
+application data to be sent to and received from another browser or device implementing the
+appropriate set of real-time protocols." The interface which facilitates connections to peers is
+{{RTCPeerConnection}}. Construction of this interface, and therefore connection to peers via
+WebRTC, is disallowed in fenced frames.
+
+<div algorithm=webrtc-constructor>
+  Modify the {{RTCPeerConnection}} {{RTCPeerConnection/constructor}} algorithm to add new first and
+  second steps that read:
+
+  1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
+
+  1. If |navigable| is not null and |navigable|'s [=traversable navigable=] is a [=fenced navigable
+     container/fenced navigable=], [=exception/throw=] a {{NotAllowedError}} {{DOMException}}.
 </div>
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
