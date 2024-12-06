@@ -1341,7 +1341,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
      status/enabled=].
 
   : <dfn>on network disabled promises</dfn>
-  :: A [=list=] of {{Promise|Promises}}, initially empty.
+  :: A [=map=] whose [=map/keys=] are [=global objects=] and [=values=] are [=lists=] of
+     {{Promise|Promises}}, initially empty.
 
      Note: This stores various {{Promise|Promises}} from various globals that were created during
      {{Fence/disableUntrustedNetwork()}}. We store them here so that we can resolve all of them at
@@ -1443,7 +1444,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
     :: [=untrusted network status/enabled=]
 
     : [=fenced frame config instance/on network disabled promises=]
-    :: A empty [=list=] of {{Promise|Promises}}.
+    :: A empty [=map=].
 </div>
 
 Each [=browsing context=] has a <dfn for="browsing context">fenced frame config instance</dfn>,
@@ -1994,8 +1995,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. Set |instance|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
         network status/disabled for this tree=].
 
-     1. [=list/Append=] |p| to |instance|'s [=fenced frame config instance/on network disabled
+     1. Let |promises| be |instance|'s [=fenced frame config instance/on network disabled
         promises=].
+
+     1. If |promises|[|global|] [=map/exists=], [=list/append=] |p| to |promises|[|global|].
+
+        Otherwise, [=map/set=] |promises|[|global|] to the [=list=] « |p| ».
 
      1. [=Recalculate the untrusted network status of all fenced frame descendants=] given
         |global|'s [=Window/browsing context=]'s [=browsing context/top-level traversable=].
@@ -2040,15 +2045,15 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. Set |config|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
            network status/disabled for this and descendant trees=].
 
-        1. Let |global| be |currentNavigable|'s [=navigable/active window=].
+        1. For each |global| → |promises| in |config|'s [=fenced frame config instance/on network
+           disabled promises=]:
 
-        1. For each |promise| in |config|'s [=fenced frame config instance/on network disabled
-           promises=]:
+           1. For each |promise| in |promises|:
 
-           1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
-              [=resolve=] |promise| with {{undefined}}.
+              1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
+                 [=resolve=] |promise| with {{undefined}}.
 
-        1. [=list/Empty=] |config|'s [=fenced frame config instance/on network disabled promises=].
+        1. [=map/Clear=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
      1. Otherwise:
         1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
