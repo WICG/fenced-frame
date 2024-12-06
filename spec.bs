@@ -788,9 +788,8 @@ following [=struct/items=]:
   :: a [=string=]
 </dl>
 
-A <dfn export for=fencedframetype>permissions policy behavior</dfn> is either "<dfn export
-for="permissions policy behavior">`fixed`</dfn>" or "<dfn export for="permissions policy
-behavior">`flexible`</dfn>".
+A <dfn for=fencedframetype>permissions policy behavior</dfn> is either "<dfn for="permissions policy
+behavior">`fixed`</dfn>" or "<dfn for="permissions policy behavior">`flexible`</dfn>".
 
 The <dfn export for=fencedframetype>default fenced frame effective sandboxing flags</dfn> are a
 [=sandboxing flag set=] with the following flags:
@@ -3631,27 +3630,27 @@ as the manner in which they are calculated, vary depending on how the [=fenced f
 the <{fencedframe}> navigates to is constructed.
 
 A [=fenced frame config instance=] created via the {{FencedFrameConfig}} constructor on the web
-platform will be considered to have a [=permissions policy behavior/flexible=]
-[=fencedframetype/permissions policy behavior=], and the inner {{Document}} of the <{fencedframe}>
-it navigates will be allowed to inherit permissions as long as they are part of the [=fenced frame
-allowed permissions=] list. All other permissions-backed features will be disabled.
+platform will have a [=permissions policy behavior/flexible=] [=fencedframetype/permissions policy
+behavior=], and the inner {{Document}} of the <{fencedframe}> it navigates will be allowed to
+inherit permissions as long as they are part of the [=fenced frame allowed permissions=] list. All
+other [=policy-controlled features=] will be disabled.
 
-A [=fenced frame config instance=] created via a config-generating API call that sets its [=fenced
-frame config/effective enabled permissions=] will be considered to have a [=permissions policy
-behavior/fixed=] [=fencedframetype/permissions policy behavior=], and the inner {{Document}} of the
-<{fencedframe}> it navigates to will have the [=fenced frame config/effective enabled permissions=]
-be the exclusive list of [=policy-controlled features=] that will be enabled in the {{Document}}
-(all others will be disabled).
+A [=fenced frame config instance=] created via a config-generating API that sets its [=fenced frame
+config/effective enabled permissions=] will have a [=permissions policy behavior/fixed=]
+[=fencedframetype/permissions policy behavior=], and the inner {{Document}} of the <{fencedframe}>
+it navigates to will have the [=fenced frame config/effective enabled permissions=] be the exclusive
+list of [=policy-controlled features=] that will be enabled in the {{Document}} (all others will be
+disabled).
 
 During a <{fencedframe}> navigation to a [=fenced frame config instance=] with a [=permissions
-policy behavior/fixed=] [=fencedframetype/permissions policy behavior=], it checks the [=fenced
-frame config instance/effective enabled permissions=] in the [=browsing context/fenced frame config
-instance=] stored in the [=browsing context=], and only allows the navigation if the
-[=Document/permissions policy=] for the navigation's resulting {{Document}} has an [=permissions
-policy/inherited policy=] such that the [=inherited policy for a feature|inherited policy value=] is
-"`Enabled`" for each feature in the [=fenced frame config/effective enabled permissions=]. Otherwise
-the environment the <{fencedframe}> is embedded in is deemed unsuitable for the [=fenced frame
-config=], and the navigation is blocked.
+policy behavior/fixed=] [=fencedframetype/permissions policy behavior=], it compares the [=fenced
+frame config instance/effective enabled permissions=] of the [=fenced frame config instance=] being
+navigated to against the resulting {{Document}}'s [=Document/permissions policy=]'s [=permissions
+policy/inherited policy=]. The navigation only succeeds if each inherited feature whose [=inherited
+policy for a feature|inherited policy value=] is "`Enabled`" also appears in the [=fenced frame
+config instance/effective enabled permissions=] [=fenced frame config instance=]. Otherwise, the
+environment the <{fencedframe}> is embedded in is deemed unsuitable for the [=fenced frame config=],
+and the navigation is blocked.
 
 At the same time, to make sure that a <{fencedframe}>'s embedder does not directly influence content
 in the frame based on that navigation's [=navigation params/origin=] (since the origin is derived
@@ -3778,7 +3777,8 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
          Otherwise, set |inherited policy|[feature] to "`Disabled`".
     
   1. Let |policy| be a new [=permissions policy=], with [=permissions policy/inherited policy=]
-     |inherited policy| and [=permissions policy/declared policy=] «[], []».
+     |inherited policy| and [=permissions policy/declared policy=] initialized to two new [=ordered
+     maps=].
 
   1. Return |policy|.
 
