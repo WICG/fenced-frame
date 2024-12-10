@@ -3739,25 +3739,23 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
 <div algorithm>
   Create a new algorithm, called <dfn>Create a permissions policy for a fenced navigable</dfn>.
 
-  Given an [=element=] (|container|) and an [=origin=] (|origin|), this algorithm returns a
-  new [=Permissions Policy=].
+  Given a [=fenced navigable container=] (|container|) and an [=origin=] (|origin|), this algorithm
+  returns a new [=Permissions Policy=].
 
-  1. [=Assert=]: |container| is a [=fenced navigable container=].
-
-  1. Let |fenced frame config| be |container|'s [=Node/node document=]'s [=navigable/active browsing
+  1. Let |fencedFrameConfig| be |container|'s [=Node/node document=]'s [=navigable/active browsing
      context=]'s [=browsing context/fenced frame config instance=].
 
-  1. Let |inherited policy| be a new [=ordered map=].
+  1. Let |inheritedPolicy| be a new [=ordered map=].
 
-  1. If |fenced frame config| is not null and |fenced frame config|'s [=fenced frame config
+  1. If |fencedFrameConfig| is not null and |fencedFrameConfig|'s [=fenced frame config
      instance/permissions policy behavior=] is [=permissions policy behavior/fixed=], then:
 
     1. [=list/For each=] |feature| [=supported features|supported=]:
 
-        1. If |fenced frame config|'s [=fenced frame config instance/effective enabled permissions=]
-           [=list/contains=] |feature|, then set |inherited policy|[feature] to "`Enabled`".
+        1. If |fencedFrameConfig|'s [=fenced frame config instance/effective enabled permissions=]
+           [=list/contains=] |feature|, then set |inheritedPolicy|[feature] to "`Enabled`".
 
-           Otherwise, set |inherited policy|[feature] to "`Disabled`".
+           Otherwise, set |inheritedPolicy|[feature] to "`Disabled`".
 
         Note: While this doesn't take the <{fencedframe/allow}> attribute into consideration, it
         will have already been checked by the time this is called because of [=Should navigation
@@ -3771,13 +3769,13 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
     1. [=list/For each=] |feature| [=supported features|supported=]:
 
       1. If |feature| matches one of the [=fenced frame allowed permissions=], then set
-        |inherited policy|[feature] to the result of running [$Define an inherited policy for
-        feature in container at origin$] given |feature|, |container|, and |origin|.
+         |inheritedPolicy|[feature] to the result of running [$Define an inherited policy for
+         feature in container at origin$] given |feature|, |container|, and |origin|.
 
-         Otherwise, set |inherited policy|[feature] to "`Disabled`".
+         Otherwise, set |inheritedPolicy|[feature] to "`Disabled`".
     
   1. Let |policy| be a new [=permissions policy=], with [=permissions policy/inherited policy=]
-     |inherited policy| and [=permissions policy/declared policy=] initialized to two new [=ordered
+     |inheritedPolicy| and [=permissions policy/declared policy=] initialized to two new [=ordered
      maps=].
 
   1. Return |policy|.
@@ -3788,7 +3786,7 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
   Modify the [$Create a Permissions Policy for a navigable$] algorithm:
 
   Given null or an [=element=] (|container|), an [=origin=] (|origin|), and an optional [=boolean=]
-  |match all| that defaults to false, this algorithm returns a new [=permissions policy=].
+  |matchAll| that defaults to false, this algorithm returns a new [=permissions policy=].
 
   Rewrite step 1 to read:
 
@@ -3800,7 +3798,7 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
   4. [=list/For each=] |feature| [=supported features|supported=]:
 
      1. Let |isInherited| be the result of running [$Define an inherited policy for feature in
-        container at origin$] on |feature|, |container|, |origin|, and |match all|.
+        container at origin$] on |feature|, |container|, |origin|, and |matchAll|.
 
      1. Set <var ignore>inherited policy</var>[|feature|] to |isInherited|.
 </div>
@@ -3865,9 +3863,9 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
      has not yet been assigned to the browsing context. We should consider storing the instance
      inside |navigationParams| and reference it from here instead.
 
-  1. Let |permissions policy| be the result of [$Create a Permissions Policy for a navigable|
+  1. Let |permissionsPolicy| be the result of [$Create a Permissions Policy for a navigable|
      creating a permissions policy$] given |navigable|'s [=fenced navigable container=], |origin|,
-     and <var ignore>match all</var> set to true.
+     and true.
 
      Note: This is almost identical to the [=permissions policy=] that will be [=create a
      permissions policy for a fenced navigable|created=] when the navigation constructs the ultimate
@@ -3882,11 +3880,11 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
      effectively locking the enabled permissions to only what is specified in [=fenced frame
      config/effective enabled permissions=].
 
-  1. Let |inherited policy| be |permissions policy|'s [=permissions policy/inherited policy=].
+  1. Let |inheritedPolicy| be |permissionsPolicy|'s [=permissions policy/inherited policy=].
 
   1. [=list/For each=] |effective permission| of |effective permissions|:
 
-    1. If |inherited policy|[|effective permission|] is "Disabled", return "`Blocked`".
+     1. If |inheritedPolicy|[|effective permission|] is "Disabled", return "`Blocked`".
 
   1. Return "`Allowed`."
 </div>
@@ -3923,22 +3921,22 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
   read:
 
   Given a feature (|feature|), null or a [=navigable container=] (|container|), an [=origin=] for a
-  document in that container (|origin|), and an optional [=boolean=] |match all| that defaults to
+  document in that container (|origin|), and an optional [=boolean=] |matchAll| that defaults to
   false, this algorithm returns the [=permissions policy/inherited policy=] for that feature.
   
   Rewrite step 3 to read:
 
   3. If the result of executing [$Is feature enabled in document for origin?$] on |feature|,
-     |container|'s [=Node/node document=], |origin|, and |match all| is "Disabled", return
+     |container|'s [=Node/node document=], |origin|, and |matchAll| is "Disabled", return
      "Disabled".
 
   Note: We don't have to rewrite step 2, which also delegates to the same algorithm, to pass in the
-  |match all| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
+  |matchAll| [=boolean=] because step 2 has to do with checking to see if |feature| is enabled
   |container|'s [=Node/node document=], not the {{Document}} hosted *inside* |container|.
 
   Rewrite step 7 to read:
 
-  7. If |match all| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+  7. If |matchAll| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
      `'self'`, and |origin| is [=same origin=] with |container|'s [=Node/node document=]'s
      origin, return `"Enabled"`.
 </div>
@@ -3947,24 +3945,24 @@ The <dfn>fenced frame allowed permissions</dfn> are either "`private-aggregation
   Modify the [$Is feature enabled in document for origin?$] algorithm to read:
 
   Given a feature (|feature|), a {{Document}} object (|document|), an [=url/origin=] (|origin|), and
-  an optional [=boolean=] |match all| that defaults to false, this algorithm returns "`Disabled`" if
+  an optional [=boolean=] |matchAll| that defaults to false, this algorithm returns "`Disabled`" if
   |feature| should be considered disabled, and "`Enabled`" otherwise.
 
   Rewrite step 3 to read:
 
   3. If |feature| is present in |policy|'s [=permissions policy/declared policy=],
 
-    1. If |match all| is false, and the [=allowlist=] for |feature| in |policy|'s [=permissions policy/
-       declared policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
+    1. If |matchAll| is false, and the [=allowlist=] for |feature| in |policy|'s [=permissions
+       policy/ declared policy=] [=permissions/matches=] |origin|, then return "`Enabled`".
 
-    1. Otherwise, if |match all| is true, and the [=allowlist=] for |feature| in |policy|'s
+    1. Otherwise, if |matchAll| is true, and the [=allowlist=] for |feature| in |policy|'s
        [=permissions policy/declared policy=] is [=the special value *=], then return "`Enabled`".
 
     1. Otherwise, return "`Disabled`".
 
   Rewrite step 5 to read:
 
-  5. If |match all| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
+  5. If |matchAll| is false, |feature|'s [=policy-controlled feature/default allowlist=] is
      `'self'`, and |origin| is [=same origin=] with |document|'s origin, return "Enabled".
 </div>
 
