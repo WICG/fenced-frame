@@ -2018,7 +2018,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      [=Document/inclusive descendant navigables=] with [=inclusive-dn-unfenced|unfenced=] set to
      true.
   
-  1. Let |navigablesWithNetworkChildren| be an empty [=set=].
+  1. Let |navigablesWithNetworkChildren| be a [=set=] of [=fenced navigable container/fenced
+     navigables=], initially empty.
 
   1. [=iteration/While=] |navigables| is not [=stack/empty=]:
 
