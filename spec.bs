@@ -859,8 +859,14 @@ be sent.
 
 An <dfn for=fencedframetype>untrusted network status</dfn> is either "<dfn export for='untrusted
 network status'>`enabled`</dfn>", "<dfn export for='untrusted network status'>`disabled for this
-tree`</dfn>", or "<dfn export for='untrusted network status'>`disabled for this and descendant
-trees`</dfn>".
+tree`</dfn>", or "<dfn export for='untrusted network status'>`disabled for all subtrees`</dfn>".
+
+Note: [=untrusted network status/Disabled for this tree=] is not the final network cutoff state. It
+is an intermediate state where the frame has had its network access revoked, but at least one
+subframe still has network access. It does not get special API access at this stage as any
+information it gets access to can still be exfiltrated via the subframe with network access. Once
+all sub-fenced frames have also had their untrusted network disabled, the fenced frame's status
+will switch to the final [=untrusted network status/disabled for all subtrees=] state.
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
@@ -1348,7 +1354,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
      {{Fence/disableUntrustedNetwork()}}. We store them here so that we can resolve all of them at
      once when the <{fencedframe}> and its descendants have their network access fully revoked
      (i.e., the [=fenced frame config instance/untrusted network status=] is [=untrusted network
-     status/disabled for this and descendant trees=]).
+     status/disabled for all subtrees=]).
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1981,16 +1987,18 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |global| be [=this=]'s [=relevant global object=].
 
+  1. Let |settings| be [=this=]'s [=relevant settings object=].
+
   1. Run the following steps [=in parallel=]:
 
      1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
 
      1. Let |credentiallessNonce| be |global|'s [=page credentialless nonce=].
 
-     1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce|.
+     1. Invoke [=revoke network for a partition nonce=] on |fencedFrameNonce| with |settings|.
 
      1. If |credentiallessNonce| is non-null, invoke [=revoke network for a partition nonce=] on
-        |credentiallessNonce|.
+        |credentiallessNonce| with |settings|.
 
      1. Set |instance|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
         network status/disabled for this tree=].
@@ -2009,7 +2017,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm>
-  To <dfn>Recalculate the untrusted network status of all fenced frame descendants</dfn> given a
+  To <dfn>recalculate the untrusted network status of all fenced frame descendants</dfn> given a
   [=top-level traversable=] |topLevelTraversable|, run these steps:
 
   1. [=Assert=]: this is running [=in parallel=].
@@ -2032,24 +2040,25 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         context/fenced frame config instance=].
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
-        network status/disabled for this and descendant trees=], then [=iteration/continue=].
+        network status/disabled for all subtrees=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
         is [=untrusted network status/disabled for this tree=], false otherwise.
 
-        Note: A frame is added to |navigablesWithNetworkChildren| when a child fenced frame is
-        determined to not be ready for network cutoff.
+        Note: A [=fenced navigable container/fenced navigable=] is added to
+        |navigablesWithNetworkChildren| when it is the unfenced ancestor of another fenced frame
+        that is determined to not be ready for network cutoff.
 
      1. If |networkCutoffReady| is true:
 
         1. Set |config|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
-           network status/disabled for this and descendant trees=].
+           network status/disabled for all subtrees=].
 
-        1. For each |global| → |promises| in |config|'s [=fenced frame config instance/on network
-           disabled promises=]:
+        1. [=map/For each=] |global| → |promises| in |config|'s [=fenced frame config instance/on
+           network disabled promises=]:
 
-           1. For each |promise| in |promises|:
+           1. [=list/For each=] |promise| in |promises|:
 
               1. [=Queue a global task=] on the [=DOM manipulation task source=] given |global|, to
                  [=resolve=] |promise| with {{undefined}}.
@@ -2077,12 +2086,12 @@ Issue: This will require a RFC to add a test-only function to the WPT web driver
 
 <div algorithm>
   To <dfn>revoke network for a partition nonce</dfn> using a [=fenced frame config
-  instance/partition nonce=] |nonce|, run these steps:
+  instance/partition nonce=] |nonce| given a [=relevant settings object=] |settings|, run these
+  steps:
 
   1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
 
-  1. [=fetch group/terminated|Terminate=] [=this=]'s [=relevant settings object=]'s
-     [=fetch/fetch group=].
+  1. [=fetch group/terminated|Terminate=] |settings|'s [=fetch/fetch group=].
 </div>
 
 <div algorithm>
@@ -2122,21 +2131,6 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 </div>
 
 The network revocation mechanism requires the following monkeypatches to the [[HTML]] Standard.
-
-<div algorithm=network-status-document-abort>
-  Add a new step to the [=abort a document=] algorithm after step 4 that says:
-
-  5. [=Recalculate the untrusted network status of all fenced frame descendants=] given <var
-     ignore>document</var>'s [=node navigable=]'s [=navigable/top-level traversable=].
-</div>
-
-<div algorithm=network-status-navigate>
-  Modify the call to [=attempt to populate the history entry's document=] in the [=navigate=]
-  algorithm. Update the [=completionSteps=] to include the following new step:
-
-  2. [=Recalculate the untrusted network status of all fenced frame descendants=] given <var
-     ignore>navigable</var>'s [=navigable/top-level traversable=].
-</div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
