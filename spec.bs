@@ -859,14 +859,16 @@ be sent.
 
 An <dfn for=fencedframetype>untrusted network status</dfn> is either "<dfn export for='untrusted
 network status'>`enabled`</dfn>", "<dfn export for='untrusted network status'>`disabled for this
-tree`</dfn>", or "<dfn export for='untrusted network status'>`disabled for all subtrees`</dfn>".
+tree`</dfn>", or "<dfn export for='untrusted network status'>`disabled for this tree and fenced
+subtrees`</dfn>".
 
 Note: [=untrusted network status/Disabled for this tree=] is not the final network cutoff state. It
-is an intermediate state where the frame has had its network access revoked, but at least one
-subframe still has network access. It does not get special API access at this stage as any
-information it gets access to can still be exfiltrated via the subframe with network access. Once
-all sub-fenced frames have also had their untrusted network disabled, the fenced frame's status
-will switch to the final [=untrusted network status/disabled for all subtrees=] state.
+is an intermediate state where every frame within the frame tree that is not across a fenced frame
+boundary has had its network access revoked, but at least one sub-fenced frame tree still has
+network access. It does not get special API access at this stage as any information it gets access
+to can still be exfiltrated via the subframe with network access. Once all sub-fenced frames have
+also had their untrusted network disabled, the fenced frame's status will switch to the final
+[=untrusted network status/disabled for this tree and fenced subtrees=] state.
 
 <div algorithm>
   In order to <dfn export>finalize a reporting destination</dfn>, given a [=fencedframetype/fenced
@@ -1354,7 +1356,7 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
      {{Fence/disableUntrustedNetwork()}}. We store them here so that we can resolve all of them at
      once when the <{fencedframe}> and its descendants have their network access fully revoked
      (i.e., the [=fenced frame config instance/untrusted network status=] is [=untrusted network
-     status/disabled for all subtrees=]).
+     status/disabled for this tree and fenced subtrees=]).
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -2040,7 +2042,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         context/fenced frame config instance=].
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
-        network status/disabled for all subtrees=], then [=iteration/continue=].
+        network status/disabled for this tree and fenced subtrees=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
@@ -2053,7 +2055,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      1. If |networkCutoffReady| is true:
 
         1. Set |config|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
-           network status/disabled for all subtrees=].
+           network status/disabled for this tree and fenced subtrees=].
 
         1. [=map/For each=] |global| → |promises| in |config|'s [=fenced frame config instance/on
            network disabled promises=]:
