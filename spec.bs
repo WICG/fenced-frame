@@ -491,8 +491,8 @@ attribute.
   
   1. <p class=XXX>TODO: destroy the nested traversable.</p>
 
-  1. [=Recalculate the untrusted network status of all fenced frame descendants=] given the
-     {{Document}}'s [=node navigable=]'s [=navigable/top-level traversable=].
+  1. [=In parallel=], [=recalculate the untrusted network status of all fenced frame descendants=]
+     given the {{Document}}'s [=node navigable=]'s [=navigable/top-level traversable=].
 </div>
 
 The <dfn attribute for=HTMLFencedFrameElement>config</dfn> IDL attribute getter steps are to return
@@ -2073,6 +2073,14 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
            [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
+</div>
+
+<div algorithm=iframe-remove-patch>
+  When an <{iframe}> element is [=removed from a document=], the user agent must run the following
+  step:
+  
+  1. [=In parallel=], [=recalculate the untrusted network status of all fenced frame descendants=]
+     given the {{Document}}'s [=node navigable=]'s [=navigable/top-level traversable=].
 </div>
 
 A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
