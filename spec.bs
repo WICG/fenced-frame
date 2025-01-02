@@ -100,6 +100,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: document-sequences.html
       text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
       text: the rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
+      text: destroy a child navigable; url: destroy-a-child-navigable
     urlPrefix: dom.html
       text: categories; url: concept-element-categories
       text: contexts in which this element can be used; url: concept-element-contexts
@@ -191,6 +192,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: sequential navigation search algorithm; url: sequential-navigation-search-algorithm
     urlPefix: infrastructure.html
       text: immediately; url: immediately
+      text: HTML element removing steps; url: html-element-removing-steps
     urlPrefix: nav-history-apis.html
       for: Window
         text: navigable; url: window-navigable
@@ -215,6 +217,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: fire a click event; url: fire-a-click-event
     urlPrefix: urls-and-fetching.html
       text: about:srcdoc; url: about:srcdoc
+    urlPrefix: iframe-embed-object.html
+      for: iframe
+        text: HTML iframe element removing steps; url: the-iframe-element:html-element-removing-steps
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
@@ -2076,11 +2081,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 </div>
 
 <div algorithm=iframe-remove-patch>
-  When an <{iframe}> element is [=removed from a document=], the user agent must run the following
-  step:
-  
+  Rewrite the <{iframe}> element's [=iframe/HTML iframe element removing steps=] to read:
+
+  The <{iframe}> [=HTML Element removing steps=], given |removedNode|, are:
+
+  1. Let |topLevelTraversable| be |removedNode| [=navigable container/content navigable=]'s
+     [=navigable/top-level traversable=].
+
+  1. [=Destroy a child navigable=] given |removedNode|.
+
   1. [=In parallel=], [=recalculate the untrusted network status of all fenced frame descendants=]
-     given the {{Document}}'s [=node navigable=]'s [=navigable/top-level traversable=].
+     given |topLevelTraversable|.
 </div>
 
 A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
