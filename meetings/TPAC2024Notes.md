@@ -284,7 +284,7 @@ P2:
 
 Michael: ms 439; at .439 is at which time i call to the dispatch.  How much can the parent know.  [Andrew: The timestamp is not revelaed.]  The parent page is going to receive an event. 
 
-Ilya:
+Ilya Grigorik (Shopify):
 
 Thank You. Very interested in the personalization use case. payments.  personalized sign-in button.  Variety of other personalization frames that merchant provide: delivery promises. use geoIP approx. FF could have some info about the user like zip; then FF could do promise calculation. Powerful buiding block. Membership signals. Offer discounts to students/vets. At the very end. Use this service to prove you're a member.  
 
