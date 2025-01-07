@@ -118,8 +118,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: embedder-content-other.html
       text: width; url: attr-dim-width
       text: height; url: attr-dim-height
-    urlPrefix: document-lifecycle.html
-      text: abort a document; url: abort-a-document
     urlPrefix: document-sequences.html
       text: browsing context group; url: browsing-context-group
       text: browsing context group set; url: browsing-context-group-set
@@ -147,7 +145,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
-      text: completionSteps; url: attempt-to-populate-completion-steps
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
       text: the navigation must be a replace; url: the-navigation-must-be-a-replace
@@ -871,8 +868,8 @@ Note: [=untrusted network status/Disabled for this tree=] is not the final netwo
 is an intermediate state where every frame within the frame tree that is not across a fenced frame
 boundary has had its network access revoked, but at least one sub-fenced frame tree still has
 network access. It does not get special API access at this stage as any information it gets access
-to can still be exfiltrated via the subframe with network access. Once all sub-fenced frames have
-also had their untrusted network disabled, the fenced frame's status will switch to the final
+to can still be exfiltrated via the sub-fenced frame with network access. Once all sub-fenced frames
+have also had their untrusted network disabled, the fenced frame's status will switch to the final
 [=untrusted network status/disabled for this tree and fenced subtrees=] state.
 
 <div algorithm>
@@ -1359,9 +1356,9 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
      Note: This stores various {{Promise|Promises}} from various globals that were created during
      {{Fence/disableUntrustedNetwork()}}. We store them here so that we can resolve all of them at
-     once when the <{fencedframe}> and its descendants have their network access fully revoked
-     (i.e., the [=fenced frame config instance/untrusted network status=] is [=untrusted network
-     status/disabled for this tree and fenced subtrees=]).
+     once when the <{fencedframe}> and its descendant fenced frames have their network access fully
+     revoked (i.e., the [=fenced frame config instance/untrusted network status=] is [=untrusted
+     network status/disabled for this tree and fenced subtrees=]).
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -2062,6 +2059,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. Set |config|'s [=fenced frame config instance/untrusted network status=] to [=untrusted
            network status/disabled for this tree and fenced subtrees=].
 
+           Note: Any APIs gated on untrusted network being disabled are now immediately able to be
+           used at this point, even before the promises finish resolving.
+
         1. [=map/For each=] |global| → |promises| in |config|'s [=fenced frame config instance/on
            network disabled promises=]:
 
@@ -2083,7 +2083,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm=iframe-remove-patch>
   Rewrite the <{iframe}> element's [=iframe/HTML iframe element removing steps=] to read:
 
-  The <{iframe}> [=HTML Element removing steps=], given |removedNode|, are:
+  The <{iframe}> [=HTML element removing steps=], given |removedNode|, are:
 
   1. Let |topLevelTraversable| be |removedNode| [=navigable container/content navigable=]'s
      [=navigable/top-level traversable=].
