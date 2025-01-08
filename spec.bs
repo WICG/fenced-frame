@@ -1770,9 +1770,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|,
-           |initiator referrer policy|, and a [=fencedframetype/destination URL event=] that is
-           |event|'s {{FenceEvent/destinationURL}}.
+           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|, |initiator
+           referrer policy|, and a [=fencedframetype/destination URL event=] that is |event|'s
+           {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
         1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
@@ -2170,12 +2170,10 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
     /fenced-frame/automatic-beacon-cross-origin-no-data.https.html
     /fenced-frame/automatic-beacon-cross-origin-no-opt-in.https.html
     /fenced-frame/automatic-beacon-use-ancestor-data.https.html
+    /fenced-frame/automatic-beacon-data-cross-origin-ancestor.sub.https.html
+    /fenced-frame/automatic-beacon-data-set-by-sibling.https.html
+    /fenced-frame/automatic-beacon-data-multiple-ancestors.https.html
   </wpt>
-
-  TODO: Add the following tests:
-  /fenced-frame/automatic-beacon-data-cross-origin-ancestor.sub.https.html
-  /fenced-frame/automatic-beacon-data-set-by-sibling.https.html
-  /fenced-frame/automatic-beacon-data-multiple-ancestors.https.html
 </div>
 
 <div algorithm="top_navigation_start beacon patch">
