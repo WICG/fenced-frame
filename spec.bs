@@ -959,7 +959,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 <div algorithm>
   In order to <dfn>send a beacon</dfn> with a [=fencedframetype/reporting destination info=]
   |destination info|, a [=fencedframetype/destination event=] |event|, an [=origin=]
-  |requestInitiator|, and a [=referrer policy=] |initiatorReferrerPolicy| run these steps:
+  |request initiator|, and a [=referrer policy=] |initiator referrer policy| run these steps:
 
   1. Let |destination url| be an empty [=string=].
 
@@ -1046,7 +1046,7 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        beacons](https://wicg.github.io/attribution-reporting-api/#ref-for-request-service-workers-mode).
 
     : [=request/origin=]
-    :: |requestInitiator| if |event| is a [=fencedframetype/destination URL event=], and
+    :: |request initiator| if |event| is a [=fencedframetype/destination URL event=], and
        |destination info|'s [=reporting destination info/reporting url declarer origin=] otherwise.
 
        Note: The reporting destination for a [=fencedframetype/destination URL event=] is determined
@@ -1057,10 +1057,10 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
        or worklet that determined the reporting destination to prevent cross-site request forgery.
 
     : [=request/referrer=]
-    :: |requestInitiator|
+    :: |request initiator|
 
     : [=request/referrer policy=]
-    :: |initiatorReferrerPolicy|
+    :: |initiator referrer policy|
 
     : [=request/mode=]
     :: `"cors"`
@@ -1083,8 +1083,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
 
 <div algorithm>
   In order to <dfn>report an event</dfn> using a [=fencedframetype/fenced frame reporter=]
-  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |requestInitiator|,
-  a [=referrer policy=] |initiatorReferrerPolicy|, and a [=fencedframetype/destination event=]
+  |reporter| with a {{FenceReportingDestination}} |destination|, an [=origin=] |request initiator|,
+  a [=referrer policy=] |initiator referrer policy|, and a [=fencedframetype/destination event=]
   |event|, run these steps:
 
   1. Let |metadata| be |reporter|'s
@@ -1123,10 +1123,10 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
         :: |event|
 
         : [=pending event/request initiator=]
-        :: |requestInitiator|
+        :: |request initiator|
 
         : [=pending event/initiator referrer policy=]
-        :: |initiatorReferrerPolicy|
+        :: |initiator referrer policy|
 
      1. [=list/Append=] |newEvent| to |reporting map|[|destination|].
 
@@ -1137,8 +1137,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. [=Assert=] that |reporting map|[|destination|] is a [=map=] (i.e., that |destination|'s
      metadata has been finalized).
 
-  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, |requestInitiator|, and
-     |initiatorReferrerPolicy|.
+  1. [=Send a beacon=] with |reporting map|[|destination|], |event|, |request initiator|, and
+     |initiator referrer policy|.
 </div>
 
 <div algorithm>
@@ -1726,10 +1726,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
 
-  1. Let |requestInitiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
+  1. Let |request initiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
      object/origin=].
 
-  1. Let |initiatorReferrerPolicy| be |document|'s [=Document/policy container=]'s [=policy
+  1. Let |initiator referrer policy| be |document|'s [=Document/policy container=]'s [=policy
      container/referrer policy=].
 
   1. If |event| is a {{DOMString}}:
@@ -1770,8 +1770,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            * |destinationURL| [=url/scheme=] is not "`https`";
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-           reporter=] with {{FenceReportingDestination/buyer}}, |requestInitiator|,
-           |initiatorReferrerPolicy|, and a [=fencedframetype/destination URL event=] that is
+           reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|,
+           |initiator referrer policy|, and a [=fencedframetype/destination URL event=] that is
            |event|'s {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
@@ -1788,7 +1788,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=list/For each=] |destination| of |event|'s {{FenceEvent/destination}}:
 
           1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
-             reporter=] with |destination|, |requestInitiator|, |initiatorReferrerPolicy|, and a
+             reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and a
              [=fencedframetype/destination enum event=] with the following [=struct/items=]:
 
              : [=destination enum event/type=]
@@ -2106,11 +2106,11 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      cases where a [=navigate|navigation=] to a [=top-level traversable=] does not originate from a
      <{fencedframe}>.
 
-  1. Let |requestInitiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
+  1. Let |request initiator| be |sourceOrigin| if |config|'s [=fenced frame config instance/is ad
      component=] is false, and |sourceSnapshotParams|'s [=source snapshot params/initiator ancestor
      root origin=] otherwise.
 
-  1. Let |initiatorReferrerPolicy| be |sourceSnapshotParams|'s [=source snapshot params/source
+  1. Let |initiator referrer policy| be |sourceSnapshotParams|'s [=source snapshot params/source
      policy container=]'s [=policy container/referrer policy=] if |config|'s [=fenced frame config
      instance/is ad component=] is false, and |sourceSnapshotParams|'s [=source snapshot
      params/initiator ancestor root referrer policy=] otherwise.
@@ -2120,7 +2120,7 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
 
   1. Let |beaconMapping| be |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic
      beacon mapping=]'s [=snapshot automatic beacon mapping/data mapping=] if |isCrossOrigin| is
-     true, |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic beacon mapping=]'s
+     false, |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic beacon mapping=]'s
      [=snapshot automatic beacon mapping/cross-origin exposed data mapping=] otherwise.
 
   1. Let |beaconData| be |beaconMapping|[|eventType|].
@@ -2132,26 +2132,20 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
 
   1. If |isCrossOrigin| is true and |has header opt in| is false, abort these steps.
 
-  1. Let |should send beacon with data| be true if |beaconData| is not null and either
-     |isCrossOrigin| is false or |beaconData|'s [=automatic beacon data/crossOriginExposed=] is
-     true, false otherwise.
-
   1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame
      reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
      [=fencedframetype/fenced frame reporting map=]'s [=map/keys=]:
 
     1. Run [=report an event=] using |config|'s [=fenced frame config instance/fenced frame
-       reporter=] with |destination|, |requestInitiator|, |initiatorReferrerPolicy|, and an
+       reporter=] with |destination|, |request initiator|, |initiator referrer policy|, and an
        [=fencedframetype/automatic beacon event=] with the following [=struct/items=]:
 
        : [=automatic beacon event/type=]
        :: |eventType|
 
        : [=automatic beacon event/data=]
-       :: |beaconData|'s [=automatic beacon data/eventData=] if |should send beacon with data| is
-          true, |beaconData|'s [=automatic beacon data/destinations=] [=list/contains=]
-          |destination|, and |config|'s [=fenced frame config instance/is ad component=] is false,
-          the empty string otherwise.
+       :: The empty string if |beaconData| is null, |beaconData|'s [=automatic beacon
+          data/eventData=] otherwise.
 
        : [=automatic beacon event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
