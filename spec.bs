@@ -1837,12 +1837,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
-     origin=]:
-
-     1. If |instance|'s [=fenced frame config instance/cross-origin
-        reporting allowed=] is false, then return.
-     
-     1. If |event|'s {{FenceEvent/crossOriginExposed}} is false, then return.
+     origin=], and if |event|'s {{FenceEvent/crossOriginExposed}} is false, then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
