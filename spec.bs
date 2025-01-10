@@ -1809,7 +1809,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. Run [=report an event=] using |instance|'s [=fenced frame config instance/fenced frame
            reporter=] with {{FenceReportingDestination/buyer}}, |request initiator|, |initiator
-           referrer policy|, and a [=fencedframetype/destination URL event=] that is |event|'s
+           referrer policy| and a [=fencedframetype/destination URL event=] that is |event|'s
            {{FenceEvent/destinationURL}}.
 
      1. Otherwise:
