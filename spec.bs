@@ -2204,9 +2204,9 @@ After a fenced frame has fully disabled untrusted network access, meaning the {{
 by {{Fence/disableUntrustedNetwork()}} has [=resolved=], certain powerful interface methods will
 become available to script which executes inside of the fenced frame. These methods are defined in
 other specifications, which will use the below algorithm to determine if invocation can occur
-successfully. Currently, the only method which is gated behind revocation of untrusted network
-access is {{SharedStorage/get()}} when invoked outside of a {{SharedStorageWorklet}}. This method
-is defined in the [[Shared-Storage]] draft specification.
+successfully. One example of a method which is gated behind revocation of untrusted network access
+is {{SharedStorage/get()}} when invoked outside of a {{SharedStorageWorklet}}. This method is
+defined in the [[Shared-Storage]] draft specification.
 
 <div algorithm>
   To <dfn export>determine if a navigable has fully revoked network</dfn> given a [=navigable=] 
