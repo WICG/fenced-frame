@@ -2264,10 +2264,10 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
   1. Let |config| be |navigable|'s [=navigable/active browsing context=]'s [=browsing
      context/fenced frame config instance=].
 
-  1. If |config|'s [=fenced frame config instance/untrusted network status=] is not [=untrusted
-     network status/enabled=], return true.
+  1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted network
+     status/enabled=], return false.
 
-  1. Return false.
+  1. Return true.
 </div>
 
 <h3 id=automatic-reporting>Automatic Reporting</h3>
