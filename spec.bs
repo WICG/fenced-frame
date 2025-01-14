@@ -2196,7 +2196,7 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
  * CSP directive of <code>fenced-frame-src</code>
  * Features as HTML's <code>&lt;fencedframe&gt;</code>
 
-<h3 id=methods-gated-on-network-revocation>Methods gated on network revocation</h3>
+<h3 id=gating-methods-on-network-revocation>Gating methods on network revocation</h3>
 
 *This first introductory paragraph is non-normative.*
 
