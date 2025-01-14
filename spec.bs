@@ -762,11 +762,11 @@ can freely flow in and out without risk of the credit card information being joi
 data. Because of that, the fenced frame can be constructed directly from the web platform using the
 {{FencedFrameConfig}} constructor without compromising privacy. The button at this point has no
 personalized data in it since it can't access the credit card data yet. The {{Document}} can only
-read that credit card data once it turns off all network access, preventing the data from flowing
-out of the fenced frame and preventing it from being joined with cross-site data to build a user
-profile. Once it does that, the button will then display the last 4 digits of the user's credit card
-number, as it is saved in the browser, inside the first-party storage partition for the ecommerce
-platform's origin.
+read that credit card data once it turns off all network access via
+{{Fence/disableUntrustedNetwork()}}, preventing the data from flowing out of the fenced frame and
+preventing it from being joined with cross-site data to build a user profile. Once it does that,
+the button will then display the last 4 digits of the user's credit card number, as it is saved in
+the browser, inside the first-party storage partition for the ecommerce platform's origin.
 
 <h4 id=fenced-frame-config-struct>The [=fenced frame config=] [=struct=]</h4>
 
@@ -2195,6 +2195,34 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
  * [=request/initiator=] ""
  * CSP directive of <code>fenced-frame-src</code>
  * Features as HTML's <code>&lt;fencedframe&gt;</code>
+
+<h3 id=gating-methods-on-network-revocation>Gating methods on network revocation</h3>
+
+*This first introductory paragraph is non-normative.*
+
+After a fenced frame has fully disabled untrusted network access, meaning the {{Promise}} returned
+by {{Fence/disableUntrustedNetwork()}} has [=resolved=], certain powerful interface methods will
+become available to script which executes inside of the fenced frame. These methods are defined in
+other specifications, which will use the below algorithm to determine if invocation can occur
+successfully. One example of a method which is gated behind revocation of untrusted network access
+is {{SharedStorage/get()}} when invoked outside of a {{SharedStorageWorklet}}. This method is
+defined in the [[Shared-Storage]] draft specification.
+
+<div algorithm>
+  To <dfn export>determine if a navigable has fully revoked network</dfn> given a [=navigable=] 
+  |navigable|:
+  
+  1. If |navigable|'s [=navigable/traversable navigable=] is not a [=fenced navigable
+     container/fenced navigable=], return false.
+
+  1. Let |config| be |navigable|'s [=navigable/active browsing context=]'s [=browsing
+     context/fenced frame config instance=].
+
+  1. If |config|'s [=fenced frame config instance/untrusted network status=] is not [=untrusted
+     network status/disabled for this tree and fenced subtrees=], return false.
+
+  1. Return true.
+</div>
 
 <h3 id=automatic-reporting>Automatic Reporting</h3>
 
