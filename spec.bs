@@ -2120,6 +2120,9 @@ exempt specific URLs from network revocation.
 
 Issue: This will require a RFC to add a test-only function to the WPT web driver.
 (<a href="https://github.com/WICG/fenced-frame/issues/192">WICG/fenced-frame#192</a>)
+Once that web driver changes is made, existing Chromium-internal web platform tests for
+{{Fence/disableUntrustedNetwork()}} need to be upstreamed and linked here.
+(<a href="https://github.com/WICG/fenced-frame/issues/207">WICG/fenced-frame#207</a>)
 
 <div algorithm>
   To <dfn>revoke network for a partition nonce</dfn> using a [=fenced frame config
