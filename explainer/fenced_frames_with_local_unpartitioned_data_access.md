@@ -292,6 +292,17 @@ function personalizeButton () {
 }
 ```
 
+## Try it yourself!
+
+Development of this feature is ongoing, but the core functionality described above is implemented in Chromium and can be enabled with two command line flags. **We recommend using Chrome Canary to test with our most recent changes.**
+
+* `--enable-features=FencedFramesDefaultMode,FencedFramesLocalUnpartitionedDataAccess`    
+* `--disable-features=EnforcePrivacySandboxAttestations`
+
+We also have some Glitch demo sites for testing the personalized payment button use case.
+
+* First, visit [demo-payments-provider.glitch.me](https://demo-payments-provider.glitch.me) to register credit card info (please don't use a real credit card number 🙂).
+* Then, visit [https://demo-merchant.glitch.me](https://demo-merchant.glitch.me) for a sample checkout experience with a personalized payment button.
 
 ## Privacy considerations
 
@@ -375,8 +386,9 @@ The benefits of using cookies for this solution are the following:
 *   Local storage, like other storage APIs, is being [partitioned](https://privacycg.github.io/storage-partitioning/) in iframes. To allow unpartitioned access, it will rely on a variant of [rSA for storage](https://groups.google.com/a/chromium.org/g/blink-dev/c/SEL7N-xIE5s). 
 *   Fenced frames, by default have a unique and ephemeral partition and either we would disable that access in read-only FFs or there would be a transition where the value of a given data could be different before and after the access is granted, leading to confusion.
 
-
 ## References
 [TPAC presentation from Sep 2023](https://docs.google.com/presentation/d/1TqtFtK4x3TMd96JEvkbApUaYVdIaUz9uz3wNGPTuqdU/edit?usp=sharing)
+
+[TPAC presentation from Sep 2024](https://docs.google.com/presentation/d/1xKwCrhN2pD_lxuPfurgjEDkfyAcf3wgxPS9njlG9tT0/edit?usp=sharing)
 
 [Related Issue](https://github.com/WICG/fenced-frame/issues/15)
