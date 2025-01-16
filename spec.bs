@@ -2269,6 +2269,10 @@ In the intermediate state where {{Fence/disableUntrustedNetwork()}} has been cal
 requests over the network. The second algorithm below is used to determine whether those features
 are allowed.
 
+We make the distinction between "fully revoked" and "revoked for self"
+because nested fenced frame trees might still have network access, and these restrictions will not
+apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as well. 
+
 <div algorithm>
   To <dfn export>determine if a navigable has fully revoked network</dfn> given a [=navigable=] 
   |navigable|:
