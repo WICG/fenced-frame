@@ -302,7 +302,7 @@ Development of this feature is ongoing, but the core functionality described abo
 We also have some Glitch demo sites for testing the personalized payment button use case.
 
 * First, visit [demo-payments-provider.glitch.me](https://demo-payments-provider.glitch.me) to register credit card info (please don't use a real credit card number 🙂).
-* Then, visit [https://demo-merchant.glitch.me](https://demo-merchant.glitch.me) for a sample checkout experience with a personalized payment button.
+* Then, visit [demo-merchant.glitch.me](https://demo-merchant.glitch.me) for a sample checkout experience with a personalized payment button.
 
 ## Privacy considerations
 
