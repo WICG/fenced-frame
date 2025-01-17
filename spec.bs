@@ -2298,10 +2298,10 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
     /fenced-frame/automatic-beacon-cross-origin-no-data.https.html
     /fenced-frame/automatic-beacon-cross-origin-no-opt-in.https.html
     /fenced-frame/automatic-beacon-use-ancestor-data.https.html
-  </wpt>
     /fenced-frame/automatic-beacon-data-cross-origin-ancestor.sub.https.html
     /fenced-frame/automatic-beacon-data-set-by-sibling.https.html
     /fenced-frame/automatic-beacon-data-multiple-ancestors.https.html
+  </wpt>
 </div>
 
 <div algorithm="top_navigation_start beacon patch">
