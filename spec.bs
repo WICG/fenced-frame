@@ -1875,13 +1875,13 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
-     origin=], then return.
+     origin=], and if |event|'s {{FenceEvent/crossOriginExposed}} is false, then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
 
   1. Set [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=Document/automatic
-     beacon data map=][|event|'s {{FenceEvent/eventType}}] to an [=fencedframetype/automatic beacon
-     data=] with the following [=struct/items=]:
+     beacon data mapping=][|event|'s {{FenceEvent/eventType}}] to an [=fencedframetype/automatic
+     beacon data=] with the following [=struct/items=]:
 
      : [=automatic beacon data/eventData=]
      :: |event|'s {{FenceEvent/eventData}} if defined and |instance|'s [=fenced frame config
@@ -2267,22 +2267,26 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
      instance/is ad component=] is false, and |sourceSnapshotParams|'s [=source snapshot
      params/initiator ancestor root referrer policy=] otherwise.
 
-  1. Let |beacon data| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacon data
-     map=][|eventType|].
-
-  1. Let |has header opt in| be |sourceSnapshotParams|'s [=source snapshot params/automatic beacons
-     allowed=].
-
-  1. If |beacon data| is null and |has header opt in| is false, abort these steps.
-
-  1. Let |is cross origin| be true if |sourceOrigin| is not [=same origin=] with |config|'s [=fenced
+  1. Let |isCrossOrigin| be true if |sourceOrigin| is not [=same origin=] with |config|'s [=fenced
      frame config instance/mapped url=]'s [=url/origin=], false otherwise.
 
-  1. If |is cross origin| is true and |has header opt in| is false, abort these steps.
+  1. Let |beaconMapping| be |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic
+     beacon store=]'s [=snapshot automatic beacon store/data mapping=] if |isCrossOrigin| is false,
+     |sourceSnapshotParams|'s [=source snapshot params/snapshot automatic beacon store=]'s
+     [=snapshot automatic beacon store/cross-origin exposed data mapping=] otherwise.
 
-  1. Let |should send beacon with data| be true if |beacon data| is not null and either
-     |is cross origin| is false or |beacon data|'s [=automatic beacon data/crossOriginExposed=] is
-     true, false otherwise.
+  1. Let |beaconData| be |beaconMapping|[|eventType|].
+
+  1. Let |automaticBeaconsAllowed| be |sourceSnapshotParams|'s [=source snapshot params/automatic
+     beacons allowed=].
+
+     Note: This tracks whether there was an opt-in via the [:Allow-Fenced-Frame-Automatic-Beacons:]
+     header. Automatic beacons can still be sent out while this value is false for either
+     same-origin documents or documents that opt-in via setting data.
+
+  1. If |beaconData| is null and |automaticBeaconsAllowed| is false, abort these steps.
+
+  1. If |isCrossOrigin| is true and |automaticBeaconsAllowed| is false, abort these steps.
 
   1. [=list/For each=] |destination| of |config|'s [=fenced frame config instance/fenced frame
      reporter=]'s [=fenced frame reporter/fenced frame reporting metadata reference=]'s
@@ -2296,10 +2300,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
        :: |eventType|
 
        : [=automatic beacon event/data=]
-       :: |beacon data|'s [=automatic beacon data/eventData=] if |should send beacon with data| is
-          true, |beacon data|'s [=automatic beacon data/destinations=] [=list/contains=]
-          |destination|, and |config|'s [=fenced frame config instance/is ad component=] is false,
-          the empty string otherwise.
+       :: The empty string if |beaconData| is null, |beaconData|'s [=automatic beacon
+          data/eventData=] otherwise.
 
        : [=automatic beacon event/attributionReportingEnabled=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting enabled=]
@@ -2307,8 +2309,8 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
        : [=automatic beacon event/attributionReportingContextOrigin=]
        :: |sourceSnapshotParams|'s [=source snapshot params/attribution reporting context origin=]
 
-  1. If |beacon data|'s [=automatic beacon data/once=] is true, set |sourceSnapshotParams|'s
-     [=source snapshot params/automatic beacon data map=][|eventType|] to null.
+  1. If |beaconData|'s [=automatic beacon data/once=] is true, set |beaconMapping|[|eventType|] to
+     null.
 
   <wpt>
     /fenced-frame/automatic-beacon-anchor-click-handler.https.html
@@ -2324,6 +2326,9 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
     /fenced-frame/automatic-beacon-cross-origin-no-data.https.html
     /fenced-frame/automatic-beacon-cross-origin-no-opt-in.https.html
     /fenced-frame/automatic-beacon-use-ancestor-data.https.html
+    /fenced-frame/automatic-beacon-data-cross-origin-ancestor.sub.https.html
+    /fenced-frame/automatic-beacon-data-set-by-sibling.https.html
+    /fenced-frame/automatic-beacon-data-multiple-ancestors.https.html
   </wpt>
 </div>
 
@@ -2399,9 +2404,23 @@ An <dfn for=fencedframetype>automatic beacon data</dfn> is a [=struct=] with the
   :: a [=boolean=]
 </dl>
 
-Each {{Document}} object has an associated <dfn for=Document>automatic beacon data map</dfn>, which
-is a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
-[=map/values=] are null or an [=fencedframetype/automatic beacon data=]
+An <dfn for=fencedframetype>automatic beacon data mapping</dfn> is a [=map=] whose [=map/keys=] are
+[=fencedframetype/automatic beacon event type=]s and whose [=map/values=] are null or an
+[=fencedframetype/automatic beacon data=].
+
+An <dfn for=fencedframetype>snapshot automatic beacon store</dfn> is a [=struct=] with the
+following [=struct/items=]:
+
+<dl dfn-for="snapshot automatic beacon store">
+  : <dfn>data mapping</dfn>
+  :: an [=fencedframetype/automatic beacon data mapping=]
+
+  : <dfn>cross-origin exposed data mapping</dfn>
+  :: an [=fencedframetype/automatic beacon data mapping=]
+</dl>
+
+Each {{Document}} object has an associated <dfn for=Document>automatic beacon data mapping</dfn>,
+which is an [=fencedframetype/automatic beacon data mapping=].
 
 Each {{Document}} object has an associated <dfn for=Document>automatic beacons allowed</dfn>, which
 is a [=boolean=], initially false.
@@ -3101,41 +3120,47 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : <dfn for="source snapshot params">automatic beacons allowed</dfn>
   :: an [=boolean=].
 
-  : <dfn for="source snapshot params">automatic beacon data map</dfn>
-  :: a [=map=] whose [=map/keys=] are [=fencedframetype/automatic beacon event type=]s and whose
-     [=map/values=] are null or an [=fencedframetype/automatic beacon data=]
+  : <dfn for="source snapshot params">snapshot automatic beacon store</dfn>
+  :: an [=fencedframetype/snapshot automatic beacon store=].
 
 </div>
 
 <div algorithm>
-  To <dfn>get the automatic beacon data mapping to use</dfn> given a {{Document}} |sourceDocument|:
+  To <dfn>snapshot the automatic beacon data mapping</dfn> given a {{Document}} |sourceDocument|:
   
   1. [=Assert=] these steps are running on |sourceDocument|'s [=event loop=].
 
-  1. Let |automatic beacon data map| be a new empty [=Document/automatic beacon data map=].
+  1. Let |info| be a new empty [=fencedframetype/snapshot automatic beacon store=].
+
+  1. Let |mapping| be |info|'s [=snapshot automatic beacon store/data mapping=].
+
+  1. Let |crossOriginMapping| be |info|'s [=snapshot automatic beacon store/cross-origin exposed
+     data mapping=].
   
   1. Let |current navigable| be |sourceDocument|'s [=node navigable=].
 
   1. [=iteration/While=] |current navigable| is not null:
 
     1. [=map/iterate|For each=] |type| → |data| of |current navigable|'s [=navigable/active
-       document=]'s [=Document/automatic beacon data map=]:
+       document=]'s [=Document/automatic beacon data mapping=]:
 
-      1. If |automatic beacon data map|[|type|] does not [=map/exist=], set
-         |automatic beacon data map|[|type|] to |data|.
+      1. If |mapping|[|type|] does not [=map/exist=], set |mapping|[|type|] to |data|.
 
       Note: This guarantees that the first ancestor that contains automatic beacon data for a
       specific type will be usable by the document initiating the navigation. This will also prevent
       an ancestor blocking a document from using data set in a higher ancestor.
 
+      1. If |crossOriginMapping|[|type|] does not [=map/exist=] and |data|'s [=automatic beacon
+         data/crossOriginExposed=] is true, set |crossOriginMapping|[|type|] to |data|.
+
     1. Set |current navigable| to |current navigable|'s [=navigable/parent=].
 
-  1. Return |automatic beacon data map|.
+  1. Return |info|.
 
-  Note: The returned map is meant to hold references to the original {{Document}}'s
-  [=Document/automatic beacon data map=]s that were used to build |automatic beacon data map|. These
-  are later modified in [=attempt to send an automatic beacon=] to clear out any beacon data with
-  [=automatic beacon data/once=] set to true.
+  Note: The maps stored in |info| are meant to hold references to the original {{Document}}'s
+  [=Document/automatic beacon data mapping=]s that were used to build |info|. These are later
+  modified in [=attempt to send an automatic beacon=] to clear out any beacon data with [=automatic
+  beacon data/once=] set to true.
 </div>
 
 <div algorithm=get-initiator-ancestor>
@@ -3220,8 +3245,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   : [=source snapshot params/automatic beacons allowed=]
   :: |sourceDocument|'s [=Document/automatic beacons allowed=]
 
-  : [=source snapshot params/automatic beacon data map=]
-  :: The result of running [=get the automatic beacon data mapping to use=] on |sourceDocument|.
+  : [=source snapshot params/snapshot automatic beacon store=]
+  :: The result of running [=snapshot the automatic beacon data mapping=] on |sourceDocument|.
 
 </div>
 
