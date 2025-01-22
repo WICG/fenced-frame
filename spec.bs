@@ -2252,9 +2252,9 @@ event|event-level beacon=] when a fenced frame initiates a successful [=navigate
   1. Let |automaticBeaconsAllowed| be |sourceSnapshotParams|'s [=source snapshot params/automatic
      beacons allowed=].
 
-     Note: This tracks whether there was an opt in via the [:Allow-Fenced-Frame-Automatic-Beacons:]
+     Note: This tracks whether there was an opt-in via the [:Allow-Fenced-Frame-Automatic-Beacons:]
      header. Automatic beacons can still be sent out while this value is false for either
-     same-origin documents or documents that opt in via setting data.
+     same-origin documents or documents that opt-in via setting data.
 
   1. If |beaconData| is null and |automaticBeaconsAllowed| is false, abort these steps.
 
