@@ -2015,6 +2015,16 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |settings| be [=this=]'s [=relevant settings object=].
 
+  1. [=list/For each=] {{WebSocket}} object |webSocket| whose [=relevant global object=] is
+     |global|, run [=fail the WebSocket connection=] given |webSocket|.
+
+  1. [=list/For each=] {{WebTransport}} object |webTransport| whose [=relevant global object=] is
+     |global|, [=WebTransport/cleanup=] |webTransport| with a newly [=exception/create|created=]
+     {{WebTransportError}} whose {{WebTransportErrorOptions/source}} is `"session"`.
+
+     Note: Not passing in a {{WebTransportCloseInfo}} ensures that the {{WebTransport}} object is
+     set to the `"failed"` state rather than the `"closed"` state.
+
   1. Run the following steps [=in parallel=]:
 
      1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
@@ -2132,19 +2142,11 @@ Issue: This will require a RFC to add a test-only function to the WPT web driver
   instance/partition nonce=] |nonce| given a [=relevant settings object=] |settings|, run these
   steps:
 
+  1. [=Assert=]: this is running [=in parallel=].
+
   1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
 
   1. [=fetch group/terminated|Terminate=] |settings|'s [=fetch/fetch group=].
-
-  1. [=list/For each=] {{WebSocket}} object |webSocket| whose [=relevant settings object=] is
-     |settings|, run [=fail the WebSocket connection=] given |webSocket|.
-
-  1. [=list/For each=] {{WebTransport}} object |webTransport| whose [=relevant settings object=] is
-     |settings|, [=WebTransport/cleanup=] |webTransport| with a newly [=exception/create|created=]
-     {{WebTransportError}} whose {{WebTransportErrorOptions/source}} is `"session"`.
-
-     Note: Not passing in a {{WebTransportCloseInfo}} ensures that the {{WebTransport}} object is
-     set to the `"failed"` state rather than the `"closed"` state.
 </div>
 
 <div algorithm>
