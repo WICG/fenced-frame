@@ -1759,8 +1759,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
 
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
-     {{SecurityError}} {{DOMException}}.
+  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
+
+  1. If |document| is not [=Document/fully active=], then [=exception/throw=] a {{SecurityError}}
+     {{DOMException}}.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
@@ -1770,8 +1772,6 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. If |instance|'s [=fenced frame config instance/is ad component=] is true, then return.
 
   1. If |instance|'s [=fenced frame config instance/fenced frame reporter=] is null, then return.
-
-  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=].
 
   1. Let |request initiator| be [=this=]'s [=relevant settings object=]'s [=environment settings
      object/origin=].
@@ -1871,8 +1871,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
 
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
-     {{SecurityError}} {{DOMException}}.
+  1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+     active=], then [=exception/throw=] a {{SecurityError}} {{DOMException}}.
 
   1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
      {{FenceEvent/eventType}}:
@@ -1955,8 +1955,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
 
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
-     {{SecurityError}} {{DOMException}}.
+  1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+     active=], then [=exception/throw=] a {{SecurityError}} {{DOMException}}.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
   
@@ -2000,8 +2000,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |p| be [=a new promise=].
 
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
-     {{SecurityError}} {{DOMException}}.
+  1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+     active=], then [=exception/throw=] a {{SecurityError}} {{DOMException}}.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
