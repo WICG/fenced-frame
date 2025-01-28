@@ -1527,7 +1527,7 @@ Note: A config's [=fencedframeconfig/url=] is only null if a [=fencedframeconfig
   {{FencedFrameConfig}} objects are [=serializable objects=]. Their [=serialization steps=], given
   |value|, |serialized|, and |forStorage| are:
 
-  1. If |forStorage| is true, then throw a {{DataCloneError}} {{DOMException}}.
+  1. If |forStorage| is true, then [=exception/throw=] a {{DataCloneError}} {{DOMException}}.
   
   1. Set |serialized|.\[[Url]] to |value|'s [=fencedframeconfig/url=].
 
@@ -1680,11 +1680,11 @@ partial interface Navigator {
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
 
-  1. If |instance| is null, then throw a {{DOMException}}.
+  1. If |instance| is null, then [=exception/throw=] a {{DOMException}}.
 
   1. If [=this=]'s [=relevant settings object=]'s [=environment settings object/origin=] and
     |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
-    origin=], then then throw a {{DOMException}}.
+    origin=], then then [=exception/throw=] a {{DOMException}}.
 
   1. Let |maxAdComponents| be 40.
 
@@ -1758,6 +1758,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
 <div algorithm>
   The <dfn method for=Fence>reportEvent(|event|)</dfn> method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
+     {{SecurityError}} {{DOMException}}.
 
   1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
      [=browsing context/fenced frame config instance=].
@@ -1867,6 +1870,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>setReportEventDataForAutomaticBeacons(|event|)</dfn>
   method steps are:
+
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
+     {{SecurityError}} {{DOMException}}.
+
   1. If |event| does not have a {{FenceEvent/destination}} or |event| does not have a
      {{FenceEvent/eventType}}:
      1. [=exception/Throw=] a {{TypeError}}.
@@ -1948,11 +1955,13 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm>
   The <dfn method for=Fence>notifyEvent(|event|)</dfn> method steps are:
 
-  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then return.
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
+     {{SecurityError}} {{DOMException}}.
 
   1. Let |navigable| be [=this=]'s [=relevant global object=]'s [=Window/navigable=].
   
-  1. If any of the following conditions are met, then throw a {{SecurityError}} {{DOMException}}:
+  1. If any of the following conditions are met, then [=exception/throw=] a {{SecurityError}}
+     {{DOMException}}:
 
       * |navigable| is not a [=fenced navigable container/fenced navigable=];
   
@@ -1991,11 +2000,13 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |p| be [=a new promise=].
 
-  1. Let |context| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=].
+  1. If [=this=]'s {{Document}} is not [=Document/fully active=], then [=exception/throw=] a
+     {{SecurityError}} {{DOMException}}.
 
-  1. If |context| is null, then throw a {{SecurityError}} {{DOMException}}.
+  1. Let |instance| be [=this=]'s [=relevant global object=]'s [=Window/browsing context=]'s
+     [=browsing context/fenced frame config instance=].
 
-  1. Let |instance| be |context|'s [=browsing context/fenced frame config instance=].
+  1. If |instance| is null, then return.
 
   1. If the [=relevant settings object=]'s [=environment settings object/origin=] and
      |instance|'s [=fenced frame config instance/mapped url=]'s [=url/origin=] are not [=same
