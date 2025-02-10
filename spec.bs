@@ -2067,7 +2067,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=]:
      
-        1. If |currentNavigable|' [=navigable/ongoing navigation=] is a [=Navigation Id=]:
+        1. If |currentNavigable|' [=navigable/ongoing navigation=] is a [=navigation ID=]:
         
             1. Let |ancestorNavigables| be |currentNavigable|'s [=navigable/active document=]'s 
                [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to false.
@@ -2083,7 +2083,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
         network status/disabled for this tree and fenced subtrees=] and |currentNavigable|' 
-        [=navigable/ongoing navigation=] is not a [=Navigation Id=], then [=iteration/continue=].
+        [=navigable/ongoing navigation=] is not a [=navigation ID=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
@@ -2112,7 +2112,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. [=map/Clear=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
      1. If |networkCutoffReady| is false or |currentNavigable|' [=navigable/ongoing navigation=] is 
-        a [=Navigation Id=]:
+        a [=navigation ID=]:
         
         1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
            parent=]'s [=navigable/traversable navigable=].
