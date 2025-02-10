@@ -2069,12 +2069,10 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
      
         1. If |currentNavigable|' [=navigable/ongoing navigation=] is a [=navigation ID=]:
         
-            1. Let |ancestorNavigables| be |currentNavigable|'s [=navigable/active document=]'s 
-               [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to false.
-               
-            1. If |ancestorNavigables| is [=list/is not empty=] and the last element of 
-               |ancestorNavigables| is a [=fenced navigable container/fenced navigable=], then 
-               [=set/append=] that element to |navigablesWithNetworkChildren|.
+            1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/traversable navigable=].
+
+            1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
+               [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
         
         1. [=iteration/continue=].
 
