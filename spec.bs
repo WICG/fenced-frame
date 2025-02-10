@@ -145,6 +145,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: historyHandling; url: navigation-hh
       text: referrerPolicy; url: navigation-referrer-policy
       text: attempt to populate the history entry's document; url: attempt-to-populate-the-history-entry's-document
+      text: navigation ID; url: navigation-id
       text: navigation params; url: navigation-params
       text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
       text: the navigation must be a replace; url: the-navigation-must-be-a-replace
@@ -2064,14 +2065,25 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
      1. Let |currentNavigable| be the result of [=stack/pop|popping=] from |navigables|.
 
-     1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=], then
-        [=iteration/continue=].
+     1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=]:
+     
+        1. If |currentNavigable|' [=navigable/ongoing navigation=] is a [=Navigation Id=]:
+        
+            1. Let |ancestorNavigables| be |currentNavigable|'s [=navigable/active document=]'s 
+               [=Document/ancestor navigables=] with [=an-unfenced|unfenced=] set to false.
+               
+            1. If |ancestorNavigables| is [=list/is not empty=] and the last element of 
+               |ancestorNavigables| is a [=fenced navigable container/fenced navigable=], then 
+               [=set/append=] that element to |navigablesWithNetworkChildren|.
+        
+        1. [=iteration/continue=].
 
      1. Let |config| be |currentNavigable|'s [=navigable/active browsing context=]'s [=browsing
         context/fenced frame config instance=].
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
-        network status/disabled for this tree and fenced subtrees=], then [=iteration/continue=].
+        network status/disabled for this tree and fenced subtrees=] and |currentNavigable|' 
+        [=navigable/ongoing navigation=] is not a [=Navigation Id=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
@@ -2099,7 +2111,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. [=map/Clear=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
-     1. Otherwise:
+     1. If |networkCutoffReady| is false or |currentNavigable|' [=navigable/ongoing navigation=] is 
+        a [=Navigation Id=]:
+        
         1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
            parent=]'s [=navigable/traversable navigable=].
 
