@@ -2064,10 +2064,12 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=iteration/While=] |navigables| is not [=stack/empty=]:
 
      1. Let |currentNavigable| be the result of [=stack/pop|popping=] from |navigables|.
+     
+     1. Let |ongoingNavigation| be |currentNavigable|'s [=navigable/ongoing navigation=].
 
      1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=]:
      
-        1. If |currentNavigable|' [=navigable/ongoing navigation=] is a [=navigation ID=]:
+        1. If |ongoingNavigation| is a [=navigation ID=]:
         
             1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/traversable navigable=].
 
@@ -2080,8 +2082,8 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         context/fenced frame config instance=].
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
-        network status/disabled for this tree and fenced subtrees=] and |currentNavigable|' 
-        [=navigable/ongoing navigation=] is not a [=navigation ID=], then [=iteration/continue=].
+        network status/disabled for this tree and fenced subtrees=] and |ongoingNavigation| is not a
+        [=navigation ID=], then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
@@ -2109,8 +2111,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. [=map/Clear=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
-     1. If |networkCutoffReady| is false or |currentNavigable|' [=navigable/ongoing navigation=] is 
-        a [=navigation ID=]:
+     1. If |networkCutoffReady| is false or |ongoingNavigation| is a [=navigation ID=]:
         
         1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
            parent=]'s [=navigable/traversable navigable=].
