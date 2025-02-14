@@ -2072,14 +2072,17 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         
             1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/traversable navigable=].
 
-            1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=], [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
+            1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
+               [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
         
         1. [=iteration/continue=].
 
      1. Let |config| be |currentNavigable|'s [=navigable/active browsing context=]'s [=browsing
         context/fenced frame config instance=].
 
-     1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted network status/disabled for this tree and fenced subtrees=] and |ongoingNavigation| is null, then [=iteration/continue=].
+     1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
+        network status/disabled for this tree and fenced subtrees=] and |ongoingNavigation| is null,
+        then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
