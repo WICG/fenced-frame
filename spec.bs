@@ -2163,7 +2163,18 @@ Issue: This will require a RFC to add a test-only function to the WPT web driver
   1. Return <b>allowed</b>.
 </div>
 
-<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
+<h3 id=disable-monkeypatches>Monkeypatches for network revocation</h3>
+
+*This introductory section is non-normative.*
+
+The network revocation mechanism requires various patches to various standards. These standards
+involve making some sort of network request in a way that is currently unaware of the network status
+of the context that resulted in the request ultimately being sent out. To patch that, we add checks
+in places that require it. For more information, there are non-external WPTs that test these various
+APIs that [can be found
+here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/).
+These are currently not external simply because the network revocation feature has not launched yet.
+Once launched, they will be published to the WPT repo.
 
 The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
 
@@ -2185,8 +2196,6 @@ The network revocation mechanism requires the following monkeypatches to the [[F
   (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
 </div>
 
-<h3 id=disable-websocket>WebSocket monkeypatches for network revocation</h3>
-
 The network revocation mechanism requires the following monkeypatch to the [[WebSockets]]
 Standard.
 
@@ -2198,8 +2207,6 @@ Standard.
       <var ignore>client</var>'s [=environment settings object/global object=]'s
       [=Window/navigable=] is true, [=fail the WebSocket connection=].
 </div>
-
-<h3 id=disable-webtransport>WebTransport monkeypatches for network revocation</h3>
 
 The network revocation mechanism requires the following monkeypatch to the [[WebTransport]]
 Standard.
