@@ -2183,6 +2183,30 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 
 The network revocation mechanism requires the following monkeypatches to the [[HTML]] Standard.
 
+<h3 id=disable-reporting>Reporting API monkeypatches for network revocation</h3>
+
+  The network revocation mechanism requires the following monkeypatch to the [[Reporting]]
+  Standard.
+
+  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that
+  reads:
+
+  2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
+     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+
+<h3 id=disable-sxg>Signed Exchange Reporting monkeypatches for network revocation</h3>
+
+  PAHACER: update this section
+
+  The network revocation mechanism requires the following monkeypatch to the [[Webpackage]]
+  Standard.
+
+  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that
+  reads:
+
+  2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
+     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
 The processing model of a <{fencedframe}>'s navigation request deviates from that of the normal
@@ -2240,6 +2264,22 @@ defined in the [[Shared-Storage]] draft specification.
 
   1. If |config|'s [=fenced frame config instance/untrusted network status=] is not [=untrusted
      network status/disabled for this tree and fenced subtrees=], return false.
+
+  1. Return true.
+</div>
+
+<div algorithm>
+  To <dfn>determine if a navigable has revoked network for itself</dfn> given a [=navigable=] 
+  |navigable|:
+
+  1. If |navigable|'s [=navigable/traversable navigable=] is not a [=fenced navigable
+     container/fenced navigable=], return false.
+
+  1. Let |config| be |navigable|'s [=navigable/active browsing context=]'s [=browsing
+     context/fenced frame config instance=].
+
+  1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted network
+     status/enabled=], return false.
 
   1. Return true.
 </div>
