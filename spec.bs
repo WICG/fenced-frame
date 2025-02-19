@@ -2167,11 +2167,12 @@ Issue: This will require a RFC to add a test-only function to the WPT web driver
 
 *This introductory section is non-normative.*
 
-The network revocation mechanism requires various patches to various standards. These standards
-involve making some sort of network request in a way that is currently unaware of the network status
-of the context that resulted in the request ultimately being sent out. To patch that, we add checks
-in places that require it. For more information, there are non-external WPTs that test these various
-APIs that [can be found
+The network revocation mechanism in this section requires patching standards that make network
+requests. Before our patches, these standards make network requests (such as initiate WebSocket
+connections) while unaware of the network revocation status of the context that ultimately initiated
+the request. Our patches add checks to the algorithm in those standards to consider the network
+revocation status of the initiating context before the request is made. For more information, there
+are non-external WPTs that test these various APIs that [can be found
 here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/).
 These are currently not external simply because the network revocation feature has not launched yet.
 Once launched, they will be published to the WPT repo.
