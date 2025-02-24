@@ -2149,8 +2149,9 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 <div algorithm=set-ongoing-navigation-patch>
   Modify the [=set the ongoing navigation=] algorithm. Add a new step after step 2 that reads:
   
-  3. If <var ignore>newValue</var> is null, [=in parallel=], [=recalculate the untrusted network status of all fenced frame descendants=]
-     given the <var ignore>navigable</var>'s [=navigable/top-level traversable=].
+  3. If <var ignore>newValue</var> is null, [=in parallel=], [=recalculate the untrusted network
+     status of all fenced frame descendants=] given the <var ignore>navigable</var>'s
+     [=navigable/top-level traversable=].
 </div>
 
 A user agent has an associated <dfn>network revocation nonce set</dfn>, which is a [=set=] of
