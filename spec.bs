@@ -746,11 +746,12 @@ being able to manipulate the environment in which the ad loads.
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
-and not constructed or modified by script. Their fields also contain "[=fencedframeconfig/visibilities=]", which
-dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
-interface. Config-generating APIs like the [[Protected-Audience]] and [[Shared-Storage]] APIs must
-specify values for all fields of their [=fenced frame configs=] in order to ensure that they have
-considered the privacy implications of each field, though they may choose to set the values to null.
+and not constructed or modified by script. Their fields also contain
+"[=fencedframeconfig/visibilities=]", which dictate whether the field should be "redacted" when
+inspected through the {{FencedFrameConfig}} interface. Config-generating APIs like the
+[[Protected-Audience]] and [[Shared-Storage]] APIs must specify values for all fields of their
+[=fenced frame configs=] in order to ensure that they have considered the privacy implications of
+each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
