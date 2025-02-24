@@ -640,12 +640,13 @@ Note: The purpose of pending configs is to enable config-generating APIs to reso
 asynchronously in a way that doesn't create timing side channels, i.e., the pending config is
 returned to the web platform in a constant amount of time, before any computation whose duration
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
-to discern when a pending config is finalized, it is important that all visibilities and values of
-transparent fields do not change from the pending config to the finalized config, given that they
-can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that is
-created and exposed to the web platform is effectively immutable even if the [=fenced frame config=]
-represented by the [=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and
-will finish resolving completely later.
+to discern when a pending config is finalized, it is important that all
+[=fencedframeconfig/visibilities=] and values of transparent fields do not change from the pending
+config to the finalized config, given that they can be inspected through {{FencedFrameConfig}}'s
+getters. Therefore, a {{FencedFrameConfig}} that is created and exposed to the web platform is
+effectively immutable even if the [=fenced frame config=] represented by the
+[=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and will finish
+resolving completely later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
@@ -746,11 +747,12 @@ being able to manipulate the environment in which the ad loads.
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
-and not constructed or modified by script. Their fields also contain "[=visibilities=]", which
-dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
-interface. Config-generating APIs like the [[Protected-Audience]] and [[Shared-Storage]] APIs must
-specify values for all fields of their [=fenced frame configs=] in order to ensure that they have
-considered the privacy implications of each field, though they may choose to set the values to null.
+and not constructed or modified by script. Their fields also contain
+"[=fencedframeconfig/visibilities=]", which dictate whether the field should be "redacted" when
+inspected through the {{FencedFrameConfig}} interface. Config-generating APIs like the
+[[Protected-Audience]] and [[Shared-Storage]] APIs must specify values for all fields of their
+[=fenced frame configs=] in order to ensure that they have considered the privacy implications of
+each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
