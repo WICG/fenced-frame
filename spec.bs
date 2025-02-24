@@ -2140,7 +2140,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
         1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
            [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
            
-  Note: The Chromium-internal web platform tests is available at <a href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html">third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html</a>. 
+  Note: The Chromium-internal web platform test is available at <a href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html">third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html</a>. 
 </div>
 
 <div algorithm=iframe-remove-patch>
