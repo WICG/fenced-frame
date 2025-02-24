@@ -746,7 +746,7 @@ being able to manipulate the environment in which the ad loads.
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
-and not constructed or modified by script. Their fields also contain "[=visibilities=]", which
+and not constructed or modified by script. Their fields also contain "[=fencedframeconfig/visibilities=]", which
 dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
 interface. Config-generating APIs like the [[Protected-Audience]] and [[Shared-Storage]] APIs must
 specify values for all fields of their [=fenced frame configs=] in order to ensure that they have
