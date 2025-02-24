@@ -2141,7 +2141,7 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
            [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
            
   Note: The Chromium-internal web platform test is available at <a
-  href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html">third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html</a>.
+  href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html">third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html</a>. It will be merged upstreamed once <a href="https://github.com/WICG/fenced-frame/issues/192">WICG/fenced-frame#192</a> is resolveed.
   
 </div>
 
