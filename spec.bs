@@ -269,6 +269,9 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
 spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
   type: dfn
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
+spec: webpackage; urlPrefix: https://wicg.github.io/webpackage/loading.html
+  type: dfn
+    text: wait and queue a report for; url: wait-and-queue-a-report-for
 </pre>
 
 <style>
@@ -2201,11 +2204,12 @@ The network revocation mechanism requires the following monkeypatches to the [[H
   The network revocation mechanism requires the following monkeypatch to the [[Webpackage]]
   Standard.
 
-  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that
-  reads:
+  Modify the [monkeypatch](https://wicg.github.io/webpackage/loading.html#mp-http-fetch) to [=HTTP
+  fetch=]. Rewrite step 4 under the **"b2" or "b3"** switch case to read:
 
-  2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
-     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+  PAHACER: add a check for nonce most likely. I don't think we have access to the document at this point.
+
+  4. [=In parallel=], [=wait and queue a report for=] <var ignore>parsedExchange</var> and <var ignore>report</var>.
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
