@@ -269,6 +269,18 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
 spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
   type: dfn
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
+spec: RFC6455; urlPrefix: https://datatracker.ietf.org/doc/html/rfc6455
+  type: dfn
+    text: fail the WebSocket connection; url: #section-7.1.7
+spec: WebSocket; urlPrefix: https://websockets.spec.whatwg.org/
+  type: dfn
+    text: establish a WebSocket connection; url: #concept-websocket-establish
+spec: WebTransport; urlPrefix: https://w3c.github.io/webtransport
+  type: dfn
+    for: WebTransport
+      text: cleanup; url: #webtransport-cleanup
+      text: queue a network task; url: #webtransport-queue-a-network-task
+    text: initialize WebTransport over HTTP; url: #initialize-webtransport-over-http
 spec: webpackage; urlPrefix: https://wicg.github.io/webpackage/loading.html
   type: dfn
     text: wait and queue a report for; url: wait-and-queue-a-report-for
@@ -631,12 +643,13 @@ Note: The purpose of pending configs is to enable config-generating APIs to reso
 asynchronously in a way that doesn't create timing side channels, i.e., the pending config is
 returned to the web platform in a constant amount of time, before any computation whose duration
 depends on cross-site data. Because the privacy of this depends on the web platform not being able
-to discern when a pending config is finalized, it is important that all visibilities and values of
-transparent fields do not change from the pending config to the finalized config, given that they
-can be inspected through {{FencedFrameConfig}}'s getters. Therefore, a {{FencedFrameConfig}} that is
-created and exposed to the web platform is effectively immutable even if the [=fenced frame config=]
-represented by the [=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and
-will finish resolving completely later.
+to discern when a pending config is finalized, it is important that all
+[=fencedframeconfig/visibilities=] and values of transparent fields do not change from the pending
+config to the finalized config, given that they can be inspected through {{FencedFrameConfig}}'s
+getters. Therefore, a {{FencedFrameConfig}} that is created and exposed to the web platform is
+effectively immutable even if the [=fenced frame config=] represented by the
+[=fencedframe/config=]'s [=fencedframeconfig/urn=] is technically "pending", and will finish
+resolving completely later.
 
 Each [=fenced frame config mapping=] has a <dfn for="fenced frame config mapping">maximum number of
 configs</dfn>, which is implementation-defined. The [=fenced frame config mapping/maximum number of
@@ -737,11 +750,12 @@ being able to manipulate the environment in which the ad loads.
 We achieve this using the concept of a "[=fenced frame config=]". A [=fenced frame config=] is a
 collection of fields that can be loaded into <{fencedframe}> elements and that specifies the
 resulting environments. [=Fenced frame configs=] can only be created by specific web platform APIs,
-and not constructed or modified by script. Their fields also contain "[=visibilities=]", which
-dictate whether the field should be "redacted" when inspected through the {{FencedFrameConfig}}
-interface. Config-generating APIs like the [[Protected-Audience]] and [[Shared-Storage]] APIs must
-specify values for all fields of their [=fenced frame configs=] in order to ensure that they have
-considered the privacy implications of each field, though they may choose to set the values to null.
+and not constructed or modified by script. Their fields also contain
+"[=fencedframeconfig/visibilities=]", which dictate whether the field should be "redacted" when
+inspected through the {{FencedFrameConfig}} interface. Config-generating APIs like the
+[[Protected-Audience]] and [[Shared-Storage]] APIs must specify values for all fields of their
+[=fenced frame configs=] in order to ensure that they have considered the privacy implications of
+each field, though they may choose to set the values to null.
 
 Each time a <{fencedframe}> navigates to a [=fenced frame config=], it is instantiated as a new
 [=fenced frame config instance=], which governs the particular [=browsing context group=] inside the
@@ -2023,6 +2037,16 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
   1. Let |settings| be [=this=]'s [=relevant settings object=].
 
+  1. [=list/For each=] {{WebSocket}} object |webSocket| whose [=relevant global object=] is
+     |global|, run [=fail the WebSocket connection=] given |webSocket|.
+
+  1. [=list/For each=] {{WebTransport}} object |webTransport| whose [=relevant global object=] is
+     |global|, [=WebTransport/cleanup=] |webTransport| with a newly [=exception/create|created=]
+     {{WebTransportError}} whose {{WebTransportErrorOptions/source}} is `"session"`.
+
+     Note: Not passing in a {{WebTransportCloseInfo}} ensures that the {{WebTransport}} object is
+     set to the `"failed"` state rather than the `"closed"` state.
+
   1. Run the following steps [=in parallel=]:
 
      1. Let |fencedFrameNonce| be |instance|'s [=fenced frame config instance/partition nonce=].
@@ -2143,6 +2167,8 @@ Once that web driver changes is made, existing Chromium-internal web platform te
   instance/partition nonce=] |nonce| given a [=relevant settings object=] |settings|, run these
   steps:
 
+  1. [=Assert=]: this is running [=in parallel=].
+
   1. [=set/Append=] |nonce| to the user agent's [=network revocation nonce set=].
 
   1. [=fetch group/terminated|Terminate=] |settings|'s [=fetch/fetch group=].
@@ -2162,7 +2188,19 @@ Once that web driver changes is made, existing Chromium-internal web platform te
   1. Return <b>allowed</b>.
 </div>
 
-<h3 id=disable-fetch>Fetch monkeypatches for network revocation</h3>
+<h3 id=disable-monkeypatches>Monkeypatches for network revocation</h3>
+
+*This introductory section is non-normative.*
+
+The network revocation mechanism in this section requires patching standards that make network
+requests. Before our patches, these standards make network requests (such as initiate WebSocket
+connections) while unaware of the network revocation status of the context that ultimately initiated
+the request. Our patches add checks to the algorithm in those standards to consider the network
+revocation status of the initiating context before the request is made. For more information, there
+are non-external WPTs that test these various APIs that [can be found
+here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/).
+These are currently not external simply because the network revocation feature has not launched yet.
+Once launched, they will be published to the WPT repo.
 
 The network revocation mechanism requires the following monkeypatches to the [[FETCH]] Standard.
 
@@ -2184,7 +2222,37 @@ The network revocation mechanism requires the following monkeypatches to the [[F
   (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
 </div>
 
-The network revocation mechanism requires the following monkeypatches to the [[HTML]] Standard.
+The network revocation mechanism requires the following monkeypatch to the [[WebSockets]]
+Standard.
+
+<div algorithm=establish-websocket-patch>
+  Modify the [=establish a WebSocket connection=] algorithm. Add a new step after step 10 that
+  reads:
+
+  11. If the result of running [=determine if a navigable has revoked network for itself=] given
+      <var ignore>client</var>'s [=environment settings object/global object=]'s
+      [=Window/navigable=] is true, [=fail the WebSocket connection=].
+</div>
+
+The network revocation mechanism requires the following monkeypatch to the [[WebTransport]]
+Standard.
+
+<div algorithm=initialize-webtransport-patch>
+  Modify the [=initialize WebTransport over HTTP=] algorithm. Rewrite step 5 (keeping all substeps
+  unchanged) to read:
+
+  5. If any of the following conditions are true:
+     
+     - Running [=should request be blocked by Content Security Policy?=] with |request| returns
+       **"Blocked"**;
+     - Running [=should request be blocked due to a bad port=] with |request| returns **"blocked"**;
+     - Running [=determine if a navigable has revoked network for itself=] given <var
+       ignore>client</var>'s [=environment settings object/global object=]'s [=Window/navigable=]
+       returns true;
+     
+     then abort the remaining steps and [=WebTransport/queue a network task=] with
+     <var ignore>transport</var> to run these steps:
+</div>
 
 <h3 id=disable-reporting>Reporting API monkeypatches for network revocation</h3>
 
@@ -2246,15 +2314,24 @@ table](https://fetch.spec.whatwg.org/#destination-table) to illustrate that <{fe
 
 <h3 id=gating-methods-on-network-revocation>Gating methods on network revocation</h3>
 
-*This first introductory paragraph is non-normative.*
+*This introductory section is non-normative.*
 
 After a fenced frame has fully disabled untrusted network access, meaning the {{Promise}} returned
 by {{Fence/disableUntrustedNetwork()}} has [=resolved=], certain powerful interface methods will
 become available to script which executes inside of the fenced frame. These methods are defined in
-other specifications, which will use the below algorithm to determine if invocation can occur
+other specifications, which will use the first algorithm below to determine if invocation can occur
 successfully. One example of a method which is gated behind revocation of untrusted network access
 is {{SharedStorage/get()}} when invoked outside of a {{SharedStorageWorklet}}. This method is
 defined in the [[Shared-Storage]] draft specification.
+
+In the intermediate state where {{Fence/disableUntrustedNetwork()}} has been called but the returned
+{{Promise}} has not [=resolved=] yet, there are restrictions on features that involve making
+requests over the network. The second algorithm below is used to determine whether those features
+are allowed.
+
+We make the distinction between "fully revoked" and "revoked for self"
+because nested fenced frame trees might still have network access, and these restrictions will not
+apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as well. 
 
 <div algorithm>
   To <dfn export>determine if a navigable has fully revoked network</dfn> given a [=navigable=] 
