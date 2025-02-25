@@ -2175,12 +2175,13 @@ Once that web driver changes is made, existing Chromium-internal web platform te
 </div>
 
 <div algorithm>
-  To determine whether fetching a [=request=] <var ignore>request</var> <dfn>must be blocked due to
-  a revoked partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|
-  and a [=URL=] |requestURL|, run these steps:
+  To determine whether fetching a [=request=] |request| <dfn>must be blocked due to
+  a revoked partition nonce</dfn>, run these steps:
+
+  1. Let |nonce| be the result of running [=determine the network partition key=] on |request|.
 
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
-     |requestURL| [=set/exists=] in it, return <b>allowed</b>.
+     |request|'s [=request/URL=] [=set/exists=] in it, return <b>allowed</b>.
 
   1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return
      <b>blocked</b>.
@@ -2254,30 +2255,28 @@ Standard.
      <var ignore>transport</var> to run these steps:
 </div>
 
-<h3 id=disable-reporting>Reporting API monkeypatches for network revocation</h3>
+The network revocation mechanism requires the following monkeypatch to the [[Reporting]]
+Standard.
 
-  The network revocation mechanism requires the following monkeypatch to the [[Reporting]]
-  Standard.
-
+<div algorithm=generate-report-patch>
   Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that
   reads:
 
   2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
-     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+      revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+</div>
 
-<h3 id=disable-sxg>Signed Exchange Reporting monkeypatches for network revocation</h3>
+The network revocation mechanism requires the following monkeypatch to the [[Webpackage]]
+Standard.
 
-  PAHACER: update this section
-
-  The network revocation mechanism requires the following monkeypatch to the [[Webpackage]]
-  Standard.
-
+<div algorithm=sxg-patch>
   Modify the [monkeypatch](https://wicg.github.io/webpackage/loading.html#mp-http-fetch) to [=HTTP
   fetch=]. Rewrite step 4 under the **"b2" or "b3"** switch case to read:
 
-  PAHACER: add a check for nonce most likely. I don't think we have access to the document at this point.
-
-  4. [=In parallel=], [=wait and queue a report for=] <var ignore>parsedExchange</var> and <var ignore>report</var>.
+  4. If the result of determining whether <var ignore>request</var> [=must be blocked due to a
+      revoked partition nonce=] is false, then [=in parallel=], [=wait and queue a report for=] <var
+      ignore>parsedExchange</var> and <var ignore>report</var>.
+</div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
 
