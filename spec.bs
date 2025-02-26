@@ -221,6 +221,8 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
+    for: request
+      text: determine the network partition key; url: request-determine-the-network-partition-key
     for: response
       text: has-cross-origin-redirects; url: response-has-cross-origin-redirects
 spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
@@ -2178,7 +2180,8 @@ Once that web driver changes is made, existing Chromium-internal web platform te
   To determine whether fetching a [=request=] |request| <dfn>must be blocked due to
   a revoked partition nonce</dfn>, run these steps:
 
-  1. Let |nonce| be the result of running [=determine the network partition key=] on |request|.
+  1. Let |nonce| be the result of running [=request/determine the network partition key=] on
+     |request|.
 
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
      |request|'s [=request/URL=] [=set/exists=] in it, return <b>allowed</b>.
