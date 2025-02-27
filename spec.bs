@@ -4334,11 +4334,12 @@ at the expense of some utility.
 
 <h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
 
-The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless 
+The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless
 nonce=]. At a high level, the [=fenced frame config instance/partition nonce=] serves the same
-purpose as the [=page credentialless nonce=] (partitioning storage and network), but scoped to each
-fenced frame rather than to each credentialless iframe. The [=fenced frame config instance/
-partition nonce=] is also used to revoke network access in fenced frames. Perform the following
+purpose as the [=page credentialless nonce=] (partitioning storage and network). Howevever, it is
+scoped to each fenced frame, whereas the [=page credentialless nonce=] is scoped to the top-level
+document and shared by all descendent credentialless iframes. The [=fenced frame config instance/
+partition nonce=] is also used to revoke network access in fenced frames. Apply the following
 monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
 
 Add the following algorithm:
