@@ -4367,8 +4367,13 @@ Add the following algorithm:
 
   13. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
       effective partition nonce=] on <var ignore>browsingContext</var> given <var ignore>
-      credentialless</var> and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/
-      target fenced frame config=].
+      credentialless</var> and null.
+
+  Note: We pass null to [=browsing context/computing the effective partition nonce=] here because
+  we want navigation fetches originating from a fenced frame to use the same partition as the
+  fenced frame itself. After the navigation fetch completes and we initialize the document, we can
+  access the correct partition nonce via the [=fenced frame config instance=]'s
+  [=fenced frame config instance/partition nonce=].
 </div>
 
 <div algorithm="initialize the document object">
