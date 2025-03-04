@@ -2088,15 +2088,26 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
   1. [=iteration/While=] |navigables| is not [=stack/empty=]:
 
      1. Let |currentNavigable| be the result of [=stack/pop|popping=] from |navigables|.
+     
+     1. Let |ongoingNavigation| be |currentNavigable|'s [=navigable/ongoing navigation=].
 
-     1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=], then
-        [=iteration/continue=].
+     1. If |currentNavigable| is not a [=fenced navigable container/fenced navigable=]:
+     
+        1. If |ongoingNavigation| is not null:
+        
+            1. Let |ancestorFencedRoot| be |currentNavigable|'s [=navigable/traversable navigable=].
+
+            1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
+               [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
+        
+        1. [=iteration/continue=].
 
      1. Let |config| be |currentNavigable|'s [=navigable/active browsing context=]'s [=browsing
         context/fenced frame config instance=].
 
      1. If |config|'s [=fenced frame config instance/untrusted network status=] is [=untrusted
-        network status/disabled for this tree and fenced subtrees=], then [=iteration/continue=].
+        network status/disabled for this tree and fenced subtrees=] and |ongoingNavigation| is null,
+        then [=iteration/continue=].
 
      1. Let |networkCutoffReady| be true if |navigablesWithNetworkChildren| does not [=set/contain=]
         |currentNavigable| and |config|'s [=fenced frame config instance/untrusted network status=]
@@ -2124,12 +2135,19 @@ Several APIs specific to fenced frames are defined on the {{Fence}} interface.
 
         1. [=map/Clear=] |config|'s [=fenced frame config instance/on network disabled promises=].
 
-     1. Otherwise:
+     1. If |networkCutoffReady| is false or |ongoingNavigation| is not null:
+        
         1. Let |ancestorFencedRoot| be |currentNavigable|'s [=traversable navigable/unfenced
            parent=]'s [=navigable/traversable navigable=].
 
         1. If |ancestorFencedRoot| is a [=fenced navigable container/fenced navigable=],
            [=set/append=] |ancestorFencedRoot| to |navigablesWithNetworkChildren|.
+           
+  Note: The Chromium-internal web platform test is available at <a
+  href="https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html">third_party/blink/web_tests/wpt_internal/fenced_frame/disable-untrusted-network-ongoing-navigation.https.html</a>.
+  It will be upstreamed and linked here once <a
+  href="https://github.com/WICG/fenced-frame/issues/192">WICG/fenced-frame#192</a> is resolveed.
+  
 </div>
 
 <div algorithm=iframe-remove-patch>
