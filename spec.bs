@@ -2180,8 +2180,10 @@ Once that web driver changes is made, existing Chromium-internal web platform te
   To determine whether fetching a [=request=] |request| <dfn>must be blocked due to
   a revoked partition nonce</dfn>, run these steps:
 
-  1. Let |nonce| be the result of running [=request/determine the network partition key=] on
+  1. Let |key| be the result of running [=request/determine the network partition key=] on
      |request|.
+
+  1. Let |nonce| be |key|'s [=network partition key/nonce=].
 
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
      |request|'s [=request/URL=] [=set/exists=] in it, return <b>allowed</b>.
@@ -4343,6 +4345,18 @@ at the expense of some utility.
   <wpt>
     /fenced-frame/scroll-into-view.https.html
   </wpt>
+</div>
+
+<h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
+
+<div algorithm=network-partition-key-patch>
+  Rewrite the [=network partition key=] redefinition to read:
+
+  A [=network partition key=] is a [=tuple=] consisting of:
+
+  - a [=site=].
+  - null or an [=implementation-defined=] value.
+  - A <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
 </div>
 
 <h3 id=webrtc-monkeypatch>WebRTC</h3>
