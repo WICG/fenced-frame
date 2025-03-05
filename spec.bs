@@ -4334,6 +4334,8 @@ at the expense of some utility.
 
 <h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
 
+*This first introductory paragraph is non-normative.*
+
 The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless
 nonce=]. At a high level, the [=fenced frame config instance/partition nonce=] serves the same
 purpose as the [=page credentialless nonce=] (partitioning storage and network). Howevever, it is
