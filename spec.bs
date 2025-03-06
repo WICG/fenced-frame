@@ -2245,7 +2245,8 @@ The network revocation mechanism requires the following monkeypatches to the [[F
   
   1. Let |nonce| be |key|'s [=network partition key/nonce=].
   
-  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=] and |url| does not [=set/exist=] in it, then:
+  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=] and |url| does
+     not [=set/exist=] in it, then:
      
       1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return.
 </div>
