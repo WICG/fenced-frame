@@ -3,7 +3,7 @@
 
 ## Introduction and Goals
 
-There are situations in which it is helpful to decorate a third-party widget with cross-site information about the user, such as a personalized payment button that displays credit card information to give the user confidence that the payment flow will be smooth, or a personalized sign-in button. These sorts of use cases will be broken by [third-party cookie deprecation](https://privacysandbox.com/open-web/) (3PCD). 
+There are situations in which it is helpful to decorate a third-party widget with cross-site information about the user, such as a personalized payment button that displays credit card information to give the user confidence that the payment flow will be smooth, or a personalized sign-in button. Showing a personalized button gives the user more context about what they can expect will happen when they click on the button, allowing them to make a more informed choice, closer to their preferences. These sorts of use cases will be broken in scenarios when [third-party cookies are not available](https://privacysandbox.com/news/privacy-sandbox-update/). 
 
 Fenced frames are a natural fit for such use cases, as they allow for frames with cross-site data to be composed within a page of another partition. The idea proposed here is to allow fenced frames to have access to the cross-site data stored for the given origin within [shared storage](https://github.com/WICG/shared-storage).  In other words, the payment site would add the user’s payment data to shared storage when the user visits the payment site, and then read it in third-party fenced frames to decorate their payment button. 
 
