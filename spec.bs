@@ -4375,11 +4375,13 @@ Add the following algorithm:
      null, and return null otherwise.
 </div>
 
-<div algorithm="process a navigate fetch">
-  Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-navigation-partition-nonce>
-  process a navigate fetch</a> to read:
+<div algorithm="create navigation params by fetching">
+  Rewrite the entirety of <a href=https://wicg.github.io/anonymous-iframe/#spec-navigation-partition-nonce>
+  section 6.1.9.1</a> as follows:
 
-  13. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
+  In [=create navigation params by fetching=], add a new step between 18 and 19 which reads:
+
+  19. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
       effective partition nonce=] on <var ignore>browsingContext</var> given <var ignore>
       credentialless</var> and null.
 
@@ -4388,6 +4390,15 @@ Add the following algorithm:
   fenced frame itself. After the navigation fetch completes and we initialize the document, we can
   access the correct partition nonce via the [=fenced frame config instance=]'s
   [=fenced frame config instance/partition nonce=].
+
+  Renumber step 19 to 20, and rewrite step 20.2.4 to read:
+
+  4. Set <var ignore>request</var>'s [=request/reserved client=] to a new [=environment=] whose
+     [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is
+     <var ignore>navigable</var>'s [=navigable/active browsing context=], [=environment/
+     creation URL=] is <var ignore>currentURL</var>, [=environment/top-level creation URL=] is
+     <var ignore>topLevelCreationURL</var>, [=environment/top-level origin=] is <var ignore>
+     topLevelOrigin</var>, and [=environment/partition nonce=] is <var ignore>partitionNonce.</var>
 </div>
 
 <div algorithm="initialize the document object">
