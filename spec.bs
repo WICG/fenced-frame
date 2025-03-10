@@ -4334,15 +4334,27 @@ at the expense of some utility.
 
 <h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
 
-*This first introductory paragraph is non-normative.*
+*This first introductory section is non-normative.*
 
 The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless
 nonce=]. At a high level, the [=fenced frame config instance/partition nonce=] serves the same
-purpose as the [=page credentialless nonce=] (partitioning storage and network). Howevever, it is
-scoped to each fenced frame, whereas the [=page credentialless nonce=] is scoped to the top-level
-document and shared by all descendent credentialless iframes. The [=fenced frame config instance/
-partition nonce=] is also used to revoke network access in fenced frames. Apply the following
-monkeypatches to the [[!IFRAME-CREDENTIALLESS]] spec.
+purpose as the [=page credentialless nonce=] (partitioning storage and network). However, each
+fenced frame has its own unique nonce, whereas there is a single [=page credentialless nonce=]
+scoped to the [=traversable navigable=]'s [=navigable/active window=], which is shared by all
+descendent credentialless iframes. 
+
+In cases where fenced frames and credentialless iframes exist in the same tree, a child's nonce
+will always take precedence over its parent's. For example:
+
+ * If a credentialless iframe is a child of a fenced frame, the [=page credentialless nonce=] will
+   be used to partition resources for that iframe.
+
+ * If a fenced frame is a child of a credentialless iframe, then the fenced frame's
+   [=fenced frame config instance/partition nonce=] will be used to partition resources.
+
+In addition to resource partitioning, [=fenced frame config instance/partition nonce=] is also used
+to revoke network access in fenced frames. Apply the following monkeypatches to the
+[[!IFRAME-CREDENTIALLESS]] spec.
 
 Add the following algorithm:
 
