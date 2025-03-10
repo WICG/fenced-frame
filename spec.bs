@@ -286,6 +286,8 @@ spec: iframe-credentialless; urlPrefix: https://wicg.github.io/anonymous-iframe/
   type: dfn
     for: navigation params
       text: credentialless; url: navigation-params-credentialless
+  type: dfn
+    text: navigation's credentialless flag; url: navigation-credentialless
 spec: RFC6455; urlPrefix: https://datatracker.ietf.org/doc/html/rfc6455
   type: dfn
     text: fail the WebSocket connection; url: #section-7.1.7
@@ -4382,8 +4384,9 @@ Add the following algorithm:
   In [=create navigation params by fetching=], add a new step between 18 and 19 which reads:
 
   19. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
-      effective partition nonce=] on <var ignore>browsingContext</var> given <var ignore>
-      credentialless</var> and null.
+      effective partition nonce=] on <var ignore>browsingContext</var>, given the result of
+      computing the [=navigation's credentialless flag=] on <var ignore>browsingContext</var>, and
+      null.
 
   Note: We pass null to [=browsing context/computing the effective partition nonce=] here because
   we want navigation fetches originating from a fenced frame to use the same partition as the
