@@ -74,6 +74,19 @@ spec: url; for:/; type: dfn; text: url
     "deliveredBy": [
       "https://wicg.io/"
     ]
+  },
+  "iframe-credentialless": {
+    "authors": [
+      "Arthur Sonzogni",
+      "Camille Lamy"
+    ],
+    "href": "https://wicg.github.io/anonymous-iframe/",
+    "title": "Iframe credentialless",
+    "status": "CG-DRAFT",
+    "publisher": "WICG",
+    "deliveredBy": [
+      "https://wicg.io/"
+    ]
   }
 }
 </pre>
@@ -269,6 +282,12 @@ spec: attribution-reporting; urlPrefix: https://wicg.github.io/attribution-repor
 spec: turtledove; urlPrefix: https://wicg.github.io/turtledove/
   type: dfn
     text: construct a pending fenced frame config; url: construct-a-pending-fenced-frame-config
+spec: iframe-credentialless; urlPrefix: https://wicg.github.io/anonymous-iframe/
+  type: dfn
+    for: navigation params
+      text: credentialless; url: navigation-params-credentialless
+  type: dfn
+    text: navigation's credentialless flag; url: navigation-credentialless
 spec: RFC6455; urlPrefix: https://datatracker.ietf.org/doc/html/rfc6455
   type: dfn
     text: fail the WebSocket connection; url: #section-7.1.7
@@ -4331,6 +4350,87 @@ at the expense of some utility.
   <wpt>
     /fenced-frame/scroll-into-view.https.html
   </wpt>
+</div>
+
+<h3 id=credentialless-monkeypatch>Iframe credentialless</h3>
+
+*This first introductory section is non-normative.*
+
+The [[!IFRAME-CREDENTIALLESS]] specification defines a new object, the [=page credentialless
+nonce=]. At a high level, the [=fenced frame config instance/partition nonce=] serves the same
+purpose as the [=page credentialless nonce=] (partitioning storage and network). However, each
+fenced frame has its own unique nonce, whereas there is a single [=page credentialless nonce=]
+scoped to the [=traversable navigable=]'s [=navigable/active window=], which is shared by all
+descendent credentialless iframes. 
+
+In cases where fenced frames and credentialless iframes exist in the same tree, a child's nonce
+will always take precedence over its parent's. For example:
+
+ * If a credentialless iframe is a child of a fenced frame, the [=page credentialless nonce=] will
+   be used to partition resources for that iframe.
+
+ * If a fenced frame is a child of a credentialless iframe, then the fenced frame's
+   [=fenced frame config instance/partition nonce=] will be used to partition resources.
+
+In addition to resource partitioning, [=fenced frame config instance/partition nonce=] is also used
+to revoke network access in fenced frames. Apply the following monkeypatches to the
+[[!IFRAME-CREDENTIALLESS]] spec.
+
+Add the following algorithm:
+
+<div algorithm>
+  To <dfn for="browsing context">compute the effective partition nonce</dfn> given a boolean 
+  |credentialless| and [=fenced frame config instance/partition nonce=]-or-null
+  |newFencedFrameNonce|:
+
+  1. If |credentialless| is true, return the associated [=browsing context=]'s [=top-level
+     browsing context=]'s [=page credentialless nonce=].
+
+  1. If |newFencedFrameNonce| is not null, return |newFencedFrameNonce|.
+
+  1. Let |instance| be the associated [=browsing context=]'s [=browsing context/fenced frame
+     config instance=].
+
+  1. Return |instance|'s [=fenced frame config instance/partition nonce=] if |instance| is not
+     null, and return null otherwise.
+</div>
+
+<div algorithm="create navigation params by fetching">
+  Rewrite the entirety of <a href=https://wicg.github.io/anonymous-iframe/#spec-navigation-partition-nonce>
+  section 6.1.9.1</a> as follows:
+
+  In [=create navigation params by fetching=], add a new step between 18 and 19 which reads:
+
+  19. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
+      effective partition nonce=] on <var ignore>browsingContext</var>, given the result of
+      computing the [=navigation's credentialless flag=] on <var ignore>browsingContext</var>, and
+      null.
+
+  Note: We pass null to [=browsing context/computing the effective partition nonce=] here because
+  we want navigation fetches originating from a fenced frame to use the same partition as the
+  fenced frame itself. After the navigation fetch completes and we initialize the document, we can
+  access the correct partition nonce via the [=fenced frame config instance=]'s
+  [=fenced frame config instance/partition nonce=].
+
+  Renumber step 19 to 20, and rewrite step 20.2.4 to read:
+
+  4. Set <var ignore>request</var>'s [=request/reserved client=] to a new [=environment=] whose
+     [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is
+     <var ignore>navigable</var>'s [=navigable/active browsing context=], [=environment/
+     creation URL=] is <var ignore>currentURL</var>, [=environment/top-level creation URL=] is
+     <var ignore>topLevelCreationURL</var>, [=environment/top-level origin=] is <var ignore>
+     topLevelOrigin</var>, and [=environment/partition nonce=] is <var ignore>partitionNonce.</var>
+</div>
+
+<div algorithm="initialize the document object">
+  Modify the step added to <a href=https://wicg.github.io/anonymous-iframe/#spec-window-partition-nonce>
+  initialize the document object</a> to read:
+
+  6.9. Let <var ignore>partitionNonce</var> be the result of [=browsing context/computing the
+       effective partition nonce=] on <var ignore>browsingContext</var> given |navigationParams|'s
+       [=navigation params/credentialless=] and null if |navigationParams|'s [=navigation params/
+       fenced frame config instance=] is null else |navigationParams|'s [=navigation params/fenced
+       frame config instance=]'s [=fenced frame config instance/partition nonce=].
 </div>
 
 <h3 id=webrtc-monkeypatch>WebRTC</h3>
