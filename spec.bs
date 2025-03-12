@@ -3420,7 +3420,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   Modify [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an optional [=string=]
   <dfn for=navigate>sharedStorageContext</dfn> (default null).
   
-  Add a step after step 5 that reads:
+  Add a step after step 5 of [[HTML]]'s [=navigate=] algorithm that reads:
   
   6. If the result of running [=determine if a navigable has revoked network for itself=] given <var
      ignore>sourceDocument</var>'s [=node navigable=] is true, then return.
