@@ -314,7 +314,7 @@ This section goes into the privacy considerations of the 2 states a fenced frame
 
 Click privacy considerations are already described in the [earlier section](#click-privacy-considerations).
 
-An additional element of user privacy is the ability to control this feature via user agent settings. UAs should ensure that users are able to control this capability in alignment with controls for similar cross-site storage capabilities.
+An additional element of user privacy is the ability to turn off this feature via a UX control. To achieve this, Chrome will disable this feature when the “Block all third-party cookies” settings is enabled. UAs should ensure that users are able to control this capability in alignment with controls for similar cross-site storage capabilities.
 
 ### New Permissions Policy: fenced-unpartitioned-storage-read
 
