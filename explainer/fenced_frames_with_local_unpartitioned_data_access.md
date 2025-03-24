@@ -1,4 +1,5 @@
-# **Fenced Frames with local unpartitioned data access**
+# **Fenced Storage Read API**
+**(earlier referred to as Fenced Frames with local unpartitioned data access)**
 
 
 ## Introduction and Goals
