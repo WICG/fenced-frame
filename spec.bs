@@ -3422,7 +3422,8 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
   
   Add a step after step 5 of [[HTML]]'s [=navigate=] algorithm that reads:
   
-  6. If the result of running [=determine if a navigable has revoked network for itself=] given <var ignore>sourceDocument</var>'s [=node navigable=] is true, then return.
+  6. If the result of running [=determine if a navigable has revoked network for itself=] given <var
+     ignore>sourceDocument</var>'s [=node navigable=] is true, then return.
 
   Modify step 13 of [[HTML]]'s [=navigate=] algorithm ("If all of the following are true:") to
   include the following condition:
