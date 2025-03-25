@@ -2214,8 +2214,8 @@ Once that web driver changes is made, existing Chromium-internal web platform te
 </div>
 
 <div algorithm>
-  To determine whether fetching a [=request=] |request| <dfn>must be blocked due to
-  a revoked partition nonce</dfn>, run these steps:
+  To determine whether fetching a [=request=] |request| <dfn>must be blocked due to a revoked
+  partition nonce</dfn>, run these steps:
 
   1. Let |key| be the result of running [=request/determine the network partition key=] on
      |request|.
@@ -2297,27 +2297,24 @@ Standard.
      <var ignore>transport</var> to run these steps:
 </div>
 
-The network revocation mechanism requires the following monkeypatch to the [[Reporting]]
-Standard.
+The network revocation mechanism requires the following monkeypatch to the [[Reporting]] Standard.
 
 <div algorithm=generate-report-patch>
-  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that
-  reads:
+  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that reads:
 
   2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
-      revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
 </div>
 
-The network revocation mechanism requires the following monkeypatch to the [[Webpackage]]
-Standard.
+The network revocation mechanism requires the following monkeypatch to the [[Webpackage]] Standard.
 
 <div algorithm=sxg-patch>
   Modify the [monkeypatch](https://wicg.github.io/webpackage/loading.html#mp-http-fetch) to [=HTTP
   fetch=]. Rewrite step 4 under the **"b2" or "b3"** switch case to read:
 
   4. If the result of determining whether <var ignore>request</var> [=must be blocked due to a
-      revoked partition nonce=] is false, then [=in parallel=], [=wait and queue a report for=] <var
-      ignore>parsedExchange</var> and <var ignore>report</var>.
+     revoked partition nonce=] is false, then [=in parallel=], [=wait and queue a report for=] <var
+     ignore>parsedExchange</var> and <var ignore>report</var>.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -4434,7 +4431,7 @@ Add the following algorithm:
 
   - a [=site=].
   - null or an [=implementation-defined=] value.
-  - A <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
+  - a <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
 </div>
 
 <div algorithm="create navigation params by fetching">
