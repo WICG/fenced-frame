@@ -4429,9 +4429,9 @@ Add the following algorithm:
 
   A [=network partition key=] is a [=tuple=] consisting of:
 
-  - a [=site=].
-  - null or an [=implementation-defined=] value.
-  - a <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
+  * a [=site=].
+  * null or an [=implementation-defined=] value.
+  * a <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
 </div>
 
 <div algorithm="create navigation params by fetching">
