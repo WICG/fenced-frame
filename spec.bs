@@ -4425,7 +4425,7 @@ Add the following algorithm:
 </div>
 
 <div algorithm=network-partition-key-patch>
-  Rewrite the [=network partition key=] redefinition to read:
+  Rewrite the [=network partition key=] <a href=https://wicg.github.io/anonymous-iframe/#spec-network-partition-key>redefinition</a> to read:
 
   A [=network partition key=] is a [=tuple=] consisting of:
 
