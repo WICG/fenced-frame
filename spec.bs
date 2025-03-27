@@ -9,6 +9,7 @@ Level: 1
 URL: https://wicg.github.io/fenced-frame/
 Boilerplate: omit conformance, omit feedback-header
 Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com, https://domfarolino.com
+Editor: Liam Brady, Google https://www.google.com/, lbrady@chromium.org
 Abstract: The fenced frame enforces a boundary between the embedding page and the cross-site embedded document such that user data visible to the two sites is not able to be joined together.
 !Participate: <a href="https://github.com/WICG/fenced-frame">GitHub WICG/fenced-frame</a> (<a href="https://github.com/WICG/fenced-frame/issues/new">new issue</a>, <a href="https://github.com/WICG/fenced-frame/issues?state=open">open issues</a>)
 !Commits: <a href="https://github.com/WICG/fenced-frame/commits/master/spec.bs">GitHub spec.bs commits</a>
@@ -235,6 +236,8 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
     text: resolve an origin; url: resolve-an-origin
+    for: request
+      text: determine the network partition key; url: request-determine-the-network-partition-key
     for: response
       text: has-cross-origin-redirects; url: response-has-cross-origin-redirects
 spec: mixed-content; urlPrefix: https://w3c.github.io/webappsec-mixed-content/
@@ -301,6 +304,9 @@ spec: WebTransport; urlPrefix: https://w3c.github.io/webtransport
       text: cleanup; url: #webtransport-cleanup
       text: queue a network task; url: #webtransport-queue-a-network-task
     text: initialize WebTransport over HTTP; url: #initialize-webtransport-over-http
+spec: webpackage; urlPrefix: https://wicg.github.io/webpackage/loading.html
+  type: dfn
+    text: wait and queue a report for; url: wait-and-queue-a-report-for
 </pre>
 
 <style>
@@ -2210,12 +2216,16 @@ Once that web driver changes is made, existing Chromium-internal web platform te
 </div>
 
 <div algorithm>
-  To determine whether fetching a [=request=] <var ignore>request</var> <dfn>must be blocked due to
-  a revoked partition nonce</dfn> using a [=fenced frame config instance/partition nonce=] |nonce|
-  and a [=URL=] |requestURL|, run these steps:
+  To determine whether fetching a [=request=] |request| <dfn>must be blocked due to a revoked
+  partition nonce</dfn>, run these steps:
+
+  1. Let |key| be the result of running [=request/determine the network partition key=] on
+     |request|.
+
+  1. Let |nonce| be |key|'s [=network partition key/nonce=].
 
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], and if
-     |requestURL| [=set/exists=] in it, return <b>allowed</b>.
+     |request|'s [=request/URL=] [=set/exists=] in it, return <b>allowed</b>.
 
   1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, return
      <b>blocked</b>.
@@ -2300,6 +2310,26 @@ Standard.
      
      then abort the remaining steps and [=WebTransport/queue a network task=] with
      <var ignore>transport</var> to run these steps:
+</div>
+
+The network revocation mechanism requires the following monkeypatch to the [[Reporting]] Standard.
+
+<div algorithm=generate-report-patch>
+  Modify the [=generate and queue a report=] algorithm. Add a new step after step 1 that reads:
+
+  2. If |context| is a {{Document}}, and if the result of running [=determine if a navigable has
+     revoked network for itself=] given |context|'s [=node navigable=] is true, then return.
+</div>
+
+The network revocation mechanism requires the following monkeypatch to the [[Webpackage]] Standard.
+
+<div algorithm=sxg-patch>
+  Modify the [monkeypatch](https://wicg.github.io/webpackage/loading.html#mp-http-fetch) to [=HTTP
+  fetch=]. Rewrite step 4 under the **"b2" or "b3"** switch case to read:
+
+  4. If the result of determining whether <var ignore>request</var> [=must be blocked due to a
+     revoked partition nonce=] is false, then [=in parallel=], [=wait and queue a report for=] <var
+     ignore>parsedExchange</var> and <var ignore>report</var>.
 </div>
 
 <h3 id=new-request-destination>New [=request=] [=request/destination=]</h3>
@@ -3433,6 +3463,11 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
 <div algorithm=navigate>
   Modify [[HTML]]'s [=navigate=] algorithm to include an extra parameter: an optional [=string=]
   <dfn for=navigate>sharedStorageContext</dfn> (default null).
+  
+  Add a step after step 5 of [[HTML]]'s [=navigate=] algorithm that reads:
+  
+  6. If the result of running [=determine if a navigable has revoked network for itself=] given <var
+     ignore>sourceDocument</var>'s [=node navigable=] is true, then return.
 
   Modify step 13 of [[HTML]]'s [=navigate=] algorithm ("If all of the following are true:") to
   include the following condition:
@@ -4407,6 +4442,17 @@ Add the following algorithm:
 
   1. Return |instance|'s [=fenced frame config instance/partition nonce=] if |instance| is not
      null, and return null otherwise.
+</div>
+
+<div algorithm=network-partition-key-patch>
+  Rewrite the [=network partition key=] <a
+  href=https://wicg.github.io/anonymous-iframe/#spec-network-partition-key>redefinition</a> to read:
+
+  A [=network partition key=] is a [=tuple=] consisting of:
+
+  * a [=site=].
+  * null or an [=implementation-defined=] value.
+  * a <dfn for="network partition key">nonce</dfn> (null or an [=implementation-defined=] value).
 </div>
 
 <div algorithm="create navigation params by fetching">
