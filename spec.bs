@@ -2270,7 +2270,7 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 <div algorithm=obtain-a-connection-patch>
   Modify the [=obtain a connection=] algorithm, insert these steps before step 1:
 
-  1. Let |nonce| be |key|'s [=network partition key/nonce=].
+  1. Let |nonce| be <var ignore>key</var>'s [=network partition key/nonce=].
 
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], but [=network
      revocation exemption map=][|nonce|][|url|] does not [=map/exists=], then:
