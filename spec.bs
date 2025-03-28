@@ -2275,7 +2275,8 @@ The network revocation mechanism requires the following monkeypatches to the [[F
   1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], but [=network
      revocation exemption map=][|nonce|][<var ignore>yrl</var>] does not [=map/exists=], then:
 
-    1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, then return.
+    1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, then return
+       failure.
 </div>
 
 The network revocation mechanism requires the following monkeypatch to the [[WebSockets]]
