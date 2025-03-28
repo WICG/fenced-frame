@@ -2270,7 +2270,7 @@ The network revocation mechanism requires the following monkeypatches to the [[F
 <div algorithm=resolve-an-origin-patch>
   Modify the [=resolve an origin=] algorithm to include an extra parameter: a [=URL=] |url|.
   
-  Insert these steps immediately after step 2:
+  Insert these steps before step 1:
   
   1. Let |nonce| be <var ignore>key</var>'s [=network partition key/nonce=].
   
