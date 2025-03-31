@@ -235,6 +235,7 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: queue a cross-origin embedder policy CORP violation report; url: queue-a-cross-origin-embedder-policy-corp-violation-report
     text: should request be blocked due to a bad port; url: block-bad-port
+    text: obtain a connection; url: #concept-connection-obtain
     text: resolve an origin; url: resolve-an-origin
     for: request
       text: determine the network partition key; url: request-determine-the-network-partition-key
@@ -2265,6 +2266,18 @@ The network revocation mechanism requires the following monkeypatches to the [[F
   Issue: This needs to be passed in both the fenced frame nonce as well as the iframe credentialless
   nonce, if it exists.
   (<a href="https://github.com/WICG/fenced-frame/issues/191">WICG/fenced-frame#191</a>)
+</div>
+
+<div algorithm=obtain-a-connection-patch>
+  Modify the [=obtain a connection=] algorithm, insert these steps before step 1:
+
+  1. Let |nonce| be <var ignore>key</var>'s [=network partition key/nonce=].
+
+  1. If the user agent's [=network revocation exemption map=][|nonce|] [=map/exists=], but [=network
+     revocation exemption map=][|nonce|][<var ignore>yrl</var>] does not [=map/exists=], then:
+ 
+     1. If the user agent's [=network revocation nonce set=] [=set/contains=] |nonce|, then return
+       failure.
 </div>
 
 <div algorithm=resolve-an-origin-patch>
