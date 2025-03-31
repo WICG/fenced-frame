@@ -98,7 +98,7 @@ The benefits of using shared storage for this solution are primarily how it alig
 *   The incremental enhancements to shared storage for this use case aren’t complicated/hard to integrate in the existing shared storage design/implementation.
 *   Shared storage, is by definition, unpartitioned data. There is no notion of partitioned data for this use case as mentioned in the Requirements section above, which makes it more aligned with using shared storage.
 *   Shared storage is by JS-readable only and thus aligns with the requirement.
-*   Additionally, shared storage APIs’ invocation is gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/) which offers additional, policy-based, privacy protection.
+*   Additionally, the invocation of Shared Storage get() API for this feature is gated behind [enrollment and attestation](https://developers.google.com/privacy-sandbox/private-advertising/enrollment) which offers additional, policy-based, privacy protection. Note a new enrollment and attestation category will be added specifically for accessing unpartitioned data within the fenced frame tree named “Fenced Storage Read API”.
 
 **Downsides**
 
