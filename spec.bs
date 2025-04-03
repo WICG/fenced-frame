@@ -2443,14 +2443,14 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
 
 <div algorithm>
   To <dfn>determine if an embedder-initiated fenced frame navigation should be blocked</dfn> given a
-  [=navigable=]  |navigable| and a {{Document}} |sourceDocument|:
+  [=navigable=] |navigable| and a {{Document}} |sourceDocument|:
   
   1. If all of the following are true:
   
     * |sourceDocument|'s [=node navigable=] is a [=fenced navigable container=] while at the same
       time |navigable| is a [=fenced navigable container/fenced navigable=]
     
-    Note: This implies the navigation is an embedder-initiated fenced frame navigation.
+      Note: This implies the navigation is an embedder-initiated fenced frame navigation.
     
     * The result of running [=determine if a navigable has revoked network for itself=] given
       |navigable| is true.
