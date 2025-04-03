@@ -2441,6 +2441,25 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
   1. Return true.
 </div>
 
+<div algorithm>
+  To <dfn>determine if an embedder-initiated fenced frame navigation should be blocked</dfn> given a [=navigable=] 
+  |navigable| and a {{Document}} |sourceDocument|:
+  
+  1. If all of the following are true:
+  
+    * |sourceDocument|'s [=node navigable=] is a [=fenced navigable container=] while at the same time |navigable| is a [=fenced navigable container/fenced navigable=]
+    
+    Note: This implies the navigation is an embedder-initiated fenced frame navigation.
+    
+    * The result of running [=determine if a navigable has revoked network for itself=] given |navigable| is true.
+    
+    * The result of running [=determine if a navigable has revoked network for itself=] given |sourceDocument|'s [=node navigable=] is true.
+    
+    then return true.
+  
+  2. Otherwise, return false.
+</div>
+
 <h3 id=automatic-reporting>Automatic Reporting</h3>
 
 *This first introductory paragraph is non-normative.*
@@ -3691,6 +3710,17 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
   Further rewrite step 10 (now step 12) to return a new {{Document}} with an additional parameter:
   : [=Document/automatic beacons allowed=]
   :: |automaticBeaconsAllowed|.
+</div>
+
+<div algorithm=attempt-populate-history-network-revocation-patches>
+  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm to include an
+  extra parameter: an optional {{Document}} |sourceDocument|.
+  
+  Modify step 5, substep 4 ("Otherwise, if any of the following are true:") to include the following
+  condition:
+  
+  * the result of [=determine if an embedder-initiated fenced frame navigation should be blocked=] given <var ignore>navigable</var> and |sourceDocument| is true;
+
 </div>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
