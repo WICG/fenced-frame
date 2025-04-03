@@ -2448,15 +2448,15 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
   1. If all of the following are true:
   
     * |sourceDocument|'s [=node navigable=] is a [=fenced navigable container=] while at the same
-      time |navigable| is a [=fenced navigable container/fenced navigable=]
+      time |navigable| is a [=fenced navigable container/fenced navigable=];
     
       Note: This implies the navigation is an embedder-initiated fenced frame navigation.
     
     * The result of running [=determine if a navigable has revoked network for itself=] given
-      |navigable| is true.
+      |navigable| is true; and
     
     * The result of running [=determine if a navigable has revoked network for itself=] given
-      |sourceDocument|'s [=node navigable=] is true.
+      |sourceDocument|'s [=node navigable=] is true,
     
     then return true.
   
@@ -3724,7 +3724,6 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
   
   * the result of [=determine if an embedder-initiated fenced frame navigation should be blocked=]
     given <var ignore>navigable</var> and |sourceDocument| is true;
-
 </div>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
