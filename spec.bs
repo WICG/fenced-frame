@@ -3502,6 +3502,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     /fenced-frame/history-back-and-forward-should-not-work-in-fenced-tree.https.html
     /fenced-frame/history-length-fenced-navigations-replace-do-not-contribute-to-joint.https.html
     /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced.https.html
+    /fenced-frame/history-length-outer-page-navigation-not-reflected-in-fenced-nested-iframe.https.html
   </wpt>
 </div>
 
