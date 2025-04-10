@@ -132,6 +132,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: embedder-content-other.html
       text: width; url: attr-dim-width
       text: height; url: attr-dim-height
+    urlPrefix: document-lifecycle.html
+      text: stop loading; url: nav-stop
     urlPrefix: document-sequences.html
       text: browsing context group; url: browsing-context-group
       text: browsing context group set; url: browsing-context-group-set
@@ -2455,12 +2457,15 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
 
   1. If all of the following are true:
     
-    * The result of running [=determine if a navigable has revoked network for itself=] given
-      |navigable| is true; and
+      * The result of running [=determine if a navigable has revoked network for itself=] given
+        |navigable| is true; and
     
-    * The result of running [=determine if a navigable has revoked network for itself=] given
-      |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=]
-      is true,
+      * The result of running [=determine if a navigable has revoked network for itself=] given
+        |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=]
+        is true,
+        
+        Note: The |navigable|'s [=traversable navigable/unfenced parent=] may be null; in that case,
+        the |navigable| will [=stop loading=] regardless of the result of this algorithm.
     
     then return true.
   
