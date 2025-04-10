@@ -2461,10 +2461,10 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
         |navigable| is true; and
     
       * The result of running [=determine if a navigable has revoked network for itself=] given
-        |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=]
-        is true,
+        |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable
+        navigable=] is true,
         
-        Note: The |navigable|'s [=traversable navigable/unfenced parent=] may be null; in that case,
+        Note: The |navigable|'s [=traversable navigable/unfenced parent=] might be null; in that case,
         the |navigable| will [=stop loading=] regardless of the result of this algorithm.
     
     then return true.
