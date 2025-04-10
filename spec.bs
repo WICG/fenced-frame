@@ -2445,17 +2445,22 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
   To <dfn>determine if an embedder-initiated fenced frame navigation should be blocked</dfn> given a
   [=navigable=] |navigable| and a [=source snapshot params=] |sourceSnapshotParams|:
   
-  1. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then return false.
+  1. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then
+     return false.
      
-     Issue: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is expected to be non-null for an embedder-initiated <{fencedframe}> navigation and null otherwise. However, this is not true until <a href=#issue-urn-uuid-navigation>this issue</a> is resolved.
+     Issue: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is
+     expected to be non-null for an embedder-initiated <{fencedframe}> navigation and null
+     otherwise. However, this is not true until <a href=#issue-urn-uuid-navigation>this issue</a> is
+     resolved.
 
   1. If all of the following are true:
     
     * The result of running [=determine if a navigable has revoked network for itself=] given
       |navigable| is true; and
     
-    * The result of running [=determine if a navigable has revoked network for itself=] given |navigable|'s
-      [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=] is true,
+    * The result of running [=determine if a navigable has revoked network for itself=] given
+      |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=]
+      is true,
     
     then return true.
   
@@ -3533,13 +3538,14 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
        navigable=]:
 
-       <p class="issue" id="issue-urn-uuid-navigation"> The above condition is not as tight as it needs to be. For example, if a
-       <{fencedframe}> generates a {{FencedFrameConfig}} using a config-generating API, and then
-       correctly guesses the config's [=fencedframeconfig/urn|urn:uuid=], it can theoretically
-       navigate itself to that config by passing the guessed urn into the navigate algorithm as a
-       [=URL=], via something like the {{Window/location}} API. This is bad, because the purpose of
-       a {{FencedFrameConfig}} is to ensure that only an embedder can navigate a <{fencedframe}> to
-       the resource represented by the config, by using the config object directly. See <a
+       <p class="issue" id="issue-urn-uuid-navigation"> The above condition is not as tight as it
+       needs to be. For example, if a <{fencedframe}> generates a {{FencedFrameConfig}} using a
+       config-generating API, and then correctly guesses the config's
+       [=fencedframeconfig/urn|urn:uuid=], it can theoretically navigate itself to that config by
+       passing the guessed urn into the navigate algorithm as a [=URL=], via something like the
+       {{Window/location}} API. This is bad, because the purpose of a {{FencedFrameConfig}} is to
+       ensure that only an embedder can navigate a <{fencedframe}> to the resource represented by
+       the config, by using the config object directly. See <a
        href=https://github.com/WICG/fenced-frame/issues/194>#194</a> for thoughts on fixing this.
        </p>
 
@@ -3717,8 +3723,8 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 </div>
 
 <div algorithm=attempt-populate-history-network-revocation-patches>
-  Modify step 5, substep 4 ("Otherwise, if any of the following are true:") of [[HTML]]'s [=attempt to populate the history entry's document=] algorithm to include the following
-  condition:
+  Modify step 5, substep 4 ("Otherwise, if any of the following are true:") of [[HTML]]'s [=attempt
+  to populate the history entry's document=] algorithm to include the following condition:
   
   * the result of [=determine if an embedder-initiated fenced frame navigation should be blocked=]
     given <var ignore>navigable</var> and <var ignore>sourceSnapshotParams</var> is true;
