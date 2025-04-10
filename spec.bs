@@ -1354,7 +1354,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
      href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
      Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
      href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
-     Frame Ads Reporting explainer</a> that describes this. This field is used only for Protected Audience with event-level reporting.
+     Frame Ads Reporting explainer</a> that describes this. This field is used only for Protected
+     Audience with event-level reporting.
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
