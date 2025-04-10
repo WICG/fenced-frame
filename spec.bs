@@ -1221,8 +1221,8 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>shared storage selectURL budget metadata</dfn> is a [=struct=] with the
-following [=struct/items=]:
+An <dfn export for=fencedframetype>shared storage selectURL budget metadata</dfn> is a [=struct=]
+with the following [=struct/items=]:
 
 <dl export dfn-for="shared storage selectURL budget metadata">
   : <dfn>origin</dfn>
@@ -1232,8 +1232,8 @@ following [=struct/items=]:
   :: a non-negative valid floating point number
 </dl>
 
-An <dfn export for=fencedframetype>shared storage selectURL budget metadata reference</dfn> is a [=struct=]
-with the following [=struct/items=]:
+An <dfn export for=fencedframetype>shared storage selectURL budget metadata reference</dfn> is a
+[=struct=] with the following [=struct/items=]:
 
 <dl export dfn-for="shared storage selectURL budget metadata reference">
   : <dfn>origin</dfn>
@@ -1472,17 +1472,21 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
 
     : [=fenced frame config instance/shared storage selectURL budget metadata reference=]
     ::
-        1. If |config|'s [=fenced frame config/shared storage selectURL budget metadata=] is null, set to null.
+        1. If |config|'s [=fenced frame config/shared storage selectURL budget metadata=] is null,
+           set to null.
 
-        1. Otherwise, set to a [=fencedframetype/shared storage selectURL budget metadata reference=]:
+        1. Otherwise, set to a [=fencedframetype/shared storage selectURL budget metadata
+           reference=]:
 
             : [=shared storage selectURL budget metadata reference/origin=]
-            :: |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s [=shared storage selectURL budget metadata/value=]'s [=shared storage selectURL budget metadata/origin=]
+            :: |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s
+               [=shared storage selectURL budget metadata/value=]'s [=shared storage selectURL
+               budget metadata/origin=]
 
             : [=shared storage selectURL budget metadata reference/amount to debit reference=]
-            :: a reference to |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s
-               [=shared storage selectURL budget metadata/value=]'s [=shared storage selectURL budget metadata/amount to
-               debit=]
+            :: a reference to |config|'s [=fenced frame config/shared storage selectURL budget
+               metadata=]'s [=shared storage selectURL budget metadata/value=]'s [=shared storage
+               selectURL budget metadata/amount to debit=]
 
     : [=fenced frame config instance/nested configs=]
     ::
