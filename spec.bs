@@ -2464,8 +2464,8 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
         |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable
         navigable=] is true,
         
-        Note: The |navigable|'s [=traversable navigable/unfenced parent=] might be null; in that case,
-        the |navigable| will [=stop loading=] regardless of the result of this algorithm.
+        Note: The |navigable|'s [=traversable navigable/unfenced parent=] might be null; in that
+        case, the |navigable| will [=stop loading=] regardless of the result of this algorithm.
     
     then return true.
   
