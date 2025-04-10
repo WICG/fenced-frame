@@ -42,7 +42,7 @@ The privacy threat addressed is:
 
 **The ability to correlate the user’s identity/information on the embedding site with that on the embedded site.**
 
-The different use cases and their privacy models are discussed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/use_cases.md).
+The different use cases and their privacy models are discussed [here](https://github.com/WICG/fenced-frame/blob/master/explainer/use_cases.md).
 
 ## Design
 
@@ -51,7 +51,7 @@ Fenced frames are embedded contexts that have the following characteristics to p
 
 
 *   They’re not allowed to communicate with the embedder and vice-versa, except for certain information such as limited size information.
-*   They access storage and network via unique partitions so no other frame outside a given fenced frame document can share information via these channels. This is described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/storage_cookies_network_state.md). 
+*   They access storage and network via unique partitions so no other frame outside a given fenced frame document can share information via these channels. This is described [here](https://github.com/WICG/fenced-frame/blob/master/explainer/storage_cookies_network_state.md). 
 *   They may have access to browser-managed, limited unpartitioned user data, for example, turtledove interest group.
 
 The idea is that the fenced frame should not have access to both of the following pieces of information and be able to exfiltrate a join on those:
@@ -64,9 +64,9 @@ The idea is that the fenced frame should not have access to both of the followin
     *   Accessible via an API (e.g., Turtledove) or via access to unpartitioned storage  
 
 
-A primary use case for fenced frames is to load content that depends on values in another partition’s storage. For example, in Turtledove, we pick an ad based on the user's interest groups (which are joined while browsing other sites) and load it in a fenced frame. The URL of the ad reflects the user's interest group memberships, which is a form of cross-site data, therefore we store the URL for the ad creative _opaquely_ in a fenced frame config (details [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/fenced_frame_config.md)). The embedder can use this object to load the ad resulting from the Turtledove auction, but can't inspect it to determine _which_ ad won.
+A primary use case for fenced frames is to load content that depends on values in another partition’s storage. For example, in Turtledove, we pick an ad based on the user's interest groups (which are joined while browsing other sites) and load it in a fenced frame. The URL of the ad reflects the user's interest group memberships, which is a form of cross-site data, therefore we store the URL for the ad creative _opaquely_ in a fenced frame config (details [here](https://github.com/WICG/fenced-frame/blob/master/explainer/fenced_frame_config.md)). The embedder can use this object to load the ad resulting from the Turtledove auction, but can't inspect it to determine _which_ ad won.
 
-We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md).
+We expect some leakage of information to be possible via network timing attacks. The side channel and some mitigations are described [here](https://github.com/WICG/fenced-frame/blob/master/explainer/network_side_channel.md).
 
 ### Fenced frame API 
 
@@ -153,12 +153,12 @@ This is called synchronously, and will look at the execution context of the fram
 
 Even though a fenced frame is isolated from its embedding context, it cannot be used as a workaround to the security restrictions that the top-level site wants to enforce on the embedding frames, without the knowledge of the top-level site. The design decisions of fenced frames related to security mechanisms like sandbox, csp, permission policy etc. are based on the following principles:
 * Attributes like cspee, sandbox etc. and headers like frame-ancestors etc. cannot be used as a communication channel with the embedding context.
-* Fenced frame should not be able to escalate privileges without the knowledge of the top-level site e.g. all permission policy delegation based features in a fenced frame are therefore disallowed.
+* Fenced frame should not be able to escalate privileges without the knowledge of the top-level site. A feature disallowed by a top-level site for a given origin cannot be allowed in a fenced frame of that same origin, since that becomes a security risk. Since this requires the fenced frame learning about what features are allowed for its origin, and since revealing to the fenced frame what features are enabled for what origins are a fingerprinting vector, all permission policy delegation based features are therefore disallowed in fenced frames that don't allow data infiltration. Fenced frames that do allow for data infiltration (i.e. ones loaded with transparent URLs allowing for arbitrary data to be added) can use and inherit permissions policy delegation for features. See: [Fenced frames: permissions and document policies](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md).
 * There are headers from the fenced frame site that are not honored as they would in an iframe, e.g. frame-ancestors, due to being a privacy leak. This is the reason fenced frames need to be opted in by the site using the opt-in response header.
 
 More about security mechanisms are detailed in:
-* [Fenced frames and CSP](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
-* [Fenced frames and policies](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md)
+* [Fenced frames and CSP](https://github.com/WICG/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md)
+* [Fenced frames and policies](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md)
 * [Fenced frames and sandbox](https://docs.google.com/document/d/1RO4NkQk_XaEE7vuysM9LJilZYsoOhydfh93sOvrPQxU/edit?usp=sharing)
 
 **Secure contexts:** Fenced Frames are only allowed if all ancestor frames are [secure contexts](https://w3c.github.io/webappsec-secure-contexts/), the fenced frame's document is from a [potentially trustworthy URL](https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url) and all subresources inside the FF will follow [mixed mode restrictions](https://web.dev/fixing-mixed-content/). 
@@ -167,7 +167,7 @@ More about security mechanisms are detailed in:
 
 **xsleaks:** In terms of cross site leak attacks, fenced frames is at least as secure as iframes are and better in some cases by default e.g. always having noopener, no joint history etc. For more details, the fenced frames xsleaks audit can be found [here](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing).
 
-**Process isolation:** Process isolation for fenced frames is detailed [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/process_isolation.md).
+**Process isolation:** Process isolation for fenced frames is detailed [here](https://github.com/WICG/fenced-frame/blob/master/explainer/process_isolation.md).
 
 
 ## Privacy considerations
@@ -176,12 +176,12 @@ The fenced frame’s main goal is to improve privacy by disallowing communicatio
 
 
 *   **Initial size and resize:** The API that generates a fenced frame config can pick the initial size that the fenced frame document sees, subject to whatever restrictions it deems necessary for its privacy model. If the initial size is fixed, then any changes the embedder attempts to make to the fenced frame's size will not be reflected inside of it.
-*   **IntersectionObserver:** It is important for ads reach and reporting APIs to know the status of the ad frame's visibility, so IntersectionObserver will need to be supported in some way, for instance by only letting it be consumed by browser APIs like [aggregate reporting API](https://github.com/csharrison/aggregate-reporting-api). We can't fully support it as iframes do, to make sure that embedding sites do not (re)position frames such that IntersectionObserver is used for communicating the user’s id to the fenced frame. This is currently under design and intersection observer capability will be supported until the alternative is provided.
-*   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Also delegation of permissions from the embedding context to the fenced frames should not be allowed as that could be a communication channel. This is detailed further [here](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/permission_document_policies.md).
-*   **Network side channel:** This is detailed more here: [network side channel](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/network_side_channel.md)
-*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some use cases, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitgations going forward (currently being brainstormed). Additionally, this is vulnerable to the network side channel as mentioned above when the embedding site and destnation site are colluding.  
+*   **Intersection Observer:** See [Integration with web platform > Viewability](https://github.com/WICG/fenced-frame/blob/master/explainer/integration_with_web_platform.md#Viewability) for discussion of the privacy considerations for the Intersection Observer API.
+*   **Delegated permissions:** [Permission delegation](https://www.chromestatus.com/feature/5670617353289728) restricts permission requests to the top-level frame. Since fenced frames are embedded contexts, they should not have access to permissions, even if they are treated as top-level browsing contexts. Delegation of permissions from the embedding context to the fenced frame is a data infiltration channel, and should be disallowed when the privacy story disallows data inflow. This is detailed further [here](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md).
+*   **Network side channel:** This is detailed more here: [network side channel](https://github.com/WICG/fenced-frame/blob/master/explainer/network_side_channel.md)
+*   **Navigation url:** Since fenced frames are allowed to open popups or navigate the top-level page in some use cases, gated on user activation, the navigation url can carry bits of information out of the fenced frame tree. If the embedder and the destination are same-origin, the information in the url and embedder's info can be joined locally on navigation. This might need mitigations going forward (currently being brainstormed); we plan to add metrics to understand how often this happens in practice. Additionally, this is vulnerable to the network side channel as mentioned above if the embedding site and destination site are colluding (even when not same-origin)---though this is less concerning than for non-navigation network requests, since navigation is only allowed upon user interactions like clicks.
 
-More of these channels exist and the [integration with web platform](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
+More of these channels exist and the [integration with web platform](https://github.com/WICG/fenced-frame/blob/master/explainer/integration_with_web_platform.md) details them further.
 
 ### Ongoing technical constraints
 Fenced frames disable explicit communication channels, but it is still possible to use covert channels to share data between the embedder and embeddee, e.g. global socket pool limit (as mentioned in the [xsleaks audit](https://docs.google.com/spreadsheets/d/1YkQxcQlOd24XmSUQ8RpQU0zINYSTTih8drNibV0LIXE/edit?usp=sharing)), network side channel and intersection observer as described above, etc. Mitigations to some of these are being brainstormed. We also believe that any use of these known covert channels is clearly hostile to users and undermines web platform intent to the point that it will be realistic for browsers to take action against sites that abuse them. 

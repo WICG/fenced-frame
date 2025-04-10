@@ -9,13 +9,18 @@ This document goes into how fenced frames interact with various ways of policy d
 
 As mentioned in the list [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#directives), some of the powerful features that permission policy (earlier known as feature policy) supports are autoplay, geolocation, camera etc. The HTTP header provides a mechanism to allow and deny the use of browser features in its own frame, and in content within any &lt;iframe> elements in the document. The way a top-level page can currently deny/allow these features in an iframe does not work with fenced frames for the following reasons. 
 
+*   Some permissions-backed features (such as fullscreen and picture-in-picture) have actions that are observable from an embedder, which would create a data exfiltration channel if enabled in a fenced frame.
+*   If permissions are delegated to a fenced frame, the fenced frame can then invoke a number of these APIs and based on whether each of them are allowed or not, it can be used to communicate a bitmap from the embedding page to the fenced frame.
+*   It then prompts the question as to whether it is possible for the fenced frame to behave like a top-level browsing context and do its own header exchange to determine what needs to be allowed/denied in the fenced frame tree. If the actual top-level page had denied a feature for an origin e.g. Feature-Policy: geolocation 'none' and a fenced frame is allowed to use geolocation via its own header exchange, then it acts as a workaround for the restrictions placed on embedded frames and leads to an escalation of privilege attack.
 
+Different fenced frame configurations still need permissions-backed features to function properly. To handle that without compromising privacy, different behaviors are specified based on the existing privacy guarantees of the fenced frame:
 
-*   We cannot allow permissions to be delegated to the fenced frame since a fenced frame can then invoke a number of these APIs and based on whether each of them is allowed or not, it can be used to communicate a bitmap from the embedding page to the fenced frame.
-*   It then prompts the question as to whether it is possible for the fenced frame to behave like a top-level browsing context and do its own header exchange to determine what needs to be allowed/denied in the fenced frame tree. This also does not work because:
-    1. if the actual top-level page had denied a feature for an origin e.g. Feature-Policy: geolocation 'none' and a fenced frame is allowed to use geolocation via its own header exchange, then it acts as a workaround for the restrictions placed on embedded frames and leads to an escalation of privilege attack.
-    2. If we only allow a feature via FF headers if it was also allowed by the top-level page, then it acts as a bitmap channel as mentioned in the above point.
+*   Fenced frames that guarantee k-anonymity (i.e. fenced frames loaded with opaque URNs created through an API like Protected Audience) have a fixed list of permissions that must be delegated to it by the embedder in order for it to load. This forces the embedding context to have the same permissions bitmap as any other embedding context the fenced frame would be loaded in, removing that fingerprinting channel while also preventing privilege escalation. There is [a proposal to add permissions more flexibly rather than relying on a fixed list](https://github.com/WICG/fenced-frame/blob/master/explainer/permissions_policy_for_API_backed_fenced_frames.md), but this change is not currently planned on being implemented.
+*   Fenced frames that do not guarantee k-anonymity (i.e. developer-created fenced frames loaded with a transparent URL) can inherit permissions from its embedder, since the fingerprinting vector is not a concern. Because the data exfiltration channel is still a concern, we only allow select permissions-backed features that do not have data exfiltration risks.
 
+See [this permissions policy file](https://source.chromium.org/chromium/chromium/src/+/main:services/network/public/cpp/permissions_policy/fenced_frame_permissions_policies.h) for a full list of the fixed permissions (for the k-anon case) or the list of permissions that can be enabled (for the non k-anon case).
+
+Permissions-backed features themselves can still introduce data leaks when enabled. [This document](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/fenced_frame/PERMISSIONS_POLICIES.md) outlines that in greater depth, and includes an audit of which features are safe to enable for what kinds of fenced frames.
 
 ### Summary
 
@@ -36,7 +41,7 @@ Relatedly, [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Pe
 
 Document policy allows the top-level page to configure features on a frame via the ‘policy’ attribute. The embedded frame’s document request will then go on the network with a  `Sec-Required-Document-Policy` header and the frame will only load if the response comes back with the same or stricter document policy. Since this depends on delegation, it has the same issues as the permissions policy or CSPEE with respect to being used as a communication channel. Since this is applied per-document (vs per origin in permissions policy), it is closer to CSPEE.
 
-Similar to [CSPEE handling in fenced frames](https://github.com/shivanigithub/fenced-frame/blob/master/explainer/interaction_with_content_security_policy.md), the embedding site should treat fenced frames differently and assume that the presence of a fenced frame on the site implies no control on the policies of that frame via the policy attribute.  
+Similar to [CSPEE handling in fenced frames](https://github.com/WICG/fenced-frame/blob/master/explainer/permission_document_policies.md), the embedding site should treat fenced frames differently and assume that the presence of a fenced frame on the site implies no control on the policies of that frame via the policy attribute.  
 
 The escalation of privileges attack mentioned above for permissions policy does not apply to document policy since this is delegated per-embedded frame and not per-origin and the embedding site can clearly distinguish between which frames can and cannot be controlled via delegation. 
 

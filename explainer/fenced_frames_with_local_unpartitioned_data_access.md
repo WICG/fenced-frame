@@ -1,9 +1,10 @@
-# **Fenced Frames with local unpartitioned data access**
+# **Fenced Storage Read API**
+**(earlier referred to as Fenced Frames with local unpartitioned data access)**
 
 
 ## Introduction and Goals
 
-There are situations in which it is helpful to decorate a third-party widget with cross-site information about the user, such as a personalized payment button that displays credit card information to give the user confidence that the payment flow will be smooth, or a personalized sign-in button. These sorts of use cases will be broken by [third-party cookie deprecation](https://privacysandbox.com/open-web/) (3PCD). 
+There are situations in which it is helpful to decorate a third-party widget with cross-site information about the user, such as a personalized payment button that displays credit card information to give the user confidence that the payment flow will be smooth, or a personalized sign-in button. Showing a personalized button gives the user more context about what they can expect will happen when they click on the button, allowing them to make a more informed choice, closer to their preferences. These sorts of use cases will be broken in scenarios when [third-party cookies are not available](https://privacysandbox.com/news/privacy-sandbox-update/). 
 
 Fenced frames are a natural fit for such use cases, as they allow for frames with cross-site data to be composed within a page of another partition. The idea proposed here is to allow fenced frames to have access to the cross-site data stored for the given origin within [shared storage](https://github.com/WICG/shared-storage).  In other words, the payment site would add the user’s payment data to shared storage when the user visits the payment site, and then read it in third-party fenced frames to decorate their payment button. 
 
@@ -77,7 +78,7 @@ Let’s first go through the requirements on the data, taking the example of exa
 *   **Size:** As per the current use case feedback, the data itself is not very large, is text-only and can fit in a normal cookie size. This is subject to change though, e.g. if a payment provider wants to also show the user's profile picture in the personalized button.
 *   **Unpartitioned:** The data only needs to be accessed in the unpartitioned state and not in a partitioned (by top-level site i.e. the merchant site for payment providers) state.
 
-Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate:** read from a fenced frame after network revocation**.
+Shared Storage is a Privacy Sandbox API that allows unpartitioned storage access with restricted output gates as described [here](https://github.com/WICG/shared-storage/blob/main/README.md). The existing output gates for shared storage are private aggregation report and opaque URL selection. The proposal here is to introduce a new output gate: **read from a fenced frame after network revocation**.
 
 Some of the enhancements needed for shared storage to be used for this proposal are:
 
@@ -97,7 +98,7 @@ The benefits of using shared storage for this solution are primarily how it alig
 *   The incremental enhancements to shared storage for this use case aren’t complicated/hard to integrate in the existing shared storage design/implementation.
 *   Shared storage, is by definition, unpartitioned data. There is no notion of partitioned data for this use case as mentioned in the Requirements section above, which makes it more aligned with using shared storage.
 *   Shared storage is by JS-readable only and thus aligns with the requirement.
-*   Additionally, shared storage APIs’ invocation is gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/) which offers additional, policy-based, privacy protection.
+*   Additionally, the invocation of Shared Storage get() API for this feature is gated behind [enrollment and attestation](https://developers.google.com/privacy-sandbox/private-advertising/enrollment) which offers additional, policy-based, privacy protection. Note a new enrollment and attestation category will be added specifically for accessing unpartitioned data within the fenced frame tree named “Fenced Storage Read API”.
 
 **Downsides**
 
@@ -139,24 +140,170 @@ Certain privacy preserving aggregated reports can be allowed from the fenced fra
 
 ## Click listener API
 
-The exact surface of the API is still being designed, but at a high level, there will be 2 parts to this API surface: 
+The click listener API is broken into two parts:
 
+*   The embedding context will invoke `addEventListener()` on the `HTMLFencedFrameElement` to listen for a click event on the fenced frame.
+*   A script inside the fenced frame tree will invoke a new method on `window.fence`, which will trigger the embedding context’s click event listener.
 
+### Changes to HTMLFencedFrameElement
 
-*   The embedding context will invoke an API on the fenced frame element to listen for a click event on the fenced frame.
-*   An API that a script inside the fenced frame tree can invoke which will trigger the embedding context’s click event listener.
+After a fenced frame element object is created, the embedder can call `addEventListener(‘fencedtreeclick’, callback)` on it to attach an event listener to the frame. The new listener can fire when an event with type `click` is fired in the embedded document’s DOM tree. A new [event handler](https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-attributes) named `onfencedtreeclick` will also be exposed on all HTML elements, Document objects, and Window objects, to allow fenced frames' parent elements to listen for `fencedtreeclick` events via the `onfencedtreeclick` attribute as well.
 
+To start, the spec will only support `fencedtreeclick`, but given that this API relies on the existing DOM event listener specification, it would be trivial to support other `fencedtree*` events in the future.
+
+The `fencedtreeclick` event listener callback will receive an event object, but it will contain the minimal amount of information necessary to handle the event. Specifically, it will obey the following rules:
+
+* It will be fired using the base DOM Event constructor, rather than a new event subclass.
+* It will be initialized with a type parameter of `'fencedtreeclick'`
+* All instances of the event object will be initialized with the same static timestamp value in order to mitigate timing side-channel attacks. The timestamp value of the DOM Event interface is a duration represented by `DOMHighResTimeStamp`, 
+  so user agents can choose a suitable value to use, such as the Unix epoch.
+* The event's `isTrusted` field will be true, to indicate that the event is dispatched by the user agent.
+* All other attributes of the event object will have the default settings of a newly-constructed event object.
+* When the event object is dispatched, its target will always be the `HTMLFencedFrameElement` upon which the event listener was registered.
+
+Note that specific click information like mouse coordinates are not included. These rules ensure that the event object doesn’t leak information from or about the embedded content.
+
+### Changes to window.fence
+
+Once the embedder has registered the `fencedtreeclick` handler on the fenced frame element, the event needs to be fired while handling the corresponding `click` event within the frame’s content document. This will occur via a new method on the `window.fence` interface, `window.fence.notifyEvent(triggering_event)`. This is different from the existing `reportEvent()` method:
+
+* `reportEvent()` communicates data about events to a remote URL, and the corresponding beacon also includes data set via `registerAdBeacon` (called by Protected Audience worklets) in the destination URL. See the [Protected Audience API explainer](https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#reportevent-preregistered-destination-url) for more details.
+* `notifyEvent()` communicates that an event occurred to the embedder, and nothing else. No extra information is added to the event. This API call also acts as an opt-in by the fenced frame document’s origin to allow sending the notification to the embedding site. 
+
+The function takes one argument, `triggering_event`, which is a `click` event object that the frame’s content is currently handling. In order to trigger the `fencedtreeclick` event in the embedder, this object’s `isTrusted` field must be true, the event must currently be dispatching, and the event’s type name must be `click`. These requirements guarantee that the `fencedtreeclick` event will only be fired by user-agent-generated click events in response to user actually clicking as opposed to a script-generated event.
+
+Here's an example of how `window.fence.notifyEvent()` should be used:
+
+```javascript 
+// In the embedder:
+
+// Make a fenced frame
+let fencedframe = ...
+
+fencedframe.addEventListener('fencedtreeclick', () => {
+    alert('hello world!');
+});
+
+// In the embedded content:
+
+document.body.addEventListener('click', (e) => {} {
+    // Fire a "fencedtreeclick" event at the embedder.
+    window.fence.notifyEvent(e);
+});
+```
+
+The `notifyEvent()` method will not be available in iframes (same-origin or cross-origin), and will only be available in the fenced frame root’s document. 
 
 ### Click Privacy considerations
 
 Since this is exfiltrating some information (that a click happened) outside the fenced frame, we will need to consider the following privacy considerations:
 
-
-
-*   The click event that is notified to the embedding frame should not carry any additional data like the click coordinates.
 *   A possible attack using multiple fenced frames: an embedder creates `n` fenced frames, which all disable network and then determine (by predetermined behavior, or through communication over shared storage) which one of them should display nonempty content. Then if a user clicks on the only nonempty fenced frame, this exfiltrates log(n) bits of information through the click notification. Mitigating this will require some rate limits on the number of fenced frames on a page that are allowed to read from shared storage. This is similar to [shared storage’s existing rate limits](https://github.com/WICG/shared-storage#:~:text=per%2Dsite%20(the%20site%20of%20the%20Shared%20Storage%20worklet)%20budget). 
-*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/). 
+*   Click timing could be a channel to exfiltrate shared storage data, but it’s a relatively weak attack since it requires user gesture and is therefore non-deterministic and less accurate. In addition, as a policy based mitigation, shared storage APIs’ invocation will be gated behind [enrollment](https://developer.chrome.com/en/docs/privacy-sandbox/enroll/).
+*   One potential concern around the `notifyEvent()` API shape is that a single trusted `click` event could be cached by the JS running in the fenced frame and reused in additional `notifyEvent()` calls. However, the requirement that the trusted event *must be dispatching* mitigates this concern. Once the dispatch initiated by the browser completes, `notifyEvent()` will no longer accept the cached event object. If JavaScript on the page then tries to manually re-dispatch the cached event, the object will no longer be trusted (its `isTrusted` field will be set to false).
 
+### User Activation
+
+When a user clicks on a fenced frame, the fenced frame window will have [user activation](https://developer.mozilla.org/en-US/docs/Web/API/UserActivation). User activation is frequently used to [gate access](https://developer.mozilla.org/en-US/docs/Web/Security/User_activation) to powerful Web Platform features unless the user has interacted with the page. In response to a click on a fenced frame, the embedder might want to use one of these features. For example, a personalized third-party payment button is rendered in a fenced frame, and when it’s clicked the first-party merchant site then engages their payment flow. This might involve opening a new window via `window.open()`, or using the `PaymentRequest` API directly, both of which are gated on the transient form of user activation. However, fenced frames don’t automatically propagate user activation to their embedder in the same way that other frames propagate it to their parent. This means that `window.fence.notifyEvent()` has to provide user activation to the embedder manually. 
+
+When `window.fence.notifyEvent(triggering_event)` is called in the fenced frame, three actions will occur related to user activation:
+
+1. First, we’ll ensure that the fenced frame currently has *transient* activation. If all of the requirements on `triggering_event` are met (as described [above](#changes-to-windowfence)), this will likely be true already, but it still must be confirmed explicitly.  
+2. Transient activation will be consumed in the fenced frame. This is to ensure that only one transient-activation-gated API can be used in response to a single click, and the fenced frame is delegating that one API call to its embedder.  
+3. An [activation notification](https://html.spec.whatwg.org/multipage/interaction.html#activation-notification) will be applied in the embedding frame, so that it may call an activation-gated API instead of the fenced frame. The embedding frame will receive both *transient* and *sticky* user activation.
+
+Transient activation will expire after a set amount of time if it is not consumed by a relevant API (in Chromium, this value is 5 seconds). An embedder document and a fenced frame document could cooperate in an attempt to extend this timeout, by waiting to call `notifyEvent()` until immediately before the expiration time. This would give the embedder an additional few seconds to use an activation-gated API. However, because `notifyEvent()` consumes transient activation in the fenced frame, this still only allows a single transient-activation-gated API call to be made.
+
+## Code Example
+
+Now let's take a look at how shared storage, revocation of untrusted network access, and the click listener API can be combined in a real-world example.
+
+This example demonstrates how a third-party payment provider (examplepay.com) might embed a personalized payment button onto a merchant's site. First, the payment provider stores card information in shared storage when a user visits their site in a first-party context. Later, a merchant site uses the provider's API to embed a personalized button, which is rendered in a fenced frame. The fenced frame disables untrusted network access, reads the card information from shared storage, and sets up a click handler on the button to initiate the payment flow.
+
+```javascript
+// When a user navigates to “examplepay.com” and registers their credit card, the last
+// four digits of their card are written to Shared Storage. 
+
+// On https://examplepay.com
+async function registerCard() {
+  // Prepare HTTP request with user-provided card infomation. 
+  let request = createCardRegistrationRequest({number: 'XXXX XXXX XXXX 1234',  
+    expDate: 'MM/YY', ...});
+
+  // Register the card information with examplepay.com.
+  let response = await fetch(request);
+
+  // If the card was registered successfully, write the last 4 digits of the
+  // card number to Shared Storage for origin "examplepay.com." The data to
+  // write could come from the response body, a 1p cookie in a response header,
+  // or somewhere else.
+  if (response.status === 200) {
+    let body = await response.json()
+    await window.sharedStorage.set('last4', body.last4);
+    console.assert(body.last4 === '1234');
+  }
+}
+
+// Once the value has been written to Shared Storage, it can later be read inside a
+// fenced frame, but only when that frame is same-origin to examplepay.com and has
+// its network access restricted. Here’s what that would look like on a merchant page:
+
+// On merchant page
+let example_pay_button = examplePayAPI.createButton();
+document.body.appendChild(example_pay_button);
+
+// In examplePayAPI
+function createButton() {
+  let fenced_frame = document.createElement('fencedframe');
+  // Create a fenced frame config using a URL directly instead of a config-generating 
+  // API like Protected Audience or sharedStorage.selectURL(). Note that the URL is 
+  // same-origin to the site where the card was first registered.
+  fenced_frame.config = new FencedFrameConfig('https://examplepay.com/make_button');
+
+  // Registering a "fencedtreeclick" event handler on the fenced frame element allows
+  // it to respond to a "click" event that fires inside the frame's content.
+  fenced_frame.addEventListener('fencedtreeclick', () => {
+    startPaymentFlow();
+  });
+  return fenced_frame;
+}
+
+// In the "https://examplepay.com/make_button" fenced frame document
+function personalizeButton () {
+  // By waiting for the page to finish loading, we can ensure that there's
+  // no additional JS waiting to execute before revoking network.
+  window.onload = async () => {
+    // First, disable untrusted network access in the fenced frame.
+    await window.fence.disableUntrustedNetwork();
+
+    // Read the last four digits of the card from Shared Storage 
+    // and render them in a button.
+    b = document.createElement('button');
+    b.textContent = await window.sharedStorage.get('last4');         
+
+    // Tell the embedder that the button was clicked, so that the payment flow can be
+    // initiated. This will fire a "fencedtreeclick" event at the fenced frame element
+    // in the embedder, which we previously registered a handler for.
+    b.addEventListener('click', (e) => {
+      window.fence.notifyEvent(e);
+    });
+
+    document.body.appendChild(b);
+  }
+}
+```
+
+## Try it yourself!
+
+Development of this feature is ongoing, but the core functionality described above is implemented in Chromium and can be enabled with two command line flags. **We recommend using Chrome Canary to test with our most recent changes.**
+
+* `--enable-features=FencedFramesDefaultMode,FencedFramesLocalUnpartitionedDataAccess`    
+* `--disable-features=EnforcePrivacySandboxAttestations`
+
+We also have some Glitch demo sites for testing the personalized payment button use case.
+
+* First, visit [demo-payments-provider.glitch.me](https://demo-payments-provider.glitch.me) to register credit card info (please don't use a real credit card number 🙂).
+* Then, visit [demo-merchant.glitch.me](https://demo-merchant.glitch.me) for a sample checkout experience with a personalized payment button.
 
 ## Privacy considerations
 
@@ -168,12 +315,17 @@ This section goes into the privacy considerations of the 2 states a fenced frame
 
 Click privacy considerations are already described in the [earlier section](#click-privacy-considerations).
 
-An additional element of user privacy is the ability to control this feature via user agent settings. UAs should ensure that users are able to control this capability in alignment with controls for similar cross-site storage capabilities.
+An additional element of user privacy is the ability to turn off this feature via a UX control. To achieve this, Chrome will disable this feature when the “Block third-party cookies” settings is enabled. UAs should ensure that users are able to control this capability in alignment with controls for similar cross-site storage capabilities.
 
+### New Permissions Policy: fenced-unpartitioned-storage-read
+
+When a fenced frame accesses unpartitioned data like Shared Storage, a delegation of trust occurs between the embedding context and the fenced frame origin. If the embedder does not trust the content rendered in the fenced frame, it should be able to prevent script in the fenced frame from accessing unpartitioned data. We accomplish this via a new [Permissions Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy) directive, which we call `fenced-unpartitioned-storage-read`.
+
+The `fenced-unpartitioned-storage-read` allowlist will default to `*`, similar to the [`shared-storage` permission](https://wicg.github.io/shared-storage/#permission). If an embedding site wants to restrict a fenced frame’s access to Shared Storage, it can do so by setting a stricter allowlist for that frame, such as `self` or a specific list of origins. 
 
 ## Security considerations 
 
-This new variant of fenced frames (constructed with a normal URL instead of an config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
+This new variant of fenced frames (constructed with a normal URL instead of a config or opaque URL) has similar [security considerations](https://github.com/WICG/fenced-frame/blob/master/explainer/README.md#security-considerations) to  existing fenced frames but because this variant allows information to flow in from the embedding context to the fenced frame, things like permission delegation are simpler (discussed below).
 
 
 ### Permissions delegation
@@ -188,10 +340,13 @@ Fenced frames constructed using the non-opaque URL constructor do not have to wo
 Given the above, we would do an audit to see which features are safe to allow in this variant. In the initial launch though, we will likely go with a minimal list of features that we know are necessary for the personalized payment button to work, e.g. shared storage and Aggregate Reporting APIs.
 
 
-### Ongoing technical considerations
+### Process Isolation
 
-There are ongoing technical considerations, which we will be updating here once the design is crystallized. Specifically, we would like to revisit the fenced frames [process isolation model](https://github.com/WICG/fenced-frame/blob/master/explainer/process_isolation.md) for this variant.
+Fenced frames, like Shared Storage worklets, follow Chrome's [Site Isolation](https://www.chromium.org/Home/chromium-security/site-isolation/) model. As Site Isolation improves, so will the security provided to fenced frames.
 
+### CSP:frame-ancestors
+CSP:frame-ancestors response header only checks up to the fenced frame root in information flows where the embedder’s origin cannot be known inside the fenced frame (e.g., Protected Audience fenced frames). For the information flow in this proposal, since the embedder’s information could be available inside the FF via the src url, it is not a privacy concern to let the CSP:frame-ancestors response header be checked all the way up to the outermost main frame. 
+With this behavior, the fenced frame can then allowlist origins via CSP:frame-ancestors header that it is ok to be embedded in and exclude others.
 
 ## Stakeholder Feedback / Opposition
 
@@ -204,7 +359,6 @@ We have also [heard from TAG reviewers](https://github.com/w3ctag/design-reviews
 _“We had a long discussion about how the shape of this, changing the relationship between an iFrame and its embedding page — it must not be unique to the advertising use cases you've listed._
 
 _We brainstormed along the lines of a site presenting user-generated content in an iFrame, and the payments processes. Have you explored use cases outside the ones you're citing? And if so, what overlaps are you finding?”_
-
 
 ## Alternatives considered
 
@@ -226,8 +380,6 @@ The benefits of using cookies for this solution are the following:
 *   The cookies being a default network concept does not align well with this change where the “fenced” cookies have to be JS-only.
 *   Fenced frames by default have a unique and ephemeral partition for cookies and with this change, a given cookie’s value before and after the API resolving will be different, which might lead to confusion. Alternatively, cookie access in the FF before the transition can be blocked.
 
- 
-
 **Alternatives considered: Local Storage**
 
 [Local Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), like shared storage, is origin scoped and JS-only. Local storage is not an ideal choice for this use case, due to the following reasons:
@@ -235,8 +387,9 @@ The benefits of using cookies for this solution are the following:
 *   Local storage, like other storage APIs, is being [partitioned](https://privacycg.github.io/storage-partitioning/) in iframes. To allow unpartitioned access, it will rely on a variant of [rSA for storage](https://groups.google.com/a/chromium.org/g/blink-dev/c/SEL7N-xIE5s). 
 *   Fenced frames, by default have a unique and ephemeral partition and either we would disable that access in read-only FFs or there would be a transition where the value of a given data could be different before and after the access is granted, leading to confusion.
 
-
 ## References
 [TPAC presentation from Sep 2023](https://docs.google.com/presentation/d/1TqtFtK4x3TMd96JEvkbApUaYVdIaUz9uz3wNGPTuqdU/edit?usp=sharing)
+
+[TPAC presentation from Sep 2024](https://docs.google.com/presentation/d/1xKwCrhN2pD_lxuPfurgjEDkfyAcf3wgxPS9njlG9tT0/edit?usp=sharing)
 
 [Related Issue](https://github.com/WICG/fenced-frame/issues/15)
