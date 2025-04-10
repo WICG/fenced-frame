@@ -1470,15 +1470,14 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
             :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
                [=fenced frame reporting metadata/value=]
 
-    : [=fenced frame config instance/exfiltration budget metadata reference=]
+    : [=fenced frame config instance/shared storage selectURL budget metadata reference=]
     ::
         1. If |config|'s [=fenced frame config/shared storage selectURL budget metadata=] is null, set to null.
 
         1. Otherwise, set to a [=fencedframetype/shared storage selectURL budget metadata reference=]:
 
             : [=shared storage selectURL budget metadata reference/origin=]
-            :: |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s [=exfiltration
-               budget metadata/value=]'s [=shared storage selectURL budget metadata/origin=]
+            :: |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s [=shared storage selectURL budget metadata/value=]'s [=shared storage selectURL budget metadata/origin=]
 
             : [=shared storage selectURL budget metadata reference/amount to debit reference=]
             :: a reference to |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s
