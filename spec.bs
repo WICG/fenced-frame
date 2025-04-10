@@ -2443,24 +2443,23 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
 
 <div algorithm>
   To <dfn>determine if an embedder-initiated fenced frame navigation should be blocked</dfn> given a
-  [=navigable=] |navigable| and a {{Document}} |sourceDocument|:
+  [=navigable=] |navigable| and a [=source snapshot params=] |sourceSnapshotParams|:
   
+  1. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then return false.
+     
+     Issue: |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is expected to be non-null for an embedder-initiated <{fencedframe}> navigation and null otherwise. However, this is not true until <a href=#issue-urn-uuid-navigation>this issue</a> is resolved.
+
   1. If all of the following are true:
-  
-    * |sourceDocument|'s [=node navigable=] is a [=fenced navigable container=] while at the same
-      time |navigable| is a [=fenced navigable container/fenced navigable=];
-    
-      Note: This implies the navigation is an embedder-initiated fenced frame navigation.
     
     * The result of running [=determine if a navigable has revoked network for itself=] given
       |navigable| is true; and
     
-    * The result of running [=determine if a navigable has revoked network for itself=] given
-      |sourceDocument|'s [=node navigable=] is true,
+    * The result of running [=determine if a navigable has revoked network for itself=] given |navigable|'s
+      [=traversable navigable/unfenced parent=]'s [=navigable/traversable navigable=] is true,
     
     then return true.
   
-  2. Otherwise, return false.
+  1. Otherwise, return false.
 </div>
 
 <h3 id=automatic-reporting>Automatic Reporting</h3>
@@ -3534,7 +3533,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
     1. If |url| is a [=urn uuid=] and |navigable| is a [=fenced navigable container/fenced
        navigable=]:
 
-       Issue: The above condition is not as tight as it needs to be. For example, if a
+       <p class="issue" id="issue-urn-uuid-navigation"> The above condition is not as tight as it needs to be. For example, if a
        <{fencedframe}> generates a {{FencedFrameConfig}} using a config-generating API, and then
        correctly guesses the config's [=fencedframeconfig/urn|urn:uuid=], it can theoretically
        navigate itself to that config by passing the guessed urn into the navigate algorithm as a
@@ -3542,6 +3541,7 @@ CORP violation report=] algorithm, as leaving it unfenced may cause a privacy le
        a {{FencedFrameConfig}} is to ensure that only an embedder can navigate a <{fencedframe}> to
        the resource represented by the config, by using the config object directly. See <a
        href=https://github.com/WICG/fenced-frame/issues/194>#194</a> for thoughts on fixing this.
+       </p>
 
       1. Let |config| be the result of [=fenced frame config mapping/finding a
          config=] in <var ignore>sourceDocument</var>'s [=node navigable=]'s [=navigable/traversable
@@ -3717,14 +3717,11 @@ content in the <{fencedframe}> or its embedder, exactly one of two things will h
 </div>
 
 <div algorithm=attempt-populate-history-network-revocation-patches>
-  Modify [[HTML]]'s [=attempt to populate the history entry's document=] algorithm to include an
-  extra parameter: an optional {{Document}} |sourceDocument|.
-  
-  Modify step 5, substep 4 ("Otherwise, if any of the following are true:") to include the following
+  Modify step 5, substep 4 ("Otherwise, if any of the following are true:") of [[HTML]]'s [=attempt to populate the history entry's document=] algorithm to include the following
   condition:
   
   * the result of [=determine if an embedder-initiated fenced frame navigation should be blocked=]
-    given <var ignore>navigable</var> and |sourceDocument| is true;
+    given <var ignore>navigable</var> and <var ignore>sourceSnapshotParams</var> is true;
 </div>
 
 <h4 id=bcg-swap>Browsing context group swap</h4>
