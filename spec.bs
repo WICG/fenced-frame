@@ -1279,8 +1279,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="interest group descriptor">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
-    Note: This field is used only by [[Protected-Audience]] to implement <code>
-    leaveAdInterestGroup()</code>
+    Note: This field is used only by [[Protected-Audience]] to implement {{Navigator/
+    leaveAdInterestGroup()}};
 
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
