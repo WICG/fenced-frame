@@ -2450,14 +2450,16 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
   1. If |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] is null, then
      return false.
      
-     Issue: The intent is that |sourceSnapshotParams|'s [=source snapshot params/target fenced frame config=] should be non-null for an embedder-initiated <{fencedframe}> navigation and null
+     Issue: The intent is that |sourceSnapshotParams|'s [=source snapshot params/target fenced frame
+     config=] should be non-null for an embedder-initiated <{fencedframe}> navigation and null
      otherwise. However, this is not true until <a href=#issue-urn-uuid-navigation>this issue</a> is
      resolved.
      
   1. If |navigable|'s [=traversable navigable/unfenced parent=] is null, then return false.
   
-     Note: When |navigable|'s [=traversable navigable/unfenced parent=] is null, the |navigable| will [=stop loading=] as the |navigable|'s [=fenced navigable
-     container=] is being [=destroy a child navigable|destroyed=].
+     Note: When |navigable|'s [=traversable navigable/unfenced parent=] is null, the |navigable|
+     will [=stop loading=] as the |navigable|'s [=fenced navigable container=] is being [=destroy a
+     child navigable|destroyed=].
 
   1. If all of the following are true:
     
@@ -2469,10 +2471,14 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
         navigable=] is true,
         
         Note: The algorithm [=determine if a navigable has revoked network for itself=] is run on
-        both |navigable| and |navigable|'s [=traversable navigable/unfenced parent=]'s [=navigable/traversable
-        navigable=]. This is because a parent fenced frame is able to navigate a child fenced
-        frame which has already disabled untrusted network access. If the parent fenced frame disables
-        the untrusted network access right after the child fenced frame navigation is initiated, the navigation must be blocked. So the algorithm has to be run on both the parent and the child. Otherwise, if the navigation is allowed to commit, the parent fenced frame will have untrusted network access disabled, but the child fenced frame will not.
+        both |navigable| and |navigable|'s [=traversable navigable/unfenced parent=]'s
+        [=navigable/traversable navigable=]. This is because a parent fenced frame is able to
+        navigate a child fenced frame which has already disabled untrusted network access. If the
+        parent fenced frame disables the untrusted network access right after the child fenced frame
+        navigation is initiated, the navigation must be blocked. So the algorithm has to be run on
+        both the parent and the child. Otherwise, if the navigation is allowed to commit, the parent
+        fenced frame will have untrusted network access disabled, but the child fenced frame will
+        not.
   
     then return true.
     
