@@ -2468,16 +2468,17 @@ apply to them until they have invoked {{Fence/disableUntrustedNetwork()}} as wel
         |navigable| is true; and
     
       * The result of running [=determine if a navigable has revoked network for itself=] given
-        |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced parent=] is true,
+        |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced
+        parent=] is true,
         
         Note: The algorithm [=determine if a navigable has revoked network for itself=] is run on
-        both |navigable| and |navigable|'s [=navigable/traversable navigable=]'s [=traversable navigable/unfenced parent=]. This is because a parent fenced frame is able to
-        navigate a child fenced frame which has already disabled untrusted network access. If the
-        parent fenced frame disables the untrusted network access right after the child fenced frame
-        navigation is initiated, the navigation has to be blocked. So the algorithm has to be run on
-        both the parent and the child. Otherwise, if the navigation is allowed to commit, the parent
-        fenced frame will have untrusted network access disabled, but the child fenced frame will
-        not.
+        both |navigable| and |navigable|'s [=navigable/traversable navigable=]'s [=traversable
+        navigable/unfenced parent=]. This is because a parent fenced frame is able to navigate a
+        child fenced frame which has already disabled untrusted network access. If the parent fenced
+        frame disables the untrusted network access right after the child fenced frame navigation is
+        initiated, the navigation has to be blocked. So the algorithm has to be run on both the
+        parent and the child. Otherwise, if the navigation is allowed to commit, the parent fenced
+        frame will have untrusted network access disabled, but the child fenced frame will not.
   
     then return true.
     
