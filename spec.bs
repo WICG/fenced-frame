@@ -1223,10 +1223,10 @@ A <dfn for=fencedframetype>destination event</dfn> is either a
   1. |reporter| |event| <span class=XXX>TODO: Fill this in</span>
 </div>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata</dfn> is a [=struct=] with the
-following [=struct/items=]:
+An <dfn export for=fencedframetype>shared storage selectURL budget metadata</dfn> is a [=struct=]
+with the following [=struct/items=]:
 
-<dl export dfn-for="exfiltration budget metadata">
+<dl export dfn-for="shared storage selectURL budget metadata">
   : <dfn>origin</dfn>
   :: an [=origin=]
 
@@ -1234,10 +1234,10 @@ following [=struct/items=]:
   :: a non-negative valid floating point number
 </dl>
 
-An <dfn export for=fencedframetype>exfiltration budget metadata reference</dfn> is a [=struct=] with
-the following [=struct/items=]:
+An <dfn export for=fencedframetype>shared storage selectURL budget metadata reference</dfn> is a
+[=struct=] with the following [=struct/items=]:
 
-<dl export dfn-for="exfiltration budget metadata reference">
+<dl export dfn-for="shared storage selectURL budget metadata reference">
   : <dfn>origin</dfn>
   :: an [=origin=]
 
@@ -1281,6 +1281,9 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="interest group descriptor">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
+    Note: This field is used only by [[Protected-Audience]] to implement {{Navigator/
+    leaveAdInterestGroup()}};
+
   : <dfn>on navigate callback</dfn>
   :: null, or a series of steps
 
@@ -1321,13 +1324,19 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
     : <dfn for="fenced frame reporting metadata">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
 
-  : <dfn>exfiltration budget metadata</dfn>
-  :: null, or a [=struct=] with the following [=struct/items=]:
-    : <dfn for="exfiltration budget metadata">value</dfn>
-    :: an [=fencedframetype/exfiltration budget metadata=]
+    Note: This field is used only to implement event-level reporting from fenced frames
+    initialized from [[Protected-Audience]] auctions.
 
-    : <dfn for="exfiltration budget metadata">visibility</dfn>
+  : <dfn>shared storage selectURL budget metadata</dfn>
+  :: null, or a [=struct=] with the following [=struct/items=]:
+    : <dfn for="shared storage selectURL budget metadata">value</dfn>
+    :: an [=fencedframetype/shared storage selectURL budget metadata=]
+
+    : <dfn for="shared storage selectURL budget metadata">visibility</dfn>
     :: a [=fencedframeconfig/visibility=]
+
+      Note: This field is used only by [[Shared-Storage]] in {{SharedStorageWorklet/
+      selectURL()}}.
 
   : <dfn>nested configs</dfn>
   :: null, or a [=struct=] with the following [=struct/items=]:
@@ -1340,6 +1349,9 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
   : <dfn>embedder shared storage context</dfn>
   :: null, or a [=string=]
 
+    Note: This field is used only by [[Shared-Storage]] in {{SharedStorageWorklet/
+    selectURL()}}.
+
   : <dfn>is ad component</dfn>
   :: A [=boolean=], initially false.
 
@@ -1348,7 +1360,8 @@ A <dfn export>fenced frame config</dfn> is a [=struct=] with the following [=str
      href=https://github.com/WICG/turtledove/blob/main/FLEDGE.md#34-ads-composed-of-multiple-pieces>Protected
      Audience explainer</a>. For an ad component, event reporting is handled differently. See the <a
      href=https://github.com/WICG/turtledove/blob/main/Fenced_Frames_Ads_Reporting.md#support-for-ad-components>Fenced
-     Frame Ads Reporting explainer</a> that describes this.
+     Frame Ads Reporting explainer</a> that describes this. This field is used only for 
+     event-level reporting in fenced frames initialized from [[Protected-Audience]] auctions.
 
   : <dfn>cross-origin reporting allowed</dfn>
   :: A [=boolean=], initially false.
@@ -1386,8 +1399,8 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
   : <dfn>fenced frame reporter</dfn>
   :: null, or a [=fencedframetype/fenced frame reporter=]
 
-  : <dfn>exfiltration budget metadata reference</dfn>
-  :: null, or an [=fencedframetype/exfiltration budget metadata reference=]
+  : <dfn>shared storage selectURL budget metadata reference</dfn>
+  :: null, or an [=fencedframetype/shared storage selectURL budget metadata reference=]
 
   : <dfn>nested configs</dfn>
   :: null, or an [=map=] whose [=map/keys=] are [=urn uuids=] and whose [=map/values=] are [=fenced
@@ -1466,20 +1479,23 @@ A <dfn export>fenced frame config instance</dfn> is a [=struct=] with the follow
             :: a reference to |config|'s [=fenced frame config/fenced frame reporting metadata=]'s
                [=fenced frame reporting metadata/value=]
 
-    : [=fenced frame config instance/exfiltration budget metadata reference=]
+    : [=fenced frame config instance/shared storage selectURL budget metadata reference=]
     ::
-        1. If |config|'s [=fenced frame config/exfiltration budget metadata=] is null, set to null.
+        1. If |config|'s [=fenced frame config/shared storage selectURL budget metadata=] is null,
+           set to null.
 
-        1. Otherwise, set to a [=fencedframetype/exfiltration budget metadata reference=]:
+        1. Otherwise, set to a [=fencedframetype/shared storage selectURL budget metadata
+           reference=]:
 
-            : [=exfiltration budget metadata reference/origin=]
-            :: |config|'s [=fenced frame config/exfiltration budget metadata=]'s [=exfiltration
-               budget metadata/value=]'s [=exfiltration budget metadata/origin=]
+            : [=shared storage selectURL budget metadata reference/origin=]
+            :: |config|'s [=fenced frame config/shared storage selectURL budget metadata=]'s
+               [=shared storage selectURL budget metadata/value=]'s [=shared storage selectURL
+               budget metadata/origin=]
 
-            : [=exfiltration budget metadata reference/amount to debit reference=]
-            :: a reference to |config|'s [=fenced frame config/exfiltration budget metadata=]'s
-               [=exfiltration budget metadata/value=]'s [=exfiltration budget metadata/amount to
-               debit=]
+            : [=shared storage selectURL budget metadata reference/amount to debit reference=]
+            :: a reference to |config|'s [=fenced frame config/shared storage selectURL budget
+               metadata=]'s [=shared storage selectURL budget metadata/value=]'s [=shared storage
+               selectURL budget metadata/amount to debit=]
 
     : [=fenced frame config instance/nested configs=]
     ::
