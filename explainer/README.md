@@ -200,7 +200,7 @@ Both of the alternatives given in this section are applicable only if fenced fra
 
 #### Using iframe with document policy
 
-In this alternative approach the fenced frame is a nested browsing context with the communications restrictions placed on an iframe via a [document policy](https://github.com/w3c/webappsec-feature-policy/blob/master/document-policy-explainer.md).
+In this alternative approach the fenced frame is a nested browsing context with the communications restrictions placed on an iframe via a [document policy](https://github.com/WICG/document-policy/blob/main/document-policy-explainer.md).
 
 
 Example usage
