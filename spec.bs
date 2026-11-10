@@ -4139,7 +4139,7 @@ behavior/fixed=] [=fencedframetype/permissions policy behavior=] navigations:
    config/effective enabled permissions=] has a [=policy-controlled feature/default allowlist=] of
    <a for="default allowlist">`'self'`</a>, and the <{fencedframe}>'s <{fencedframe/allow}>
    attribute contains the [=policy-controlled feature|feature=] but no [=allowlist=], the rules
-   described in <a href=allow-attribute-fenced-frame>The `allow` attribute section</a>, the default
+   described in <a href=#allow-attribute-fenced-frame>The `allow` attribute section</a>, the default
    [=allowlist=] for the feature will be `'src'` which is meant to represent the embedder-supplied
    navigation [=URL=], for which there is none when navigating a <{fencedframe}>, as the navigation
    [=URL=] is determined by the [=fenced frame config=]. The navigation will be blocked.
